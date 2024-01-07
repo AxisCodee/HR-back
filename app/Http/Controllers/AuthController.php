@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 use TADPHP\TADFactory;
 use App\Models\User;
 use Illuminate\Http\Request;
