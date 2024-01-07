@@ -11,5 +11,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('refresh', 'refresh');
 });
 Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
+Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 
 
