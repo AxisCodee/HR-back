@@ -1,0 +1,3 @@
+[submodule "app/Http/tad"]
+	path = app/Http/tad
+	url = https://github.com/AxisCodee/HR-back.git
