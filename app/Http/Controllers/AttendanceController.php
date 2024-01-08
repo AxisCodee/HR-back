@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
-require 'tad/vendor/autoload.php';
+require 'tad\vendor\autoload.php';
 
 class AttendanceController extends Controller
 {
@@ -21,7 +21,7 @@ class AttendanceController extends Controller
         $array = json_decode(json_encode($xml));
         $json_output = json_encode($array);
 
-    echo $json_output;
+        echo $json_output;
     }
 
 
