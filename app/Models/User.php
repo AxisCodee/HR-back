@@ -28,6 +28,7 @@ class User extends Authenticatable implements JWTSubject
         'last_name',
         'role',
         'department_id'
+        ,'pin'
 
     ];
 
@@ -58,6 +59,14 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTIdentifier()
     {
         return $this->getKey();
+    }
+    public function attendance()
+    {
+      return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
+    }
+    public function department()
+    {
+      return $this->belongsTo('App\Models\Department');
     }
 
     /**

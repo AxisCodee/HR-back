@@ -10,16 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('attendances', function (Blueprint $table) {
-            $table->id();
-            $table->string('pin');
-            $table->string('datetime');
-            $table->string('verified');
-            $table->string('status');
-            $table->string('work_code');
-            $table->timestamps();
-        });
+    {Schema::create('attendances', function (Blueprint $table) {
+        $table->id();
+        $table->integer('pin');
+        $table->string('datetime');
+        $table->string('verified');
+        $table->string('status');
+        $table->string('work_code');
+        $table->timestamps();
+
+    });
+
     }
 
     /**

@@ -12,5 +12,6 @@ Route::controller(AuthController::class)->group(function () {
 });
 Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
+Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 
 
