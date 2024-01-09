@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseHelper;
 use App\Models\Attendance;
+use App\Models\User;
 use Illuminate\Http\Request;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
@@ -40,27 +42,27 @@ class AttendanceController extends Controller
         $xml = simplexml_load_string($logs);
         $array = json_decode(json_encode($xml), true);
         $logsData = $array['Row'];
-
         foreach ($logsData as $log) {
-            Attendance::create([
+            $attendance = [
                 'pin' => $log['PIN'],
                 'datetime' => $log['DateTime'],
                 'verified' => $log['Verified'],
                 'status' => $log['Status'],
                 'work_code' => $log['WorkCode']
-            ]);
+            ];
+
+            Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+
         }
     }
 
+    public function showAttendanceLogs(){
 
-    //_____________________add new normal user__________________//
-// $tad_factory = new TADFactory(['ip'=>'192.168.2.202']);
-// $tad = $tad_factory->get_instance();
-// $r = $tad->set_user_info([
-//     'pin' => USER_PIN2,//this is the pin2 in the returned response
-//     'name'=> 'testing user',
-//     'privilege'=> 0,//if you want to add a superadmin user make the privilege as '14'.
-//     'password' => ''
-// ]);
+        $result=User::with('department')->with('attendance')->get();
+
+        return  ResponseHelper::success([
+            $result
+        ]);
+    }
+
 }
-

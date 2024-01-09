@@ -64,6 +64,8 @@ $r = $tad->set_user_info([
             'role_id'=> $request->role_id,
             'department_id' => $request->department_id,
             'password' => Hash::make($request->password),
+            'pin' => $request->pin,//this is the pin2 in the returned response
+
 
         ]);
 

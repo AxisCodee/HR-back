@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('pin');
             $table->rememberToken();
             $table->timestamps();
         });
