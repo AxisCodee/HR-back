@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Helpers\ResponseHelper;
+use App\Helper\ResponseHelper;
 use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
