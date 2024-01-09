@@ -15,5 +15,12 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth:api')->group(function(){
     Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
     //all users
-    Route::get('getallusers',[UserController::class,'all_users']);
+    Route::post('getallusers',[UserController::class,'all_users']);
+    //specific user
+    Route::post('specific_user/{user}',[UserController::class,'specific_user']);
+    //edit user info
+    Route::post('edit_user',[UserController::class,'edit_user']);
+    //remove a user
+    Route::delete('remove_user/{user}',[UserController::class,'remove_user']);
+
 });
