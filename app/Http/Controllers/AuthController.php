@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ResponseHelper;
+use App\Helper\ResponseHelper;
 use TADPHP\TADFactory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+
 require 'tad/vendor/autoload.php';
 
 class AuthController extends Controller
@@ -39,6 +40,7 @@ class AuthController extends Controller
                 'type' => 'bearer',
             ]
         ]);
+
     }
 
     public function register(Request $request)
@@ -61,15 +63,17 @@ $r = $tad->set_user_info([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
-            'role_id'=> $request->role_id,
+            'role'=>$request->role,
             'department_id' => $request->department_id,
             'password' => Hash::make($request->password),
 
         ]);
+        $user->assignRole($request->role);
+
 
         return ResponseHelper::success([
             'message' => 'User created successfully',
-            'user' => $user
+            'user' => $user,
         ]);
 
     }
