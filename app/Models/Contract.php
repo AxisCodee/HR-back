@@ -5,13 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class Contract extends Model
 {
-
+    protected $fillable = ['path','startTime','endTime','user_id'];
     use HasFactory;
-
-
-    protected $fillable = [
-        'name'
-    ];
 }

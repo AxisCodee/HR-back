@@ -8,10 +8,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -24,8 +26,10 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'first_name',
         'last_name',
-        'role_id',
+        'role',
         'department_id'
+        ,'pin'
+
     ];
 
     /**
@@ -56,6 +60,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
+    public function attendance()
+    {
+      return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
+    }
+    public function department()
+    {
+      return $this->belongsTo('App\Models\Department');
+    }
 
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
@@ -66,14 +78,17 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-    /**
-     * Get all of the comments for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function my_decisions()
+    public function roles()
     {
-        return $this->hasMany(Decision::class, 'user_id', 'id');
+        return $this->belongsToMany(Role::class);
     }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+    // public function getRoleAttribute()
+    // {
+    //     return $this->getRoleNames()->first();
+    // }
 }

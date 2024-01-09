@@ -16,10 +16,11 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('first_name');
             $table->string('email')->unique();
+            $table->string('role');
             $table->foreignId('department_id')->constrained('departments')->cascadeOnDelete();
-            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('pin');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
