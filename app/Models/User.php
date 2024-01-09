@@ -66,4 +66,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * Get all of the comments for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function my_decisions()
+    {
+        return $this->hasMany(Decision::class, 'user_id', 'id');
+    }
 }
