@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper;
+namespace App\Helpers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;

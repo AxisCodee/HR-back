@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Helpers\ResponseHelper;
 use TADPHP\TADFactory;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +21,7 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
+    {  //ss
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -28,13 +30,11 @@ class AuthController extends Controller
         $token = Auth::attempt($credentials);
 
         if (!$token) {
-            return response()->json([
-                'message' => 'Unauthorized',
-            ], 401);
+            return ResponseHelper::error('phonenumber or password are not correct', null, 'error', 401);
         }
 
         $user = Auth::user();
-        return response()->json([
+        return ResponseHelper::success([
             'user' => $user,
             'authorization' => [
                 'token' => $token,
@@ -69,7 +69,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json([
+        return ResponseHelper::success([
             'message' => 'User created successfully',
             'user' => $user
         ]);
@@ -79,7 +79,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return response()->json([
+        return  ResponseHelper::success([
             'message' => 'Successfully logged out',
         ]);
     }
