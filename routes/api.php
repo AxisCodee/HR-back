@@ -18,7 +18,7 @@ Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLo
 Route::prefix('contract')->group(function(){
 Route::controller(ContractController::class)->group(function () {
     Route::post('Add', 'store');
-    Route::get('Show/{contract}', 'show');
+    Route::get('Show/{id}', 'show');
     Route::get('All', 'index');
     Route::delete('Delete/{contract}', 'destroy');
 });
