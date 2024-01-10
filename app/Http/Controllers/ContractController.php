@@ -29,10 +29,11 @@ class ContractController extends Controller
         {
             $status='active';
         }
-       
+
 
         $results[]=$result=[
             'startDate'=>$contract['startTime'],
+            'path'=>$contract['path'],
             'endDate'=>$contract['endTime'],
             'user_id'=>$contract['user_id'],
             'contract_id'=>$contract->id,
