@@ -25,15 +25,13 @@ Route::controller(ContractController::class)->group(function () {
     Route::get('All', 'index');
     Route::delete('Delete/{contract}', 'destroy');
 });
-
-
-
 });
 
 Route::prefix('Report')->group(function(){
     Route::controller(ReportController::class)->group(function(){
         Route::post('Add','store');
         Route::get('my_reports','all_reports');
+        Route::get('daily','daily_reports');
         Route::delete('remove/{report}','remove');
     });
 });

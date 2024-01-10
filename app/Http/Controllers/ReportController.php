@@ -31,5 +31,10 @@ class ReportController extends Controller
         $all = Report::query()->where('user_id',Auth::user()->id)->get();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
     }
-
+//get all reports of today
+    public function daily_reports()
+    {
+        $today = Report::whereDate('created_at',now()->format('Y-m-d'))->get();
+        return ResponseHelper::success($today, null, 'today reports returned successfully', 200);
+    }
 }
