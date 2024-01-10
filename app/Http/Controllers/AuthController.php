@@ -47,14 +47,15 @@ class AuthController extends Controller
     {
 
         $tad_factory = new TADFactory(['ip'=>'192.168.2.202']);
-$tad = $tad_factory->get_instance();
-$r = $tad->set_user_info([
-    'pin' => $request->pin,//this is the pin2 in the returned response
-    'name'=> $request->first_name,
-    'privilege'=> 0,//if you want to add a superadmin user make the privilege as '14'.
-    'password' => $request->password]);
+        $tad = $tad_factory->get_instance();
+        // $r = $tad->set_user_info([
+        //     'pin' => $request->id,//this is the pin2 in the returned response
+        //     'name'=> $request->first_name,
+        //     'privilege'=> 0,//if you want to add a superadmin user make the privilege as '14'.
+        //     'password' => $request->password]);
         $request->validate([
             'first_name' => 'required|string|max:255',
+            'last_name' => 'string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);

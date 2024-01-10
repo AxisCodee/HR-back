@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('pin');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
