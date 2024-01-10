@@ -91,11 +91,10 @@ class ContractController extends Controller
    public function show( $res)
     {
        $result= Contract::query()->with('user')
-       ->where('user_id',Auth::user()->id)
        ->get();
 
        return ResponseHelper::success([
-        'message' => 'your contract',
+        'message' => 'contract:',
         'data' =>  $result,
     ]);
     }
