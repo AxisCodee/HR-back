@@ -15,14 +15,19 @@ Route::controller(AuthController::class)->group(function () {
 Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
+Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 
 Route::prefix('contract')->group(function(){
-    Route::controller(ContractController::class)->group(function () {
-        Route::post('Add', 'store');
-        Route::get('Show/{contract}', 'show');
-        Route::get('All', 'index');
-        Route::delete('Delete/{contract}', 'destroy');
-    });
+
+Route::controller(ContractController::class)->group(function () {
+    Route::post('Add', 'store');
+    Route::get('Show/{id}', 'show');
+    Route::get('All', 'index');
+    Route::delete('Delete/{contract}', 'destroy');
+});
+
+
+
 });
 
 Route::prefix('Report')->group(function(){
