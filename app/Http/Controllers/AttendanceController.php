@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Helper\ResponseHelper;
 use App\Models\Attendance;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -60,7 +59,7 @@ class AttendanceController extends Controller
             Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
 
         }
-        return ResponseHelper::success($attended_users, null, 'attendaces logs stored successfully', 200);
+        return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
     }
 
     public function showAttendanceLogs(){
