@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contract;
+use App\Models\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreContractRequest;
 use App\Http\Requests\UpdateContractRequest;
 use App\Helper\ResponseHelper;
-
+use App\Http\Traits\Files;
+use Carbon\Carbon;
 class ContractController extends Controller
 {
     /**
@@ -15,25 +17,60 @@ class ContractController extends Controller
      */
     public function index()
     {
+        $contracts= Contract::with('user')->get();
+        foreach($contracts as $contract){
+        $endTime=Carbon::parse($contract['endTime']);
+        if($endTime->diffindays(Carbon::now())<0)
+        {
+            $status='finished';
+
+        }
+        else
+        {
+            $status='active';
+        }
+       
+
+        $results[]=$result=[
+            'startDate'=>$contract['startTime'],
+            'endDate'=>$contract['endTime'],
+            'user_id'=>$contract['user_id'],
+            'contract_id'=>$contract->id,
+            'user'=>$contract['user'],
+            'status'=>$status,
+        ];
+    }
+
+
+        return ResponseHelper::success([
+            'message' => 'all Contract',
+            'data' =>   $results,
+        ]);
 
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreContractRequest $request)
     {
+        $path = Files::saveFile($request);
+
+
         $contract= Contract::create(
             [
-                'path'=>$request->path,
+                'path'=>$path,
                 'startTime'=>$request->startTime,
                 'endTime'=>$request->endTime,
                 'user_id'=>$request->user_id
             ]
             );
+
+
             return ResponseHelper::success([
                 'message' => 'Contract created successfully',
-                'user' => $contract,
+                'data' =>  $contract,
             ]);
     }
 
@@ -42,7 +79,14 @@ class ContractController extends Controller
      */
     public function show(Contract $contract)
     {
-        //
+       $result= $contract->with('user')->get();
+
+
+
+       return ResponseHelper::success([
+        'message' => 'your contract',
+        'data' =>  $result,
+    ]);
     }
 
     /**
@@ -58,6 +102,10 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract)
     {
-        //
+        $contract->delete();
+        return ResponseHelper::success([
+            'message' => 'contract deleted successfully',
+
+        ]);
     }
 }

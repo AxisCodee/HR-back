@@ -20,6 +20,8 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array<int, string>
      */
+
+     //protected $with = ['department'];
     protected $fillable = [
         'name',
         'email',
@@ -31,6 +33,7 @@ class User extends Authenticatable implements JWTSubject
         ,'pin'
 
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -63,6 +66,10 @@ class User extends Authenticatable implements JWTSubject
     public function attendance()
     {
       return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
+    }
+    public function contract()
+    {
+      return $this->hasMany(Contract::class, 'user_id');
     }
     public function department()
     {

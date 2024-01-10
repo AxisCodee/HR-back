@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('path');
             $table->date('startTime')->default(Carbon::now());
-            $table->date('endtTime');
+            $table->date('endTime');
             $table->foreignId('user_id')->constrained('users');
 
 
