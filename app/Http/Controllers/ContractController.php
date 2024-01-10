@@ -88,15 +88,17 @@ class ContractController extends Controller
     //     'data' =>  $result,
     // ]);
     // }
-   public function show( $res)
+    public function show($id)
     {
-       $result= Contract::query()->with('user')
-       ->get();
+        $result = Contract::query()
+            ->with('user')
+            ->where('id', $id)
+            ->get();
 
-       return ResponseHelper::success([
-        'message' => 'contract:',
-        'data' =>  $result,
-    ]);
+        return ResponseHelper::success([
+            'message' => 'Contract:',
+            'data' => $result,
+        ]);
     }
 
 
