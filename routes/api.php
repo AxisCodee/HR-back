@@ -30,7 +30,6 @@ Route::controller(ContractController::class)->group(function () {
 Route::prefix('Report')->group(function(){
     Route::controller(ReportController::class)->group(function(){
         Route::post('Add','store');
-        Route::get('my_reports','all_reports');
         Route::get('daily','daily_reports');
         Route::get('myReports','all_reports');
         Route::delete('remove/{report}','remove');
