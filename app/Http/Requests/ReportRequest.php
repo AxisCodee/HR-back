@@ -19,7 +19,6 @@ class ReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
             'content' => ['required','string', 'between:10,255'],
         ];
     }
