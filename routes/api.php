@@ -22,6 +22,10 @@ Route::controller(ContractController::class)->group(function () {
     Route::get('All', 'index');
     Route::delete('Delete/{contract}', 'destroy');
 });
+
+Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
+
+
 });
 
 
