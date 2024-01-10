@@ -10,6 +10,8 @@ use App\Http\Requests\UpdateContractRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Traits\Files;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+
 class ContractController extends Controller
 {
     /**
@@ -78,17 +80,26 @@ class ContractController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Contract $contract)
+    // public function show(Contract $contract)
+    // {
+    //    $result= $contract->with('user')->get();
+    //    return ResponseHelper::success([
+    //     'message' => 'your contract',
+    //     'data' =>  $result,
+    // ]);
+    // }
+   public function show( $res)
     {
-       $result= $contract->with('user')->get();
-
-
+       $result= Contract::query()->with('user')
+       ->where('user_id',Auth::user()->id)
+       ->get();
 
        return ResponseHelper::success([
         'message' => 'your contract',
         'data' =>  $result,
     ]);
     }
+
 
     /**
      * Update the specified resource in storage.
