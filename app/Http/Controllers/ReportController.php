@@ -16,7 +16,11 @@ class ReportController extends Controller
     public function store(ReportRequest $request)
     {
         $validate = $request->validated();
-        $new_report = Report::create($validate);
+        $new_report = Report::create([
+
+            'user_id'=> Auth::user()->id,
+            'content'=> $request->content,
+        ]);
         return ResponseHelper::success($new_report, null, 'report created successfully', 200);
     }
 //remove existing report by a specific user

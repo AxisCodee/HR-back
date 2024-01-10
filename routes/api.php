@@ -32,6 +32,7 @@ Route::prefix('Report')->group(function(){
         Route::post('Add','store');
         Route::get('my_reports','all_reports');
         Route::get('daily','daily_reports');
+        Route::get('myReports','all_reports');
         Route::delete('remove/{report}','remove');
     });
 });
