@@ -14,6 +14,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
+Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 
 Route::prefix('contract')->group(function(){
 Route::controller(ContractController::class)->group(function () {
@@ -23,7 +24,6 @@ Route::controller(ContractController::class)->group(function () {
     Route::delete('Delete/{contract}', 'destroy');
 });
 
-Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 
 
 });
