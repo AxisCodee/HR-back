@@ -15,7 +15,8 @@ class UserController extends Controller
 //get all users info
     public function all_users()
     {
-        $all_users = User::query()->get();
+        $all_users = User::query()->get(['id','first_name','last_name'])->toArray();
+
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 //get a specific user by the ID

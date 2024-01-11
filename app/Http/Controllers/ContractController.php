@@ -11,6 +11,7 @@ use App\Helper\ResponseHelper;
 use App\Http\Traits\Files;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Exists;
 
 class ContractController extends Controller
 {
@@ -20,6 +21,17 @@ class ContractController extends Controller
     public function index()
     {
         $contracts= Contract::with('user')->get();
+
+        if($contracts->isEmpty())
+{
+   ;
+    return ResponseHelper::success([
+         'message'=>'there are not any contract'
+    ]);
+
+}
+else
+{
         foreach($contracts as $contract){
         $endTime=Carbon::parse($contract['endTime']);
         if($endTime->diffindays(Carbon::now())<0)
@@ -51,6 +63,7 @@ class ContractController extends Controller
         ]);
 
     }
+}
 
 
     /**

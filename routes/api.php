@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -34,5 +35,12 @@ Route::prefix('Report')->group(function(){
         Route::get('myReports','all_reports');
         Route::delete('remove/{report}','remove');
     });
+});
+Route::prefix('Users')->group(function()
+{
+    Route::controller(UserController::class)->group(function(){
+        Route::get('allUser','all_users');
+
+});
 });
 
