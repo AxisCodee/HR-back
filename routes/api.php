@@ -5,8 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\DecisionController;
-use App\Http\Controllers\CalendarController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -32,11 +30,17 @@ Route::controller(ContractController::class)->group(function () {
 Route::prefix('Report')->group(function(){
     Route::controller(ReportController::class)->group(function(){
         Route::post('Add','store');
-        Route::get('my_reports','all_reports');
         Route::get('daily','daily_reports');
         Route::get('myReports','all_reports');
         Route::delete('remove/{report}','remove');
     });
+});
+Route::prefix('Users')->group(function()
+{
+    Route::controller(UserController::class)->group(function(){
+        Route::get('allUser','all_users');
+
+});
 });
 
 Route::prefix('Decision')->group(function(){
