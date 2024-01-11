@@ -22,14 +22,14 @@ class CalendarController extends Controller
     {
         $remove = Calendar::findOrFail($id)->delete();
 
-        return ResponseHelper::success(null, null, 'Event canceled successfully', 200);
+        return ResponseHelper::deleted('Event canceled successfully');
     }
 
     public function all_events()
     {
         $all_events = Calendar::query()->get();
 
-        return ResponseHelper::success($all_events, null, 'Event canceled successfully', 200);
+        return ResponseHelper::success($all_events, null, 'All Events :', 200);
     }
 
     public function update_event(CalendarRequest $request,$id)
