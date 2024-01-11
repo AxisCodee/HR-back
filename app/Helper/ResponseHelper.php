@@ -31,17 +31,17 @@ class ResponseHelper
 
     public static function created($data = [], $message = 'created'): JsonResponse
     {
-        return self::success($data, $message, null, 201);
+        return self::success($data, null, $message, 201);
     }
 
     public static function updated($data = [], $message = 'updated'): JsonResponse
     {
-        return self::success($data, $message, null, 200);
+        return self::success($data, null, $message, 200);
     }
 
     public static function deleted($message = 'deleted'): JsonResponse
     {
-        return self::success([], null, $message, 200);
+        return self::success([], null, $message, 204);
     }
 
     public static function error($data = [], $service = null, $message = 'error', $status = 400)

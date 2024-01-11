@@ -15,14 +15,14 @@ class CalendarController extends Controller
         $validate = $request->validated();
         $new = Calendar::create($validate);
 
-        return ResponseHelper::success($new, null, 'Event created successfully', 200);
+        return ResponseHelper::created($new,'Event created successfully');
     }
 
     public function cancel_event($id)
     {
         $remove = Calendar::findOrFail($id)->delete();
 
-        return ResponseHelper::success(null, null, 'Event canceled successfully', 200);
+        return ResponseHelper::deleted('Event canceled successfully');
     }
 
     public function all_events()
@@ -38,7 +38,7 @@ class CalendarController extends Controller
         $updated_event = Calendar::findOrFail($id);
         $updated_event->update($validate);
 
-        return ResponseHelper::success($updated_event, null, 'Event updated successfully', 200);
+        return ResponseHelper::updated($updated_event,'Event updated successfully');
     }
 
     public function day_events()
@@ -50,9 +50,8 @@ class CalendarController extends Controller
 
     public function week_events()
     {
-        $weekstart = now()->startOfWeek()->format('Y-m-d');
-        $weekend = now()->endOfWeek()->format('Y-m-d');
-        $this_week = Calendar::whereBetween('start_date', [$weekstart, $weekend])->get();
+        $after_week = now()->addDays(7);
+        $this_week = Calendar::whereBetween('start_date',[now()->format('Y-m-d'),$after_week])->get();
 
         return ResponseHelper::success($this_week, null, 'This week events returned successfully', 200);
     }
