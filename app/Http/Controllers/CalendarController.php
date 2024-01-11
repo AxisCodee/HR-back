@@ -29,7 +29,7 @@ class CalendarController extends Controller
     {
         $all_events = Calendar::query()->get();
 
-        return ResponseHelper::success($all_events, null, 'Event canceled successfully', 200);
+        return ResponseHelper::success($all_events, null, 'All Events :', 200);
     }
 
     public function update_event(CalendarRequest $request,$id)

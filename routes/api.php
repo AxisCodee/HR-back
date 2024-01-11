@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\DecisionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\CalendarController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
