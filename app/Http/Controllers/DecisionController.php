@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Decision;
 use App\Models\User;
 use App\Http\Requests\DecisionRequest;
+use Illuminate\Support\Facades\Auth;
 
 class DecisionController extends Controller
 {
@@ -28,12 +29,18 @@ class DecisionController extends Controller
         $validate = $request->validated();
         $edited = Decision::findOrFail($id);
         $edited->update($validate);
-        return ResponseHelper::success($edited, null, ' decision edited successfully', 200);
+        return ResponseHelper::success($edited, null, ' decision updated successfully', 200);
     }
 
     public function all_decisions()
     {
-        $all = Decision::query()->get();
+        $all = Decision::all();
         return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
+    }
+
+    public function my_decisions()
+    {
+        $mine = Decision::query()->where('user_id',Auth::id())->get();
+        return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
 }

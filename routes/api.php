@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\DecisionController;
+use App\Http\Controllers\CalendarController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -34,6 +36,28 @@ Route::prefix('Report')->group(function(){
         Route::get('daily','daily_reports');
         Route::get('myReports','all_reports');
         Route::delete('remove/{report}','remove');
+    });
+});
+
+Route::prefix('Decision')->group(function(){
+    Route::controller(DecisionController::class)->group(function(){
+        Route::post('Add','new_decision');
+        Route::delete('remove/{decision}','remove_decision');
+        Route::post('edit/{decision}','edit_decision');
+        Route::get('all','all_decisions');
+        Route::get('my_decisions','my_decisions');
+    });
+});
+
+Route::prefix('Calendar')->group(function(){
+    Route::controller(CalendarController::class)->group(function(){
+        Route::post('Add','add_event');
+        Route::delete('Remove/{event}','cancel_event');
+        Route::get('All','all_events');
+        Route::post('Edit/{event}','update_event');
+        Route::get('EventsByDay','day_events');
+        Route::get('EventsByWeek','week_events');
+        Route::get('EventsByMonth','month_events');
     });
 });
 

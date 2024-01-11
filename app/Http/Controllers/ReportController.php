@@ -17,7 +17,6 @@ class ReportController extends Controller
     {
         $validate = $request->validated();
         $new_report = Report::create([
-
             'user_id'=> Auth::user()->id,
             'content'=> $request->content,
         ]);
