@@ -29,7 +29,6 @@ class CalendarController extends Controller
     {
         $all_events = Calendar::query()->get()->toArray();
 
-
         return ResponseHelper::success($all_events, null, 'All Events :', 200);
     }
 
@@ -44,21 +43,18 @@ class CalendarController extends Controller
 
     public function day_events()
     {
-        $today = Calendar::whereDate('start_date', now()->format('Y-m-d'))->first();
+        $today = Calendar::whereDate('start_date',now()
+        ->format('Y-m-d'))
+        ->get()
+        ->toArray();
 
         if (empty($today)) {
             return ResponseHelper::success('events not found');
-        } else {
-            $result = [
-                'title' => $today->title,
-                'description' => $today->description,
-                'start' => $today->start_date,
-                'end' => $today->end_date,
-            ];
 
-            return ResponseHelper::success($result, null, 'Today events returned successfully', 200);
-        }
+        } else {
+        return ResponseHelper::success($today, null, 'Today events returned successfully', 200);}
     }
+
 
 
     public function getEvenetsByDay(Request $request, $date)
@@ -68,13 +64,7 @@ class CalendarController extends Controller
             return ResponseHelper::success('events not found');
 
         } else {
-            $result = [
-                'title' => $data->title,
-                'description' => $data->description,
-                'start' => $data->start_date,
-                'end' => $data->end_date,
-            ];
-            return ResponseHelper::success($result, null, 'events by date', 200);
+            return ResponseHelper::success($data, null, 'events by date', 200);
 
         }
     }
@@ -88,14 +78,7 @@ class CalendarController extends Controller
             return ResponseHelper::success('events not found');
 
         } else {
-
-            $result = [
-                'title' => $this_week->title,
-                'description' => $this_week->description,
-                'start' => $this_week->start_date,
-                'end' => $this_week->end_date,
-            ];
-        return ResponseHelper::success($result, null, 'This week events returned successfully', 200);
+        return ResponseHelper::success($this_week, null, 'This week events returned successfully', 200);
     }
     }
 
@@ -109,12 +92,6 @@ class CalendarController extends Controller
             return ResponseHelper::success('events not found');
 
         } else {
-            $result = [
-                'title' => $this_month->title,
-                'description' => $this_month->description,
-                'start' => $this_month->start_date,
-                'end' => $this_month->end_date,
-            ];
-        return ResponseHelper::success($result, null, 'This month events returned successfully', 200);}
+        return ResponseHelper::success($this_month, null, 'This month events returned successfully', 200);}
     }
 }
