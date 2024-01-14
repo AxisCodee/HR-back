@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RequestController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -19,7 +20,6 @@ Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLo
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 
 Route::prefix('contract')->group(function(){
-
 Route::controller(ContractController::class)->group(function () {
     Route::post('Add', 'store');
     Route::get('Show/{id}', 'show');
@@ -65,4 +65,20 @@ Route::prefix('Calendar')->group(function(){
         Route::get('EventsByMonth','month_events');
     });
 });
+
+Route::prefix('Request')->group(function(){
+    Route::controller(RequestController::class)->group(function(){
+        Route::post('All','index');
+        Route::post('Add','store');
+        Route::post('Edit','update');
+        Route::delete('Delete','destory');
+        Route::post('Accept','acceptRequest');
+        Route::post('Reject','rejectRequest');
+
+
+});
+});
+
+
+
 
