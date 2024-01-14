@@ -50,14 +50,12 @@ class CalendarController extends Controller
 
 
 
-        public function getEvenetsByDay(Request $request)
-        {
-            $date = $request->date;
+    public function getEvenetsByDay(Request $request, $date)
+    {
+        $data = Calendar::whereDate('start_date', $date)->get();
 
-            $data = Calendar::whereDate('start_date', $date)->get();
-
-            return $data;
-        }
+        return $data;
+    }
 
     public function week_events()
     {

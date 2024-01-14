@@ -66,6 +66,8 @@ Route::prefix('Calendar')->group(function(){
         Route::get('EventsByDay','day_events');
         Route::get('EventsByWeek','week_events');
         Route::get('EventsByMonth','month_events');
+        Route::get('/EventDate/{date}','getEvenetsByDay');
+
     });
 });
 
@@ -80,6 +82,9 @@ Route::prefix('Request')->group(function(){
 
 
 });
+
+
+
 });
 
 
