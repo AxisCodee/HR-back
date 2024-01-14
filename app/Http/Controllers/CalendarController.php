@@ -28,7 +28,7 @@ class CalendarController extends Controller
     public function all_events()
     {
         $all_events = Calendar::query()->get()->toArray();
-        
+
 
         return ResponseHelper::success($all_events, null, 'All Events :', 200);
     }
@@ -44,25 +44,21 @@ class CalendarController extends Controller
 
     public function day_events()
     {
-        $today = Calendar::whereDate('start_date',now()
-        ->format('Y-m-d'))
-        ->get()
-        ->toArray();
+        $today = Calendar::whereDate('start_date', now()->format('Y-m-d'))->first();
 
-        $result=[
-                'description'=>$today->description,
-                'start'=>$today->start_date,
-                'end'=>$today->end_date,
-                'title'=>$today->title
-        ];
-
-        if (empty($result)) {
+        if (empty($today)) {
             return ResponseHelper::success('events not found');
-
         } else {
-        return ResponseHelper::success($result, null, 'Today events returned successfully', 200);}
-    }
+            $result = [
+                'description' => $today->description,
+                'start' => $today->start_date,
+                'end' => $today->end_date,
+                'title' => $today->title
+            ];
 
+            return ResponseHelper::success($result, null, 'Today events returned successfully', 200);
+        }
+    }
 
 
     public function getEvenetsByDay(Request $request, $date)
