@@ -53,8 +53,13 @@ class CalendarController extends Controller
     public function getEvenetsByDay(Request $request, $date)
     {
         $data = Calendar::whereDate('start_date', $date)->get();
+        if (empty($data)) {
+            return ResponseHelper::success('events not found');
 
-        return $data;
+        } else {
+            return ResponseHelper::success($data, null, 'events by date', 200);
+
+        }
     }
 
     public function week_events()
