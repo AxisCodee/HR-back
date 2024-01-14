@@ -43,9 +43,16 @@ class CalendarController extends Controller
 
     public function day_events()
     {
-        $today = Calendar::whereDate('start_date',now()->format('Y-m-d'))->get()->toArray();
+        $today = Calendar::whereDate('start_date',now()
+        ->format('Y-m-d'))
+        ->get()
+        ->toArray();
 
-        return ResponseHelper::success($today, null, 'Today events returned successfully', 200);
+        if (empty($today)) {
+            return ResponseHelper::success('events not found');
+
+        } else {
+        return ResponseHelper::success($today, null, 'Today events returned successfully', 200);}
     }
 
 
@@ -67,17 +74,24 @@ class CalendarController extends Controller
         $after_week = now()->addDays(7);
         $this_week = Calendar::whereBetween('start_date',[now()->format('Y-m-d'),$after_week])
         ->get()->toArray();
+        if (empty($this_week)) {
+            return ResponseHelper::success('events not found');
 
+        } else {
         return ResponseHelper::success($this_week, null, 'This week events returned successfully', 200);
+    }
     }
 
     public function month_events()
     {
-        $monthstart = now()->startOfMonth()->format('Y-m-d');
-        $monthend = now()->endOfMonth()->format('Y-m-d');
-        $this_month = Calendar::whereBetween('start_date', [$monthstart, $monthend])
+        $monthStart = now()->startOfMonth()->format('Y-m-d');
+        $monthEnd = now()->endOfMonth()->format('Y-m-d');
+        $this_month = Calendar::whereBetween('start_date', [$monthStart, $monthEnd])
         ->get()->toArray();
+        if (empty($this_month)) {
+            return ResponseHelper::success('events not found');
 
-        return ResponseHelper::success($this_month, null, 'This month events returned successfully', 200);
+        } else {
+        return ResponseHelper::success($this_month, null, 'This month events returned successfully', 200);}
     }
 }
