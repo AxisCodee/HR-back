@@ -87,7 +87,8 @@ class CalendarController extends Controller
         $monthStart = now()->startOfMonth()->format('Y-m-d');
         $monthEnd = now()->endOfMonth()->format('Y-m-d');
         $this_month = Calendar::whereBetween('start_date', [$monthStart, $monthEnd])
-        ->get()->toArray();
+        ->get()
+        ->toArray();
         if (empty($this_month)) {
             return ResponseHelper::success('events not found');
 
