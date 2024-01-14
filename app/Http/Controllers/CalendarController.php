@@ -48,6 +48,17 @@ class CalendarController extends Controller
         return ResponseHelper::success($today, null, 'Today events returned successfully', 200);
     }
 
+
+
+        public function getEvenetsByDay(Request $request)
+        {
+            $date = $request->date;
+
+            $data = Calendar::whereDate('start_date', $date)->get();
+
+            return $data;
+        }
+
     public function week_events()
     {
         $after_week = now()->addDays(7);
