@@ -46,7 +46,7 @@ class CalendarController extends Controller
 
     public function day_events()
     {
-        $today = Calendar::whereDate('start_date',now()
+        $today = Calendar::whereDate('start',now()
         ->format('Y-m-d'))
         ->get()
         ->toArray();
@@ -62,7 +62,7 @@ class CalendarController extends Controller
 
     public function getEvenetsByDay(Request $request, $date)
     {
-        $data = Calendar::whereDate('start_date', $date)->get()->toArray();
+        $data = Calendar::whereDate('start', $date)->get()->toArray();
         if (empty($data)) {
             return ResponseHelper::success('events not found');
 
@@ -75,7 +75,7 @@ class CalendarController extends Controller
     public function week_events()
     {
         $after_week = now()->addDays(7);
-        $this_week = Calendar::whereBetween('start_date',[now()->format('Y-m-d'),$after_week])
+        $this_week = Calendar::whereBetween('start',[now()->format('Y-m-d'),$after_week])
         ->get()->toArray();
         if (empty($this_week)) {
             return ResponseHelper::success('events not found');
@@ -89,7 +89,7 @@ class CalendarController extends Controller
     {
         $monthStart = now()->startOfMonth()->format('Y-m-d');
         $monthEnd = now()->endOfMonth()->format('Y-m-d');
-        $this_month = Calendar::whereBetween('start_date', [$monthStart, $monthEnd])
+        $this_month = Calendar::whereBetween('start', [$monthStart, $monthEnd])
         ->get()
         ->toArray();
         if (empty($this_month)) {
