@@ -47,23 +47,14 @@ class UserController extends Controller
         return ResponseHelper::success(null, null, 'user removed successfully', 200);
     }
     public function getTeams(){
-       $department= Department::query()->get();
-       foreach($department as $item)
-       {
-        $departmentName=$department->name;
-        $departmentId=$department->id;
-        $count=$department->users()->count();
-
-        $results[]=$result=['teamName'=>$departmentName,
-        'countOfMember'=> $count
-       ];
+       $department= Department::query()->with('user')->get();
 
 
 
-        return ResponseHelper::success([$results,
-        'message' => 'All Taeames']);
+return ResponseHelper::success($department);
 
-       }
+
+
     }
     public function getMemberOfTeam(Department $department)
 
