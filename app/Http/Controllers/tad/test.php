@@ -1,5 +1,6 @@
 <?php
 // Include the Composer's autoloader
+require 'vendor/autoload.php';
 
 
 
@@ -13,7 +14,8 @@
 // require 'tad/lib/Exceptions/UnrecognizedArgument.php';
 // require 'tad/lib/Exceptions/UnrecognizedCommand.php';
 
-
+use TADPHP\TAD;
+use TADPHP\TADFactory;
 
 // Instantiate the TADFactory class
 //$factory = new TADFactory();
@@ -28,13 +30,10 @@
 // Print the attendance log
 //print_r($attendanceLog);
 
-use TADPHP\TAD;
-use TADPHP\TADFactory;
-require 'vendor/autoload.php';
+
 
 $tad_factory = new TADFactory(['ip'=>'192.168.2.202']);
 $tad = $tad_factory->get_instance();
-
 $all_user_info = $tad->get_all_user_info();
 $dt = $tad->get_date();
 $logs = $tad->get_att_log();
@@ -43,19 +42,7 @@ $logs = $tad->get_att_log();
 $xml = simplexml_load_string($logs);
 $array = json_decode(json_encode($xml));
 $json = json_encode($array);
-
-
-
-
-$json_data = $logs->get_response(['format' => 'json']);
-$decoded_json = json_decode(stripslashes($json_data), true);
-$json_output = json_encode($decoded_json);
-echo $json_output;
-
-// $json_data = $logs->get_response(['format' => 'json']);
-// $decoded_json = json_decode(stripslashes($json_data), true);
-// $json_output = json_encode($decoded_json);
-// echo $json_output;
+print_r($json );
 
 
 ?>

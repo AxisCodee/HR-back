@@ -26,8 +26,8 @@ class CalendarRequest extends FormRequest
         return [
             'title' => ['required','string','between:10,100'],
             'description' =>['required','string','between:10,255'],
-            'start_date'=>['required', 'date','after_or_equal:today'],
-            'end_date'=>['required', 'date','after_or_equal:start_date'],
+            'start'=>['required', 'date','after_or_equal:today'],
+            'end'=>['required', 'date','after_or_equal:start'],
         ];
     }
 
