@@ -27,7 +27,7 @@ class CalendarController extends Controller
 
     public function all_events()
     {
-        $all_events = Calendar::query()->get();
+        $all_events = Calendar::query()->get()->toArray();
 
         return ResponseHelper::success($all_events, null, 'All Events :', 200);
     }
@@ -43,7 +43,7 @@ class CalendarController extends Controller
 
     public function day_events()
     {
-        $today = Calendar::whereDate('start_date',now()->format('Y-m-d'))->get();
+        $today = Calendar::whereDate('start_date',now()->format('Y-m-d'))->get()->toArray();
 
         return ResponseHelper::success($today, null, 'Today events returned successfully', 200);
     }
@@ -65,7 +65,8 @@ class CalendarController extends Controller
     public function week_events()
     {
         $after_week = now()->addDays(7);
-        $this_week = Calendar::whereBetween('start_date',[now()->format('Y-m-d'),$after_week])->get();
+        $this_week = Calendar::whereBetween('start_date',[now()->format('Y-m-d'),$after_week])
+        ->get()->toArray();
 
         return ResponseHelper::success($this_week, null, 'This week events returned successfully', 200);
     }
@@ -74,7 +75,8 @@ class CalendarController extends Controller
     {
         $monthstart = now()->startOfMonth()->format('Y-m-d');
         $monthend = now()->endOfMonth()->format('Y-m-d');
-        $this_month = Calendar::whereBetween('start_date', [$monthstart, $monthend])->get();
+        $this_month = Calendar::whereBetween('start_date', [$monthstart, $monthend])
+        ->get()->toArray();
 
         return ResponseHelper::success($this_month, null, 'This month events returned successfully', 200);
     }
