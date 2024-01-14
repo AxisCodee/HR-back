@@ -53,11 +53,27 @@ class UserController extends Controller
 
 
 
-return ResponseHelper::success($department);
+    return ResponseHelper::success($department);
 
 
 
     }
+
+
+
+    public function storeTeams(Request $request){
+        $department= Department::query()
+        ->create([
+            'name'=>$request->name
+        ]);
+
+
+
+     return ResponseHelper::success($department,null,'team added successfully',200);
+
+
+
+     }
     public function getMemberOfTeam(Department $department)
 
     {
