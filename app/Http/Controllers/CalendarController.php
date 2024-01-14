@@ -50,10 +50,10 @@ class CalendarController extends Controller
             return ResponseHelper::success('events not found');
         } else {
             $result = [
+                'title' => $today->title,
                 'description' => $today->description,
                 'start' => $today->start_date,
                 'end' => $today->end_date,
-                'title' => $today->title
             ];
 
             return ResponseHelper::success($result, null, 'Today events returned successfully', 200);
@@ -68,7 +68,13 @@ class CalendarController extends Controller
             return ResponseHelper::success('events not found');
 
         } else {
-            return ResponseHelper::success($data, null, 'events by date', 200);
+            $result = [
+                'title' => $data->title,
+                'description' => $data->description,
+                'start' => $data->start_date,
+                'end' => $data->end_date,
+            ];
+            return ResponseHelper::success($result, null, 'events by date', 200);
 
         }
     }
@@ -82,7 +88,14 @@ class CalendarController extends Controller
             return ResponseHelper::success('events not found');
 
         } else {
-        return ResponseHelper::success($this_week, null, 'This week events returned successfully', 200);
+
+            $result = [
+                'title' => $this_week->title,
+                'description' => $this_week->description,
+                'start' => $this_week->start_date,
+                'end' => $this_week->end_date,
+            ];
+        return ResponseHelper::success($result, null, 'This week events returned successfully', 200);
     }
     }
 
@@ -96,6 +109,12 @@ class CalendarController extends Controller
             return ResponseHelper::success('events not found');
 
         } else {
-        return ResponseHelper::success($this_month, null, 'This month events returned successfully', 200);}
+            $result = [
+                'title' => $this_month->title,
+                'description' => $this_month->description,
+                'start' => $this_month->start_date,
+                'end' => $this_month->end_date,
+            ];
+        return ResponseHelper::success($result, null, 'This month events returned successfully', 200);}
     }
 }
