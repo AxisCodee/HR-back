@@ -133,8 +133,8 @@ Route::prefix('Calendar')->group(function(){
 
 Route::prefix('Team')->group(function(){
     Route::controller(RequestController::class)->group(function(){
-        Route::post('getTeams','getTeams');
-    
+        Route::get('getTeams','getTeams');
+
 
 
 });
