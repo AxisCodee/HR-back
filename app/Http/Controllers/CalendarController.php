@@ -28,6 +28,7 @@ class CalendarController extends Controller
     public function all_events()
     {
         $all_events = Calendar::query()->get()->toArray();
+        
 
         return ResponseHelper::success($all_events, null, 'All Events :', 200);
     }
@@ -48,11 +49,18 @@ class CalendarController extends Controller
         ->get()
         ->toArray();
 
-        if (empty($today)) {
+        $result=[
+                'description'=>$today->description,
+                'start'=>$today->start_date,
+                'end'=>$today->end_date,
+                'title'=>$today->title
+        ];
+
+        if (empty($result)) {
             return ResponseHelper::success('events not found');
 
         } else {
-        return ResponseHelper::success($today, null, 'Today events returned successfully', 200);}
+        return ResponseHelper::success($result, null, 'Today events returned successfully', 200);}
     }
 
 
