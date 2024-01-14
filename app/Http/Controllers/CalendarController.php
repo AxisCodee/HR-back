@@ -28,8 +28,11 @@ class CalendarController extends Controller
     public function all_events()
     {
         $all_events = Calendar::query()->get()->toArray();
+        if (empty($all_events)) {
+            return ResponseHelper::success('events not found');
 
-        return ResponseHelper::success($all_events, null, 'All Events :', 200);
+        } else {
+        return ResponseHelper::success($all_events, null, 'All Events :', 200);}
     }
 
     public function update_event(CalendarRequest $request,$id)
