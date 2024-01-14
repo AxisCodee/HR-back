@@ -62,7 +62,7 @@ class RequestController extends Controller
              'type'=>$request->type,
              'description'=>$request->description
             ]);
-            return ResponseHelper::created($result,'request created successfully');
+            return ResponseHelper::created($result,'request updated successfully');
     }
     else
     {
@@ -120,6 +120,22 @@ public function rejectRequest(Request $request)
 
 }
 
+public function addComplaint (Request $request)
+{
+    $complaint=Request::query()->create(
+        [
+            'user_id'=>Auth::id(),
+            'type'=>'complaint',
+            'description'=>$request->description
 
+        ] );
+        return ResponseHelper::created($complaint,'request created successfully');
+
+}
+public function getComlaints()
+{
+    $result=Request::query()->where('type','complaint')->get();
+    return ResponseHelper::success($result,'your request');
+}
 
 }

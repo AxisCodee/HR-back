@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Department;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
 require 'tad\vendor\autoload.php';
@@ -44,5 +45,31 @@ class UserController extends Controller
     {
         $remove_user = User::findOrFail($id)->delete();
         return ResponseHelper::success(null, null, 'user removed successfully', 200);
+    }
+    public function getTeams(){
+       $department= Department::query()->get();
+       foreach($department as $item)
+       {
+        $departmentName=$department->name;
+        $departmentId=$department->id;
+        $count=$department->users()->count();
+
+        $results[]=$result=['teamName'=>$departmentName,
+        'countOfMember'=> $count
+       ];
+
+
+
+        return ResponseHelper::success([$results,
+        'message' => 'All Taeames']);
+
+       }
+    }
+    public function getMemberOfTeam(Department $department)
+
+    {
+        $members=$department->users()->get();
+        return ResponseHelper::success($members);
+
     }
 }

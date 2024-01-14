@@ -64,4 +64,9 @@ class CalendarController extends Controller
 
         return ResponseHelper::success($this_month, null, 'This month events returned successfully', 200);
     }
+    public function showByDay(Request $request)
+    {
+        Calendar::where('startDate',)
+
+    }
 }
