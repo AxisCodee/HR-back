@@ -36,6 +36,7 @@ Route::prefix('Report')->group(function(){
         Route::get('daily','daily_reports');
         Route::get('myReports','all_reports');
         Route::delete('remove/{report}','remove');
+        Route::post('InsnOuts','user_checks');
     });
 });
 Route::prefix('Users')->group(function()
