@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -67,12 +68,11 @@ class GmailController extends Controller
         /**
          * HTTP 200
          */
-        return response()->json($authUrl, Response::HTTP_OK);
+        return ResponseHelper::success($authUrl, null, Response::HTTP_OK);
     }
 
     public function postLogin(Request $request)
     {
-        //dd($request->input('auth_code'));
         /**
          * Get authcode from the query string
          * Url decode if necessary
@@ -99,21 +99,16 @@ class GmailController extends Controller
         $user = User::where('email', '=', $userFromGoogle['email'])
             ->first();
         if (!$user) {
-            return response()->json(
-                ['Your email is not exist! ,Register with your gmail account.']
-                ,
-                Response::HTTP_NOT_IMPLEMENTED
+            return ResponseHelper::error(
+                'Your email is not exist! ,Register with your gmail account.',
+                null,
             );
         }
         $user->google_access_token_json = json_encode($accessToken);
         $user->provider_id = $userFromGoogle->id;
         $user->save();
         $token = $user->createToken("Google")->accessToken;
-        return response()->json(
-            ['access token updated succsessfuly.']
-            ,
-            Response::HTTP_CREATED
-        );
+        return ResponseHelper::success('access token updated succsessfuly.', null, Response::HTTP_OK);
     }
     public function getUserInfo(Request $request)
     {
@@ -143,7 +138,7 @@ class GmailController extends Controller
         $service = new \Google\Service\Oauth2($client);
         // Use the Gmail service to retrieve user info
         $userInfo = $service->userinfo->get();
-        return response()->json($userInfo, Response::HTTP_OK);
+        return ResponseHelper::success($userInfo, null, Response::HTTP_OK);
     }
     public function getMessageById(Request $request)
     {
@@ -171,6 +166,9 @@ class GmailController extends Controller
         }
         $service = new Gmail($client);
         $messageId = $request->messageId;
+        if (!$messageId) {
+            return ResponseHelper::error('Message id could not be null.', null);
+        }
         $user = 'me'; // 'me' indicates the authenticated user
         try {
             $message = $service->users_messages->get($user, $request->messageId, ['format' => 'full']);
@@ -279,7 +277,7 @@ class GmailController extends Controller
             $isInbox = in_array('INBOX', $labelIds);
             //readen
             $isUnread = in_array('UNREAD', $labelIds);
-            return response()->json([
+            return ResponseHelper::success([
                 'emails' => [
                     [
                         'id' => $messageId,
@@ -307,13 +305,13 @@ class GmailController extends Controller
                         'isRead' => !$isUnread
                     ]
                 ]
-            ], Response::HTTP_OK);
+            ], null);
         } catch (\Exception $e) {
             // Handle any exceptions that may occur
-            return response()->json([
-                'Error' => $e->getMessage(),
-                "\n"
-            ], Response::HTTP_NOT_IMPLEMENTED);
+            return ResponseHelper::error(
+                $e->getMessage(),
+                null,
+            );
         }
     }
     public function sendEmail(Request $request)
@@ -367,9 +365,7 @@ class GmailController extends Controller
                 "Content-Disposition: attachment; filename=" . $file->getClientOriginalName() . "\r\n\r\n" .
                 $attachment . "\r\n";
         }
-
         $strRawMessage .= "--foo_bar_baz--";
-
         // The message needs to be encoded in Base64URL
         $mime = rtrim(strtr(base64_encode($strRawMessage), '+/', '-_'), '=');
         $msg = new \Google\Service\Gmail\Message();
@@ -378,9 +374,9 @@ class GmailController extends Controller
         $sentMessage = $service->users_messages->send('me', $msg);
         // Check if the message was sent successfully
         if ($sentMessage->getId() != null) {
-            return response()->json("Message sent successfully", Response::HTTP_OK);
+            return ResponseHelper::success("Message sent successfully", null);
         } else {
-            return response()->json("Message not sent", Response::HTTP_NOT_IMPLEMENTED);
+            return ResponseHelper::error("Message not sent", null);
         }
     }
     public function mail(Request $request)
@@ -408,7 +404,7 @@ class GmailController extends Controller
             $user->save();
         }
         $service = new Gmail($client);
-        $user = 'thalesmwork942@gmail.com'; // 'me' indicates the authenticated user
+        $user = 'me'; // 'me' indicates the authenticated user
         $client->setAccessType('offline');
         $client->setPrompt('select_account consent');
         // Assuming $service is an instance of Google\Service\Gmail
@@ -455,7 +451,7 @@ class GmailController extends Controller
                 $messages[] = $data;
             }
         } while ($pageToken);
-        return response()->json($messages, Response::HTTP_OK);
+        return ResponseHelper::success($messages, null);
     }
     public function search(Request $request)
     {
@@ -482,7 +478,7 @@ class GmailController extends Controller
             $user->save();
         }
         $service = new Gmail($client);
-        $user = 'thalesmwork942@gmail.com'; // 'me' indicates the authenticated user
+        $user = 'me'; // 'me' indicates the authenticated user
         $client->setAccessType('offline');
         $client->setPrompt('select_account consent');
         // Assuming $service is an instance of Google\Service\Gmail
@@ -526,7 +522,7 @@ class GmailController extends Controller
                 $messages[] = $data;
             }
         } while ($pageToken);
-        return response()->json($messages, Response::HTTP_OK);
+        return ResponseHelper::success($messages, null);
     }
     public function deleteMessages(Request $request)
     {
@@ -563,16 +559,16 @@ class GmailController extends Controller
             $batchDeleteRequest->setIds($messageIds);
             // Delete the messages
             $service->users_messages->batchDelete($userId, $batchDeleteRequest);
-            return response()->json(
+            return ResponseHelper::success(
                 'Messages deleted successfully'
                 ,
-                Response::HTTP_OK
+                null
             );
-        } catch (Exception $e) {
-            return response()->json([
-                'Error' => $e->getMessage(),
-                "\n"
-            ], Response::HTTP_NOT_IMPLEMENTED);
+        } catch (\Exception $e) {
+            return ResponseHelper::error(
+                $e->getMessage(),
+                null,
+            );
         }
     }
     public function starMessages(Request $request)
@@ -610,16 +606,16 @@ class GmailController extends Controller
                 $mods->setAddLabelIds(['STARRED']);
                 $service->users_messages->modify($userId, $messageId, $mods);
             }
-            return response()->json(
+            return ResponseHelper::success(
                 'Messages starred successfully'
                 ,
-                Response::HTTP_OK
+                null
             );
-        } catch (Exception $e) {
-            return response()->json([
-                'Error' => $e->getMessage(),
-                "\n"
-            ], Response::HTTP_NOT_IMPLEMENTED);
+        } catch (\Exception $e) {
+            return ResponseHelper::error(
+                $e->getMessage(),
+                null,
+            );
         }
     }
 }
