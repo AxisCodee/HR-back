@@ -20,18 +20,16 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {  //ss
+    {  
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
         $credentials = $request->only('email', 'password');
         $token = Auth::attempt($credentials);
-
         if (!$token) {
             return ResponseHelper::error('phonenumber or password are not correct', null, 'error', 401);
         }
-
         $user = Auth::user();
         return ResponseHelper::success([
             'user' => $user,
@@ -40,7 +38,6 @@ class AuthController extends Controller
                 'type' => 'bearer',
             ]
         ]);
-
     }
 
     public function register(Request $request)

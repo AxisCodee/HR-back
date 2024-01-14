@@ -65,10 +65,11 @@ class TADFactory
 
         $soap_client = new \SoapClient(null, $soap_options);
 
-        $tadSoap = new TADSoap($soap_client, $soap_options);
-        $tadZKLib = new TADZKLib($options);
-
-        return new TAD($tadSoap, $tadZKLib, $options);
+        return new TAD(
+            new TADSoap($soap_client, $soap_options),
+            new TADZKLib($options),
+            $options
+        );
     }
 
     /**

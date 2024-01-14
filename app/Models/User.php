@@ -21,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
 
-     //protected $with = ['department'];
+    //protected $with = ['department'];
     protected $fillable = [
         'name',
         'email',
@@ -29,9 +29,10 @@ class User extends Authenticatable implements JWTSubject
         'first_name',
         'last_name',
         'role',
-        'department_id'
-        ,'pin'
-
+        'department_id', 'pin',
+        'provider_id',
+        'provider_name',
+        'google_access_token_json',
     ];
 
 
@@ -65,15 +66,15 @@ class User extends Authenticatable implements JWTSubject
     }
     public function attendance()
     {
-      return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
+        return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
     }
     public function contract()
     {
-      return $this->hasMany(Contract::class, 'user_id');
+        return $this->hasMany(Contract::class, 'user_id');
     }
     public function department()
     {
-      return $this->belongsTo('App\Models\Department');
+        return $this->belongsTo('App\Models\Department');
     }
 
     /**
