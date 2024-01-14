@@ -8,11 +8,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
-<<<<<<< HEAD
 use App\Http\Controllers\api\GmailController;
-=======
 use App\Http\Controllers\RequestController;
->>>>>>> 16eecc84e98360d08f48ef1c05e2331af422e488
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -25,7 +22,6 @@ Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendance
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 
-<<<<<<< HEAD
 Route::prefix('contract')->group(function () {
 
     Route::controller(ContractController::class)->group(function () {
@@ -85,7 +81,6 @@ Route::prefix('Gmail')->group(function () {
         Route::post('google/starMessages', 'starMessages');
     });
 });
-=======
 Route::prefix('contract')->group(function(){
 Route::controller(ContractController::class)->group(function () {
     Route::post('Add', 'store');
@@ -155,4 +150,3 @@ Route::prefix('Request')->group(function(){
 
 
 
->>>>>>> 16eecc84e98360d08f48ef1c05e2331af422e488
