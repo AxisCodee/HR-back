@@ -83,10 +83,9 @@ else
             );
 
 
-            return ResponseHelper::success([
-                'message' => 'Contract created successfully',
-                'data' =>  $contract,
-            ]);
+            return ResponseHelper::success($contract,null,'contract',200
+
+            );
     }
 
     /**
