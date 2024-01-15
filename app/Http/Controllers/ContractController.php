@@ -57,9 +57,8 @@ else
     }
 
 
-        return ResponseHelper::success([
-            'message' => 'all Contract',
-            'data' =>   $results,
+        return ResponseHelper::success([$result
+
         ]);
 
     }
@@ -106,12 +105,9 @@ else
         $result = Contract::query()
             ->with('user')
             ->where('id', $id)
-            ->get();
+            ->get()->toArray();
 
-        return ResponseHelper::success([
-            'message' => 'Contract:',
-            'data' => $result,
-        ]);
+        return ResponseHelper::success($result,null,'contract:',200);
     }
 
 
