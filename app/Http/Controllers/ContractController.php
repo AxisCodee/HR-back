@@ -106,7 +106,7 @@ else
         $result = Contract::query()
             ->with('user')
             ->where('id', $id)
-            ->get();
+            ->get()->toArray();
 
         return ResponseHelper::success([
             'message' => 'Contract:',
