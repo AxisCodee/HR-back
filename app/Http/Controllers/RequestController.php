@@ -33,7 +33,8 @@ class RequestController extends Controller
         $requests=Request::query()
         ->create(
             [
-             'user_id'=>Auth::id(),
+             'user_id'=>1,
+             'title'=>$request->title,
              'type'=>$request->type,
              'description'=>$request->description,
              'status'=>'waiting'
@@ -70,13 +71,17 @@ class RequestController extends Controller
     {
         if($requests->status = 'waiting')
         {
+
         $result=$requests->update(
             [
-             'user_id'=>Auth::id(),
+            'title'=>$request->title,
              'type'=>$request->type,
              'description'=>$request->description
             ]);
-            return ResponseHelper::updated($result,'request updated successfully');
+            $results=$requests->save();
+
+
+            return ResponseHelper::updated($results,'request updated successfully');
     }
     else
     {
