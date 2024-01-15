@@ -108,10 +108,7 @@ else
             ->where('id', $id)
             ->get()->toArray();
 
-        return ResponseHelper::success([
-            'message' => 'Contract:',
-            'data' => $result,
-        ]);
+        return ResponseHelper::success($result,null,'contract:',200);
     }
 
 
