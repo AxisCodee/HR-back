@@ -136,9 +136,6 @@ Route::prefix('Team')->group(function(){
         Route::get('getTeams','getTeams');
         Route::post('storeTeams','storeTeams');
 
-
-
-
 });
 });
 
@@ -154,7 +151,14 @@ Route::prefix('Request')->group(function(){
 
 });
 
+Route::prefix('Request')->group(function(){
+    Route::controller(UserController::class)->group(function(){
+        Route::get('getTeams','getTeams');
+        Route::post('storeTeams','storeTeams');
+        Route::delete('Delete','destory');
 
+});
+});
 
 });
 
