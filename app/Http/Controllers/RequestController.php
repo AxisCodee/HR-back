@@ -33,11 +33,7 @@ class RequestController extends Controller
         $requests=Request::query()
         ->create(
             [
-<<<<<<< HEAD
              'user_id'=>Auth::id(),
-=======
-             'user_id'=>'1',
->>>>>>> ce5a9e89f93abb32bfbdd75ce8834e06e417d732
              'title'=>$request->title,
              'type'=>$request->type,
              'description'=>$request->description,
