@@ -76,6 +76,7 @@ class RequestController extends Controller
             [
             'title'=>$request->title,
              'type'=>$request->type,
+             'user_id'=>Auth::id(),
              'description'=>$request->description
             ]);
             $results=$requests->save();
