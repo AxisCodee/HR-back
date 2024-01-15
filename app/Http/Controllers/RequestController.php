@@ -15,9 +15,11 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $results= Request::query()->with('users')->get();
+        $results= Request::query()
+        ->with('users')
+        ->get()->toArray();
         return ResponseHelper::success([
-            'message' => 'all Contract',
+            'message' => 'All contract',
             'data' =>   $results,
         ]);
 
@@ -28,11 +30,13 @@ class RequestController extends Controller
      */
     public function store(StoreRequestRequest $request)
     {
-        $requests=Request::query()->create(
+        $requests=Request::query()
+        ->create(
             [
              'user_id'=>Auth::id(),
              'type'=>$request->type,
-             'description'=>$request->description
+             'description'=>$request->description,
+             'status'=>'waiting'
             ]);
             return ResponseHelper::created($requests,'request created successfully');
 
@@ -42,9 +46,19 @@ class RequestController extends Controller
     /**
      * Display the specified resource.
      */
+    // public function show(Request $request)
+    // {
+    //     $result=$request->get();
+    //     return ResponseHelper::success($result,'your request');
+
+    // }
+
     public function show(Request $request)
     {
-        $result=$request->get();
+        $result=Request::query()
+        ->where('user_id',Auth::user()->id)
+        ->get()
+        ->toArray();
         return ResponseHelper::success($result,'your request');
 
     }
@@ -62,7 +76,7 @@ class RequestController extends Controller
              'type'=>$request->type,
              'description'=>$request->description
             ]);
-            return ResponseHelper::created($result,'request updated successfully');
+            return ResponseHelper::updated($result,'request updated successfully');
     }
     else
     {
@@ -81,17 +95,17 @@ class RequestController extends Controller
         {
         $requests->delete();
 
-        return ResponseHelper::success([
-            'message' => 'request deleted successfully',
+        return ResponseHelper::deleted([
+            'message' => 'request deleted successfully'
 
         ]);
 
     }
     else
     {
-        return ResponseHelper::success([
+        return ResponseHelper::error([
             'message' => 'you can not delete this request',
-        ]);
+        ],null,'error', 403);
     }
 }
 
@@ -102,7 +116,7 @@ public function accepteRequest(Request $request)
             'status'=>'accepted'
         ]
         );
-        return ResponseHelper::success([
+        return ResponseHelper::updated([
             'message' => 'request accepted successfully',
         ]);
 
@@ -132,9 +146,11 @@ public function addComplaint (Request $request)
         return ResponseHelper::created($complaint,'request created successfully');
 
 }
-public function getComlaints()
+public function getComplaints()
 {
-    $result=Request::query()->where('type','complaint')->get();
+    $result=Request::query()
+    ->where('type','complaint')
+    ->get()->toArray();
     return ResponseHelper::success($result,'your request');
 }
 

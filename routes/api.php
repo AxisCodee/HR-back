@@ -131,20 +131,26 @@ Route::prefix('Calendar')->group(function(){
     });
 });
 
-Route::prefix('Request')->group(function(){
-    Route::controller(RequestController::class)->group(function(){
-        Route::post('All','index');
-        Route::post('Add','store');
-        Route::post('Edit','update');
-        Route::delete('Delete','destory');
-        Route::post('Accept','acceptRequest');
-        Route::post('Reject','rejectRequest');
-
-
+Route::prefix('Team')->group(function(){
+    Route::controller(UserController::class)->group(function(){
+        Route::get('getTeams','getTeams');
+        Route::post('storeTeams','storeTeams');
+        Route::post('updateTeam/{team}','updateTeams');
+        Route::delete('deleteTeam/{team}','deleteTeam');
+    });
 });
 
 
+Route::prefix('Request')->group(function(){
+    Route::controller(RequestController::class)->group(function(){
+        Route::get('myRequests','index');
+        Route::post('store','store');
+        Route::post('update','update');
+        Route::post('accepteRequest','accepteRequest');
+        Route::post('rejectRequest','rejectRequest');
+        Route::delete('delete','destory');
 
+});
 });
 
 
