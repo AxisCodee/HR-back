@@ -57,9 +57,8 @@ else
     }
 
 
-        return ResponseHelper::success([
-            'message' => 'all Contract',
-            'data' =>   $results,
+        return ResponseHelper::success([$result
+
         ]);
 
     }
