@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\API;
 
 use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -555,7 +555,7 @@ class GmailController extends Controller
         $messageIds = $request->messageIds;
         try {
             // Create a new BatchDeleteMessagesRequest
-            $batchDeleteRequest = new Google_Service_Gmail_BatchDeleteMessagesRequest();
+            $batchDeleteRequest = new \Google_Service_Gmail_BatchDeleteMessagesRequest();
             $batchDeleteRequest->setIds($messageIds);
             // Delete the messages
             $service->users_messages->batchDelete($userId, $batchDeleteRequest);
