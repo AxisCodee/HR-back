@@ -98,5 +98,9 @@ class CalendarController extends Controller
         } else {
         return ResponseHelper::success($this_month, null, 'This month events returned successfully', 200);}
     }
+<<<<<<< HEAD
+ 
+=======
    
+>>>>>>> 6c5b2fcf6f9e90e373e3c8d680374304c6c9940f
 }
