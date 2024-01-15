@@ -96,7 +96,7 @@ Route::prefix('Request')->group(function(){
     Route::controller(RequestController::class)->group(function(){
         Route::get('All','index');
         Route::post('Add','store');
-        Route::post('Update','update');
+        Route::post('Update/{Request}','update');
         Route::post('accepteRequest','accepteRequest');
         Route::post('rejectRequest','rejectRequest');
         Route::delete('Delete','destory');
