@@ -1,11 +1,11 @@
 {
     "web": {
-        "client_id": "2471971905-1n0fdoqssh0d54n2bjs2qjmoh4unmq35.apps.googleusercontent.com",
-        "project_id": "calm-photon-411016",
+        "client_id": "77477789904-jdddrjoj3m7aqe8b2ud1u2hbe77qkg49.apps.googleusercontent.com",
+        "project_id": "final-44456546",
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "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",
+        "client_secret": "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",
         "redirect_uris": [
             "https://global.consent.azure-apim.net/redirect"
         ]
