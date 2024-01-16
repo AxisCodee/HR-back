@@ -68,20 +68,24 @@ class RequestController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateRequestRequest $request, Request $requests)
-    {
-        if ($requests->status == 'waiting') {
-            $requests->update([
-                'title' => $request->title,
-                'type' => $request->type,
-                'user_id' => $requests->id,
-                'description' => $request->description
-            ]);
+{
+    $requestStatus = $requests->status;
 
-            return ResponseHelper::updated('Request updated successfully');
-        } else {
-            return ResponseHelper::success('You cannot delete this request');
-        }
+    if ($requestStatus == 'waiting') {
+        $request = Request::findOrFail($requests->id);
+
+        $request->update([
+            'title' => $request->title,
+            'type' => $request->type,
+            'user_id' => $request->id,
+            'description' => $request->description
+        ]);
+
+        return ResponseHelper::updated('Request updated successfully');
+    } else {
+        return ResponseHelper::success('You cannot delete this request');
     }
+}
     /**
      * Remove the specified resource from storage.
      */
