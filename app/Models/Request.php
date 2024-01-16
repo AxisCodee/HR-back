@@ -13,7 +13,8 @@ class Request extends Model
     [  'user_id',
         'type',
       'description',
-      'status'
+      'status',
+      'title'
     ];
 
 

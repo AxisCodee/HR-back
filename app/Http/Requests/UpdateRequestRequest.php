@@ -11,7 +11,7 @@ class UpdateRequestRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'type' => ['required', 'string', 'in:advance,vacation,resignation,complaint'],
+            'description' => ['required', 'max:250'],
+            'title' => ['required', 'max:30']
         ];
     }
 }

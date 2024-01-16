@@ -57,10 +57,9 @@ else
     }
 
 
-        return ResponseHelper::success([
-            'message' => 'all Contract',
-            'data' =>   $results,
-        ]);
+        return ResponseHelper::success($results
+
+        );
 
     }
 }
@@ -84,10 +83,9 @@ else
             );
 
 
-            return ResponseHelper::success([
-                'message' => 'Contract created successfully',
-                'data' =>  $contract,
-            ]);
+            return ResponseHelper::success($contract,null,'contract',200
+
+            );
     }
 
     /**
@@ -106,12 +104,9 @@ else
         $result = Contract::query()
             ->with('user')
             ->where('id', $id)
-            ->get();
+            ->get()->toArray();
 
-        return ResponseHelper::success([
-            'message' => 'Contract:',
-            'data' => $result,
-        ]);
+        return ResponseHelper::success($result,null,'contract:',200);
     }
 
 
@@ -130,7 +125,7 @@ else
     {
         $contract->delete();
         return ResponseHelper::success([
-            'message' => 'contract deleted successfully',
+            null,null, 'contract deleted successfully'
 
         ]);
     }

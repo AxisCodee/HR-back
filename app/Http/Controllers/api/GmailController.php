@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\API;
 
 use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -553,13 +553,12 @@ class GmailController extends Controller
         $messageIds = $request->messageIds;
         try {
             // Create a new BatchDeleteMessagesRequest
-            $batchDeleteRequest = new Google_Service_Gmail_BatchDeleteMessagesRequest();
+            $batchDeleteRequest = new \Google_Service_Gmail_BatchDeleteMessagesRequest();
             $batchDeleteRequest->setIds($messageIds);
             // Delete the messages
             $service->users_messages->batchDelete($userId, $batchDeleteRequest);
             return ResponseHelper::success(
-                'Messages deleted successfully'
-                ,
+                'Messages deleted successfully',
                 null
             );
         } catch (\Exception $e) {
@@ -605,8 +604,7 @@ class GmailController extends Controller
                 $service->users_messages->modify($userId, $messageId, $mods);
             }
             return ResponseHelper::success(
-                'Messages starred successfully'
-                ,
+                'Messages starred successfully',
                 null
             );
         } catch (\Exception $e) {

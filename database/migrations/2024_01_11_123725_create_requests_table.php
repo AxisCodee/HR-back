@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->enum('type',['advance', 'vacation','resignation']);
+            $table->enum('type',['advance', 'vacation','resignation','complaint']);
             $table->string('description');
+            $table->string('title');
             $table->enum('status',['waiting','accepted','rejected']);
             $table->timestamps();
         });
