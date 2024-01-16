@@ -125,7 +125,7 @@ else
     {
         $contract->delete();
         return ResponseHelper::success([
-            'message' => 'contract deleted successfully',
+            null,null, 'contract deleted successfully'
 
         ]);
     }

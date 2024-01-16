@@ -200,6 +200,13 @@ class GmailController extends Controller
             //bc
             //body
             $body = $payload->getBody();
+            if (!$body) {
+                return ResponseHelper::error(
+                    'This message is by Google Check Security.',
+                    null,
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
             function parseParts($parts)
             {
                 $data = [
@@ -560,8 +567,7 @@ class GmailController extends Controller
             // Delete the messages
             $service->users_messages->batchDelete($userId, $batchDeleteRequest);
             return ResponseHelper::success(
-                'Messages deleted successfully'
-                ,
+                'Messages deleted successfully',
                 null
             );
         } catch (\Exception $e) {
@@ -607,8 +613,7 @@ class GmailController extends Controller
                 $service->users_messages->modify($userId, $messageId, $mods);
             }
             return ResponseHelper::success(
-                'Messages starred successfully'
-                ,
+                'Messages starred successfully',
                 null
             );
         } catch (\Exception $e) {
