@@ -110,4 +110,13 @@ class User extends Authenticatable implements JWTSubject
     // {
     //     return $this->getRoleNames()->first();
     // }
+
+    public function userRates()
+    {
+        return $this->hasMany(Rate::class, 'user_id');
+    }
+    public function evaluatorRates()
+    {
+        return $this->hasMany(Rate::class, 'evaluator_id');
+    }
 }
