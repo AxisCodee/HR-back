@@ -81,7 +81,6 @@ Route::prefix('Gmail')->group(function () {
         Route::post('google/starMessages', 'starMessages');
     });
 });
-<<<<<<< HEAD
 Route::prefix('contract')->group(function () {
     Route::controller(ContractController::class)->group(function () {
         Route::post('Add', 'store');
@@ -143,7 +142,6 @@ Route::prefix('Request')->group(function () {
 
     });
 
-=======
 
 Route::prefix('Team')->group(function(){
     Route::controller(UserController::class)->group(function(){
@@ -165,7 +163,6 @@ Route::prefix('Request')->group(function(){
         Route::delete('Delete/{request}','destory');
 
 });
->>>>>>> fe611d9dcac71fd48c9ea098d9dc768e312dd62a
 });
 
 
