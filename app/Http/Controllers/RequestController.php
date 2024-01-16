@@ -69,32 +69,19 @@ class RequestController extends Controller
      */
     public function update(UpdateRequestRequest $request, Request $requests)
     {
-
-        if($requests->status = 'waiting')
-        {
-
-
-        $result=$requests->update(
-            [
-            'title'=>$request->title,
-             'type'=>$request->type,
-             'user_id'=>$requests->id,
-             'description'=>$request->description
+        if ($requests->status == 'waiting') {
+            $requests->update([
+                'title' => $request->title,
+                'type' => $request->type,
+                'user_id' => $requests->id,
+                'description' => $request->description
             ]);
 
-
-
-
-            return ResponseHelper::updated('request updated successfully');
+            return ResponseHelper::updated('Request updated successfully');
+        } else {
+            return ResponseHelper::success('You cannot delete this request');
+        }
     }
-    else
-    {
-        return ResponseHelper::success(
-            'you can not delete this request'
-        );
-    }
-}
-
     /**
      * Remove the specified resource from storage.
      */
@@ -104,17 +91,17 @@ class RequestController extends Controller
         {
         $requests->delete();
 
-        return ResponseHelper::deleted([
-            'message' => 'request deleted successfully'
+        return ResponseHelper::deleted(
+            'request deleted successfully'
 
-        ]);
+        );
 
     }
     else
     {
-        return ResponseHelper::error([
-            'message' => 'you can not delete this request',
-        ],null,'error', 403);
+        return ResponseHelper::error(
+         'you can not delete this request'
+        ,null,'error', 403);
     }
 }
 
