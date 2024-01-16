@@ -72,7 +72,6 @@ class RequestController extends Controller
     $requestStatus = $requests->status;
 
     if ($requestStatus == 'waiting') {
-        $request = Request::findOrFail($requests->id);
 
         $request->update([
             'title' => $request->title,
