@@ -72,14 +72,13 @@ class RequestController extends Controller
     $request = Request::query()
         ->where('id', $id)
         ->where('status', 'waiting')
-        ->first();
-
-    if ($request) {
-        $request->update([
+        ->update([
             'title' => $request->title,
             'type' => $request->type,
             'description' => $request->description
         ]);
+
+    if ($request) {
 
         return ResponseHelper::updated('Request updated successfully');
     } else {
