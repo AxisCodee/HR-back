@@ -76,9 +76,9 @@ class RequestController extends Controller
 
     if ($request) {
         $request->update([
-            'title' => $request->input('title'),
-            'type' => $request->input('type'),
-            'description' => $request->input('description')
+            'title' => $request->title,
+            'type' => $request->type,
+            'description' => $request->description
         ]);
 
         return ResponseHelper::updated('Request updated successfully');
