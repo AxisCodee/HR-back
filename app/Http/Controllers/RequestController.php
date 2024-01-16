@@ -81,17 +81,17 @@ class RequestController extends Controller
              'user_id'=>$requests->id,
              'description'=>$request->description
             ]);
-        
 
 
 
-            return ResponseHelper::updated($result,'request updated successfully');
+
+            return ResponseHelper::updated('request updated successfully');
     }
     else
     {
-        return ResponseHelper::success([
-            'message' => 'you can not delete this request',
-        ]);
+        return ResponseHelper::success(
+            'you can not delete this request'
+        );
     }
 }
 
