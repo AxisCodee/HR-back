@@ -97,9 +97,9 @@ Route::prefix('Request')->group(function(){
         Route::get('All','index');
         Route::post('Add','store');
         Route::post('Update/{id}','update');
-        Route::post('accepteRequest/{Request}','accepteRequest');
-        Route::post('rejectRequest/{Request}','rejectRequest');
-        Route::delete('Delete/{Request}','destory');
+        Route::post('accepteRequest/{request}','accepteRequest');
+        Route::post('rejectRequest/{request}','rejectRequest');
+        Route::delete('Delete/{request}','destory');
 
 });
 });
