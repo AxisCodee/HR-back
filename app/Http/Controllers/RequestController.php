@@ -93,10 +93,11 @@ class RequestController extends Controller
     if ($request->status == 'waiting') {
         $request->delete();
 
-        return ResponseHelper::deleted('Request deleted successfully');
     } else {
         return ResponseHelper::error('You cannot delete this request', null, 'error', 403);
     }
+    return ResponseHelper::deleted('Request deleted successfully');
+
 }
 
 public function accepteRequest(Request $request)
