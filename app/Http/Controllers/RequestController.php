@@ -88,23 +88,14 @@ class RequestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $requests)
-    {
-        if($requests->status == 'waiting')
-        {
-        $requests->delete();
+    public function destroy(Request $request)
+{
+    if ($request->status == 'waiting') {
+        $request->delete();
 
-        return ResponseHelper::deleted(
-            'request deleted successfully'
-
-        );
-
-    }
-    else
-    {
-        return ResponseHelper::error(
-         'you can not delete this request'
-        ,null,'error', 403);
+        return ResponseHelper::deleted('Request deleted successfully');
+    } else {
+        return ResponseHelper::error('You cannot delete this request', null, 'error', 403);
     }
 }
 
