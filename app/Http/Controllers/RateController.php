@@ -68,7 +68,7 @@ class RateController extends Controller
     public function update(UpdateRateRequest $request, Rate $rate)
     {
         $user=User::find(Auth::id());
-        $result=Rate::query()->update(
+        $result=$rate->update(
             [
                 'user_id'=>$request->user_id,
                 'rate'=>$request->rate,
@@ -76,6 +76,7 @@ class RateController extends Controller
                 'evaluator_role'=>$user->role
             ]
             );
+            return ResponseHelper::success($result, null, 'your rate updated successfully', 200);
     }
 
     /**
@@ -85,7 +86,8 @@ class RateController extends Controller
     {
         $rate->delete();
         return ResponseHelper::success(null,null,'deleted successfully');
-    }
+
+}
     public function showMyRate(User $user)
     {
         $user=User::find(Auth::id());

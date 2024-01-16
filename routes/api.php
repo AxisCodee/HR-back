@@ -155,3 +155,14 @@ Route::prefix('Team')->group(function(){
         Route::delete('deleteTeam/{team}','deleteTeam');
     });
 });
+
+
+Route::prefix('Rate')->group(function(){
+    Route::controller(RateController::class)->group(function(){
+        Route::get('All/{user}','index');
+        Route::post('Add','store');
+        Route::post('update/{rate}','update');
+        Route::get('myRate','showMyRate');
+        Route::delete('delete/{rate}','destroy');
+    });
+});
