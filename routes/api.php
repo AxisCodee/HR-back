@@ -135,7 +135,7 @@ Route::prefix('Request')->group(function () {
         Route::post('All', 'index');
         Route::post('Add', 'store');
         Route::post('Edit', 'update');
-        Route::delete('Delete', 'destory');
+        Route::delete('Delete', 'destroy');
         Route::post('Accept', 'acceptRequest');
         Route::post('Reject', 'rejectRequest');
 
