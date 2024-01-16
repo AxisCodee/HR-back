@@ -67,24 +67,23 @@ class RequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequestRequest $request, Request $requests)
-{
-    $requestStatus = $requests->status;
+    public function update(UpdateRequestRequest $request, $id)
+    {
+        $request = Request::query()->where('id', $id)->where('status', 'waiting')->first();
 
-    if ($requestStatus == 'waiting') {
+        if ($request) {
+            $request->update([
+                'title' => $request->title,
+                'type' => $request->type,
+                'user_id' => Auth::user()->id,
+                'description' => $request->description
+            ]);
 
-        $request->update([
-            'title' => $request->title,
-            'type' => $request->type,
-            'user_id' => Auth::user()->id,
-            'description' => $request->description
-        ]);
-
-        return ResponseHelper::updated('Request updated successfully');
-    } else {
-        return ResponseHelper::success('You cannot update this request');
+            return ResponseHelper::updated('Request updated successfully');
+        } else {
+            return ResponseHelper::success('You cannot update this request');
+        }
     }
-}
     /**
      * Remove the specified resource from storage.
      */
