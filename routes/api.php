@@ -139,7 +139,7 @@ Route::prefix('Request')->group(function(){
         Route::post('Update/{id}','update');
         Route::post('accepteRequest/{request}','accepteRequest');
         Route::post('rejectRequest/{request}','rejectRequest');
-        Route::delete('Delete/{request}','destory');
+        Route::delete('Delete/{request}','destroy');
 
 });
 });
