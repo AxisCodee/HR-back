@@ -23,10 +23,10 @@ class RequestController extends Controller
             ->toArray();
 
         if (empty($results)) {
-            return ResponseHelper::success('No contracts available');
+            return ResponseHelper::success('No requests available');
         }
 
-        return ResponseHelper::success($results, null, 'All contracts', 200);
+        return ResponseHelper::success($results, null, 'All requests', 200);
     }
 
     /**
