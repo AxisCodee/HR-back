@@ -15,14 +15,16 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $results= Request::query()
-        ->with('users')
-        ->get()->toArray();
-        return ResponseHelper::success([
-            'message' => 'All contract',
-            'data' =>   $results,
-        ]);
+        $results = Request::query()
+            ->with('users')
+            ->get()
+            ->toArray();
 
+        if (empty($results)) {
+            return ResponseHelper::success('No contracts available');
+        }
+
+        return ResponseHelper::success($results, null, 'All contracts', 200);
     }
 
     /**
@@ -67,51 +69,37 @@ class RequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequestRequest $request, Request $requests)
-    {
-        if($requests->status = 'waiting')
-        {
-
-        $result=$requests->update(
-            [
-            'title'=>$request->title,
-             'type'=>$request->type,
-             'description'=>$request->description
-            ]);
-            $results=$requests->save();
-
-
-            return ResponseHelper::updated($results,'request updated successfully');
-    }
-    else
-    {
-        return ResponseHelper::success([
-            'message' => 'you can not delete this request',
+    public function update(UpdateRequestRequest $request, $id)
+{
+    $request = Request::query()
+        ->where('id', $id)
+        ->where('status', 'waiting')
+        ->update([
+            'title' => $request->title,
+            'type' => $request->type,
+            'description' => $request->description
         ]);
+
+    if ($request) {
+
+        return ResponseHelper::updated('Request updated successfully');
+    } else {
+        return ResponseHelper::success('You cannot update this request');
     }
 }
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $requests)
-    {
-        if($requests->status = 'waiting')
-        {
-        $requests->delete();
+    public function destroy(Request $request)
+{
+    if ($request->status == 'waiting') {
+        $request->delete();
 
-        return ResponseHelper::deleted([
-            'message' => 'request deleted successfully'
-
-        ]);
-
+    } else {
+        return ResponseHelper::error('You cannot delete this request', null, 'error', 403);
     }
-    else
-    {
-        return ResponseHelper::error([
-            'message' => 'you can not delete this request',
-        ],null,'error', 403);
-    }
+    return ResponseHelper::deleted('Request deleted successfully');
+
 }
 
 public function accepteRequest(Request $request)
@@ -153,7 +141,7 @@ public function addComplaint (Request $request)
 }
 public function getComplaints()
 {
-    $result=Request::query()
+    $result=Request::query()->with('users')
     ->where('type','complaint')
     ->get()->toArray();
     return ResponseHelper::success($result,'your request');

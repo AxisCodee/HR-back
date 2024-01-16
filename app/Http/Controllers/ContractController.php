@@ -57,9 +57,9 @@ else
     }
 
 
-        return ResponseHelper::success([$result
+        return ResponseHelper::success($results
 
-        ]);
+        );
 
     }
 }
@@ -83,10 +83,9 @@ else
             );
 
 
-            return ResponseHelper::success([
-                'message' => 'Contract created successfully',
-                'data' =>  $contract,
-            ]);
+            return ResponseHelper::success($contract,null,'contract',200
+
+            );
     }
 
     /**
@@ -126,7 +125,7 @@ else
     {
         $contract->delete();
         return ResponseHelper::success([
-            'message' => 'contract deleted successfully',
+            null,null, 'contract deleted successfully'
 
         ]);
     }

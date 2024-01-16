@@ -1,13 +1,18 @@
 {
     "web": {
-        "client_id": "77477789904-jdddrjoj3m7aqe8b2ud1u2hbe77qkg49.apps.googleusercontent.com",
-        "project_id": "final-44456546",
+        "client_id": "696862375500-eis1htk54rvgschvnnu35cf76qv87bo3.apps.googleusercontent.com",
+        "project_id": "my-project-9595959",
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "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",
+        "client_secret": "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",
         "redirect_uris": [
-            "https://global.consent.azure-apim.net/redirect"
+            "http://localhost",
+            "http://localhost:3000/"
+        ],
+        "javascript_origins": [
+            "http://localhost",
+            "http://localhost:3000"
         ]
     }
 }

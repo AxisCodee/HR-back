@@ -82,7 +82,71 @@ Route::prefix('Gmail')->group(function () {
         Route::post('google/starMessages', 'starMessages');
     });
 });
+Route::prefix('contract')->group(function () {
+    Route::controller(ContractController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::get('Show/{id}', 'show');
+        Route::get('All', 'index');
+        Route::delete('Delete/{contract}', 'destroy');
+    });
+});
 
+Route::prefix('Report')->group(function () {
+    Route::controller(ReportController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::get('daily', 'daily_reports');
+        Route::get('myReports', 'all_reports');
+        Route::delete('remove/{report}', 'remove');
+        Route::post('InsnOuts', 'user_checks');
+    });
+});
+Route::prefix('Users')->group(function () {
+    Route::controller(UserController::class)->group(function () {
+        Route::get('allUser', 'all_users');
+
+    });
+});
+
+Route::prefix('Decision')->group(function () {
+    Route::controller(DecisionController::class)->group(function () {
+        Route::post('Add', 'new_decision');
+        Route::delete('remove/{decision}', 'remove_decision');
+        Route::post('edit/{decision}', 'edit_decision');
+        Route::get('all', 'all_decisions');
+        Route::get('my_decisions', 'my_decisions');
+    });
+});
+
+Route::prefix('Calendar')->group(function () {
+    Route::controller(CalendarController::class)->group(function () {
+        Route::post('Add', 'add_event');
+        Route::delete('Remove/{event}', 'cancel_event');
+        Route::get('All', 'all_events');
+        Route::post('Edit/{event}', 'update_event');
+        Route::get('EventsByDay', 'day_events');
+        Route::get('EventsByWeek', 'week_events');
+        Route::get('EventsByMonth', 'month_events');
+        Route::get('/EventDate/{date}', 'getEvenetsByDay');
+
+    });
+});
+
+
+
+Route::prefix('Request')->group(function(){
+    Route::controller(RequestController::class)->group(function(){
+        Route::get('All','index');
+        Route::get('Me','show');
+
+
+        Route::post('Add','store');
+        Route::post('Update/{id}','update');
+        Route::post('accepteRequest/{request}','accepteRequest');
+        Route::post('rejectRequest/{request}','rejectRequest');
+        Route::delete('Delete/{request}','destroy');
+
+});
+});
 Route::prefix('Team')->group(function(){
     Route::controller(UserController::class)->group(function(){
         Route::get('getTeams','getTeams');
@@ -91,30 +155,3 @@ Route::prefix('Team')->group(function(){
         Route::delete('deleteTeam/{team}','deleteTeam');
     });
 });
-
-
-Route::prefix('Request')->group(function(){
-    Route::controller(RequestController::class)->group(function(){
-        Route::get('All','index');
-        Route::post('Add','store');
-        Route::post('Update/{Request}','update');
-        Route::post('accepteRequest','accepteRequest');
-        Route::post('rejectRequest','rejectRequest');
-        Route::delete('Delete','destory');
-
-});
-});
-
-
-     Route::prefix('Rate')->group(function(){
-    Route::controller(RateController::class)->group(function(){
-        Route::get('All/{user}','index');
-        Route::post('Add','store');
-        Route::get('myRate','showMyRate');
-        Route::delete('delete/{user}','destroy');
-});
-});
-
-
-
-
