@@ -164,7 +164,12 @@ Route::prefix('Request')->group(function(){
 
 });
 });
-
-
 });
 
+Route::prefix('Contact')->group(function(){
+    Route::controller(UserController::class)->group(function(){
+        Route::post('AddContact','new_contact');
+        Route::post('EditContact/{contact}','edit_contact');
+        Route::delete('DeleteContact/{contact}','delete_contact');
+    });
+});
