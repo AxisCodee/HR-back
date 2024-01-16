@@ -57,7 +57,7 @@ else
     }
 
 
-        return ResponseHelper::success([$result
+        return ResponseHelper::success([$results
 
         ]);
 
