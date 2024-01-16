@@ -137,6 +137,8 @@ Route::prefix('Request')->group(function(){
     Route::controller(RequestController::class)->group(function(){
         Route::get('All','index');
         Route::get('Me','show');
+        Route::get('info/{id}','getRequest');
+
 
 
         Route::post('Add','store');
