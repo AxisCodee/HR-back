@@ -17,7 +17,7 @@ class Report extends Model
     ];
 
 
-    public function user_reports(): BelongsTo
+    public function user_reports()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
