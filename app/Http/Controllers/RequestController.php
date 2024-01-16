@@ -77,13 +77,13 @@ class RequestController extends Controller
         $request->update([
             'title' => $request->title,
             'type' => $request->type,
-            'user_id' => $request->id,
+            'user_id' => Auth::user()->id,
             'description' => $request->description
         ]);
 
         return ResponseHelper::updated('Request updated successfully');
     } else {
-        return ResponseHelper::success('You cannot delete this request');
+        return ResponseHelper::success('You cannot update this request');
     }
 }
     /**
