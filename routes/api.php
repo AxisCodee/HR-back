@@ -10,6 +10,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\api\GmailController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RateController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -136,6 +137,8 @@ Route::prefix('Request')->group(function(){
     Route::controller(RequestController::class)->group(function(){
         Route::get('All','index');
         Route::get('Me','show');
+        Route::get('info/{id}','getRequest');
+
 
 
         Route::post('Add','store');

@@ -62,9 +62,24 @@ class RequestController extends Controller
         ->where('user_id',Auth::user()->id)
         ->get()
         ->toArray();
-        return ResponseHelper::success($result,'your request');
+        return ResponseHelper::success($result,'my requests:');
 
     }
+
+    public function getRequest(Request $request)
+    {
+        $result = Request::query()
+            ->where('user_id', Auth::user()->id)
+            ->get()->with('user:id,first_name,last_name')
+            ->toArray();
+
+        if (empty($result)) {
+            return ResponseHelper::success('No requests found for the user');
+        }
+
+        return ResponseHelper::success($result, 'My requests:');
+    }
+
 
     /**
      * Update the specified resource in storage.
