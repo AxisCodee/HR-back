@@ -15,14 +15,16 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $results= Request::query()
-        ->with('users')
-        ->get()->toArray();
-        return ResponseHelper::success([
-            'message' => 'All contract',
-            'data' =>   $results,
-        ]);
+        $results = Request::query()
+            ->with('users')
+            ->get()
+            ->toArray();
 
+        if (empty($results)) {
+            return ResponseHelper::success('No contracts available');
+        }
+
+        return ResponseHelper::success($results, null, 'All contracts', 200);
     }
 
     /**
