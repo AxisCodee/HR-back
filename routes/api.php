@@ -139,8 +139,6 @@ Route::prefix('Request')->group(function(){
         Route::get('Me','show');
         Route::get('info/{id}','getRequest');
 
-
-
         Route::post('Add','store');
         Route::post('Update/{id}','update');
         Route::post('accepteRequest/{request}','accepteRequest');
@@ -159,6 +157,17 @@ Route::prefix('Team')->group(function(){
 });
 
 
+
+
+
+
+Route::prefix('Contact')->group(function(){
+    Route::controller(UserController::class)->group(function(){
+        Route::post('AddContact','new_contact');
+        Route::post('EditContact/{contact}','edit_contact');
+        Route::delete('DeleteContact/{contact}','delete_contact');
+    });
+});
 Route::prefix('Rate')->group(function(){
     Route::controller(RateController::class)->group(function(){
         Route::get('All/{user}','index');
