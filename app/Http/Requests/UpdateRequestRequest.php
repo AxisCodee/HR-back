@@ -22,9 +22,9 @@ class UpdateRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type'=>['required'],
-            'description'=>['required'],
-            'title'=>['required']
+            'type' => ['required', 'string', 'in:advance,vacation,resignation,complaint'],
+            'description' => ['required'],
+            'title' => ['required']
         ];
     }
 }
