@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helper;
+
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -22,7 +23,7 @@ class ResponseHelper
         }
         if ($service == null || $service == false) {
             if ($data instanceof ResourceCollection || $data instanceof Collection) {
-                $response['data'] =  response()->json(array($response['data']))->getData();
+                $response['data'] = response()->json(array($response['data']))->getData();
             }
         }
         return response()->json($response, $status);
@@ -50,7 +51,7 @@ class ResponseHelper
             'success' => false,
             'message' => $message,
             'data' => $data,
-            'status'=>$status
+            'status' => $status
         ];
 
         if ($service == 1) {
@@ -59,6 +60,66 @@ class ResponseHelper
 
         return response()->json($response, $status);
     }
+
+    public static function email(
+        $messageId,
+        $senderEmail,
+        $senderName,
+        $gravatarUrl,
+        $toValue,
+        $subjectValue,
+        $messageData,
+        $attachments,
+        $isStarred,
+        $labelStatus,
+        $dateValue,
+        $replies,
+        $isInbox,
+        $isUnread,
+        $service = null,
+        $message = 'true',
+        $status = 200
+    ) {
+        $response = [
+            'success' => true,
+            'message' => $message,
+            'emails' => [
+                [
+                    'id' => $messageId,
+                    'from' => [
+                        'email' => $senderEmail,
+                        'name' => $senderName,
+                        'avatar' => $gravatarUrl
+                    ],
+                    'to' => [
+                        [
+                            'name' => 'me',
+                            'email' => $toValue
+                        ]
+                    ],
+                    'subject' => $subjectValue,
+                    'cc' => [],
+                    'bcc' => [],
+                    'message' => $messageData,
+                    'attachments' => $attachments,
+                    'isStarred' => $isStarred,
+                    'labels' => $labelStatus,
+                    'time' => $dateValue,
+                    'replies' => $replies,
+                    'folder' => $isInbox ? 'inbox' : '',
+                    'isRead' => !$isUnread
+                ]
+            ],
+            'status' => $status
+        ];
+
+        if ($service == 1) {
+            return $response;
+        }
+
+        return response()->json($response, $status);
+    }
+
 
     public static function paginate($data)
     {

@@ -13,6 +13,7 @@ use Google_Service_Gmail_ModifyMessageRequest;
 use Google\Service\Gmail;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use App\Services\EmailProcessor;
 
 class GmailController extends Controller
 {
@@ -140,6 +141,7 @@ class GmailController extends Controller
         $userInfo = $service->userinfo->get();
         return ResponseHelper::success($userInfo, null, Response::HTTP_OK);
     }
+
     public function getMessageById(Request $request)
     {
         $client = $this->getClient();
@@ -166,6 +168,7 @@ class GmailController extends Controller
         }
         $service = new Gmail($client);
         $messageId = $request->messageId;
+
         if (!$messageId) {
             return ResponseHelper::error('Message id could not be null.', null);
         }
@@ -173,7 +176,6 @@ class GmailController extends Controller
         try {
             $message = $service->users_messages->get($user, $request->messageId, ['format' => 'full']);
             $payload = $message->getPayload();
-            // dd($message);
             //sender info
             $headers = $payload['headers'];
             $fromHeader = Arr::first($headers, function ($header) {
@@ -199,14 +201,6 @@ class GmailController extends Controller
             //cc
             //bc
             //body
-            $body = $payload->getBody();
-            if (!$body) {
-                return ResponseHelper::error(
-                    'This message is by Google Check Security.',
-                    null,
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
             function parseParts($parts)
             {
                 $data = [
@@ -224,6 +218,7 @@ class GmailController extends Controller
                 }
                 return $data;
             }
+            $body = $payload->getBody();
             $messageData = parseParts($message['payload']['parts']);
             //attachments
             $attachments = [];
@@ -268,51 +263,47 @@ class GmailController extends Controller
             $dateValue = $dateHeader['value'];
             //replies
             $threadId = $messageId; // Replace with the actual thread ID
-            $thread = $service->users_threads->get('me', $threadId);
-            $messages = $thread->getMessages();
-            $replies = [];
-            foreach ($messages as $message) {
-                if ($message->getId() !== $messageId) {
-                    $replies[] = [
-                        'id' => $message->getId(),
-                        'snippet' => $message->getSnippet(),
-                        // Add any other relevant information you need
-                    ];
+            try {
+                $thread = $service->users_threads->get('me', $threadId);
+                $messages = $thread->getMessages();
+                $replies = [];
+                foreach ($messages as $message) {
+                    if ($message->getId() !== $messageId) {
+                        $replies[] = [
+                            'id' => $message->getId(),
+                            'snippet' => $message->getSnippet(),
+                            // Add any other relevant information you need
+                        ];
+                    }
+                }
+            } catch (\Google_Service_Exception $e) { // Note the double backslash here
+                if ($e->getCode() == 404) {
+                    error_log('Error: ' . $e->getMessage());
+                    $replies = null;
+                } else {
+                    throw $e; // If the error is not 404, rethrow the exception
                 }
             }
             //folder (inbox)
             $isInbox = in_array('INBOX', $labelIds);
             //readen
             $isUnread = in_array('UNREAD', $labelIds);
-            return ResponseHelper::success([
-                'emails' => [
-                    [
-                        'id' => $messageId,
-                        'from' => [
-                            'email' => $senderEmail,
-                            'name' => $senderName,
-                            'avatar' => $gravatarUrl
-                        ],
-                        'to' => [
-                            [
-                                'name' => 'me',
-                                'email' => $toValue
-                            ]
-                        ],
-                        'subject' => $subjectValue,
-                        'cc' => [],
-                        'bcc' => [],
-                        'message' => $messageData,
-                        'attachments' => $attachments,
-                        'isStarred' => $isStarred,
-                        'labels' => $labelStatus,
-                        'time' => $dateValue,
-                        'replies' => $replies,
-                        'folder' => $isInbox ? 'inbox' : '',
-                        'isRead' => !$isUnread
-                    ]
-                ]
-            ], null);
+            return ResponseHelper::email($messageId,
+            $senderEmail,
+            $senderName,
+            $gravatarUrl,
+            $toValue,
+            $subjectValue,
+            $messageData,
+            $attachments,
+            $isStarred,
+            $labelStatus,
+            $dateValue,
+            $replies,
+            $isInbox,
+            $isUnread,
+            $service = null,
+            $message = 'true');
         } catch (\Exception $e) {
             // Handle any exceptions that may occur
             return ResponseHelper::error(
@@ -321,6 +312,7 @@ class GmailController extends Controller
             );
         }
     }
+
     public function sendEmail(Request $request)
     {
         $client = $this->getClient();
@@ -365,7 +357,6 @@ class GmailController extends Controller
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $attachment = chunk_split(base64_encode(file_get_contents($file->getRealPath())));
-
             $strRawMessage .= "--foo_bar_baz\r\n";
             $strRawMessage .= "Content-Type: application/octet-stream; name=" . $file->getClientOriginalName() . "\r\n" .
                 "Content-Transfer-Encoding: base64\r\n" .
