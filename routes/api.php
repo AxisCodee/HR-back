@@ -135,6 +135,9 @@ Route::prefix('Calendar')->group(function () {
 Route::prefix('Request')->group(function(){
     Route::controller(RequestController::class)->group(function(){
         Route::get('All','index');
+        Route::get('Me','show');
+
+
         Route::post('Add','store');
         Route::post('Update/{id}','update');
         Route::post('accepteRequest/{request}','accepteRequest');
