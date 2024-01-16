@@ -16,7 +16,8 @@ class RequestController extends Controller
     public function index()
     {
         $results = Request::query()
-            ->with('users')
+        ->with('user:id,first_name,last_name')
+        ->with('user.department:id,name')
             ->get()
             ->toArray();
 
@@ -69,8 +70,9 @@ class RequestController extends Controller
     public function getRequest(Request $request)
     {
         $result = Request::query()
-            ->where('user_id', Auth::user()->id)
-            ->get()->with('user:id,first_name,last_name')
+            ->with('user:id,first_name,last_name')
+            ->with('user.department:id,name')
+            ->get()
             ->toArray();
 
         if (empty($result)) {
