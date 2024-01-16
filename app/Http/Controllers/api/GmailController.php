@@ -531,7 +531,7 @@ class GmailController extends Controller
         // Decode the JSON data
         $tokenData = json_decode($jsonData, true);
         // Extract the access token
-        $accessToken = $tokenData['access_token'];
+        $accessToken = $tokenData['access_token0'];
         $refreshToken = $tokenData['refresh_token'];
         // Now $accessToken contains the Google access token
         $userAccessToken = urldecode($accessToken);

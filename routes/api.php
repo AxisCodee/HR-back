@@ -143,27 +143,27 @@ Route::prefix('Request')->group(function () {
     });
 
 
-Route::prefix('Team')->group(function(){
-    Route::controller(UserController::class)->group(function(){
-        Route::get('getTeams','getTeams');
-        Route::post('storeTeams','storeTeams');
-        Route::post('updateTeam/{team}','updateTeams');
-        Route::delete('deleteTeam/{team}','deleteTeam');
+    Route::prefix('Team')->group(function () {
+        Route::controller(UserController::class)->group(function () {
+            Route::get('getTeams', 'getTeams');
+            Route::post('storeTeams', 'storeTeams');
+            Route::post('updateTeam/{team}', 'updateTeams');
+            Route::delete('deleteTeam/{team}', 'deleteTeam');
+        });
     });
-});
 
 
-Route::prefix('Request')->group(function(){
-    Route::controller(RequestController::class)->group(function(){
-        Route::get('All','index');
-        Route::post('Add','store');
-        Route::post('Update/{id}','update');
-        Route::post('accepteRequest/{request}','accepteRequest');
-        Route::post('rejectRequest/{request}','rejectRequest');
-        Route::delete('Delete/{request}','destory');
+    Route::prefix('Request')->group(function () {
+        Route::controller(RequestController::class)->group(function () {
+            Route::get('All', 'index');
+            Route::post('Add', 'store');
+            Route::post('Update/{id}', 'update');
+            Route::post('accepteRequest/{request}', 'accepteRequest');
+            Route::post('rejectRequest/{request}', 'rejectRequest');
+            Route::delete('Delete/{request}', 'destory');
 
-});
-});
+        });
+    });
 
 
 });
