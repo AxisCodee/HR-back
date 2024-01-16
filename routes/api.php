@@ -10,6 +10,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\api\GmailController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RateController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -101,6 +102,16 @@ Route::prefix('Request')->group(function(){
         Route::post('rejectRequest','rejectRequest');
         Route::delete('Delete','destory');
 
+});
+});
+
+
+     Route::prefix('Rate')->group(function(){
+    Route::controller(RateController::class)->group(function(){
+        Route::get('All/{user}','index');
+        Route::post('Add','store');
+        Route::get('myRate','showMyRate');
+        Route::delete('delete/{user}','destroy');
 });
 });
 
