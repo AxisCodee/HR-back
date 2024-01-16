@@ -70,7 +70,7 @@ class RequestController extends Controller
     {
         $result = Request::query()
             ->where('user_id', Auth::user()->id)
-            ->get()
+            ->get()->with('user:id,first_name,last_name')
             ->toArray();
 
         if (empty($result)) {
