@@ -6,6 +6,7 @@ use App\Models\Request;
 use App\Http\Requests\StoreRequestRequest;
 use App\Http\Requests\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller
@@ -39,6 +40,7 @@ class RequestController extends Controller
              'user_id'=>Auth::id(),
              'title'=>$request->title,
              'type'=>$request->type,
+             'date'=>Carbon::now(),
              'description'=>$request->description,
              'status'=>'waiting'
             ]);
