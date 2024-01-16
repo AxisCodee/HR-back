@@ -90,7 +90,7 @@ class RequestController extends Controller
      */
     public function destroy(Request $requests)
     {
-        if($requests->status = 'waiting')
+        if($requests->status == 'waiting')
         {
         $requests->delete();
 

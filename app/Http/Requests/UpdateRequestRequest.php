@@ -23,8 +23,8 @@ class UpdateRequestRequest extends FormRequest
     {
         return [
             'type' => ['required', 'string', 'in:advance,vacation,resignation,complaint'],
-            'description' => ['required', 'max:100'],
-            'title' => ['required', 'max:10']
+            'description' => ['required', 'max:250'],
+            'title' => ['required', 'max:30']
         ];
     }
 }
