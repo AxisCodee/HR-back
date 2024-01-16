@@ -69,20 +69,21 @@ class RequestController extends Controller
      */
     public function update(UpdateRequestRequest $request, Request $requests)
     {
-        if($requests->status = 'waiting')
+        
+        if($requests->status == 'waiting')
         {
 
         $result=$requests->update(
             [
             'title'=>$request->title,
              'type'=>$request->type,
-             'user_id'=>Auth::id(),
+             'user_id'=>$requests->id,
              'description'=>$request->description
             ]);
-            $results=$requests->save();
 
 
-            return ResponseHelper::updated($results,'request updated successfully');
+
+            return ResponseHelper::updated($result,'request updated successfully');
     }
     else
     {
@@ -154,7 +155,7 @@ public function addComplaint (Request $request)
 }
 public function getComplaints()
 {
-    $result=Request::query()
+    $result=Request::query()->with('users')
     ->where('type','complaint')
     ->get()->toArray();
     return ResponseHelper::success($result,'your request');
