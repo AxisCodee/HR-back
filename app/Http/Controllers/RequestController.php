@@ -15,14 +15,17 @@ class RequestController extends Controller
      */
     public function index()
     {
-        $results= Request::query()
-        ->with('users')
-        ->get()->toArray();
-        return ResponseHelper::success([
-            'message' => 'All contract',
-            'data' =>   $results,
-        ]);
+        $results = Request::query()
+        ->with('user:id,first_name,last_name')
+        ->with('user.department:id,name')
+            ->get()
+            ->toArray();
 
+        if (empty($results)) {
+            return ResponseHelper::success('No contracts available');
+        }
+
+        return ResponseHelper::success($results, null, 'All contracts', 200);
     }
 
     /**
@@ -60,9 +63,25 @@ class RequestController extends Controller
         ->where('user_id',Auth::user()->id)
         ->get()
         ->toArray();
-        return ResponseHelper::success($result,'your request');
+        return ResponseHelper::success($result,'my requests:');
 
     }
+
+    public function getRequest(Request $request)
+    {
+        $result = Request::query()
+            ->with('user:id,first_name,last_name')
+            ->with('user.department:id,name')
+            ->get()
+            ->toArray();
+
+        if (empty($result)) {
+            return ResponseHelper::success('No requests found for the user');
+        }
+
+        return ResponseHelper::success($result, 'My requests:');
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -93,10 +112,11 @@ class RequestController extends Controller
     if ($request->status == 'waiting') {
         $request->delete();
 
-        return ResponseHelper::deleted('Request deleted successfully');
     } else {
         return ResponseHelper::error('You cannot delete this request', null, 'error', 403);
     }
+    return ResponseHelper::deleted('Request deleted successfully');
+
 }
 
 public function accepteRequest(Request $request)

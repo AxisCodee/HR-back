@@ -10,6 +10,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\api\GmailController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RateController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -130,19 +131,24 @@ Route::prefix('Calendar')->group(function () {
     });
 });
 
-Route::prefix('Request')->group(function () {
-    Route::controller(RequestController::class)->group(function () {
-        Route::post('All', 'index');
-        Route::post('Add', 'store');
-        Route::post('Edit', 'update');
-        Route::delete('Delete', 'destory');
-        Route::post('Accept', 'acceptRequest');
-        Route::post('Reject', 'rejectRequest');
 
 
-    });
+Route::prefix('Request')->group(function(){
+    Route::controller(RequestController::class)->group(function(){
+        Route::get('All','index');
+        Route::get('Me','show');
+        Route::get('info/{id}','getRequest');
 
 
+
+        Route::post('Add','store');
+        Route::post('Update/{id}','update');
+        Route::post('accepteRequest/{request}','accepteRequest');
+        Route::post('rejectRequest/{request}','rejectRequest');
+        Route::delete('Delete/{request}','destroy');
+
+});
+});
 Route::prefix('Team')->group(function(){
     Route::controller(UserController::class)->group(function(){
         Route::get('getTeams','getTeams');
@@ -153,16 +159,16 @@ Route::prefix('Team')->group(function(){
 });
 
 
-Route::prefix('Request')->group(function(){
-    Route::controller(RequestController::class)->group(function(){
-        Route::get('All','index');
+Route::prefix('Rate')->group(function(){
+    Route::controller(RateController::class)->group(function(){
+        Route::get('All/{user}','index');
         Route::post('Add','store');
-        Route::post('Update/{id}','update');
-        Route::post('accepteRequest/{request}','accepteRequest');
-        Route::post('rejectRequest/{request}','rejectRequest');
-        Route::delete('Delete/{request}','destory');
-
+        Route::post('update/{rate}','update');
+        Route::get('myRate','showMyRate');
+        Route::delete('delete/{rate}','destroy');
+    });
 });
+<<<<<<< HEAD
 });
 });
 
@@ -173,3 +179,5 @@ Route::prefix('Contact')->group(function(){
         Route::delete('DeleteContact/{contact}','delete_contact');
     });
 });
+=======
+>>>>>>> aee7d862a38bc2d86c3d33fe3c38ceab2976fb37
