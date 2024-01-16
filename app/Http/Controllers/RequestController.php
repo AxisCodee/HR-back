@@ -69,9 +69,10 @@ class RequestController extends Controller
      */
     public function update(UpdateRequestRequest $request, Request $requests)
     {
-        
-        if($requests->status == 'waiting')
+
+        if($requests->status = 'waiting')
         {
+
 
         $result=$requests->update(
             [
@@ -80,6 +81,7 @@ class RequestController extends Controller
              'user_id'=>$requests->id,
              'description'=>$request->description
             ]);
+        
 
 
 
