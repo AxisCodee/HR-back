@@ -117,7 +117,7 @@ class RequestController extends Controller
     } else {
         return ResponseHelper::error('You cannot delete this request', null, 'error', 403);
     }
-    return ResponseHelper::deleted('Request deleted successfully');
+    return ResponseHelper::deleted([],null,'Request deleted successfully',204);
 
 }
 
