@@ -41,7 +41,7 @@ class ReportController extends Controller
 
     public function all_reports()
     {
-        $all = Report::query()->where('user_id',Auth::user()->id)->get()->toArray();
+        $all = Report::query()->get()->toArray();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
     }
 
