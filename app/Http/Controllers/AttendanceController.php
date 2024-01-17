@@ -58,9 +58,9 @@ class AttendanceController extends Controller
 
             $checkInDate = substr($log['DateTime'], 0, 10);
             $pendingCheckIn = Attendance::where('pin', $log['PIN'])
-        ->where('datetime', 'LIKE', $checkInDate . '%')
-        ->where('status', 0)
-        ->first();
+            ->where('datetime', 'LIKE', $checkInDate . '%')
+            ->whereIn('status', [0, 1])
+            ->first();
         if($pendingCheckIn)
         {
 
