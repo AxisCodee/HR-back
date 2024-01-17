@@ -11,36 +11,42 @@ use Illuminate\Support\Facades\Auth;
 
 class DecisionController extends Controller
 {
+//add new decision for a user
     public function new_decision(DecisionRequest $request)
     {
         $new = $request->validated();
         $created = Decision::create($new);
-        return ResponseHelper::success($created, null, ' decision created successfully', 200);
+        return ResponseHelper::created($created,'decision created successfully');
     }
-
+//delete an exisiting decision
     public function remove_decision($id)
     {
-        $removed = Decision::findOrFail($id)->delete();
-        return ResponseHelper::success($removed, null, ' decision deleted successfully', 200);
+        $removed = Decision::findOrFail($id)
+                            ->delete();
+        return ResponseHelper::deleted(' decision deleted successfully');
     }
-
+//edit an exisiting decision
     public function edit_decision(DecisionRequest $request,$id)
     {
         $validate = $request->validated();
-        $edited = Decision::findOrFail($id);
+        $edited = Decision::findOrFail($id)->with('user_decision');
         $edited->update($validate);
-        return ResponseHelper::success($edited, null, ' decision updated successfully', 200);
+        return ResponseHelper::updated($edited,'decision updated successfully');
     }
-
+//get all decisions for all users
     public function all_decisions()
     {
-        $all = Decision::all();
+        $all = Decision::query()
+                        ->with('user_decision')
+                        ->get();
         return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
     }
-
+//get decisions for the current user
     public function my_decisions()
     {
-        $mine = Decision::query()->where('user_id',Auth::id())->get();
+        $mine = Decision::query()
+                        ->where('user_id',Auth::id())
+                        ->get();
         return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
 }

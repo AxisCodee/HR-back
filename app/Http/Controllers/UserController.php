@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
+use App\Http\Requests\ContactRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Contact;
 use App\Models\Department;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
@@ -109,5 +111,30 @@ class UserController extends Controller
     {
         $members=$department->users()->get();
         return ResponseHelper::success($members);
+    }
+//add new contact to a user
+    public function new_contact(ContactRequest $request)
+    {
+        $validate = $request->validated();
+        $new_contact = Contact::create([
+            'user_id' => $validate['user_id'],
+            'type'    => $validate['type'],
+            'contact' => $validate['contact'],
+        ]);
+        return ResponseHelper::created($new_contact,'contact added successfully');
+    }
+//edit contact of a user
+    public function edit_contact($id,ContactRequest $request)
+    {
+        $validate = $request->validated();
+        $edit= Contact::findOrFail($id);
+        $edited = $edit->update($validate);
+        return ResponseHelper::updated($edit,'contact edited successfully');
+    }
+//delete contact of a user
+    public function delete_contact($id)
+    {
+        $delete = Contact::findOrFail($id)->delete();
+        return ResponseHelper::deleted('contact deleted successfully');
     }
 }

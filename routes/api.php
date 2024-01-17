@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DecisionController;
 use App\Http\Controllers\UserController;
@@ -9,7 +10,12 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\api\GmailController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RateController;
+use App\Http\Controllers\UserInfoController;
+use App\Models\Address;
+use App\Models\Career;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -102,7 +108,6 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
-
     });
 });
 
@@ -126,45 +131,65 @@ Route::prefix('Calendar')->group(function () {
         Route::get('EventsByWeek', 'week_events');
         Route::get('EventsByMonth', 'month_events');
         Route::get('/EventDate/{date}', 'getEvenetsByDay');
-
     });
 });
+
+
 
 Route::prefix('Request')->group(function () {
     Route::controller(RequestController::class)->group(function () {
-        Route::post('All', 'index');
+        Route::get('All', 'index');
+        Route::get('Me', 'show');
+        Route::get('info/{id}', 'getRequest');
+
         Route::post('Add', 'store');
-        Route::post('Edit', 'update');
-        Route::delete('Delete', 'destory');
-        Route::post('Accept', 'acceptRequest');
-        Route::post('Reject', 'rejectRequest');
-
-
+        Route::post('Update/{id}', 'update');
+        Route::post('accepteRequest/{request}', 'accepteRequest');
+        Route::post('rejectRequest/{request}', 'rejectRequest');
+        Route::delete('Delete/{request}', 'destroy');
     });
-
-
-    Route::prefix('Team')->group(function () {
-        Route::controller(UserController::class)->group(function () {
-            Route::get('getTeams', 'getTeams');
-            Route::post('storeTeams', 'storeTeams');
-            Route::post('updateTeam/{team}', 'updateTeams');
-            Route::delete('deleteTeam/{team}', 'deleteTeam');
-        });
+});
+Route::prefix('Team')->group(function () {
+    Route::controller(UserController::class)->group(function () {
+        Route::get('getTeams', 'getTeams');
+        Route::post('storeTeams', 'storeTeams');
+        Route::post('updateTeam/{team}', 'updateTeams');
+        Route::delete('deleteTeam/{team}', 'deleteTeam');
     });
-
-
-    Route::prefix('Request')->group(function () {
-        Route::controller(RequestController::class)->group(function () {
-            Route::get('All', 'index');
-            Route::post('Add', 'store');
-            Route::post('Update/{id}', 'update');
-            Route::post('accepteRequest/{request}', 'accepteRequest');
-            Route::post('rejectRequest/{request}', 'rejectRequest');
-            Route::delete('Delete/{request}', 'destory');
-
-        });
-    });
-
-
 });
 
+
+Route::prefix('Request')->group(function () {
+    Route::controller(RequestController::class)->group(function () {
+        Route::get('All', 'index');
+        Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::post('accepteRequest/{request}', 'accepteRequest');
+        Route::post('rejectRequest/{request}', 'rejectRequest');
+        Route::delete('Delete/{request}', 'destory');
+    });
+});
+
+
+
+///thales
+Route::prefix('Address')->group(function () {
+    Route::controller(AddressController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::post('Delete', 'destroy');
+    });
+});
+
+Route::prefix('Career')->group(function () {
+    Route::controller(CareerController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::post('Delete', 'destroy');
+    });
+});
+
+Route::prefix('UserInfo')->group(function () {
+    Route::controller(UserInfoController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::get('Show', 'show');
+    });
+});

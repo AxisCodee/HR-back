@@ -4,20 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
-class Report extends Model
+class Contact extends Model
 {
     use HasFactory;
-
-    protected $fillable =
-    [
+    protected $fillable =[
         'user_id',
-        'content'
+        'type',
+        'contact',
     ];
 
 
-    public function user_reports()
+    public function contact()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
