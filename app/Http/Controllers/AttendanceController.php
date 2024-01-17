@@ -56,11 +56,25 @@ class AttendanceController extends Controller
                 'work_code' => $log['WorkCode']
             ];
 
+            $checkInDate = substr($log['DateTime'], 0, 10);
+            $pendingCheckIn = Attendance::where('pin', $log['PIN'])
+            ->where('datetime', 'LIKE', $checkInDate . '%')
+            ->whereIn('status', [0, 1])
+            ->first();
+        if($pendingCheckIn)
+        {
+
+        }
+        else
+        {
+
             Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
 
         }
+    }
         return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
     }
+
 
     public function showAttendanceLogs(){
 
@@ -69,6 +83,15 @@ class AttendanceController extends Controller
         return  ResponseHelper::success([
             $result
         ]);
+    }
+
+    public function showAttendanceUser($user)
+    {
+        $result = User::with('attendance')
+        ->where('id', $user)
+        ->get()->toArray();
+
+        return ResponseHelper::success($result);
     }
 
 }

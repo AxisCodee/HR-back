@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('evaluator_id')->constrained('users')->cascadeOnDelete();
             $table->integer('rate');
+            $table->enum('type',['technical', 'commitment','communication']);
             $table->string('evaluator_role');
             $table->timestamps();
         });

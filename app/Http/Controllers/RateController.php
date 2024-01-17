@@ -44,6 +44,7 @@ class RateController extends Controller
         $result=Rate::query()->create(
             [
                 'user_id'=>$request->user_id,
+                'type'=>$request->type,
                 'rate'=>$request->rate,
                 'evaluator_id'=> $user->id,
                 'evaluator_role'=>$user->role
@@ -72,6 +73,7 @@ class RateController extends Controller
             [
                 'user_id'=>$request->user_id,
                 'rate'=>$request->rate,
+                'type'=>$request->type,
                 'evaluator_id'=> $user->id,
                 'evaluator_role'=>$user->role
             ]
