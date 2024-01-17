@@ -31,11 +31,21 @@ class ReportController extends Controller
         return ResponseHelper::success($remove, null, 'report removed successfully', 200);
     }
 //get all user's reports
-    public function all_reports()
+    public function my_reports()
     {
-        $all = Report::query()->where('user_id',Auth::user()->id)->get();
+        $all = Report::query()->where('user_id',Auth::user()->id)->get()->toArray();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
     }
+
+//get all reports
+
+    public function all_reports()
+    {
+        $all = Report::query()->where('user_id',Auth::user()->id)->get()->toArray();
+        return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
+    }
+
+
 //get all reports of today
     public function daily_reports()
     {
@@ -48,7 +58,8 @@ class ReportController extends Controller
         $work_time_start = Carbon::parse('09:00:00');
         $work_time_end = Carbon::parse('17:00:00');
         $date_time = Carbon::parse($request->date);
-        $checks = Attendance::where('pin',$request->user_id)->whereDate('datetime',$date_time->format('Y-m-d'))->get();
+        $checks = Attendance::where('pin',$request->user_id)
+        ->whereDate('datetime',$date_time->format('Y-m-d'))->get();
 
         foreach ($checks as $check)
         {
