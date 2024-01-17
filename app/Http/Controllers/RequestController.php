@@ -6,6 +6,7 @@ use App\Models\Request;
 use App\Http\Requests\StoreRequestRequest;
 use App\Http\Requests\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller
@@ -22,10 +23,10 @@ class RequestController extends Controller
             ->toArray();
 
         if (empty($results)) {
-            return ResponseHelper::success('No contracts available');
+            return ResponseHelper::success('No requests available');
         }
 
-        return ResponseHelper::success($results, null, 'All contracts', 200);
+        return ResponseHelper::success($results, null, 'All requests', 200);
     }
 
     /**
@@ -39,6 +40,7 @@ class RequestController extends Controller
              'user_id'=>Auth::id(),
              'title'=>$request->title,
              'type'=>$request->type,
+             'date'=>Carbon::now(),
              'description'=>$request->description,
              'status'=>'waiting'
             ]);
@@ -143,7 +145,6 @@ public function rejectRequest(Request $request)
         ]);
 
 }
-
 public function addComplaint (Request $request)
 {
     $complaint=Request::query()->create(

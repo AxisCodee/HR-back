@@ -14,7 +14,8 @@ class Request extends Model
         'type',
       'description',
       'status',
-      'title'
+      'title',
+      'date'
     ];
 
 

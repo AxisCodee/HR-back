@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRateRequest extends FormRequest
+class UpdateAbsencesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,9 +22,7 @@ class StoreRateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'=>['required'],
-            'rate'=>['required'],
-            'type'=>['required'],
-             ];
+            //
+        ];
     }
 }
