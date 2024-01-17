@@ -23,6 +23,9 @@ Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendance
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 
+Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
+
+
 Route::prefix('contract')->group(function () {
 
     Route::controller(ContractController::class)->group(function () {

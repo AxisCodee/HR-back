@@ -145,7 +145,6 @@ public function rejectRequest(Request $request)
         ]);
 
 }
-
 public function addComplaint (Request $request)
 {
     $complaint=Request::query()->create(

@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->enum('type',['justification','Unjustified']);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->date('absencesDate');
+            $table->date('startDate');
+            $table->date('endDate');
+            $table->enum('duration',['daily','hourly']);
+            $table->enum('status',['waiting','accepted','rejected'])->nullable();
+
             $table->timestamps();
         });
     }
