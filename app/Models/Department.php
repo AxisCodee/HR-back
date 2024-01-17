@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     use HasFactory;
-    
+
     protected $guarded = [];
 
     public function user()
@@ -16,5 +16,5 @@ class Department extends Model
       return $this->hasMany('App\Models\User');
     }
 
-    protected $hidden=['created_at','updated_at','id'];
+    protected $hidden=['created_at','updated_at'];
 }
