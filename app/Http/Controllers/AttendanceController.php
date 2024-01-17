@@ -58,19 +58,18 @@ class AttendanceController extends Controller
 
             $checkInDate = substr($log['DateTime'], 0, 10);
             $pendingCheckIn = Attendance::where('pin', $log['PIN'])
-            ->where('datetime', 'LIKE', $checkInDate . '%')
-            ->whereIn('status', [0, 1])
-            ->first();
-        if($pendingCheckIn)
-        {
+                ->where('datetime', 'LIKE', $checkInDate . '%')
+                ->where(function ($query) {
+                    $query->where('status', 0)
+                        ->orWhere('status', 1);
+                })
+                ->first();
 
-        }
-        else
-        {
-
-            Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
-
-        }
+            if ($pendingCheckIn) {
+            } else {
+                Attendance::updateOrCreate(['datetime' => $log['DateTime'],'status'=>$log['Status']], $attendance);
+            }
+       
     }
         return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
     }

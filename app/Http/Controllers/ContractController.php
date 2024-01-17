@@ -20,49 +20,40 @@ class ContractController extends Controller
      */
     public function index()
     {
-        $contracts= Contract::with('user')->get();
+        $contracts = Contract::with('user')->get();
 
-        if($contracts->isEmpty())
-{
-   ;
-    return ResponseHelper::success([
-         'message'=>'there are not any contract'
-    ]);
+        if ($contracts->isEmpty()) {;
+            return ResponseHelper::success([
+                'message' => 'there are not any contract'
+            ]);
+        } else {
+            foreach ($contracts as $contract) {
+                $endTime = Carbon::parse($contract['endTime']);
+                if ($endTime->diffindays(Carbon::now()) < 0) {
+                    $status = 'finished';
+                } else {
+                    $status = 'active';
+                }
 
-}
-else
-{
-        foreach($contracts as $contract){
-        $endTime=Carbon::parse($contract['endTime']);
-        if($endTime->diffindays(Carbon::now())<0)
-        {
-            $status='finished';
 
+                $results[] = $result = [
+                    'startDate' => $contract['startTime'],
+                    'path' => $contract['path'],
+                    'endDate' => $contract['endTime'],
+                    'user_id' => $contract['user_id'],
+                    'contract_id' => $contract->id,
+                    'user' => $contract['user'],
+                    'status' => $status,
+                ];
+            }
+
+
+            return ResponseHelper::success(
+                $results
+
+            );
         }
-        else
-        {
-            $status='active';
-        }
-
-
-        $results[]=$result=[
-            'startDate'=>$contract['startTime'],
-            'path'=>$contract['path'],
-            'endDate'=>$contract['endTime'],
-            'user_id'=>$contract['user_id'],
-            'contract_id'=>$contract->id,
-            'user'=>$contract['user'],
-            'status'=>$status,
-        ];
     }
-
-
-        return ResponseHelper::success($results
-
-        );
-
-    }
-}
 
 
     /**
@@ -73,19 +64,23 @@ else
         $path = Files::saveFile($request);
 
 
-        $contract= Contract::create(
+        $contract = Contract::create(
             [
-                'path'=>$path,
-                'startTime'=>$request->startTime,
-                'endTime'=>$request->endTime,
-                'user_id'=>$request->user_id
+                'path' => $path,
+                'startTime' => $request->startTime,
+                'endTime' => $request->endTime,
+                'user_id' => $request->user_id
             ]
-            );
+        );
 
 
-            return ResponseHelper::success($contract,null,'contract',200
+        return ResponseHelper::success(
+            $contract,
+            null,
+            'contract',
+            200
 
-            );
+        );
     }
 
     /**
@@ -106,7 +101,7 @@ else
             ->where('id', $id)
             ->get()->toArray();
 
-        return ResponseHelper::success($result,null,'contract:',200);
+        return ResponseHelper::success($result, null, 'contract:', 200);
     }
 
 
@@ -125,7 +120,7 @@ else
     {
         $contract->delete();
         return ResponseHelper::success([
-            null,null, 'contract deleted successfully'
+            null, null, 'contract deleted successfully'
 
         ]);
     }

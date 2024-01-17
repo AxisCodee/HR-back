@@ -4,19 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('rates', function (Blueprint $table) {
+        Schema::create('absences', function (Blueprint $table) {
             $table->id();
+            $table->enum('type',['justification','Unjustified']);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('evaluator_id')->constrained('users')->cascadeOnDelete();
-            $table->integer('rate');
-            $table->enum('type',['technical', 'commitment','communication']);
-            $table->string('evaluator_role');
+            $table->date('startDate');
+            $table->date('endDate');
+            $table->enum('duration',['daily','hourly']);
+            $table->enum('status',['waiting','accepted','rejected'])->nullable();
+
             $table->timestamps();
         });
     }
@@ -26,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('rates');
+        Schema::dropIfExists('absences');
     }
 };

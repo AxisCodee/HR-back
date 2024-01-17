@@ -29,7 +29,8 @@ class User extends Authenticatable implements JWTSubject
         'first_name',
         'last_name',
         'role',
-        'department_id', 'pin',
+        'department_id',
+        'pin',
         'provider_id',
         'provider_name',
         'google_access_token_json',
@@ -123,5 +124,29 @@ class User extends Authenticatable implements JWTSubject
     public function evaluatorRates()
     {
         return $this->hasMany(Rate::class, 'evaluator_id');
+    }
+
+
+
+
+    public function userInfo()
+    {
+        return $this->hasOne(UserInfo::class);
+    }
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+    public function careers()
+    {
+        return $this->hasMany(Career::class);
+    }
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);}
+    public function  absences ()
+    {
+        return $this->hasMany(Absences::class, 'user_id');
+
     }
 }
