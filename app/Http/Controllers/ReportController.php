@@ -49,7 +49,7 @@ class ReportController extends Controller
 //get all reports of today
     public function daily_reports()
     {
-        $today = Report::whereDate('created_at',now()->format('Y-m-d'))->get();
+        $today = Report::whereDate('created_at',now()->format('Y-m-d'))->get()->toArray();
         return ResponseHelper::success($today, null, 'today reports returned successfully', 200);
     }
 //get CHECK-INs & CHECK-OUTs of a user in a specific day
