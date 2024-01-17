@@ -14,6 +14,7 @@ class Rate extends Model
         'evaluator_id',
         'evaluator_role',
         'rate',
+        'type'
 
     ];
 
