@@ -24,7 +24,8 @@ class UpdateRateRequest extends FormRequest
         return [
             'user_id'=>['required'],
             'rate'['required'],
-        
+            'type'=>['required'],
+
         ];
     }
 }
