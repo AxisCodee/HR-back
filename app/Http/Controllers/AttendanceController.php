@@ -71,4 +71,13 @@ class AttendanceController extends Controller
         ]);
     }
 
+    public function showAttendanceUser(User $user){
+
+        $result=User::with('attendance')->get();
+
+        return  ResponseHelper::success([
+            $result
+        ]);
+    }
+
 }
