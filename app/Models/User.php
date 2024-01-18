@@ -89,7 +89,7 @@ class User extends Authenticatable implements JWTSubject
     }
     public function roles()
     {
-        return $this->belongsToMany(Role::class,'user_id');
+        return $this->belongsToMany(Role::class);
     }
 
     public function my_decisions()
