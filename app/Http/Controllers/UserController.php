@@ -20,7 +20,7 @@ class UserController extends Controller
 //get all users info
     public function all_users()
     {
-        $all_users = User::query()->get(['id','first_name','last_name'])->toArray();
+        $all_users = User::query()->with('department')->with('roles')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 //get a specific user by the ID
@@ -43,11 +43,11 @@ class UserController extends Controller
         ]);
         return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
     }
-//delete a specific usre by his id
+//delete a specific user by his id
     public function remove_user($id)
     {
         $remove_user = User::findOrFail($id)->delete();
-        return ResponseHelper::success(null, null, 'user removed successfully', 200);
+        return ResponseHelper::deleted('user removed successfully');
     }
 //get all teams with their users
     public function getTeams()

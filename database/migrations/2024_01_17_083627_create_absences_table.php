@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->enum('type',['justification','Unjustified']);
+            $table->enum('type',['justified','Unjustified'])->default('Unjustified');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->date('startDate');
-            $table->date('endDate');
+            $table->dateTime('startDate')->nullable(true);
+            $table->dateTime('endDate')->nullable(true);
             $table->enum('duration',['daily','hourly']);
-            $table->enum('status',['waiting','accepted','rejected'])->nullable();
-
+            $table->enum('status',['waiting','accepted','rejected'])->nullable(false)->default('waiting');
+            $table->integer('hours_num')->nullable(true)->default(NULL);
             $table->timestamps();
         });
     }

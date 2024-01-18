@@ -66,6 +66,7 @@ class AttendanceController extends Controller
                 })
                 ->first();
 
+<<<<<<< HEAD
         if($pendingCheckIn)
         {
 
@@ -84,6 +85,13 @@ class AttendanceController extends Controller
 
 
         }
+=======
+            if ($pendingCheckIn) {
+            } else {
+                Attendance::updateOrCreate(['datetime' => $log['DateTime'],'status'=>$log['Status']], $attendance);
+            }
+       
+>>>>>>> 801b736c99b11468ffd8068fcbdd09a8812bd34c
     }
         return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
     }

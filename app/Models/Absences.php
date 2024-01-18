@@ -9,7 +9,15 @@ class Absences extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type','user_id','absencesDate'];
+    protected $fillable = [
+        'type',
+        'user_id',
+        'startDate',
+        'endDate',
+        'duration',
+        'status',
+        'hours_num',
+    ];
     public function users()
     {
         return $this->belongsTo(User::class,'user_id');
