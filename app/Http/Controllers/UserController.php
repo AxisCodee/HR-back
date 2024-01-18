@@ -76,7 +76,7 @@ class UserController extends Controller
             return ResponseHelper::created(null,'team already exists');
         }
         $department= Department::query()
-        ->create([
+        ->updateOrCreate([
             'name'=>$request->name,
         ]);
         if($request->users_array != null)
