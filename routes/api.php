@@ -14,6 +14,8 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\UserInfoController;
+use App\Http\Controllers\AbsencesController;
+use App\Models\Absences;
 use App\Models\Address;
 use App\Models\Career;
 
@@ -200,3 +202,11 @@ Route::prefix('UserInfo')->group(function () {
         Route::get('Show', 'show');
     });
 });
+
+Route::prefix('Absence')->group(function () {
+    Route::controller(AbsencesController::class)->group(function () {
+        Route::get('All', 'getAbsence');
+        Route::get('Show', 'show');
+    });
+});
+

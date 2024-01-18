@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
 use App\Helper\ResponseHelper;
+use App\Models\DatePin;
 use Illuminate\Support\Facades\Http;
 require 'tad\vendor\autoload.php';
 
@@ -73,14 +74,18 @@ class AttendanceController extends Controller
         else
         {
 
-            $attendence=Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
-           $date= Date::updateOrCreate(
+     $attendence=Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+    $date= Date::updateOrCreate(
                 ['date'=> $checkInDate]
             );
-            $attendence->dates()->syncWithDetection(
-                ['pin'=> $attendence->pin,
-                'date_id'=>$date->id]
-            );
+            DatePin::updateOrCreate(
+                [
+                'pin'=>$attendence->pin,
+                'date_id'=>$date->id
+                ]
+                );
+
+
 
 
         }
