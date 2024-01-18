@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Http\Requests\ContactRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Contact;
 use App\Models\Department;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
 use Illuminate\Support\Facades\Validator;
@@ -29,25 +32,25 @@ class UserController extends Controller
         $spec_user = User::findOrFail($id);
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
-    //edit a specific user info by his ID
-    public function edit_user(Request $request)
+//edit a specific user info by his ID
+    public function edit_user(UpdateUserRequest $request,$id)
     {
-        $spec_user = User::findOrFail($request->id);
+        $spec_user = User::findOrFail($id);
         $spec_user->update([
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'email'      => $request->email,
-            'password'   => $request->password,
+            'password'   => Hash::make( $request->password),
             'role_id'    => $request->role_id,
             'department_id' => $request->department_id,
         ]);
         return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
     }
-    //delete a specific usre by his id
+//delete a specific user by his id
     public function remove_user($id)
     {
         $remove_user = User::findOrFail($id)->delete();
-        return ResponseHelper::success(null, null, 'user removed successfully', 200);
+        return ResponseHelper::deleted('user removed successfully');
     }
     //get all teams with their users
     public function getTeams()
@@ -72,13 +75,15 @@ class UserController extends Controller
             }
             return ResponseHelper::created(null, 'team already exists');
         }
-        $department = Department::query()
-            ->create([
-                'name' => $request->name,
-            ]);
-        if ($request->users_array != null) {
-            foreach ($request->users_array as $user) {
-                $update = User::where('id', $user)->first();
+        $department= Department::query()
+        ->updateOrCreate([
+            'name'=>$request->name,
+        ]);
+        if($request->users_array != null)
+        {
+            foreach($request->users_array as $user)
+            {
+                $update = User::where('id',$user)->first();
                 $update->department_id = $department->id;
                 $update->save();
             }
@@ -131,5 +136,17 @@ class UserController extends Controller
     {
         $delete = Contact::findOrFail($id)->delete();
         return ResponseHelper::deleted('contact deleted successfully');
+    }
+//get all departments and rules
+    public function all_dep_rul()
+    {
+        $departments = Department::query()->get()->toArray();
+        $roles = Role::query()->get()->toArray();
+        return ResponseHelper::success(
+            [
+                'Departments' => $departments,
+                'Roles'=> $roles,
+            ]
+            , null, 'departments and roles returned successfully', 200);
     }
 }

@@ -7,13 +7,15 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
-    use HasRoles;
+    use HasRoles , SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -125,6 +127,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Rate::class, 'evaluator_id');
     }
+<<<<<<< HEAD
+=======
+    public function  absences ()
+    {
+        return $this->hasMany(Absences::class, 'user_id');
+
+    }
+>>>>>>> b5419de8d28d4ad44bcb11dc43d3d786296a2352
 
 
 
@@ -144,6 +154,7 @@ class User extends Authenticatable implements JWTSubject
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
+<<<<<<< HEAD
     }
     public function  absences()
     {
@@ -164,5 +175,10 @@ class User extends Authenticatable implements JWTSubject
     public function  study_situations()
     {
         return $this->hasMany(StudySituation::class);
+=======
+>>>>>>> b5419de8d28d4ad44bcb11dc43d3d786296a2352
     }
+
+   
+
 }
