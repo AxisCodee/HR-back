@@ -67,18 +67,9 @@ class AttendanceController extends Controller
 
             if ($pendingCheckIn) {
             } else {
-                Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+                Attendance::updateOrCreate(['datetime' => $log['DateTime'],'status'=>$log['Status']], $attendance);
             }
-        if($pendingCheckIn)
-        {
-
-        }
-        else
-        {
-
-            Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
-
-        }
+       
     }
         return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
     }

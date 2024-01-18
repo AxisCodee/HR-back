@@ -172,7 +172,6 @@ Route::prefix('Request')->group(function () {
         Route::post('accepteRequest/{request}', 'accepteRequest');
         Route::post('rejectRequest/{request}', 'rejectRequest');
         Route::delete('Delete/{request}', 'destory');
-        Route::post('SendRequest','send_request');
     });
 });
 
