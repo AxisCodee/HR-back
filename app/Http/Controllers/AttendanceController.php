@@ -113,7 +113,7 @@ class AttendanceController extends Controller
 
     public function DayAttendance($date)
     {
-        $daylogs = Attendance::query()
+        $daylogs = Attendance::query()->with('user')
                             ->whereDate('datetime',Carbon::parse($date)
                             ->format('Y-m-d'))
                             ->get()
