@@ -77,7 +77,7 @@ class AttendanceController extends Controller
            $date= Date::updateOrCreate(
                 ['date'=> $checkInDate]
             );
-            $attendence->date()->syncWithDetection(
+            $attendence->dates()->syncWithDetection(
                 ['pin'=> $attendence->pin,
                 'date_id'=>$date->id]
             );
