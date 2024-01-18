@@ -17,6 +17,17 @@ trait Files
         }
         return $theFilePath;
     }
+    public static function saveImage(Request $request)
+    {
+        $file = $request->file('image');
+        $theFilePath = null;
+        if ($request->hasFile('image')) {
+            $theFilePath = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('Imagepath'), $theFilePath);
+            $theFilePath = 'Imagepath/' . $theFilePath;
+        }
+        return $theFilePath;
+    }
     public static function deleteFile($file)
     {
         Storage::delete($file);

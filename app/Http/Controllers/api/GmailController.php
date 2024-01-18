@@ -13,7 +13,6 @@ use Google_Service_Gmail_ModifyMessageRequest;
 use Google\Service\Gmail;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use App\Services\EmailProcessor;
 
 class GmailController extends Controller
 {
@@ -186,6 +185,7 @@ class GmailController extends Controller
             $senderName = $matches[1]; // This will be "Ashampoo News"
             $senderEmail = $matches[2]; // This will be "info@news.ashampoo.com"
             $gravatarUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($senderEmail)));
+            //$gravatarUrl = $service->userinfo->get()->picture;
             //reciever info
             $headers = $payload['headers'];
             $toHeader = Arr::first($headers, function ($header) {
@@ -288,22 +288,24 @@ class GmailController extends Controller
             $isInbox = in_array('INBOX', $labelIds);
             //readen
             $isUnread = in_array('UNREAD', $labelIds);
-            return ResponseHelper::email($messageId,
-            $senderEmail,
-            $senderName,
-            $gravatarUrl,
-            $toValue,
-            $subjectValue,
-            $messageData,
-            $attachments,
-            $isStarred,
-            $labelStatus,
-            $dateValue,
-            $replies,
-            $isInbox,
-            $isUnread,
-            $service = null,
-            $message = 'true');
+            return ResponseHelper::email(
+                $messageId,
+                $senderEmail,
+                $senderName,
+                $gravatarUrl,
+                $toValue,
+                $subjectValue,
+                $messageData,
+                $attachments,
+                $isStarred,
+                $labelStatus,
+                $dateValue,
+                $replies,
+                $isInbox,
+                $isUnread,
+                $service = null,
+                $message = 'true'
+            );
         } catch (\Exception $e) {
             // Handle any exceptions that may occur
             return ResponseHelper::error(
@@ -377,6 +379,7 @@ class GmailController extends Controller
             return ResponseHelper::error("Message not sent", null);
         }
     }
+
     public function mail(Request $request)
     {
         $client = $this->getClient();
@@ -428,6 +431,7 @@ class GmailController extends Controller
                 $data = [
                     'id' => $email->getId(),
                     'sender' => '',
+                    'senderImage' => '', // New key for sender's image
                     'subject' => '',
                     'date' => '',
                     'isStarred' => in_array('STARRED', $message->getLabelIds())
@@ -438,6 +442,13 @@ class GmailController extends Controller
                     }
                     if ($header->getName() == 'From') {
                         $data['sender'] = $header->getValue();
+                        $senderEmail = $header->getValue();
+                        preg_match('/^(.*)<(.*)>$/', $senderEmail, $matches);
+                        $senderEmail = $matches[2];
+
+                        // Fetch Gravatar image URL
+                        $gravatarUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($senderEmail)));
+                        $data['senderImage'] = $gravatarUrl;
                     }
                     if ($header->getName() == 'Subject') {
                         $data['subject'] = $header->getValue();
@@ -449,6 +460,7 @@ class GmailController extends Controller
                 $messages[] = $data;
             }
         } while ($pageToken);
+
         return ResponseHelper::success($messages, null);
     }
     public function search(Request $request)

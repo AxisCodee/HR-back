@@ -3,11 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-
-class DepositRequest extends FormRequest
+class UpdateDepositRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,17 +24,7 @@ class DepositRequest extends FormRequest
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'user_id' => ['required', 'exists:users,id'],
             'received_date' => ['required', 'date'],
         ];
-    }
-
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Validation Error',
-            'errors' => $validator->errors(),
-        ], 422));
     }
 }

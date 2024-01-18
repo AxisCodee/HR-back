@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreContractRequest extends FormRequest
+
+class UpdateCareerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +24,8 @@ class StoreContractRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'path' => ['required'],
-            'startTime' => ['required'],
-            'endTime' => ['required'],
-            'user_id' => ['required']
+            'content' => ['required', 'string'],
+            'status' => ['required', Rule::in(['skill', 'career'])],
         ];
     }
 }
