@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Absences;
+use App\Helper\ResponseHelper;
 use App\Models\User;
+use App\Models\Date;
+use App\Models\DatePIn;
 use App\Http\Requests\StoreAbsencesRequest;
 use App\Http\Requests\UpdateAbsencesRequest;
 use App\Models\Attendance;
+use Carbon\Carbon;
 
 class AbsencesController extends Controller
 {
@@ -15,7 +19,7 @@ class AbsencesController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -23,11 +27,6 @@ class AbsencesController extends Controller
      */
     public function store(StoreAbsencesRequest $request)
     {
-        $user=User::query()->get();
-        foreach($user as $item)
-        {
-        $absences=Attendance::query()->where('pin',$user->pin)->get();
-        }
 
     }
 
@@ -53,5 +52,27 @@ class AbsencesController extends Controller
     public function destroy(Absences $absences)
     {
         //
+    }
+    public function getAbsence()
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMont=  Carbon::now()->endOfMonth();
+
+
+      $thisMonth=Date::query()->get();
+      foreach($thisMonth as $item )
+      {
+        $users=User::query()->get('pin')->toArray();
+        $thisday=DatePin::query()
+        ->whereBetween('date',[$startOfMonth,$endOfMont])
+        ->get()->toArray();
+
+        dd($thisday);
+
+      }
+
+
+      return ResponseHelper::success( $thisday,'Address has been deleted', null);
+
     }
 }
