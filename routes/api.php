@@ -29,6 +29,7 @@ Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
+Route::get('DayAttendance/{date}',[AttendanceController::class, 'DayAttendance']);
 
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
 

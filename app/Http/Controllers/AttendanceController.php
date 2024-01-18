@@ -9,6 +9,7 @@ use TADPHP\TAD;
 use TADPHP\TADFactory;
 use App\Helper\ResponseHelper;
 use App\Models\DatePin;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 require 'tad\vendor\autoload.php';
 
@@ -110,10 +111,14 @@ class AttendanceController extends Controller
         );
     }
 
-    public function DateAttendance(Request $request)
+    public function DayAttendance($date)
     {
-        $date = 10;
-
+        $daylogs = Attendance::query()
+                            ->whereDate('datetime',Carbon::parse($date)
+                            ->format('Y-m-d'))
+                            ->get()
+                            ->toArray();
+        return  ResponseHelper::success($daylogs,null,'Day logs returned successfully');
     }
 
     public function showAttendanceUser($user)
