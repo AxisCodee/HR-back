@@ -43,11 +43,11 @@ class UserController extends Controller
         ]);
         return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
     }
-//delete a specific usre by his id
+//delete a specific user by his id
     public function remove_user($id)
     {
         $remove_user = User::findOrFail($id)->delete();
-        return ResponseHelper::success(null, null, 'user removed successfully', 200);
+        return ResponseHelper::deleted('user removed successfully');
     }
 //get all teams with their users
     public function getTeams()
