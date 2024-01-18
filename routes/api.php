@@ -52,7 +52,7 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
-        Route::delete('removeUser','remove_user');
+        Route::delete('removeUser/{user}','remove_user');
     });
 });
 
