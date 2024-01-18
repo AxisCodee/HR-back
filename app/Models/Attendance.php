@@ -14,4 +14,9 @@ class Attendance extends Model
 {
     return $this->belongsTo('App\Models\User', 'pin', 'pin');
 }
+public function dates()
+    {
+        return $this->belongsToMany(Date::class,'DatePin','pin');
+    }
+
 }

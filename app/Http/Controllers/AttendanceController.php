@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\Date;
 use Illuminate\Http\Request;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
@@ -65,10 +66,6 @@ class AttendanceController extends Controller
                 })
                 ->first();
 
-            if ($pendingCheckIn) {
-            } else {
-                Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
-            }
         if($pendingCheckIn)
         {
 
@@ -76,7 +73,15 @@ class AttendanceController extends Controller
         else
         {
 
-            Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+            $attendence=Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+           $date= Date::updateOrCreate(
+                ['date'=> $checkInDate]
+            );
+            $attendence->date()->syncWithDetection(
+                ['pin'=> $attendence->pin,
+                'date_id'=>$date->id]
+            );
+
 
         }
     }

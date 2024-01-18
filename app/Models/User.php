@@ -125,31 +125,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Rate::class, 'evaluator_id');
     }
-<<<<<<< HEAD
-
-
-
-
-    public function userInfo()
-    {
-        return $this->hasOne(UserInfo::class);
-    }
-    public function address()
-    {
-        return $this->hasOne(Address::class);
-    }
-    public function careers()
-    {
-        return $this->hasMany(Career::class);
-    }
-    public function deposits()
-    {
-        return $this->hasMany(Deposit::class);
-=======
     public function  absences ()
     {
         return $this->hasMany(Absences::class, 'user_id');
 
->>>>>>> bca60fd125c316fa38db1916dcca98cc182340b6
     }
 }
