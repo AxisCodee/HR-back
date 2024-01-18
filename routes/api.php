@@ -52,6 +52,7 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
+        Route::delete('removeUser','remove_user');
     });
 });
 
@@ -171,6 +172,7 @@ Route::prefix('Request')->group(function () {
         Route::post('accepteRequest/{request}', 'accepteRequest');
         Route::post('rejectRequest/{request}', 'rejectRequest');
         Route::delete('Delete/{request}', 'destory');
+        Route::post('SendRequest','send_request');
     });
 });
 
