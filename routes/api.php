@@ -113,6 +113,8 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
+        Route::post('edit_user', 'edit_user');
+
     });
 });
 
