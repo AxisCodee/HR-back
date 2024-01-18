@@ -127,15 +127,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Rate::class, 'evaluator_id');
     }
-<<<<<<< HEAD
     public function  absences ()
     {
         return $this->hasMany(Absences::class, 'user_id');
 
     }
-=======
 
->>>>>>> 8f7bf1c9b5ccfb2d2a20cb3955584dd3332014f9
 
 
 
@@ -155,12 +152,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Deposit::class);
     }
-<<<<<<< HEAD
 
-=======
-    public function  absences()
-    {
-        return $this->hasMany(Absences::class, 'user_id');
-    }
->>>>>>> 8f7bf1c9b5ccfb2d2a20cb3955584dd3332014f9
+   
+
 }
