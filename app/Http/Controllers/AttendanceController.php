@@ -95,13 +95,20 @@ class AttendanceController extends Controller
     }
 
 
-    public function showAttendanceLogs(){
+    public function showAttendanceLogs()
+    {
 
         $result=User::with('department')->with('attendance')->get()->toArray();
 
         return  ResponseHelper::success(
             $result
         );
+    }
+
+    public function DateAttendance(Request $request)
+    {
+        $date = 10;
+
     }
 
     public function showAttendanceUser($user)
