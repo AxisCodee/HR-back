@@ -14,6 +14,8 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RateController;
 use App\Http\Controllers\UserInfoController;
+use App\Http\Controllers\AbsencesController;
+use App\Models\Absences;
 use App\Models\Address;
 use App\Models\Career;
 
@@ -27,6 +29,7 @@ Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
+Route::get('DayAttendance/{date}',[AttendanceController::class, 'DayAttendance']);
 
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
 
@@ -53,6 +56,7 @@ Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
         Route::delete('removeUser/{user}','remove_user');
+        Route::post('EditUser/{user}','edit_user');
     });
 });
 
@@ -113,8 +117,7 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
-        Route::post('edit_user', 'edit_user');
-
+        Route::get('Deps&Roles','all_dep_rul');
     });
 });
 
@@ -200,3 +203,11 @@ Route::prefix('UserInfo')->group(function () {
         Route::get('Show', 'show');
     });
 });
+
+Route::prefix('Absence')->group(function () {
+    Route::controller(AbsencesController::class)->group(function () {
+        Route::get('All', 'getAbsence');
+        Route::get('Show', 'show');
+    });
+});
+

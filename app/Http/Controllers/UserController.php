@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Http\Requests\ContactRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Contact;
 use App\Models\Department;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
 use Illuminate\Support\Facades\Validator;
@@ -20,7 +23,7 @@ class UserController extends Controller
 //get all users info
     public function all_users()
     {
-        $all_users = User::query()->with('department')->with('roles')->get()->toArray();
+        $all_users = User::query()->get(['id','first_name','last_name'])->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 //get a specific user by the ID
@@ -30,14 +33,14 @@ class UserController extends Controller
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
 //edit a specific user info by his ID
-    public function edit_user(Request $request)
+    public function edit_user(UpdateUserRequest $request,$id)
     {
-        $spec_user = User::findOrFail($request->id);
+        $spec_user = User::findOrFail($id);
         $spec_user->update([
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'email'      => $request->email,
-            'password'   => $request->password,
+            'password'   => Hash::make( $request->password),
             'role_id'    => $request->role_id,
             'department_id' => $request->department_id,
         ]);
@@ -136,5 +139,17 @@ class UserController extends Controller
     {
         $delete = Contact::findOrFail($id)->delete();
         return ResponseHelper::deleted('contact deleted successfully');
+    }
+//get all departments and rules
+    public function all_dep_rul()
+    {
+        $departments = Department::query()->get()->toArray();
+        $roles = Role::query()->get()->toArray();
+        return ResponseHelper::success(
+            [
+                'Departments' => $departments,
+                'Roles'=> $roles,
+            ]
+            , null, 'departments and roles returned successfully', 200);
     }
 }

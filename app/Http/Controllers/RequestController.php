@@ -145,21 +145,23 @@ class RequestController extends Controller
     public function send_request(SendRequest $request)
     {
         $validate = $request->validated();
-        switch ($validate['duration']) {
-            case 'hourly':
-                $start_vac = Carbon::parse($validate['startDate']);
-                $end_vac = Carbon::parse($validate['endDate']);
-                $hours_number = $start_vac->diffInHours($end_vac);
-                $new_req = Absences::create([
-                    'user_id' => $validate['user_id'],
-                    'startDate' => $start_vac,
-                    'endDate' => $end_vac,
-                    'duration' => $validate['duration'],
-                    'hours_num' => $hours_number,
-                ]);
-                return ResponseHelper::created($new_req, 'Request sent successfully');
-                break;
-            case 'daily':
+
+        if($validate['duration'] == 'hourly')
+        {
+            $start_vac = Carbon::parse($validate['startDate']);
+            $end_vac = Carbon::parse($validate['endDate']);
+            $hours_number = $start_vac->diffInHours($end_vac);
+            $new_req = Absences::create([
+                'user_id' => $validate['user_id'],
+                'startDate' => $start_vac,
+                'endDate' => $end_vac,
+                'duration' => $validate['duration'],
+                'hours_num' => $hours_number,
+            ]);
+            return ResponseHelper::created($new_req, 'Request sent successfully');
+        }
+            elseif ($validate['duration'] == 'daily')
+            {
                 $new_req = Absences::create([
                     'user_id' => $validate['user_id'],
                     'startDate' => $validate['startDate'],
@@ -167,10 +169,10 @@ class RequestController extends Controller
                     'duration' => $validate['duration'],
                 ]);
                 return ResponseHelper::created($new_req, 'Request sent successfully');
-                break;
-            default:
-                return ResponseHelper::error($validate, null, 'error sending the request', 400);
-                break;
-        }
+            }
+                else
+                {
+                    return ResponseHelper::error($validate, null, 'error sending the request', 400);
+                }
     }
 }

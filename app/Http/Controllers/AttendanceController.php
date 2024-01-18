@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
 use App\Helper\ResponseHelper;
+use App\Models\DatePin;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 require 'tad\vendor\autoload.php';
 
@@ -73,14 +75,18 @@ class AttendanceController extends Controller
         else
         {
 
-            $attendence=Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
-           $date= Date::updateOrCreate(
+     $attendence=Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+    $date= Date::updateOrCreate(
                 ['date'=> $checkInDate]
             );
-            $attendence->dates()->syncWithDetection(
-                ['pin'=> $attendence->pin,
-                'date_id'=>$date->id]
-            );
+            DatePin::updateOrCreate(
+                [
+                'pin'=>$attendence->pin,
+                'date_id'=>$date->id
+                ]
+                );
+
+
 
 
         }
@@ -95,13 +101,24 @@ class AttendanceController extends Controller
     }
 
 
-    public function showAttendanceLogs(){
+    public function showAttendanceLogs()
+    {
 
         $result=User::with('department')->with('attendance')->get()->toArray();
 
         return  ResponseHelper::success(
             $result
         );
+    }
+
+    public function DayAttendance($date)
+    {
+        $daylogs = Attendance::query()
+                            ->whereDate('datetime',Carbon::parse($date)
+                            ->format('Y-m-d'))
+                            ->get()
+                            ->toArray();
+        return  ResponseHelper::success($daylogs,null,'Day logs returned successfully');
     }
 
     public function showAttendanceUser($user)
