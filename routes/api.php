@@ -55,6 +55,7 @@ Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
         Route::delete('removeUser/{user}','remove_user');
+        Route::post('EditUser/{user}','edit_user');
     });
 });
 
@@ -115,6 +116,7 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
+        Route::get('Deps&Roles','all_dep_rul');
     });
 });
 

@@ -102,11 +102,11 @@ class AttendanceController extends Controller
 
     public function showAttendanceLogs(){
 
-        $result=User::with('department')->with('attendance')->get();
+        $result=User::with('department')->with('attendance')->get()->toArray();
 
-        return  ResponseHelper::success([
+        return  ResponseHelper::success(
             $result
-        ]);
+        );
     }
 
     public function showAttendanceUser($user)
