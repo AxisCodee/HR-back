@@ -17,6 +17,7 @@ class Absences extends Model
         'duration',
         'status',
         'hours_num',
+        'dayNumber'
     ];
     public function users()
     {
