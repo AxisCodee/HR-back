@@ -163,6 +163,7 @@ Route::prefix('Team')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('getTeams', 'getTeams');
         Route::post('storeTeams', 'storeTeams');
+        Route::post('AddMembers/{team}','Addmembers');
         Route::post('updateTeam/{team}', 'updateTeams');
         Route::delete('deleteTeam/{team}', 'deleteTeam');
     });

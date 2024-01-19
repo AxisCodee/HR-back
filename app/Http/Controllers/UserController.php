@@ -57,42 +57,37 @@ class UserController extends Controller
     {
        $department= Department::query()
        ->with('user')
-       ->get()->toArray();
+       ->get()
+       ->toArray();
         return ResponseHelper::success($department);
     }
+//add members to a team
+    public function Addmembers(Request $request,$team)
+    {
+        foreach($request->users_array as $user)
+        {
+            $add = User::findOrFail($user);
+            $add->department_id = $team;
+            $add->save();
+        }
+        return ResponseHelper::created('users added to the team successfully');
+    }
+
 //add new team and add users to it
     public function storeTeams(Request $request)
     {
-        $existing = Department::where('name',$request->name)->first();
-        if($existing)
-        {
-            if($request->users_array != null)
+        $team = Department::updateOrCreate(['name'=>$request->name]);
+            if($request->users_array)
             {
                 foreach($request->users_array as $user)
                 {
                     $update = User::where('id',$user)->first();
-                    $update->department_id = $existing->id;
+                    $update->department_id = $team->id;
                     $update->save();
                 }
-                return ResponseHelper::created(null,'team added successfully');
+                return ResponseHelper::created('users added to the team successfully');
             }
-            return ResponseHelper::created(null,'team already exists');
-        }
-        $department= Department::query()
-        ->create([
-            'name'=>$request->name,
-        ]);
-        if($request->users_array != null)
-        {
-            foreach($request->users_array as $user)
-            {
-                $update = User::where('id',$user)->first();
-                $update->department_id = $department->id;
-                $update->save();
-            }
-            return ResponseHelper::created(null,'team added successfully');
-        }
-        return ResponseHelper::created(null,'team added successfully');
+        return ResponseHelper::created('team added successfully');
     }
 //update an existing team name
     public function updateTeams(Request $request,$id)
@@ -112,7 +107,7 @@ class UserController extends Controller
 //get all members of a team
     public function getMemberOfTeam(Department $department)
     {
-        $members=$department->users()->get();
+        $members=$department->users()->get()->toArray();
         return ResponseHelper::success($members);
     }
 //add new contact to a user
