@@ -3,10 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AddressRequest extends FormRequest
+class StudySitRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +22,9 @@ class AddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string'],
             'user_id' => 'required|integer|exists:users,id',
-            'city' => ['required', 'string'],
+            'title' => 'required|string',
+            'description' => 'required|string',
         ];
-    }
-
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Validation Error',
-            'errors' => $validator->errors(),
-        ], 422));
     }
 }

@@ -59,20 +59,38 @@ class AbsencesController extends Controller
         $endOfMont=  Carbon::now()->endOfMonth();
 
 
-      $thisMonth=Date::query()->get();
-      foreach($thisMonth as $item )
+    $times=Date::query()->whereBetween('date',[$startOfMonth,$endOfMont])->get()->toArray();
+      $users=User::query()->get()->toArray();
+      foreach($times as $time )
       {
-        $users=User::query()->get('pin')->toArray();
-        $thisday=DatePin::query()
-        ->whereBetween('date',[$startOfMonth,$endOfMont])
-        ->get()->toArray();
+        foreach($users as $user)
+        {
 
-        dd($thisday);
+        $userDate=DatePin::query()->where('pin',$user['pin'])->where('date_id',$time['id'])->get()->toArray();
+        //$userDate=DatePin::query()->where('pin',6)->where('date_id',24)->get()->toArray();
+        if(!$userDate)
+        {
+        $absences=Absences::where('user_id',$user['id'])->where('status','accepted')->get()->toArray();
+        if(!$absences)
+        {
+          $results=$user->absences()->create(
+            [
+            'startDate'=>$time->date,
+            'endDatee'=>null,
+            'statuse'=>'waiting'
 
+
+            ]
+
+            );
+
+        }
+    }
+        }
       }
 
 
-      return ResponseHelper::success( $thisday,'Address has been deleted', null);
+      return ResponseHelper::success($results,'yaaaaaa', null);
 
     }
 }

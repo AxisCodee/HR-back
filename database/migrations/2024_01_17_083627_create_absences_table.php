@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('duration',['daily','hourly']);
             $table->enum('status',['waiting','accepted','rejected'])->nullable(false)->default('waiting');
             $table->integer('hours_num')->nullable(true)->default(NULL);
+            $table->integer('dayNumber')->nullable();
             $table->timestamps();
         });
     }

@@ -62,8 +62,6 @@ class ContractController extends Controller
     public function store(StoreContractRequest $request)
     {
         $path = Files::saveFile($request);
-
-
         $contract = Contract::create(
             [
                 'path' => $path,
@@ -72,14 +70,11 @@ class ContractController extends Controller
                 'user_id' => $request->user_id
             ]
         );
-
-
         return ResponseHelper::success(
             $contract,
             null,
             'contract',
             200
-
         );
     }
 

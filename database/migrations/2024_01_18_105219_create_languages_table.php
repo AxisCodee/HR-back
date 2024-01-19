@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_infos', function (Blueprint $table) {
+        Schema::create('languages', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->text('image')->nullable();
-            $table->date('birth_date');
-            $table->enum('gender', ['Male', 'Female']);
-            $table->bigInteger('nationalID');
-            $table->enum('social_situation', ['Single', 'Married']);
-            $table->enum('military_situation', ['Postponed', 'Exempt', 'Finished']);
-            $table->bigInteger('salary');
             $table->timestamps();
         });
     }
@@ -30,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_infos');
+        Schema::dropIfExists('languages');
     }
 };
