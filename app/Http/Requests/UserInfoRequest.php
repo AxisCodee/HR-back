@@ -24,7 +24,7 @@ class UserInfoRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'image' => 'required|string',
+            'image' => 'required',
             'birth_date' => 'required|date',
             'gender' => ['required', Rule::in(['Male', 'Female'])],
             'nationalID' => 'required|string|max:11',
@@ -32,12 +32,10 @@ class UserInfoRequest extends FormRequest
                 'required',
                 Rule::in(['Single', 'Married']),
             ],
-            'study_situation' => 'required|array',
             'military_situation' => [
                 'required',
                 Rule::in(['Postponed', 'Exempt', 'Finished']),
             ],
-            'certificates' => 'required|array',
             'salary' => 'required|integer',
         ];
     }

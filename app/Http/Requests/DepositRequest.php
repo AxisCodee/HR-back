@@ -26,7 +26,8 @@ class DepositRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string'],
-            'user_id' => ['required|exists:users,id'],
+            'description' => ['required', 'string'],
+            'user_id' => ['required', 'exists:users,id'],
             'received_date' => ['required', 'date'],
         ];
     }

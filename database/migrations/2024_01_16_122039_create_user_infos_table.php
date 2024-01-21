@@ -19,9 +19,7 @@ return new class extends Migration
             $table->enum('gender', ['Male', 'Female']);
             $table->bigInteger('nationalID');
             $table->enum('social_situation', ['Single', 'Married']);
-            $table->json('study_situation');
             $table->enum('military_situation', ['Postponed', 'Exempt', 'Finished']);
-            $table->json('certificates')->nullable();
             $table->bigInteger('salary');
             $table->timestamps();
         });

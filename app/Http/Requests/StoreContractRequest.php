@@ -22,10 +22,10 @@ class StoreContractRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'path'=>['required'],
-            'startTime'=>['required']
-            ,'endTime'=>['required'],
-            'user_id'=>['required']
+            'path' => ['required'],
+            'startTime' => ['required'],
+            'endTime' => ['required'],
+            'user_id' => ['required']
         ];
     }
 }

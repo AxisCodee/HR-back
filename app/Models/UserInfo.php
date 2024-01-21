@@ -18,13 +18,7 @@ class UserInfo extends Model
         'social_situation',
         'study_situation',
         'military_situation',
-        'certificates',
         'salary',
-    ];
-
-    protected $casts = [
-        'certificates' => 'array',
-        'study_situation' => 'array'
     ];
 
 
@@ -32,24 +26,5 @@ class UserInfo extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    // public function address()
-    // {
-    //     return $this->hasOne(Address::class);
-    // }
-
-    // public function careers()
-    // {
-    //     return $this->hasMany(Career::class);
-    // }
-    // public function deposits()
-    // {
-    //     return $this->hasMany(Deposit::class);
-    // }
-    // public function contacts()
-    // {
-    //     return $this->hasMany(Contact::class);
-    // }
-
 
 }

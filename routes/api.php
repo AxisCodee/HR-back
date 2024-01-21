@@ -11,11 +11,20 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\api\GmailController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\DepositController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RateController;
+use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserInfoController;
+use App\Http\Controllers\AbsencesController;
+use App\Models\Absences;
 use App\Models\Address;
 use App\Models\Career;
+use App\Models\Language;
+use Google\Service\CloudSearch\LanguageConfig;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -27,6 +36,7 @@ Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
+Route::get('DayAttendance/{date}',[AttendanceController::class, 'DayAttendance']);
 
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
 
@@ -53,6 +63,7 @@ Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
         Route::delete('removeUser/{user}','remove_user');
+        Route::post('EditUser/{user}','edit_user');
     });
 });
 
@@ -113,8 +124,7 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
-        Route::post('edit_user', 'edit_user');
-
+        Route::get('Deps&Roles','all_dep_rul');
     });
 });
 
@@ -160,6 +170,7 @@ Route::prefix('Team')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('getTeams', 'getTeams');
         Route::post('storeTeams', 'storeTeams');
+        Route::post('AddMembers/{team}','Addmembers');
         Route::post('updateTeam/{team}', 'updateTeams');
         Route::delete('deleteTeam/{team}', 'deleteTeam');
     });
@@ -183,20 +194,71 @@ Route::prefix('Request')->group(function () {
 Route::prefix('Address')->group(function () {
     Route::controller(AddressController::class)->group(function () {
         Route::post('Add', 'store');
-        Route::post('Delete', 'destroy');
+        Route::post('Update/{id}', 'update');
+        //Route::get('Show/{id}', 'show');
+        Route::delete('Delete/{id}', 'destory');
     });
 });
-
+Route::prefix('Deposit')->group(function () {
+    Route::controller(DepositController::class)->group(function () {
+        Route::get('All', 'index');
+        Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::get('Show', 'show');
+        Route::delete('Delete/{id}', 'destroy');
+    });
+});
 Route::prefix('Career')->group(function () {
     Route::controller(CareerController::class)->group(function () {
         Route::post('Add', 'store');
-        Route::post('Delete', 'destroy');
+        Route::post('Update/{id}', 'update');
+        Route::delete('Delete/{id}', 'destroy');
+    });
+});
+
+Route::prefix('StudySituations')->group(function () {
+    Route::controller(StudySituationController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::delete('Delete/{id}', 'destroy');
+    });
+});
+Route::prefix('Certificates')->group(function () {
+    Route::controller(CertificateController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::delete('Delete/{id}', 'destroy');
+    });
+});
+
+Route::prefix('Language')->group(function () {
+    Route::controller(LanguageController::class)->group(function () {
+        Route::post('Add', 'store');
+        //Route::post('Update/{id}', 'update');
+        Route::delete('Delete/{id}', 'destroy');
+    });
+});
+Route::prefix('Notes')->group(function () {
+    Route::controller(NoteController::class)->group(function () {
+        Route::get('All', 'index');
+        Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::delete('Delete/{id}', 'destroy');
     });
 });
 
 Route::prefix('UserInfo')->group(function () {
     Route::controller(UserInfoController::class)->group(function () {
         Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::get('Show/{id}', 'show');
+    });
+});
+
+Route::prefix('Absence')->group(function () {
+    Route::controller(AbsencesController::class)->group(function () {
+        Route::get('All', 'getAbsence');
         Route::get('Show', 'show');
     });
 });
+

@@ -15,7 +15,7 @@ class Date extends Model
 
     public function  pin()
     {
-        return $this->belongsToMany(Attendance::class,'DatePin','date_id');
+        return $this->belongsToMany(Attendance::class,'date_pins','date_id','pin');
 
     }
 }

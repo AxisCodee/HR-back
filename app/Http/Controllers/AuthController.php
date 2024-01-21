@@ -7,8 +7,13 @@ use TADPHP\TADFactory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Certificate;
+use App\Models\Language;
+use App\Models\Skils;
+use App\Models\UserInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Traits\Files;
 
 require 'tad/vendor/autoload.php';
 
@@ -20,7 +25,7 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {  
+    {
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
@@ -64,12 +69,54 @@ class AuthController extends Controller
             'role'=>$request->role,
             'department_id' => $request->department_id,
             'password' => Hash::make($request->password),
-            'pin' => $request->pin,//this is the pin2 in the returned response
+            'pin' => $request->pin, //this is the pin2 in the returned response
+
+
+        ]);
+        $path = Files::saveImage($request);
+        $userInfo=UserInfo::query()->create([
+            'user_id' => $user->id,
+            'salary'=>$request->salary,
+            'birth_date'=>$request->birth_date,
+            'gender'=>$request->gender,
+            'nationalID'=>$request->nationalID,
+            'social_situation'=>$request->social_situation,
+            'military_situation'=>$request->military_situation,
+            'image'=>$path
 
 
         ]);
         $user->assignRole($request->role);
+        $certificates = $request->certificates;
+        $languages = $request->languages;
+        $skills = $request->skills;
 
+        foreach ($certificates as $certificateTitle) {
+            $certificate = Certificate::query()->create([
+                'title' => $certificateTitle,
+                'user_id' => $user->id,
+            ]);
+        }
+
+        $languageRate = $request->languageRate;
+
+        foreach ($languages as $languageName) {
+            $language = Language::query()->create([
+                'name' => $languageName,
+                'rate' => $languageRate,
+                'user_id' => $user->id,
+            ]);
+        }
+
+        $skillRate = $request->skillRate;
+
+        foreach ($skills as $skillName) {
+            $skill = Skils::query()->create([
+                'name' => $skillName,
+                'rate' => $skillRate,
+                'user_id' => $user->id,
+            ]);
+        }
 
         return ResponseHelper::success([
             'message' => 'User created successfully',

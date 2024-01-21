@@ -25,6 +25,7 @@ class AddressRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string'],
+            'user_id' => 'required|integer|exists:users,id',
             'city' => ['required', 'string'],
         ];
     }
