@@ -51,6 +51,7 @@ class AttendanceController extends Controller
         $array = json_decode(json_encode($xml), true);
         $logsData = $array['Row'];
         foreach ($logsData as $log) {
+
             $attendance = [
                 'pin' => $log['PIN'],
                 'datetime' => $log['DateTime'],
@@ -61,12 +62,12 @@ class AttendanceController extends Controller
 
             $checkInDate = substr($log['DateTime'], 0, 10);
             $pendingCheckIn = Attendance::where('pin', $log['PIN'])
-                ->where('datetime', 'LIKE', $checkInDate . '%')
-                ->where(function ($query) {
-                    $query->where('status', 0)
-                        ->orWhere('status', 1);
-                })
-                ->first();
+            ->where('datetime', 'LIKE', $checkInDate . '%')
+            ->where(function ($query) {
+                $query->where('status', 0)
+                    ->orWhere('status', 1);
+            })
+            ->get();
 
         if($pendingCheckIn)
         {
@@ -113,12 +114,13 @@ class AttendanceController extends Controller
 
     public function DayAttendance($date)
     {
-        $daylogs = Attendance::query()->with('user')
-                            ->whereDate('datetime',Carbon::parse($date)
-                            ->format('Y-m-d'))
-                            ->get()
-                            ->toArray();
-        return  ResponseHelper::success($daylogs,null,'Day logs returned successfully');
+        $users = User::with(['attendance' => function ($query) use ($date) {
+            $query->whereDate('datetime', $date);
+        }])
+        ->has('attendance')
+        ->get();
+
+        return ResponseHelper::success($users);
     }
 
     public function showAttendanceUser($user)
