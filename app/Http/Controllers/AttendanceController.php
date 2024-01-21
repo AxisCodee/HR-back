@@ -114,7 +114,7 @@ class AttendanceController extends Controller
 
     public function DayAttendance($date)
     {
-        $users = User::with(['attendance' => function ($query) use ($date) {
+        $users = User::with('department')->with(['attendance' => function ($query) use ($date) {
             $query->whereDate('datetime', $date);
         }])
         ->has('attendance')
