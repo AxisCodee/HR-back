@@ -87,6 +87,12 @@ class UserController extends Controller
                 }
                 return ResponseHelper::created('users added to the team successfully');
             }
+
+            $teamLeader=User::query()
+            ->where('id',$request->team_leader)
+            ->update([
+                'role'=>'Team_Leader'
+            ]);
         return ResponseHelper::created('team added successfully');
     }
     //update an existing team name
