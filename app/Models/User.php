@@ -36,6 +36,7 @@ class User extends Authenticatable implements JWTSubject
         'provider_id',
         'provider_name',
         'google_access_token_json',
+        'address'
     ];
 
 
@@ -152,7 +153,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Deposit::class);
     }
-   
+
     public function  notes()
     {
         return $this->hasMany(Note::class);
@@ -170,6 +171,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(StudySituation::class);
     }
 
-   
+
 
 }

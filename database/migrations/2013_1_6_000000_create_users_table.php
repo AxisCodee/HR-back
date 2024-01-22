@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->foreignId('department_id')->nullable()->constrained('departments')->cascadeOnDelete();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('address')->nullable();
             $table->integer('pin')->nullable();
             $table->string('provider_name')->default('google');
             $table->string('provider_id')->nullable();

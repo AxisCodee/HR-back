@@ -173,7 +173,7 @@ Route::prefix('Team')->group(function () {
         Route::post('AddMembers/{team}','Addmembers');
         Route::post('updateTeam/{team}', 'updateTeams');
         Route::delete('deleteTeam/{team}', 'deleteTeam');
-        Route::get('RemoveMember/{user}','remove_from_team');
+        Route::post('RemoveMember/{user}','remove_from_team');
     });
 });
 

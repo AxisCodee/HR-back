@@ -14,6 +14,7 @@ use App\Models\UserInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Traits\Files;
+use App\Models\Contact;
 
 require 'tad/vendor/autoload.php';
 
@@ -70,7 +71,7 @@ class AuthController extends Controller
             'department_id' => $request->department_id,
             'password' => Hash::make($request->password),
             'pin' => $request->pin, //this is the pin2 in the returned response
-
+           'address'=>$request->address
 
         ]);
         $path = Files::saveImage($request);
@@ -87,41 +88,53 @@ class AuthController extends Controller
 
         ]);
         $user->assignRole($request->role);
+
+
         $certificates = $request->certificates;
         $languages = $request->languages;
+        $languageRates = $request->languageRates;
         $skills = $request->skills;
+        $skillsRates = $request->skillsRates;
 
-        foreach ($certificates as $certificateTitle) {
-            $certificate = Certificate::query()->create([
-                'title' => $certificateTitle,
-                'user_id' => $user->id,
-            ]);
-        }
+foreach ($certificates as $certificateTitle) {
+    $certificate = Certificate::create([
+        'title' => $certificateTitle,
+        'user_id' => $user->id,
+    ]);
+}
 
-        $languageRate = $request->languageRate;
+foreach ($languages as $index => $languageName) {
+    $languageRate = $request->languageRates[$index];
+    $language = Language::create([
+        'name' => $languageName,
+        'rate' => $languageRate,
+        'user_id' => $user->id,
+    ]);
+}
 
-        foreach ($languages as $languageName) {
-            $language = Language::query()->create([
-                'name' => $languageName,
-                'rate' => $languageRate,
-                'user_id' => $user->id,
-            ]);
-        }
+foreach ($skills as $index => $skillsName) {
+    $skillsRate = $request->skillsRates[$index];
+    $skill = Skils::create([
+        'name' => $skillsName,
+        'rate' => $skillsRate,
+        'user_id' => $user->id,
+    ]);
+}
 
-        $skillRate = $request->skillRate;
+$multi = Contact::query()->create([
+    'user_id' => $user->id,
+    'type' => $request->contactType,
+    'name' => ($request->contactType === 'emergency') ? $request->contactName : null,
+    'address' => ($request->contactType === 'emergency') ? $request->contactAddress : null,
+    'contact' => $request->contact
+]);
 
-        foreach ($skills as $skillName) {
-            $skill = Skils::query()->create([
-                'name' => $skillName,
-                'rate' => $skillRate,
-                'user_id' => $user->id,
-            ]);
-        }
 
-        return ResponseHelper::success([
-            'message' => 'User created successfully',
-            'user' => $user,
-        ]);
+
+
+        return ResponseHelper::success(
+            [$user]
+        );
 
     }
 
