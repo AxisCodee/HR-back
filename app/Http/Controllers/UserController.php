@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Contact;
 use App\Models\Department;
 use App\Models\Role;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
@@ -32,21 +33,21 @@ class UserController extends Controller
         $spec_user = User::findOrFail($id);
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
-//edit a specific user info by his ID
-    public function edit_user(UpdateUserRequest $request,$id)
+    //edit a specific user info by his ID
+    public function edit_user(UpdateUserRequest $request, $id)
     {
         $spec_user = User::findOrFail($id);
         $spec_user->update([
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
             'email'      => $request->email,
-            'password'   => Hash::make( $request->password),
+            'password'   => Hash::make($request->password),
             'role_id'    => $request->role_id,
             'department_id' => $request->department_id,
         ]);
         return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
     }
-//remove a user from a team
+    //remove a user from a team
     public function remove_from_team($id)
     {
         $remove = User::findOrFail($id);
@@ -55,7 +56,7 @@ class UserController extends Controller
 
         return ResponseHelper::deleted('user removed from team successfully');
     }
-//delete a specific user by his id
+    //delete a specific user by his id
     public function remove_user($id)
     {
         $remove_user = User::findOrFail($id)->delete();
@@ -64,17 +65,16 @@ class UserController extends Controller
     //get all teams with their users
     public function getTeams()
     {
-       $department= Department::query()
-       ->with('user')
-       ->get()
-       ->toArray();
+        $department = Department::query()
+            ->with('user')
+            ->get()
+            ->toArray();
         return ResponseHelper::success($department);
     }
-//add members to a team
-    public function Addmembers(Request $request,$team)
+    //add members to a team
+    public function Addmembers(Request $request, $team)
     {
-        foreach($request->users_array as $user)
-        {
+        foreach ($request->users_array as $user) {
             $add = User::findOrFail($user);
             $add->department_id = $team;
             $add->save();
@@ -82,25 +82,23 @@ class UserController extends Controller
         return ResponseHelper::created('users added to the team successfully');
     }
 
-//add new team and add users to it
+    //add new team and add users to it
     public function storeTeams(Request $request)
     {
-        $team = Department::updateOrCreate(['name'=>$request->name]);
-            if($request->users_array)
-            {
-                foreach($request->users_array as $user)
-                {
-                    $update = User::where('id',$user)->first();
-                    $update->department_id = $team->id;
-                    $update->save();
-                }
-                return ResponseHelper::created('users added to the team successfully');
+        $team = Department::updateOrCreate(['name' => $request->name]);
+        if ($request->users_array) {
+            foreach ($request->users_array as $user) {
+                $update = User::where('id', $user)->first();
+                $update->department_id = $team->id;
+                $update->save();
             }
+            return ResponseHelper::created('users added to the team successfully');
+        }
 
-            $teamLeader=User::query()
-            ->where('id',$request->team_leader)
+        $teamLeader = User::query()
+            ->where('id', $request->team_leader)
             ->update([
-                'role'=>'Team_Leader'
+                'role' => 'Team_Leader'
             ]);
         return ResponseHelper::created('team added successfully');
     }
@@ -122,7 +120,7 @@ class UserController extends Controller
     //get all members of a team
     public function getMemberOfTeam(Department $department)
     {
-        $members=$department->users()->get()->toArray();
+        $members = $department->users()->get()->toArray();
         return ResponseHelper::success($members);
     }
     //add new contact to a user
@@ -150,7 +148,7 @@ class UserController extends Controller
         $delete = Contact::findOrFail($id)->delete();
         return ResponseHelper::deleted('contact deleted successfully');
     }
-//get all departments and rules
+    //get all departments and rules
     public function all_dep_rul()
     {
         $departments = Department::query()->get()->toArray();
@@ -158,8 +156,43 @@ class UserController extends Controller
         return ResponseHelper::success(
             [
                 'Departments' => $departments,
-                'Roles'=> $roles,
-            ]
-            , null, 'departments and roles returned successfully', 200);
+                'Roles' => $roles,
+            ],
+            null,
+            'departments and roles returned successfully',
+            200
+        );
+    }
+    //get roles hierarchy
+    public function roleHierarchy()
+    {
+        $admins = User::where('role', 'admin')->with('userInfo')->get()->toArray();
+        $managers = User::where('role', 'project_manager')->with('userInfo')->get()->toArray();
+        $leaders = User::where('role', 'team_leader')->with('my_team')->get();
+        $teamMembers = $leaders->map(function ($leader) {
+            $leaderData = $leader->toArray();
+            unset($leaderData['my_team']);
+            return
+                [
+                    'leader'=>$leaderData,
+                    'image' => $leader->userInfo ? $leader->userInfo->image : null,
+                    'teamMembers' => $leader->my_team->map(function ($member) {
+                        return [
+                           'member'=> $member,
+                            'image' => $member->userInfo ? $member->userInfo->image : null,
+                        ];
+                    })
+                ];
+        });
+        return ResponseHelper::success(
+            [
+                'admins' => $admins,
+                'project_managers' => $managers,
+                'team_leaders' => $teamMembers,
+            ],
+            null,
+            'departments and roles returned successfully',
+            200
+        );
     }
 }

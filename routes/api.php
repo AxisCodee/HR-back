@@ -125,6 +125,7 @@ Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
         Route::get('Deps&Roles','all_dep_rul');
+        Route::get('MembersHierarchy','roleHierarchy');
     });
 });
 

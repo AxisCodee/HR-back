@@ -104,6 +104,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Permission::class);
     }
 
+    public function my_team()
+    {
+        return $this->hasMany(User::class, 'department_id', 'department_id')->where('role','employee')->with('userInfo');
+    }
 
     public function my_contacts()
     {
@@ -152,7 +156,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Deposit::class);
     }
-   
+
     public function  notes()
     {
         return $this->hasMany(Note::class);
@@ -170,6 +174,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(StudySituation::class);
     }
 
-   
+
 
 }
