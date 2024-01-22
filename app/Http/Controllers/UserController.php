@@ -54,6 +54,7 @@ class UserController extends Controller
         ->where('id',$id)
         ->update([
 
+            
             'department_id'=>null
         ]);
 
