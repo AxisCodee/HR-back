@@ -125,6 +125,7 @@ Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
         Route::get('Deps&Roles','all_dep_rul');
+        Route::get('MembersHierarchy','roleHierarchy');
     });
 });
 
@@ -173,6 +174,7 @@ Route::prefix('Team')->group(function () {
         Route::post('AddMembers/{team}','Addmembers');
         Route::post('updateTeam/{team}', 'updateTeams');
         Route::delete('deleteTeam/{team}', 'deleteTeam');
+        Route::post('RemoveMember/{user}','remove_from_team');
     });
 });
 

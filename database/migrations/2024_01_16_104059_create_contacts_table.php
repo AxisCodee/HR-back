@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('type',['email','user_num','emergency_num']);
-            $table->string('contact')->nullable(false);
+            $table->enum('type',['email','user_num','emergency']);
+            $table->string('name')->nullable();
+            $table->string('address')->nullable();
+            $table->string('contact')->nullable();
             $table->timestamps();
         });
     }
