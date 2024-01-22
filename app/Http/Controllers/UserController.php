@@ -50,11 +50,15 @@ class UserController extends Controller
     //remove a user from a team
     public function remove_from_team($id)
     {
-        $remove = User::findOrFail($id);
-        $remove->department_id = null;
-        $remove->save();
+        $remove = User::query()
+        ->where('id',$id)
+        ->update([
 
-        return ResponseHelper::deleted('user removed from team successfully');
+            'department_id'=>null
+        ]);
+
+
+        return ResponseHelper::success('user removed from team successfully');
     }
     //delete a specific user by his id
     public function remove_user($id)
