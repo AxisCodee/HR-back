@@ -19,6 +19,7 @@ use App\Models\AdditionalFile;
 use App\Models\Career;
 use App\Models\Contact;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
 
 require 'tad/vendor/autoload.php';
 
@@ -74,6 +75,7 @@ class AuthController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'role' => $request->role,
+            'specialization'=>$request->specialization,
             'department_id' => $request->department_id,
             'password' => Hash::make($request->password),
             'pin' => $request->pin, //this is the pin2 in the returned response
@@ -103,9 +105,11 @@ class AuthController extends Controller
         $experiences = $request->experiences;
         //$files = $request->files;
 
-        foreach ($certificates as $certificateTitle) {
+        foreach ($certificates as $index=>$certificatestudy) {
+            $certificate_degree = $request->certificate_degree[$index];
             $certificate = Certificate::create([
-                'title' => $certificateTitle,
+                'degree' => $certificatestudy,
+                'study'  => $certificate_degree,
                 'user_id' => $user->id,
             ]);
         }
@@ -128,26 +132,25 @@ class AuthController extends Controller
             ]);
         }
 
-        if ($request->path)
-        {
-            (function (Request $request) use ($user, $index) {
-                foreach ($request->path as $index => $file) {
-                    $path = Files::saveFile($file);
-                    $filedescription = $request->filedescription[$index];
-                    $add_file = AdditionalFile::create([
-                        'user_id' => $user->id,
-                        'description' => $filedescription,
-                        'path' => $path
-                    ]);
-                }
-            })($request);
+        if ($request->hasfile('path')) {
+            foreach ($request->path as $index => $file)
+            {
+                (function ($file) use ($user, $index,$request) {
+                        $path=Files::saveFileF($file);
+                        $filedescription = $request->filedescription[$index];
+                        $add_file = AdditionalFile::create([
+                            'user_id' => $user->id,
+                            'description' => $filedescription,
+                            'path' => $path
+                        ]);
+                })($file);
+            }
         }
 
-        foreach ($experiences as $experience)
-        {
+        foreach ($experiences as $experience) {
             $new_exp = Career::create([
                 'user_id' => $user->id,
-                'content' =>$experience
+                'content' => $experience
             ]);
         }
 

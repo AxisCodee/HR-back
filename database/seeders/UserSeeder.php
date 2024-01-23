@@ -24,6 +24,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd',
                 'role' => 'admin',
                 'department_id' => null,
+                'specialization' => 'spa',
                 'pin' => 6,
             ],
             [
@@ -34,6 +35,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd1',
                 'role' => 'project_manager',
                 'department_id' => null,
+                'specialization' => 'spa',
                 'pin' => 7,
             ],
             [
@@ -44,6 +46,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd2',
                 'role' => 'project_manager',
                 'department_id' => null,
+                'specialization' => 'spa',
                 'pin' => 8,
             ],
             [
@@ -54,6 +57,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd3',
                 'role' => 'team_leader',
                 'department_id' => 2,
+                'specialization' => 'spa',
                 'pin' => 9,
             ],
             [
@@ -64,6 +68,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd4',
                 'role' => 'employee',
                 'department_id' => 2,
+                'specialization' => 'spa',
                 'pin' => 10,
             ],
             [
@@ -74,6 +79,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd5',
                 'role' => 'employee',
                 'department_id' => 2,
+                'specialization' => 'spa',
                 'pin' => 10,
             ],
             [
@@ -84,6 +90,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd6',
                 'role' => 'employee',
                 'department_id' => 2,
+                'specialization' => 'spa',
                 'pin' => 10,
             ],
             [
@@ -94,6 +101,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd7',
                 'role' => 'team_leader',
                 'department_id' => 3,
+                'specialization' => 'spa',
                 'pin' => 10,
             ],
             [
@@ -104,6 +112,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd8',
                 'role' => 'employee',
                 'department_id' => 3,
+                'specialization' => 'spa',
                 'pin' => 10,
             ],
             [
@@ -114,6 +123,7 @@ class UserSeeder extends Seeder
                 'last_name' => 'mhmd9',
                 'role' => 'employee',
                 'department_id' => 3,
+                'specialization' => 'spa',
                 'pin' => 10,
             ],
 

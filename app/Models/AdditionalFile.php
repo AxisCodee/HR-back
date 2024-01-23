@@ -12,7 +12,7 @@ class AdditionalFile extends Model
     [
         'user_id',
         'description',
-        'file',
+        'path',
     ];
 
     public function user_files()

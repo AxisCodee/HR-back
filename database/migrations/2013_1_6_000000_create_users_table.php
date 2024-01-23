@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string('address')->nullable();
             $table->integer('pin')->nullable();
+            $table->string('specialization');
             $table->string('provider_id')->nullable();
             $table->string('provider_name')->default('google');
             $table->text('google_access_token_json')->nullable();
