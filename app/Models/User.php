@@ -15,81 +15,69 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
-    use HasRoles , SoftDeletes;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    use HasRoles, SoftDeletes;
 
     //protected $with = ['department'];
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+    protected $fillable =
+    [
         'first_name',
+        'middle_name',
         'last_name',
+        'email',
         'role',
         'department_id',
+        'password',
+        'address',
+        'specialization',
         'pin',
         'provider_id',
         'provider_name',
         'google_access_token_json',
-        'address'
     ];
 
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
+
     public function attendance()
     {
         return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
     }
+
+    public function my_files()
+    {
+        return $this->hasMany(AdditionalFile::class, 'user_id', 'id');
+    }
+
     public function contract()
     {
         return $this->hasMany(Contract::class, 'user_id');
     }
+
     public function department()
     {
         return $this->belongsTo('App\Models\Department');
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
     public function getJWTCustomClaims()
     {
         return [];
     }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class);
@@ -107,7 +95,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function my_team()
     {
-        return $this->hasMany(User::class, 'department_id', 'department_id')->where('role','employee')->with('userInfo');
+        return $this->hasMany(User::class, 'department_id', 'department_id')->where('role', 'employee')->with('userInfo');
     }
 
     public function my_contacts()
@@ -128,31 +116,32 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Rate::class, 'user_id');
     }
+
     public function evaluatorRates()
     {
         return $this->hasMany(Rate::class, 'evaluator_id');
     }
-    public function  absences ()
+
+    public function  absences()
     {
         return $this->hasMany(Absences::class, 'user_id');
-
     }
-
-
-
 
     public function userInfo()
     {
         return $this->hasOne(UserInfo::class);
     }
+
     public function address()
     {
         return $this->hasOne(Address::class);
     }
+
     public function careers()
     {
         return $this->hasMany(Career::class);
     }
+
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
@@ -162,19 +151,19 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Note::class);
     }
+
     public function  languages()
     {
         return $this->hasMany(Language::class);
     }
+
     public function  certificates()
     {
         return $this->hasMany(Certificate::class);
     }
+
     public function  study_situations()
     {
         return $this->hasMany(StudySituation::class);
     }
-
-
-
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\ContactRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Career;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Contact;
@@ -37,12 +38,20 @@ class UserController extends Controller
     public function edit_user(UpdateUserRequest $request, $id)
     {
         $spec_user = User::findOrFail($id);
+        if($spec_user->role != $request->role)
+        {
+            $add_exp = Career::create([
+                'user_id' =>$id,
+                'content' =>'worked as a '.$spec_user->role,
+            ]);
+        }
         $spec_user->update([
             'first_name' => $request->first_name,
+            'middle_name'=> $request->middle_name,
             'last_name'  => $request->last_name,
             'email'      => $request->email,
             'password'   => Hash::make($request->password),
-            'role_id'    => $request->role_id,
+            'role'    => $request->role,
             'department_id' => $request->department_id,
         ]);
         return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
@@ -52,12 +61,7 @@ class UserController extends Controller
     {
         $remove = User::query()
         ->where('id',$id)
-        ->update([
-
-            
-            'department_id'=>null
-        ]);
-
+        ->update(['department_id'=>null]);
 
         return ResponseHelper::success('user removed from team successfully');
     }
