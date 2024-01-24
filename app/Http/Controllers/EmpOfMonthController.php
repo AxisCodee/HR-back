@@ -70,7 +70,7 @@ class EmpOfMonthController extends Controller
         $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
             ->with('user')->first();
-        return ResponseHelper::success([$result], null);
+        return ResponseHelper::success($result, null);
     }
 
     /**
