@@ -259,8 +259,9 @@ Route::prefix('UserInfo')->group(function () {
 
 Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
-        Route::get('All', 'getAbsence');
+        Route::get('All', 'index');
         Route::get('Show', 'show');
+
     });
 });
 
