@@ -17,17 +17,22 @@ class AbsencesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index( Request $request)
+    public function index()
     {
+        $currentDateOfMonth = Carbon::now()->format('y','m');
+      
         $user=User::query()->get();
 
         foreach($user as $item)
         {
-           $Unjustified= $item->absences()->where('type','justified')->where('startDate',$request->date)->count();
-            $justified=$item->absences()->where('type','Unjustified')->where('startDate',$request->date)->count();
+
+           $Unjustified= $item->absences()->where('type','justified')->count();
+            $justified=$item->absences()->where('type','Unjustified')->count();
+
 
            $results[]= $result=
             [
+                'id'=>$item->id,
             'username'=>$item->first_name,
             'userDepartment'=>$item->department,
            'userUnjustified'=> $Unjustified,
