@@ -17,22 +17,41 @@ class AbsencesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $currentDateOfMonth = Carbon::now()->format('y','m');
-      
+
+        if($request->has('date'))
+        {
+$dateInput =request()->input('date');
+  $year = substr($dateInput, 0, 4);
+   $month = substr($dateInput, 5, 2);
+        }
+        else
+        {
+            $year = Carbon::now()->format('Y');
+            $month = Carbon::now()->format('m');
+
+        }
         $user=User::query()->get();
 
         foreach($user as $item)
         {
 
-           $Unjustified= $item->absences()->where('type','justified')->count();
-            $justified=$item->absences()->where('type','Unjustified')->count();
+           $justified= $item->absences()
+           ->where('type','justified')
+           ->whereYear('startDate',$year )
+           ->whereMonth('startDate',$month)->count();
+            $Unjustified=$item->absences()
+            ->where('type','Unjustified')
+            ->whereYear('startDate',$year )
+            ->whereMonth('startDate',$month)
+            ->count();
+
 
 
            $results[]= $result=
             [
-                'id'=>$item->id,
+            'id'=>$item->id,
             'username'=>$item->first_name,
             'userDepartment'=>$item->department,
            'userUnjustified'=> $Unjustified,
@@ -57,9 +76,11 @@ class AbsencesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Absences $absences)
+    public function show(User $user)
     {
-        //
+        $userAbcences=$user->absences()->get('startDate')->toArray();
+        return ResponseHelper::success($userAbcences);
+
     }
 
     /**
@@ -67,7 +88,12 @@ class AbsencesController extends Controller
      */
     public function update(UpdateAbsencesRequest $request, Absences $absences)
     {
-        //
+        $result=$absences->update(
+            [
+                'startDate'=>$request->startDate
+            ]
+            );
+            return ResponseHelper::success($result);
     }
 
     /**
@@ -85,11 +111,14 @@ class AbsencesController extends Controller
             $this->cuurentAbsence();
         }
         else{
-
-
-        }
+            $dateInput =request()->input('date');
+            $day = substr($dateInput, 8, 2);
+            $user=User::query()->get();
+     $result=$user->with('absences')->whereDay('startDate',$day)->get();
+     return ResponseHelper::success($result);
 
     }
+}
     public function cuurentAbsence()
     {
 
