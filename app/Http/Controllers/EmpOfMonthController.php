@@ -41,11 +41,11 @@ class EmpOfMonthController extends Controller
             return ResponseHelper::error('This month is alredy have a Employee!', null);
         }
         return DB::transaction(function () use ($validate) {
-            $result = EmpOfMonth::query()->create([
+            $result = EmpOfMonth::query()->updateOrCreate([
                 'user_id' => $validate['user_id'],
                 'date' => now()->format('Y-m'),
             ]);
-            return ResponseHelper::success([$result], null);
+            return ResponseHelper::success($result, null);
         });
         return ResponseHelper::error('error', null);
 
@@ -67,7 +67,7 @@ class EmpOfMonthController extends Controller
         $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
             ->with('user')->first();
-        return ResponseHelper::success([$result], null);
+        return ResponseHelper::success($result, null);
     }
 
     /**
