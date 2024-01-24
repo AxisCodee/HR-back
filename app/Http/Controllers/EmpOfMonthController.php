@@ -34,18 +34,23 @@ class EmpOfMonthController extends Controller
     public function store(StoreEmpOfMonthRequest $request)
     {
         $validate = $request->validated();
+        $existingEmpOfMonth = EmpOfMonth::where('date', now()->format('Y-m'))
+            ->first();
 
-
-        return DB::transaction(function () use ($validate) {
-            $result = EmpOfMonth::query()->updateOrCreate([
+        if ($existingEmpOfMonth) {
+            $result = EmpOfMonth::query()->update([
                 'user_id' => $validate['user_id'],
-
-            ]
-        ,
-    [  'date' => now()->format('Y-m'),]);
-            return ResponseHelper::success($result, null);
-        });
-        return ResponseHelper::error('error', null);
+            ]);
+            return ResponseHelper::updated($result, null);
+        }
+        // return DB::transaction(function () use ($validate) {
+        $result = EmpOfMonth::query()->create([
+            'user_id' => $validate['user_id'],
+            'date' => now()->format('Y-m'),
+        ]);
+        return ResponseHelper::success($result, null);
+        // });
+        //return ResponseHelper::error('error', null);
 
 
 
