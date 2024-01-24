@@ -114,7 +114,8 @@ $dateInput =request()->input('date');
             $dateInput =request()->input('date');
             $day = substr($dateInput, 8, 2);
             $user=User::query()->get();
-     $result=$user->with('absences')->whereDay('startDate',$day)->get();
+     $result=$user->with('absences')
+     ->whereDay('startDate',$day)->get();
      return ResponseHelper::success($result);
 
     }
