@@ -34,12 +34,8 @@ class EmpOfMonthController extends Controller
     public function store(StoreEmpOfMonthRequest $request)
     {
         $validate = $request->validated();
-        $existingEmpOfMonth = EmpOfMonth::where('date', now()->format('Y-m'))
-            ->first();
 
-        if ($existingEmpOfMonth) {
-            return ResponseHelper::error('This month is alredy have a Employee!', null);
-        }
+
         return DB::transaction(function () use ($validate) {
             $result = EmpOfMonth::query()->updateOrCreate([
                 'user_id' => $validate['user_id'],
