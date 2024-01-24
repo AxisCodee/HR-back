@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserInfoRequest extends FormRequest
+class StoreEmpOfMonthRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,19 +25,6 @@ class UserInfoRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'image' => 'required',
-            'birth_date' => 'required|date',
-            'gender' => ['required', Rule::in(['Male', 'Female'])],
-            'nationalID' => 'required|string|max:11',
-            'social_situation' => [
-                'required',
-                Rule::in(['Single', 'Married']),
-            ],
-            'military_situation' => [
-                'required',
-                Rule::in(['Postponed', 'Exempt', 'Finished']),
-            ],
-            'salary' => 'required|integer',
         ];
     }
     protected function failedValidation(Validator $validator)

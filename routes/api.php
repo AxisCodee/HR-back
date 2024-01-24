@@ -20,11 +20,7 @@ use App\Http\Controllers\RateController;
 use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserInfoController;
 use App\Http\Controllers\AbsencesController;
-use App\Models\Absences;
-use App\Models\Address;
-use App\Models\Career;
-use App\Models\Language;
-use Google\Service\CloudSearch\LanguageConfig;
+use App\Http\Controllers\EmpOfMonthController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -36,7 +32,7 @@ Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
-Route::get('DayAttendance/{date}',[AttendanceController::class, 'DayAttendance']);
+Route::get('DayAttendance/{date}', [AttendanceController::class, 'DayAttendance']);
 
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
 
@@ -62,10 +58,10 @@ Route::prefix('Report')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
-        Route::delete('removeUser/{user}','remove_user');
-        Route::post('EditUser/{user}','edit_user');
-        Route::get('Deps&Roles','all_dep_rul');
-        Route::get('MembersHierarchy','roleHierarchy');
+        Route::delete('removeUser/{user}', 'remove_user');
+        Route::post('EditUser/{user}', 'edit_user');
+        Route::get('Deps&Roles', 'all_dep_rul');
+        Route::get('MembersHierarchy', 'roleHierarchy');
     });
 });
 
@@ -165,10 +161,10 @@ Route::prefix('Team')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('getTeams', 'getTeams');
         Route::post('storeTeams', 'storeTeams');
-        Route::post('AddMembers/{team}','Addmembers');
+        Route::post('AddMembers/{team}', 'Addmembers');
         Route::post('updateTeam/{team}', 'updateTeams');
         Route::delete('deleteTeam/{team}', 'deleteTeam');
-        Route::post('RemoveMember/{user}','remove_from_team');
+        Route::post('RemoveMember/{user}', 'remove_from_team');
     });
 });
 
@@ -241,7 +237,13 @@ Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
-
     });
 });
 
+Route::prefix('EmployeeOfMonth')->group(function () {
+    Route::controller(EmpOfMonthController::class)->group(function () {
+        Route::get('All', 'index');
+        Route::post('Add', 'store');
+        Route::get('Show', 'show');
+    });
+});
