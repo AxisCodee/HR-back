@@ -41,7 +41,7 @@ class EmpOfMonthController extends Controller
             $result = EmpOfMonth::query()->update([
                 'user_id' => $validate['user_id'],
             ]);
-            return ResponseHelper::updated('updated', null);
+            return ResponseHelper::updated('updated');
         }
         // return DB::transaction(function () use ($validate) {
         $result = EmpOfMonth::query()->create([
