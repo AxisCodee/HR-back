@@ -17,6 +17,18 @@ trait Files
         }
         return $theFilePath;
     }
+    public static function saveFileF($file)
+    {
+        //$file = $request->file('path');
+        $theFilePath = null;
+        if ($file) {
+            $theFilePath = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('Filepath'), $theFilePath);
+            $theFilePath = 'Filepath/' . $theFilePath;
+        }
+        return $theFilePath;
+    }
+
     public static function saveImage(Request $request)
     {
         $file = $request->file('image');

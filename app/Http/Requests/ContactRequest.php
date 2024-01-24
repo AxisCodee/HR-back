@@ -24,9 +24,9 @@ class ContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required','integer','exists:users,id'],
-            'type'    => ['required','string','in:email,user_num,emergency_num'],
-            'contact' => ['required','string','min:10','max:25'],
+            'user_id' => ['integer','exists:users,id'],
+            'type'    => ['string','in:email,user_num,emergency_num'],
+            'contact' => ['string','min:10','max:25'],
         ];
     }
 

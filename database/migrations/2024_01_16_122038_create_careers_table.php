@@ -12,9 +12,8 @@ return new class extends Migration {
     {
         Schema::create('careers', function (Blueprint $table) {
             $table->id();
-            $table->string('content');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('status', ['skill', 'career']);
+            $table->string('content');
             $table->timestamps();
         });
     }

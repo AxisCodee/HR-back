@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deposits', function (Blueprint $table) {
+        Schema::create('additional_files', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->date('received_date')->default(now());
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('description');
+            $table->string('path');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('deposits');
+        Schema::dropIfExists('additional_files');
     }
 };

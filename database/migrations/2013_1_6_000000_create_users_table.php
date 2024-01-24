@@ -12,8 +12,9 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('last_name');
             $table->string('first_name');
+            $table->string('middle_name');
+            $table->string('last_name');
             $table->string('email')->unique();
             $table->string('role')->nullable();
             $table->foreignId('department_id')->nullable()->constrained('departments')->cascadeOnDelete();
@@ -21,8 +22,9 @@ return new class extends Migration {
             $table->string('password');
             $table->string('address')->nullable();
             $table->integer('pin')->nullable();
-            $table->string('provider_name')->default('google');
+            $table->string('specialization');
             $table->string('provider_id')->nullable();
+            $table->string('provider_name')->default('google');
             $table->text('google_access_token_json')->nullable();
             $table->rememberToken();
             $table->timestamps();

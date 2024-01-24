@@ -64,6 +64,8 @@ Route::prefix('Users')->group(function () {
         Route::get('allUser', 'all_users');
         Route::delete('removeUser/{user}','remove_user');
         Route::post('EditUser/{user}','edit_user');
+        Route::get('Deps&Roles','all_dep_rul');
+        Route::get('MembersHierarchy','roleHierarchy');
     });
 });
 
@@ -121,13 +123,6 @@ Route::prefix('Report')->group(function () {
         Route::post('InsnOuts', 'user_checks');
     });
 });
-Route::prefix('Users')->group(function () {
-    Route::controller(UserController::class)->group(function () {
-        Route::get('allUser', 'all_users');
-        Route::get('Deps&Roles','all_dep_rul');
-        Route::get('MembersHierarchy','roleHierarchy');
-    });
-});
 
 Route::prefix('Decision')->group(function () {
     Route::controller(DecisionController::class)->group(function () {
@@ -159,7 +154,6 @@ Route::prefix('Request')->group(function () {
         Route::get('All', 'index');
         Route::get('Me', 'show');
         Route::get('info/{id}', 'getRequest');
-
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::post('accepteRequest/{request}', 'accepteRequest');
@@ -177,20 +171,6 @@ Route::prefix('Team')->group(function () {
         Route::post('RemoveMember/{user}','remove_from_team');
     });
 });
-
-
-Route::prefix('Request')->group(function () {
-    Route::controller(RequestController::class)->group(function () {
-        Route::get('All', 'index');
-        Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
-        Route::post('accepteRequest/{request}', 'accepteRequest');
-        Route::post('rejectRequest/{request}', 'rejectRequest');
-        Route::delete('Delete/{request}', 'destory');
-    });
-});
-
-
 
 ///thales
 Route::prefix('Address')->group(function () {
