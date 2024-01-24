@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
                 'role' => 'admin',
                 'department_id' => null,
                 'specialization' => 'spa',
-                'pin' => 6,
+                'pin' => 1,
             ],
             [
                 'email' => 'samy1@gmail.com',
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'role' => 'project_manager',
                 'department_id' => null,
                 'specialization' => 'spa',
-                'pin' => 7,
+                'pin' => 2,
             ],
             [
                 'email' => 'samy2@gmail.com',
@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
                 'role' => 'project_manager',
                 'department_id' => null,
                 'specialization' => 'spa',
-                'pin' => 8,
+                'pin' => 3,
             ],
             [
                 'email' => 'samy3@gmail.com',
@@ -58,7 +58,7 @@ class UserSeeder extends Seeder
                 'role' => 'team_leader',
                 'department_id' => 2,
                 'specialization' => 'spa',
-                'pin' => 9,
+                'pin' => 4,
             ],
             [
                 'email' => 'samy4@gmail.com',
@@ -69,7 +69,7 @@ class UserSeeder extends Seeder
                 'role' => 'employee',
                 'department_id' => 2,
                 'specialization' => 'spa',
-                'pin' => 10,
+                'pin' => 5,
             ],
             [
                 'email' => 'samy5@gmail.com',
@@ -80,7 +80,7 @@ class UserSeeder extends Seeder
                 'role' => 'employee',
                 'department_id' => 2,
                 'specialization' => 'spa',
-                'pin' => 10,
+                'pin' => 6,
             ],
             [
                 'email' => 'samy6@gmail.com',
@@ -91,7 +91,7 @@ class UserSeeder extends Seeder
                 'role' => 'employee',
                 'department_id' => 2,
                 'specialization' => 'spa',
-                'pin' => 10,
+                'pin' => 7,
             ],
             [
                 'email' => 'samy7@gmail.com',
@@ -102,7 +102,7 @@ class UserSeeder extends Seeder
                 'role' => 'team_leader',
                 'department_id' => 3,
                 'specialization' => 'spa',
-                'pin' => 10,
+                'pin' => 8,
             ],
             [
                 'email' => 'samy8@gmail.com',
@@ -113,7 +113,7 @@ class UserSeeder extends Seeder
                 'role' => 'employee',
                 'department_id' => 3,
                 'specialization' => 'spa',
-                'pin' => 10,
+                'pin' => 9,
             ],
             [
                 'email' => 'samy9@gmail.com',
