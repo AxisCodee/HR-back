@@ -34,16 +34,32 @@ class EmpOfMonthController extends Controller
     public function store(StoreEmpOfMonthRequest $request)
     {
         $validate = $request->validated();
+        $existingEmpOfMonth = EmpOfMonth::where('date', now()->format('Y-m'))
+            ->first();
 
-        return DB::transaction(function () use ($validate) {
-            $result = EmpOfMonth::query()->updateOrCreate([
-                'date' => now()->format('Y-m'),
-            ],
-        [                'user_id' => $validate['user_id'],
-    ]);
+        if ($existingEmpOfMonth) {
+            $result = EmpOfMonth::query()->update([
+                'user_id' => $validate['user_id'],
+            ]);
+            return ResponseHelper::updated($result, null);
+        }
+        // return DB::transaction(function () use ($validate) {
+        $result = EmpOfMonth::query()->create([
+            'user_id' => $validate['user_id'],
+            'date' => now()->format('Y-m'),
+        ]);
+        return ResponseHelper::success($result, null);
+        // });
+        //return ResponseHelper::error('error', null);
 
-            return ResponseHelper::success($result, null);
-        });
+
+
+
+        // $result = EmpOfMonth::create([
+        //     'user_id' => $validate['user_id'],
+        //     'date' => now()->format('Y-m'),
+        // ]);
+        // return ResponseHelper::success($result, null);
     }
 
     /**
@@ -54,7 +70,7 @@ class EmpOfMonthController extends Controller
         $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
             ->with('user')->first();
-        return ResponseHelper::success($result, null);
+        return ResponseHelper::success([$result], null);
     }
 
     /**
