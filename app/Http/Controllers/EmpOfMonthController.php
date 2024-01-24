@@ -45,7 +45,7 @@ class EmpOfMonthController extends Controller
                 'user_id' => $validate['user_id'],
                 'date' => now()->format('Y-m'),
             ]);
-            return ResponseHelper::success($result, null);
+            return ResponseHelper::success([$result], null);
         });
         return ResponseHelper::error('error', null);
 
