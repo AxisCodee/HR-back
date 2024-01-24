@@ -35,26 +35,14 @@ class EmpOfMonthController extends Controller
     {
         $validate = $request->validated();
 
-
         return DB::transaction(function () use ($validate) {
             $result = EmpOfMonth::query()->updateOrCreate([
                 'user_id' => $validate['user_id'],
+                'date' => now()->format('Y-m'),
+            ]);
 
-            ]
-        ,
-    [  'date' => now()->format('Y-m'),]);
             return ResponseHelper::success($result, null);
         });
-        return ResponseHelper::error('error', null);
-
-
-
-
-        // $result = EmpOfMonth::create([
-        //     'user_id' => $validate['user_id'],
-        //     'date' => now()->format('Y-m'),
-        // ]);
-        // return ResponseHelper::success($result, null);
     }
 
     /**
