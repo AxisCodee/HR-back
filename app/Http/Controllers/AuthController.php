@@ -105,9 +105,10 @@ class AuthController extends Controller
         $contacts = $request->contacts;
         $secretaraits = $request->secretaraits;
         $phone_numbers = $request->phone_numbers;
+        $emergency_contact = $request->emergency_contact;
 
         foreach ($educations as $education) {
-            $studies = StudySituation::create([
+            $studies = StudySituation::query()->create([
                 'degree' => $education['degree'],
                 'study'  => $education['study'],
                 'user_id' => $user->id,
@@ -116,14 +117,14 @@ class AuthController extends Controller
 
         foreach($certificates as $certificate)
         {
-            $cerities = Certificate::create([
+            $cerities = Certificate::query()->create([
                 'user_id' => $user->id,
                 'content' => $certificate,
             ]);
         }
 
         foreach ($languages as  $language) {
-            $language = Language::create([
+            $language = Language::query()->create([
                 'name' => $language['languages'],
                 'rate' => $language['rate'],
                 'user_id' => $user->id,
@@ -131,7 +132,7 @@ class AuthController extends Controller
         }
 
         foreach ($skills as $skill) {
-            $skill = Skils::create([
+            $skill = Skils::query()->create([
                 'name' => $skill['skills'],
                 'rate' => $skill['rate'],
                 'user_id' => $user->id,
@@ -145,7 +146,7 @@ class AuthController extends Controller
             {
                 (function ($file) use ($user, $index) {
                         $path=Files::saveFileF($file['file']);
-                        $add_file = AdditionalFile::create([
+                        $add_file = AdditionalFile::query()->create([
                             'user_id' => $user->id,
                             'description' => $file['description'],
                             'path' => $path,
@@ -155,7 +156,7 @@ class AuthController extends Controller
         }
 
         foreach ($experiences as $experience) {
-            $new_exp = Career::create([
+            $new_exp = Career::query()->create([
                 'user_id' => $user->id,
                 'content' => $experience
             ]);
@@ -163,18 +164,29 @@ class AuthController extends Controller
 
         foreach($contacts as $contact)
         {
-            $multi = Contact::query()->create([
+            $multi = Contact::create([
                 'user_id' => $user->id,
                 'type' => $contact['type'],
-                'name' => ($contact['type'] === 'emergency') ? $contact['name'] : null,
-                'address' => ($contact['type'] === 'emergency') ? $contact['address'] : null,
                 'contact' => $contact['contact']
             ]);
         }
 
+        if($request->emergency_contact){
+            foreach($emergency_contact as $emergency)
+            {
+                $contact = Contact::query()->create([
+                    'user_id' => $user->id,
+                    'type'=>"emergency",
+                    'name'=>$emergency['name'],
+                    'address'=>$emergency['address'],
+                    'contact' => $emergency['contact'],
+                ]);
+            }
+        }
+
         foreach($secretaraits as $secretarait)
         {
-            $recieved = Deposit::create([
+            $recieved = Deposit::query()->create([
                 'user_id'=>$user->id,
                 'description' =>$secretarait['object'],
                 'recieved_date'=>$secretarait['delivery_date'],
@@ -183,52 +195,7 @@ class AuthController extends Controller
 
 
         return ResponseHelper::success
-        (
-            [
-                'snapshot'=>
-                [
-                    $user->first_name ,
-                    $user->middle_name,
-                    $user->last_name,
-                    $path
-                ],
-
-                'account'=>
-                [
-                    $user->email,
-                    $user->password,
-                ],
-                'personal info' =>
-                [
-                    $userInfo->birth_date,
-                    $userInfo->nationalID,
-                    $userInfo->military_situation,
-                    $userInfo->social_situation,
-                ],
-                'contact'=>
-                [
-                    $user->address,
-                    $contacts,
-                ],
-                'additional files'=>$request->additional_files,
-                'professional'=>
-                [
-                    $user->specialization,
-                    $user->role,
-                    $user->department,
-                ],
-                'skills&career'=>
-                [
-                    $educations,
-                    $certificates,
-                    $experiences,
-                    $skills,
-                    $languages,
-                ],
-                'salary'=>$userInfo->salary,
-                'secretaraits'=>$secretaraits,
-            ]
-        );
+        ($user);
     }
 
     public function logout()
