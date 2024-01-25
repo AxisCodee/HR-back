@@ -207,13 +207,13 @@ class UserController extends Controller
         });
         $response = [
             'Ceo' => [
-                'Ceo' => $admins,
+                $admins,
                 'Level1' => [
                     [
-                        'Level1' => $managers,
-                        'Level2' => [
+                        'Level2' => $managers,
+                        'Level3' => [
                             [
-                                'Level2' => $teamMembers,
+                                'Level3' => $teamMembers,
                             ],
                         ],
                     ],
@@ -225,3 +225,5 @@ class UserController extends Controller
 
     }
 }
+
+
