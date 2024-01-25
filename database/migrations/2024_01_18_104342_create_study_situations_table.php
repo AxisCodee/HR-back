@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('study_situations', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('description');
+            $table->string('degree');
+            $table->string('study');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
