@@ -26,7 +26,6 @@ class PolicyController extends Controller
     public function update(PolicyRequest $request)
     {
         $validated = $request->validated();
-
         $policy = Policy::find(1);
         if (!$policy) {
             return ResponseHelper::error('the policy is not saved yet', null);
