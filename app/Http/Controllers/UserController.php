@@ -31,7 +31,19 @@ class UserController extends Controller
     //get a specific user by the ID
     public function specific_user($id)
     {
-        $spec_user = User::findOrFail($id);
+        $spec_user = User::query()->where('id',$id)
+        ->with('userInfo')
+        ->with('deposits')
+        ->with('notes')
+        ->with('languages')
+        ->with('certificates')
+        ->with('my_contacts')
+        ->with('study_situations')
+        ->with('department')
+        ->with('contract')
+        ->with('certificates')
+        ->get()
+        ->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
     //edit a specific user info by his ID
@@ -69,7 +81,7 @@ class UserController extends Controller
     public function remove_user($id)
     {
         $remove_user = User::findOrFail($id)->delete();
-        return ResponseHelper::deleted('user removed successfully');
+        return ResponseHelper::success('user removed successfully');
     }
     //get all teams with their users
     public function getTeams()
