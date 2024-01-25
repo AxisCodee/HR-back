@@ -69,7 +69,7 @@ class UserController extends Controller
     public function remove_user($id)
     {
         $remove_user = User::findOrFail($id)->delete();
-        return ResponseHelper::deleted('user removed successfully');
+        return ResponseHelper::success('user removed successfully');
     }
     //get all teams with their users
     public function getTeams()
