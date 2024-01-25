@@ -32,7 +32,6 @@ class UserController extends Controller
     public function specific_user($id)
     {
         $spec_user = User::query()->where('id',$id)
-        ->with('userRates')
         ->with('userInfo')
         ->with('deposits')
         ->with('notes')
