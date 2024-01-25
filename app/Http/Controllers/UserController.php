@@ -205,22 +205,19 @@ class UserController extends Controller
                     })
                 ];
         });
-        return ResponseHelper::success(
-            [
-                'Ceo' =>
-                [
-                    'Ceo' => $admins,
-                    'Level1' => [
-                         'Level1'=>$managers,
-                        'Level2' => [
-                            'Level2' => $teamMembers],
+        $response = [
+            'Ceo' => [
+                'Ceo' => $admins,
+                'Level1' => [
+                    'Level1' => $managers,
+                    'Level2' => [
+                        'Level2' => $teamMembers,
                     ],
                 ],
             ],
-            null,
-            'Role hierarchy ',
-            200
-        );
+        ];
+
+        return ResponseHelper::success($response, null, 'Role hierarchy', 200);
 
     }
 }
