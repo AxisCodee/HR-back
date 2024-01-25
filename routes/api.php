@@ -21,6 +21,7 @@ use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserInfoController;
 use App\Http\Controllers\AbsencesController;
 use App\Http\Controllers\EmpOfMonthController;
+use App\Http\Controllers\PolicyController;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -245,5 +246,13 @@ Route::prefix('EmployeeOfMonth')->group(function () {
         Route::get('All', 'index');
         Route::post('Add', 'store');
         Route::get('Show', 'show');
+    });
+});
+
+Route::prefix('Policy')->group(function () {
+    Route::controller(PolicyController::class)->group(function () {
+        Route::get('Show', 'show');
+        Route::post('Add', 'store');
+        Route::post('Update', 'update');
     });
 });
