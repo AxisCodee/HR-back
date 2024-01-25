@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('system_infos', function (Blueprint $table) {
             $table->id();
+            $table->json('workDays');
+            $table->string('startTime');
+            $table->string('cut-off-time');
+            $table->string('endTime');
+            $table->double('annualIncrease');
+            $table->string('alerts');
+            $table->json('warnings');
+            $table->json('absences');
             $table->timestamps();
         });
     }
