@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Absences;
 use App\Helper\ResponseHelper;
-use App\Models\User;
-use App\Models\Date;
-use App\Models\DatePIn;
 use App\Http\Requests\StoreAbsencesRequest;
 use App\Http\Requests\UpdateAbsencesRequest;
-use App\Models\Attendance;
+use App\Models\Absences;
+use App\Models\User;
+use App\Models\Date;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AbsencesController extends Controller
@@ -17,10 +17,53 @@ class AbsencesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
 
-    }
+        if($request->has('date'))
+        {
+$dateInput =request()->input('date');
+  $year = substr($dateInput, 0, 4);
+   $month = substr($dateInput, 5, 2);
+        }
+        else
+        {
+            $year = Carbon::now()->format('Y');
+            $month = Carbon::now()->format('m');
+
+        }
+        $user=User::query()->get();
+
+        foreach($user as $item)
+        {
+
+           $justified= $item->absences()
+           ->where('type','justified')
+           ->whereYear('startDate',$year )
+           ->whereMonth('startDate',$month)->count();
+            $Unjustified=$item->absences()
+            ->where('type','Unjustified')
+            ->whereYear('startDate',$year )
+            ->whereMonth('startDate',$month)
+            ->count();
+
+
+
+           $results[]= $result=
+            [
+            'id'=>$item->id,
+            'username'=>$item->first_name,
+            'userDepartment'=>$item->department,
+           'userUnjustified'=> $Unjustified,
+           'userjustified'=>   $justified,
+           'all'=>$Unjustified+ $justified
+            ];
+        }
+            return ResponseHelper::success($results);
+        }
+
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -33,9 +76,11 @@ class AbsencesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Absences $absences)
+    public function show(User $user)
     {
-        //
+        $userAbcences=$user->absences()->get('startDate')->toArray();
+        return ResponseHelper::success($userAbcences);
+
     }
 
     /**
@@ -43,7 +88,12 @@ class AbsencesController extends Controller
      */
     public function update(UpdateAbsencesRequest $request, Absences $absences)
     {
-        //
+        $result=$absences->update(
+            [
+                'startDate'=>$request->startDate
+            ]
+            );
+            return ResponseHelper::success($result);
     }
 
     /**
@@ -53,44 +103,42 @@ class AbsencesController extends Controller
     {
         //
     }
-    public function getAbsence()
+    public function getDailyAbsence(Request $request)
     {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMont=  Carbon::now()->endOfMonth();
-
-
-    $times=Date::query()->whereBetween('date',[$startOfMonth,$endOfMont])->get()->toArray();
-      $users=User::query()->get()->toArray();
-      foreach($times as $time )
-      {
-        foreach($users as $user)
+        $today = Carbon::now();
+        if($today->eq($request->date))
         {
-
-        $userDate=DatePin::query()->where('pin',$user['pin'])->where('date_id',$time['id'])->get()->toArray();
-        //$userDate=DatePin::query()->where('pin',6)->where('date_id',24)->get()->toArray();
-        if(!$userDate)
-        {
-        $absences=Absences::where('user_id',$user['id'])->where('status','accepted')->get()->toArray();
-        if(!$absences)
-        {
-          $results=$user->absences()->create(
-            [
-            'startDate'=>$time->date,
-            'endDatee'=>null,
-            'statuse'=>'waiting'
-
-
-            ]
-
-            );
-
+            $this->cuurentAbsence();
         }
-    }
-        }
-      }
-
-
-      return ResponseHelper::success($results,'yaaaaaa', null);
+        else{
+            $dateInput =request()->input('date');
+            $day = substr($dateInput, 8, 2);
+            $user=User::query()->get();
+     $result=$user->with('absences')
+     ->whereDay('startDate',$day)->get();
+     return ResponseHelper::success($result);
 
     }
 }
+    public function cuurentAbsence()
+    {
+
+          $usersWithoutAttendance = DB::table('users')
+            ->leftJoin('attendances', function ($join) {
+                $join->on('users.pin', '=', 'attendances.pin')
+                    ->whereDate('attendances.datetime', '=', Carbon::now()->format('y,m,d'));
+            })
+            ->whereNull('attendances.pin')
+            ->select('users.*')
+            ->get();
+
+        return ResponseHelper::success($usersWithoutAttendance, 'yaaaaaa', null);
+
+    }
+}
+
+
+
+
+
+
