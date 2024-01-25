@@ -197,9 +197,9 @@ class UserController extends Controller
         'Level1' => $managers,
         'level2' => $teamMembers,];
         return ResponseHelper::success(
-            [
+
               $response
-            ],
+            ,
             null,
             'Roles hierarchy returned successfully',
             200
