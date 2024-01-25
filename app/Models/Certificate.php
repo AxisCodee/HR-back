@@ -10,8 +10,7 @@ class Certificate extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'degree',
-        'study'
+        'content',
     ];
 
     public function user()

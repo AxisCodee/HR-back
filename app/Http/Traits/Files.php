@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Traits;
 
 use Illuminate\Http\Request;
@@ -43,5 +44,17 @@ trait Files
     public static function deleteFile($file)
     {
         Storage::delete($file);
+    }
+
+    public static function saveImageProfile($file)
+    {
+        //$file = $request->file('image');
+        $theFilePath = null;
+        if ($file) {
+            $theFilePath = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('Filepath'), $theFilePath);
+            $theFilePath = 'Filepath/' . $theFilePath;
+        }
+        return $theFilePath;
     }
 }

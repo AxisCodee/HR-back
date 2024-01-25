@@ -63,6 +63,9 @@ Route::prefix('Users')->group(function () {
         Route::post('EditUser/{user}', 'edit_user');
         Route::get('Deps&Roles', 'all_dep_rul');
         Route::get('MembersHierarchy', 'roleHierarchy');
+        Route::get('user/{id}', 'specific_user');
+
+
     });
 });
 
