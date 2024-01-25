@@ -199,7 +199,7 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Role hierarchy',
-            'data'=>  $response
+            'data'=>  [$response]
 
 
             ]
