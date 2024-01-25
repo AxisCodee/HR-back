@@ -196,10 +196,14 @@ class UserController extends Controller
           'CEO' => $admins,
         'Level1' => $managers,
         'level2' => $teamMembers,];
-        return ResponseHelper::success(
+        return response()->json([
+            'success' => true,
+            'message' => 'Role hierarchy',
+            'data'=>  $response
 
-              $response
-            
+
+            ]
+
         );
     }
 }
