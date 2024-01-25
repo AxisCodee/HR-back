@@ -31,19 +31,7 @@ class UserController extends Controller
     //get a specific user by the ID
     public function specific_user($id)
     {
-        $spec_user = User::query()->where('id',$id)
-        ->with('userInfo')
-        ->with('deposits')
-        ->with('notes')
-        ->with('languages')
-        ->with('certificates')
-        ->with('my_contacts')
-        ->with('study_situations')
-        ->with('department')
-        ->with('contract')
-        ->with('certificates')
-        ->get()
-        ->toArray();
+        $spec_user = User::findOrFail($id);
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
     //edit a specific user info by his ID
@@ -81,7 +69,7 @@ class UserController extends Controller
     public function remove_user($id)
     {
         $remove_user = User::findOrFail($id)->delete();
-        return ResponseHelper::success('user removed successfully');
+        return ResponseHelper::deleted('user removed successfully');
     }
     //get all teams with their users
     public function getTeams()
@@ -197,9 +185,9 @@ class UserController extends Controller
                 [
                     'leader'=>$leaderData,
                     'image' => $leader->userInfo ? $leader->userInfo->image : null,
-                    'level3' => $leader->my_team->map(function ($member) {
+                    'Level3' => $leader->my_team->map(function ($member) {
                         return [
-                           'level3'=> $member,
+                           'member'=> $member,
                             'image' => $member->userInfo ? $member->userInfo->image : null,
                         ];
                     })
@@ -207,20 +195,13 @@ class UserController extends Controller
         });
         return ResponseHelper::success(
             [
-                'Ceo' =>
-                [
-                    'Ceo' => $admins,
-                    'Level1' => [
-                         'Level1'=>$managers,
-                        'Level2' => [
-                            'Level2' => $teamMembers],
-                    ],
-                ],
+                'CEO' => $admins,
+                'Level1' => $managers,
+                'level2' => $teamMembers,
             ],
             null,
-            'Role hierarchy ',
+            'Roles hierarchy returned successfully',
             200
         );
-
     }
 }
