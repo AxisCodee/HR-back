@@ -10,8 +10,8 @@ class StudySituation extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'title',
-        'description',
+        'degree',
+        'study',
     ];
 
     public function user()
