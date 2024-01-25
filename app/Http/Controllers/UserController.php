@@ -175,7 +175,7 @@ class UserController extends Controller
     //get roles hierarchy
     public function roleHierarchy()
     {
-        $admins = User::where('role', 'admin')->with('userInfo')->get()->toArray();
+        $admins = User::where('role', 'admin')->with('userInfo')->first();
         $managers = User::where('role', 'project_manager')->with('userInfo')->get()->toArray();
         $leaders = User::where('role', 'team_leader')->with('my_team')->get();
         $teamMembers = $leaders->map(function ($leader) {
@@ -185,7 +185,7 @@ class UserController extends Controller
                 [
                     'leader'=>$leaderData,
                     'image' => $leader->userInfo ? $leader->userInfo->image : null,
-                    'teamMembers' => $leader->my_team->map(function ($member) {
+                    'level3' => $leader->my_team->map(function ($member) {
                         return [
                            'member'=> $member,
                             'image' => $member->userInfo ? $member->userInfo->image : null,
@@ -195,9 +195,9 @@ class UserController extends Controller
         });
         return ResponseHelper::success(
             [
-                'admins' => $admins,
-                'project_managers' => $managers,
-                'team_leaders' => $teamMembers,
+                'Ceo' => $admins,
+                'Level1' => $managers,
+                'Level2' => $teamMembers,
             ],
             null,
             'departments and roles returned successfully',
