@@ -43,7 +43,8 @@ class UserController extends Controller
         ->with('department')
         ->with('contract')
         ->with('certificates')
-        ->get();
+        ->get()
+        ->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
     //edit a specific user info by his ID
