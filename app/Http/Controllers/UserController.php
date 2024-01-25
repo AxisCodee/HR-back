@@ -38,16 +38,15 @@ class UserController extends Controller
     public function edit_user(UpdateUserRequest $request, $id)
     {
         $spec_user = User::findOrFail($id);
-        if($spec_user->role != $request->role)
-        {
+        if ($spec_user->role != $request->role) {
             $add_exp = Career::create([
-                'user_id' =>$id,
-                'content' =>'worked as a '.$spec_user->role,
+                'user_id' => $id,
+                'content' => 'worked as a ' . $spec_user->role,
             ]);
         }
         $spec_user->update([
             'first_name' => $request->first_name,
-            'middle_name'=> $request->middle_name,
+            'middle_name' => $request->middle_name,
             'last_name'  => $request->last_name,
             'email'      => $request->email,
             'password'   => Hash::make($request->password),
@@ -60,8 +59,8 @@ class UserController extends Controller
     public function remove_from_team($id)
     {
         $remove = User::query()
-        ->where('id',$id)
-        ->update(['department_id'=>null]);
+            ->where('id', $id)
+            ->update(['department_id' => null]);
 
         return ResponseHelper::success('user removed from team successfully');
     }
@@ -175,7 +174,7 @@ class UserController extends Controller
     //get roles hierarchy
     public function roleHierarchy()
     {
-        $admins = User::where('role', 'admin')->with('userInfo')->get()->toArray();
+        $admins = User::where('role', 'admin')->with('userInfo')->first();
         $managers = User::where('role', 'project_manager')->with('userInfo')->get()->toArray();
         $leaders = User::where('role', 'team_leader')->with('my_team')->get();
         $teamMembers = $leaders->map(function ($leader) {
@@ -183,9 +182,9 @@ class UserController extends Controller
             unset($leaderData['my_team']);
             return
                 [
-                    'leader'=>$leaderData,
+                    'leader' => $leaderData,
                     'image' => $leader->userInfo ? $leader->userInfo->image : null,
-                    'teamMembers' => $leader->my_team->map(function ($member) {
+                    'Level3' => $leader->my_team->map(function ($member) {
                         return [
                            'member'=> $member,
                             'image' => $member->userInfo ? $member->userInfo->image : null,
@@ -193,15 +192,19 @@ class UserController extends Controller
                     })
                 ];
         });
+        $response =[
+          'CEO' => $admins,
+        'Level1' => $managers,
+        'level2' => $teamMembers,];
         return ResponseHelper::success(
-            [
-                'admins' => $admins,
-                'project_managers' => $managers,
-                'team_leaders' => $teamMembers,
-            ],
+
+             [ $response]
+            ,
             null,
-            'departments and roles returned successfully',
+            'Roles hierarchy returned successfully',
             200
         );
     }
 }
+
+

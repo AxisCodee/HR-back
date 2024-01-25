@@ -18,6 +18,9 @@ use App\Http\Traits\Files;
 use App\Models\AdditionalFile;
 use App\Models\Career;
 use App\Models\Contact;
+use App\Models\Contract;
+use App\Models\Deposit;
+use App\Models\StudySituation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 
@@ -54,21 +57,20 @@ class AuthController extends Controller
     public function register(Request $request)
     {
 
-        $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
-        $tad = $tad_factory->get_instance();
-        // $r = $tad->set_user_info([
-        //     'pin' => $request->id,//this is the pin2 in the returned response
-        //     'name'=> $request->first_name,
-        //     'privilege'=> 0,//if you want to add a superadmin user make the privilege as '14'.
-        //     'password' => $request->password]);
-        $request->validate([
-            'first_name' => 'required|string|max:50',
-            'middle_name' => 'string|max:50',
-            'last_name' => 'string|max:50',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
+        // $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
+        // $tad = $tad_factory->get_instance();
+        //$r = $tad->set_user_info([
+        //    'pin' => $request->id,//this is the pin2 in the returned response
+        //    'name'=> $request->first_name,
+        //    'privilege'=> 0,//if you want to add a superadmin user make the privilege as '14'.
+        //    'password' => $request->password]);
+        // $request->validate([
+        //     'first_name' => 'required|string|max:50',
+        //     'middle_name' => 'string|max:50',
+        //     'last_name' => 'string|max:50',
+        //     'email' => 'required|string|email|max:255|unique:users',
+        //     'password' => 'required|string|min:6',
+        // ]);
         $user = User::create([
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -81,7 +83,7 @@ class AuthController extends Controller
             'pin' => $request->pin, //this is the pin2 in the returned response
             'address' => $request->address
         ]);
-        $path = Files::saveImage($request);
+        $path = Files::saveImageProfile($request->image);
         $userInfo = UserInfo::query()->create([
             'user_id' => $user->id,
             'salary' => $request->salary,
@@ -91,84 +93,109 @@ class AuthController extends Controller
             'social_situation' => $request->social_situation,
             'military_situation' => $request->military_situation,
             'image' => $path
-
-
         ]);
         $user->assignRole($request->role);
 
 
+        $educations = $request->educations;
         $certificates = $request->certificates;
         $languages = $request->languages;
-        $languageRates = $request->languageRates;
         $skills = $request->skills;
-        $skillsRates = $request->skillsRates;
         $experiences = $request->experiences;
-        //$files = $request->files;
+        $contacts = $request->contacts;
+        $secretaraits = $request->secretaraits;
+        $phone_numbers = $request->phone_numbers;
+        $emergency_contact = $request->emergency_contact;
 
-        foreach ($certificates as $index=>$certificatestudy) {
-            $certificate_degree = $request->certificate_degree[$index];
-            $certificate = Certificate::create([
-                'degree' => $certificatestudy,
-                'study'  => $certificate_degree,
+        foreach ($educations as $education) {
+            $studies = StudySituation::query()->create([
+                'degree' => $education['degree'],
+                'study'  => $education['study'],
                 'user_id' => $user->id,
             ]);
         }
 
-        foreach ($languages as $index => $languageName) {
-            $languageRate = $request->languageRates[$index];
-            $language = Language::create([
-                'name' => $languageName,
-                'rate' => $languageRate,
+        foreach($certificates as $certificate)
+        {
+            $cerities = Certificate::query()->create([
+                'user_id' => $user->id,
+                'content' => $certificate,
+            ]);
+        }
+
+        foreach ($languages as  $language) {
+            $language = Language::query()->create([
+                'name' => $language['languages'],
+                'rate' => $language['rate'],
                 'user_id' => $user->id,
             ]);
         }
 
-        foreach ($skills as $index => $skillsName) {
-            $skillsRate = $request->skillsRates[$index];
-            $skill = Skils::create([
-                'name' => $skillsName,
-                'rate' => $skillsRate,
+        foreach ($skills as $skill) {
+            $skill = Skils::query()->create([
+                'name' => $skill['skills'],
+                'rate' => $skill['rate'],
                 'user_id' => $user->id,
             ]);
         }
 
-        if ($request->hasfile('path')) {
-            foreach ($request->path as $index => $file)
+
+
+        if ($request->hasfile('additional_files')) {
+            foreach ($request->additional_files as $index => $file)
             {
-                (function ($file) use ($user, $index,$request) {
-                        $path=Files::saveFileF($file);
-                        $filedescription = $request->filedescription[$index];
-                        $add_file = AdditionalFile::create([
+                (function ($file) use ($user, $index) {
+                        $path=Files::saveFileF($file['file']);
+                        $add_file = AdditionalFile::query()->create([
                             'user_id' => $user->id,
-                            'description' => $filedescription,
-                            'path' => $path
+                            'description' => $file['description'],
+                            'path' => $path,
                         ]);
                 })($file);
             }
         }
 
         foreach ($experiences as $experience) {
-            $new_exp = Career::create([
+            $new_exp = Career::query()->create([
                 'user_id' => $user->id,
                 'content' => $experience
             ]);
         }
 
+        foreach($contacts as $contact)
+        {
+            $multi = Contact::create([
+                'user_id' => $user->id,
+                'type' => $contact['type'],
+                'contact' => $contact['contact']
+            ]);
+        }
 
-        $multi = Contact::query()->create([
-            'user_id' => $user->id,
-            'type' => $request->contactType,
-            'name' => ($request->contactType === 'emergency') ? $request->contactName : null,
-            'address' => ($request->contactType === 'emergency') ? $request->contactAddress : null,
-            'contact' => $request->contact
-        ]);
+        if($request->emergency_contact){
+            foreach($emergency_contact as $emergency)
+            {
+                $contact = Contact::query()->create([
+                    'user_id' => $user->id,
+                    'type'=>"emergency",
+                    'name'=>$emergency['name'],
+                    'address'=>$emergency['address'],
+                    'contact' => $emergency['contact'],
+                ]);
+            }
+        }
+
+        foreach($secretaraits as $secretarait)
+        {
+            $recieved = Deposit::query()->create([
+                'user_id'=>$user->id,
+                'description' =>$secretarait['object'],
+                'recieved_date'=>$secretarait['delivery_date'],
+            ]);
+        }
 
 
-
-
-        return ResponseHelper::success(
-            [$user]
-        );
+        return ResponseHelper::success
+        ($user);
     }
 
     public function logout()

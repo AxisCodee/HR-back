@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('study_situations', function (Blueprint $table) {
+        Schema::create('policies', function (Blueprint $table) {
             $table->id();
-            $table->string('degree');
-            $table->string('study');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->json('work_time');
+            $table->json('annual_salary_increase');
+            $table->json('warnings');
+            $table->json('absence_management');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('study_situations');
+        Schema::dropIfExists('ploicies');
     }
 };

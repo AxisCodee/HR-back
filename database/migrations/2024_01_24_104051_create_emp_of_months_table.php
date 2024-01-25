@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('study_situations', function (Blueprint $table) {
+        Schema::create('emp_of_months', function (Blueprint $table) {
             $table->id();
-            $table->string('degree');
-            $table->string('study');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('date', 7);
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('study_situations');
+        Schema::dropIfExists('emp_of_months');
     }
 };

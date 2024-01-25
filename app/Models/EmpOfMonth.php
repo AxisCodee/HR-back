@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StudySituation extends Model
+class EmpOfMonth extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'date',
         'user_id',
-        'degree',
-        'study',
     ];
 
     public function user()
