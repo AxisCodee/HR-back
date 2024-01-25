@@ -187,7 +187,7 @@ class UserController extends Controller
                     'image' => $leader->userInfo ? $leader->userInfo->image : null,
                     'level3' => $leader->my_team->map(function ($member) {
                         return [
-                           'member'=> $member,
+                           'level3'=> $member,
                             'image' => $member->userInfo ? $member->userInfo->image : null,
                         ];
                     })
@@ -195,13 +195,20 @@ class UserController extends Controller
         });
         return ResponseHelper::success(
             [
-                'Ceo' => $admins,
-                'Level1' => $managers,
-                'Level2' => $teamMembers,
+                'Ceo' =>
+                [
+                    'Ceo' => $admins,
+                    'Level1' => [
+                         'Level1'=>$managers,
+                        'Level2' => [
+                            'Level2' => $teamMembers],
+                    ],
+                ],
             ],
             null,
-            'departments and roles returned successfully',
+            'Role hierarchy ',
             200
         );
+
     }
 }
