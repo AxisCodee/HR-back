@@ -199,10 +199,7 @@ class UserController extends Controller
         return ResponseHelper::success(
 
               $response
-            ,
-            null,
-            'Roles hierarchy returned successfully',
-            200
+            
         );
     }
 }
