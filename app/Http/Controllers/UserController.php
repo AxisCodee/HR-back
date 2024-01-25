@@ -209,9 +209,13 @@ class UserController extends Controller
             'Ceo' => [
                 'Ceo' => $admins,
                 'Level1' => [
-                    'Level1' => $managers,
-                    'Level2' => [
-                        'Level2' => $teamMembers,
+                    [
+                        'Level1' => $managers,
+                        'Level2' => [
+                            [
+                                'Level2' => $teamMembers,
+                            ],
+                        ],
                     ],
                 ],
             ],
