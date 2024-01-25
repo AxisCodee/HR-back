@@ -192,12 +192,12 @@ class UserController extends Controller
                     })
                 ];
         });
-        return ResponseHelper::success(
+        return ResponseHelper::success([
             [
                 'CEO' => $admins,
                 'Level1' => $managers,
                 'level2' => $teamMembers,
-            ],
+            ]],
             null,
             'Roles hierarchy returned successfully',
             200
