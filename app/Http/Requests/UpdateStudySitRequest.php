@@ -22,8 +22,9 @@ class UpdateStudySitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string',
-            'description' => 'required|string',
+            'user_id' => 'required|integer|exists:users,id',
+            'degree' => 'required|string',
+            'study' => 'required|string',
         ];
     }
 }

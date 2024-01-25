@@ -23,7 +23,7 @@ class CertificateRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'title' => 'required|string',
+            'content' => 'required|string',
         ];
     }
 }
