@@ -83,30 +83,24 @@ class AttendanceController extends Controller
                     ->first();
 
                 if (!$lates) {
+                    $newLateData = [
+                        'user_id' => $userId,
+                        'lateDate' => $checkInDate,
+                        'check_in' => $checkInHour,
+                        'hours_num' => $hoursLate
+                    ];
+
+                    $newLateData['check_out'] = ($log['Status'] == 1) ? $checkInHour : null;
+
                     if ($userId) {
-                         if ($log['Status'] == 1) {
-                            $newLateData['check_out'] = $checkInHour;
-                        }
-                        $newLateData = [
-                            'user_id' => $userId,
-                            'lateDate' => $checkInDate,
-                            'check_in' => $checkInHour,
-                            'hours_num' => $hoursLate
-                        ];
-
-
-
                         $newLate = Late::query()->create($newLateData);
                     }
-
-
-                }
-                else {
+                } else {
                     $lates->update([
-                        'check_in' =>$checkInHour,
-
+                        'check_in' => $checkInHour
                     ]);
                 }
+            }
 
                 // $numberOfHour = $lates->hours_num;
                 // if ($hoursLate > $numberOfHour) {
@@ -118,7 +112,7 @@ class AttendanceController extends Controller
                 //     );
                 // }
 
-            }
+            
 
             //store the days of job
             $checkInDate = substr($log['DateTime'], 0, 10);
