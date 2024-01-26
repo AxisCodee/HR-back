@@ -85,6 +85,8 @@ class AttendanceController extends Controller
                 }
 
                 $hoursLate = $parsedHour->diffInHours($companyStartTime);
+                $hoursOverTime = $parsedHourOut->diffInHours($companyEndTime);
+
                 $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
                 $userId = User::query()->where('pin', ($log['PIN']))->value('id');
                 $lates = Late::query()
@@ -100,7 +102,7 @@ class AttendanceController extends Controller
                         'lateDate' => $checkInDate,
                         'check_in' => $log['Status'] == 0 ? $checkInHour : null ,
                         'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                        'hours_num' =>$log['Status'] == 1 ? $checkOutHour : $hoursLate
+                        'hours_num' =>$log['Status'] == 1 ? $hoursOverTime : $hoursLate
                     ];
 
                     if ($userId) {
