@@ -53,13 +53,12 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
 
         if ($date) {
-            $month = date('m', strtotime($date));
-            $year = date('Y', strtotime($date));
-
-            return $this->lates()
-                ->whereMonth('lateDate', $month)
-                ->whereYear('lateDate', $year)
+            $lates = Late::whereMonth('lateDate', date('m', strtotime($date)))
+                ->whereYear('lateDate', date('Y', strtotime($date)))
+                ->where('user_id', $this->id)
                 ->sum('hours_num');
+
+            return $lates;
         }
 
         return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
