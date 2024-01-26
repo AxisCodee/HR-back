@@ -60,4 +60,12 @@ class UserInfoController extends Controller
         });
         return ResponseHelper::error('not deleted', null);
     }
+
+
+    public function dailyReport(Request $request)
+    {
+        
+
+    }
+
 }

@@ -84,18 +84,21 @@ class AttendanceController extends Controller
 
                 if (!$lates) {
                     if ($userId) {
+                        $newLateData = [
+                            'user_id' => $userId,
+                            'lateDate' => $checkInDate,
+                            'check_in' => $checkInHour,
+                            'hours_num' => $hoursLate
+                        ];
 
-                        $newLate = Late::query()->create(
-                            [
-                                'user_id' => $userId,
-                                'lateDate' => $checkInDate,
-                                'check_in' => $checkInHour,
-                                'hours_num'=> $hoursLate
+                        if ($log['Status'] == 1) {
+                            $newLateData['checkout'] = date("Y-m-d H:i:s");
+                        }
 
-                            ]
-                        );
-
+                        $newLate = Late::query()->create($newLateData);
                     }
+                
+
                 } else {
                     $lates->update([
                         'check_in' =>$checkInHour,
