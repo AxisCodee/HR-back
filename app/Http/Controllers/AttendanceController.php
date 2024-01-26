@@ -92,12 +92,12 @@ class AttendanceController extends Controller
                         ];
 
                         if ($log['Status'] == 1) {
-                            $newLateData['checkout'] = date("Y-m-d H:i:s");
+                            $newLateData['check_out'] = $checkInHour;
                         }
 
                         $newLate = Late::query()->create($newLateData);
                     }
-                
+
 
                 } else {
                     $lates->update([
