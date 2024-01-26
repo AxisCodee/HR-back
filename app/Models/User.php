@@ -36,7 +36,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['rate'];
+    protected $appends = ['overTime'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -48,28 +48,43 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-
-
-    public function getRateAttribute()
+    public function getOverTimeAttribute($value)
     {
-        $coachId = $this->id;
+        $date = request()->query('date');
 
-        $totalRating = Rate::query()
-            ->where('coachId', $coachId)
-            ->sum('rate');
+        if ($date) {
+            $month = date('m', strtotime($date));
+            $year = date('Y', strtotime($date));
 
-        $userCount = Rate::query()
-            ->where('coachId', $coachId)
-            ->count('playerId');
-
-        if ($userCount === 0) {
-            return 0;
+            return $this->lates()
+                ->whereMonth('lateDate', $month)
+                ->whereYear('lateDate', $year)
+                ->sum('hours_num');
         }
 
-        $averageRating = $totalRating / $userCount;
-
-        return intval($averageRating);
+        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
     }
+
+    // public function getRateAttribute()
+    // {
+    //     $coachId = $this->id;
+
+    //     $totalRating = Rate::query()
+    //         ->where('coachId', $coachId)
+    //         ->sum('rate');
+
+    //     $userCount = Rate::query()
+    //         ->where('coachId', $coachId)
+    //         ->count('playerId');
+
+    //     if ($userCount === 0) {
+    //         return 0;
+    //     }
+
+    //     $averageRating = $totalRating / $userCount;
+
+    //     return intval($averageRating);
+    // }
 
 
 
