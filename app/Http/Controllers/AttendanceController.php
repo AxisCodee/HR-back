@@ -70,7 +70,7 @@ class AttendanceController extends Controller
 
             $parsedHour = Carbon::parse($checkInHour);
             $parsedHourOut= Carbon::parse($checkOutHour);
-            $companyStartTime = DateTime::createFromFormat('H:i', '09:30');;
+            $companyStartTime = DateTime::createFromFormat('H:i', '09:35');;
             $companyEndTime = DateTime::createFromFormat('H:i', '17:30');;
 
             //check if the persone late
