@@ -76,7 +76,7 @@ class AttendanceController extends Controller
 
 
             if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0)||
-            ($parsedHour->isAfter($companyEndTime) && $log['Status'] == 1)) {
+            ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)) {
                 if ($log['Status'] == 1) {
                     $checkOutHour = substr($log['DateTime'], 11, 15);
                 }
@@ -100,7 +100,7 @@ class AttendanceController extends Controller
                         'lateDate' => $checkInDate,
                         'check_in' => $log['Status'] == 0 ? $checkInHour : null ,
                         'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                        'hours_num' => $hoursLate
+                        'hours_num' =>$log['Status'] == 1 ? $checkOutHour : $hoursLate
                     ];
 
                     if ($userId) {
