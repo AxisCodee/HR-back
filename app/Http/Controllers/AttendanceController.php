@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Late;
 use App\Models\User;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
 
@@ -69,8 +70,8 @@ class AttendanceController extends Controller
 
             $parsedHour = Carbon::parse($checkInHour);
             $parsedHourOut= Carbon::parse($checkOutHour);
-            $companyStartTime = '09:30';
-            $companyEndTime = '17:00';
+            $companyStartTime = DateTime::createFromFormat('H:i', '09:30');;
+            $companyEndTime = DateTime::createFromFormat('H:i', '17:00');;
 
             //check if the persone late
 
@@ -84,8 +85,11 @@ class AttendanceController extends Controller
                     $checkInHour=substr($log['DateTime'], 11, 15);
                 }
 
-                $hoursLate = $parsedHour->diffInHours($companyStartTime);
-                $hoursOverTime = $parsedHourOut->diffInHours($companyEndTime);
+                $diffLate = $parsedHour->diff($companyStartTime);
+                $hoursLate = $diffLate->format('%H:%I');
+
+                $diffOverTime = $parsedHourOut->diff($companyEndTime);
+                $hoursOverTime = $diffOverTime->format('%H:%I');
 
                 $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
                 $userId = User::query()->where('pin', ($log['PIN']))->value('id');
