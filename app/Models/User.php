@@ -36,7 +36,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-
+    protected $appends = ['rate'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -46,6 +46,31 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+
+    public function getRateAttribute()
+    {
+        $coachId = $this->id;
+
+        $totalRating = Rate::query()
+            ->where('coachId', $coachId)
+            ->sum('rate');
+
+        $userCount = Rate::query()
+            ->where('coachId', $coachId)
+            ->count('playerId');
+
+        if ($userCount === 0) {
+            return 0;
+        }
+
+        $averageRating = $totalRating / $userCount;
+
+        return intval($averageRating);
+    }
+
 
 
     public function getJWTIdentifier()
