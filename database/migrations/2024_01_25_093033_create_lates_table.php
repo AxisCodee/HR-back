@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('check_out')->nullable(true);
             $table->date('lateDate')->nullable();
             $table->integer('moreLate')->nullable();
-            $table->integer('hours_num')->nullable(true)->default(NULL);
+            $table->double('hours_num')->nullable(true)->default(NULL);
             $table->enum('status',['waiting','accepted','rejected']);
             $table->enum('type',['Unjustified','justified']);
 
