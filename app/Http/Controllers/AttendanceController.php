@@ -86,10 +86,10 @@ class AttendanceController extends Controller
                 }
 
                 $diffLate = $parsedHour->diff($companyStartTime);
-                $hoursLate = $diffLate->format('%H,%I');
+                $hoursLate = $diffLate->format('%H.%I');
 
                 $diffOverTime = $parsedHourOut->diff($companyEndTime);
-                $hoursOverTime = $diffOverTime->format('%H,%I');
+                $hoursOverTime = $diffOverTime->format('%H.%I');
 
                 $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
                 $userId = User::query()->where('pin', ($log['PIN']))->value('id');
