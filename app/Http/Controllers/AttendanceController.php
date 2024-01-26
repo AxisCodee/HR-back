@@ -72,6 +72,10 @@ class AttendanceController extends Controller
 
 
             if ($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) {
+                if ($log['Status'] == 1) {
+                    $checkOutHour = substr($log['DateTime'], 11, 15);
+                }
+
                 $hoursLate = $parsedHour->diffInHours($companyStartTime);
                 $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
                 $userId = User::query()->where('pin', ($log['PIN']))->value('id');
@@ -87,10 +91,9 @@ class AttendanceController extends Controller
                         'user_id' => $userId,
                         'lateDate' => $checkInDate,
                         'check_in' => $checkInHour,
+                        'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
                         'hours_num' => $hoursLate
                     ];
-
-                    $newLateData['check_out'] = ($log['Status'] == 1) ? $checkInHour : null;
 
                     if ($userId) {
                         $newLate = Late::query()->create($newLateData);
@@ -112,7 +115,7 @@ class AttendanceController extends Controller
                 //     );
                 // }
 
-            
+
 
             //store the days of job
             $checkInDate = substr($log['DateTime'], 0, 10);
