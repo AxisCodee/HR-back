@@ -16,7 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->enum('type',['warning','reward','deduction']);
             $table->string('content');
-            $table->integer('amount')->nullable(true)->default(null);
+            $table->double('amount')->nullable(true)->default(null);
+            $table->string('dateTime')->nullable(true)->default(null);
+            $table->double('salary')->nullable(true)->default(null);
+
+
             $table->timestamps();
         });
     }
