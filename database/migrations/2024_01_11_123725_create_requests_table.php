@@ -17,6 +17,10 @@ return new class extends Migration
             $table->enum('type',['advance', 'vacation','resignation','complaint']);
             $table->string('description');
             $table->string('date')->nullable();
+            //new
+            $table->string('dateTime')->nullable();
+            $table->string('dayNumber')->nullable();
+            //new
             $table->string('title');
             $table->enum('status',['waiting','accepted','rejected']);
             $table->timestamps();
