@@ -120,7 +120,7 @@ class AuthController extends Controller
         {
             $cerities = Certificate::query()->create([
                 'user_id' => $user->id,
-                'content' => $certificate,
+                'content' => $certificate['certificate'],
             ]);
         }
 
