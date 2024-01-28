@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['overTime', 'rate', 'late', 'deduction'];
+    //protected $appends = ['overTime', 'rate', 'late', 'deduction'];
     protected $hidden = [
         'password',
         'remember_token',
