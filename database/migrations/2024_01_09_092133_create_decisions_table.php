@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('decisions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->enum('type',['warning','reward','deduction']);
+            $table->enum('type',['warning','reward','deduction','advanced']);
             $table->string('content');
-            $table->integer('amount')->nullable(true)->default(null);
+            $table->double('amount')->nullable(true)->default(null);
+            $table->string('dateTime')->nullable(true)->default(null);
+            $table->double('salary')->nullable(true)->default(null);
+
+
             $table->timestamps();
         });
     }

@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\SendRequest;
 use App\Models\Absences;
+use App\Models\Decision;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -99,17 +101,29 @@ class RequestController extends Controller
         return ResponseHelper::deleted('Request deleted successfully');
     }
 
-    public function accepteRequest(Request $request)
-    {
-        $request->update(
-            [
-                'status' => 'accepted'
-            ]
-        );
-        return ResponseHelper::updated([
-            'message' => 'request accepted successfully',
+    public function acceptRequest(Request $request)
+{
+    $request->update([
+        'status' => 'accepted'
+    ]);
+// تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
+//  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل 
+    if ($request->type == 'advanced') {
+        $user = User::find($request->user_id);
+        $salary = $user->salary;
+        $result = Decision::query()->create([
+            'user_id' => $request->user_id,
+            'type' => 'advanced',
+            'amount' => ($salary / 2) ,
+            'dateTime' => $request->dateTime,
+            'salary' => $salary
         ]);
     }
+
+    return ResponseHelper::updated([
+        'message' => 'Request accepted successfully',
+    ]);
+}
     public function rejectRequest(Request $request)
     {
         $request->update(
@@ -117,6 +131,7 @@ class RequestController extends Controller
                 'status' => 'rejected'
             ]
         );
+
         return ResponseHelper::success([
             'message' => 'request rejected successfully',
         ]);

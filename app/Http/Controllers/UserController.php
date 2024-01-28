@@ -205,6 +205,21 @@ class UserController extends Controller
             200
         );
     }
+
+    public function user_prof()
+    {
+        $role = ["Junior","Mid","Senior"];
+        $specialisation = ["UI-UX","Front-End","Back-End","Mobile","Graphic-Desgin","Project-Manager"];
+        $department = Department::query()->get()->toArray();
+
+        return ResponseHelper::success(
+            [
+                'role'=> $role,
+                'specialisation'=>$specialisation,
+                'departments'=>$department,
+            ]
+        ,"Professional selects returned successfully",200);
+    }
 }
 
 
