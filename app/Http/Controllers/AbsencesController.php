@@ -7,6 +7,8 @@ use App\Http\Requests\StoreAbsencesRequest;
 use App\Http\Requests\UpdateAbsencesRequest;
 use App\Models\Absences;
 use App\Models\User;
+use App\Models\UserInfo;
+use App\Models\Decision;
 use App\Models\Date;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,5 +125,37 @@ class AbsencesController extends Controller
             ->get();
 
         return ResponseHelper::success($usersWithoutAttendance, 'yaaaaaa', null);
+    }
+
+// to make desicion to absence employee
+    public function DynamicDecision( Absences $Absences)
+    {
+        $Absences->update(
+            [
+                'type'=>'unjustified'
+            ]
+            );
+     $salary= UserInfo::query()->where('user_id',$Absences->user_id)->value('salary');
+           $salaryInHour=$salary/208;
+           $deduction= $salaryInHour*8;
+            Decision::query()->updateOrCreate(
+                [
+                    'user_id'=>$Absences->user_id,
+                    'type'=>'warning',
+                    'salary'=>$salary,
+                    'dateTime'=>$Absences->startDate,
+                    'fromSystem'=>true,
+                    'content'=>'Unjustified absence',
+                    'amount'=> $deduction
+                ]
+                );
+            }
+
+    //to get all users who don not take vacation and absence
+    public function unjustifiedAbsence()
+    {
+        $absence=Absences::query()->where('type','null')->where('status','waiting')->get();
+        return ResponseHelper::success( $absence, 'unjustifiedAbsence', null);
+
     }
 }

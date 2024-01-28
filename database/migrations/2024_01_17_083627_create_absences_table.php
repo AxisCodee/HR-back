@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['justified', 'Unjustified'])->default('Unjustified');
+            $table->enum('type',['null','justified','Unjustified']);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->dateTime('startDate')->nullable(true);
             $table->dateTime('endDate')->nullable(true);

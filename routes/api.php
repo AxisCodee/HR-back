@@ -64,6 +64,7 @@ Route::prefix('Users')->group(function () {
         Route::get('Deps&Roles', 'all_dep_rul');
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
+        Route::get('professional','user_prof');
     });
 });
 
@@ -243,6 +244,9 @@ Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
+        Route::get('Uabsences','unjustifiedAbsence');
+        Route::post('DynamicDecision/{absences}','DynamicDecision');
+
     });
 });
 
