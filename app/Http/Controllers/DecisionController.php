@@ -58,6 +58,7 @@ class DecisionController extends Controller
     {
 
      $salary= UserInfo::query()->where('user_id',$Absences->user_id)->value('salary');
+   
            $salaryInHour=$salary/208;
            $deduction= $salaryInHour*8;
             Decision::query()->createOrUpdate(

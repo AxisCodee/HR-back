@@ -146,26 +146,28 @@ $dateInput =request()->input('date');
                 'type'=>'unjustified'
             ]
             );
+
      $salary= UserInfo::query()->where('user_id',$Absences->user_id)->value('salary');
            $salaryInHour=$salary/208;
            $deduction= $salaryInHour*8;
-            Decision::query()->updateOrCreate(
+            Decision::query()->create(
                 [
                     'user_id'=>$Absences->user_id,
                     'type'=>'warning',
-                    'salary'=>$salary,
+                    'salary'=> $salary,
                     'dateTime'=>$Absences->startDate,
                     'fromSystem'=>true,
                     'content'=>'Unjustified absence',
                     'amount'=> $deduction
                 ]
                 );
+                return ResponseHelper::success( null, 'successfully', null);
             }
 
     //to get all users who don not take vacation and absence
     public function unjustifiedAbsence()
     {
-        $absence=Absences::query()->where('type','null')->where('status','waiting')->get();
+        $absence=Absences::query()->with('users')->where('type','null')->where('status','waiting')->get();
         return ResponseHelper::success( $absence, 'unjustifiedAbsence', null);
 
     }
