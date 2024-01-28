@@ -49,129 +49,129 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    public function getOverTimeAttribute($date)
-    {
-       // $date = request()->query('date');
-        if ($date) {
-            $lates = Late::whereNotNull('check_out')
-                ->whereMonth('lateDate', date('m', strtotime($date)))
-                ->whereYear('lateDate', date('Y', strtotime($date)))
-                ->where('user_id', $this->id)
-                ->sum('hours_num');
-            return $lates;
-        }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
-    }
-
-
-    public function getRateAttribute($value)//not ready
-    {
-        $date = request()->query('date');
-        if ($date) {
-            // $lates = Late::whereNotNull('check_out')
-            // ->whereMonth('lateDate', date('m', strtotime($date)))
-            //     ->whereYear('lateDate', date('Y', strtotime($date)))
-            //     ->where('user_id', $this->id)
-            //     ->sum('hours_num');
-            // return $lates;
-        }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
-    }
-
-    public function getAdvancesAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $advances = Decision::where('type', 'advanced')
-                ->where('user_id', $this->id);
-            if (strpos($date, 'day') !== false) {
-                $advances->whereDay('dateTime', date('d', strtotime($date)));
-            } elseif (strpos($date, 'month') !== false) {
-                $advances->whereMonth('dateTime', date('m', strtotime($date)));
-            } elseif (strpos($date, 'year') !== false) {
-                $advances->whereYear('dateTime', date('Y', strtotime($date)));
-            }
-            $totalAdvances = $advances->sum('amount');
-            return $totalAdvances;
-        }
-        return 0;
-    }
-    public function getDeductionAttribute($date)
-    {
-
-      //  $date = request()->query('date');
-
-
-        if ($date) {
-
-            $deductions = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id)->whereDate('dateTime',$date)->get();
-
-            // if (strpos($date, 'day') !== false) {
-            //     $deductions->whereDay('dateTime', date('d', strtotime($date)));
-            // } elseif (strpos($date, 'month') !== false) {
-            //     $deductions->whereMonth('dateTime', date('m', strtotime($date)));
-            // } elseif (strpos($date, 'year') !== false) {
-            //     $deductions->whereYear('dateTime', date('Y', strtotime($date)));
-            // }
-            $totalDeductions = $deductions->sum('amount');
-            return $totalDeductions;
-        }
-        return 0;
-    }
-    public function getLatesAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $lates = Late::where('type', 'Unjustified')
-                ->where('user_id', $this->id);
-            if (strpos($date, 'day') !== false) {
-                $lates->whereDay('lateDate', date('d', strtotime($date)));
-            } elseif (strpos($date, 'month') !== false) {
-                $lates->whereMonth('lateDate', date('m', strtotime($date)));
-            } elseif (strpos($date, 'year') !== false) {
-                $lates->whereYear('lateDate', date('Y', strtotime($date)));
-            }
-            $totalLates = $lates->sum('hours_num');
-            return $totalLates;
-        }
-        return 0;
-    }
-    public function getUserAbsence($date)
-    {
-
-        // $today = Carbon::now();
-        // if ($today->eq($date)) {
-        //     $this->cuurentAbsence();
-        // } else {
-            $day = substr($date, 8, 2);
-            //$user = User::query()->get();
-            $result = $this->absences()
-                ->whereDay('startDate', $day)->get();
-
-            return $result;
-        //}
-    }
-    // public function getRateAttribute()
+    // public function getOverTimeAttribute($date)
     // {
-    //     $coachId = $this->id;
-
-    //     $totalRating = Rate::query()
-    //         ->where('coachId', $coachId)
-    //         ->sum('rate');
-
-    //     $userCount = Rate::query()
-    //         ->where('coachId', $coachId)
-    //         ->count('playerId');
-
-    //     if ($userCount === 0) {
-    //         return 0;
+    //    // $date = request()->query('date');
+    //     if ($date) {
+    //         $lates = Late::whereNotNull('check_out')
+    //             ->whereMonth('lateDate', date('m', strtotime($date)))
+    //             ->whereYear('lateDate', date('Y', strtotime($date)))
+    //             ->where('user_id', $this->id)
+    //             ->sum('hours_num');
+    //         return $lates;
     //     }
-
-    //     $averageRating = $totalRating / $userCount;
-
-    //     return intval($averageRating);
+    //     return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
     // }
+
+
+    // public function getRateAttribute($value)//not ready
+    // {
+    //     $date = request()->query('date');
+    //     if ($date) {
+    //         // $lates = Late::whereNotNull('check_out')
+    //         // ->whereMonth('lateDate', date('m', strtotime($date)))
+    //         //     ->whereYear('lateDate', date('Y', strtotime($date)))
+    //         //     ->where('user_id', $this->id)
+    //         //     ->sum('hours_num');
+    //         // return $lates;
+    //     }
+    //     return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
+    // }
+
+    // public function getAdvancesAttribute($date)
+    // {
+    //    // $date = request()->query('date');
+    //     if ($date) {
+    //         $advances = Decision::where('type', 'advanced')
+    //             ->where('user_id', $this->id,'dateTime',$date);
+    //         // if (strpos($date, 'day') !== false) {
+    //         //     $advances->whereDay('dateTime', date('d', strtotime($date)));
+    //         // } elseif (strpos($date, 'month') !== false) {
+    //         //     $advances->whereMonth('dateTime', date('m', strtotime($date)));
+    //         // } elseif (strpos($date, 'year') !== false) {
+    //         //     $advances->whereYear('dateTime', date('Y', strtotime($date)));
+    //         // }
+    //         $totalAdvances = $advances->sum('amount');
+    //         return $totalAdvances;
+    //     }
+    //     return 0;
+    // }
+    // public function getDeductionAttribute($date)
+    // {
+
+    //   //  $date = request()->query('date');
+
+
+    //     if ($date) {
+
+    //         $deductions = Decision::where('type', 'deduction')
+    //             ->where('user_id', $this->id)->whereDate('dateTime',$date)->get();
+
+    //         // if (strpos($date, 'day') !== false) {
+    //         //     $deductions->whereDay('dateTime', date('d', strtotime($date)));
+    //         // } elseif (strpos($date, 'month') !== false) {
+    //         //     $deductions->whereMonth('dateTime', date('m', strtotime($date)));
+    //         // } elseif (strpos($date, 'year') !== false) {
+    //         //     $deductions->whereYear('dateTime', date('Y', strtotime($date)));
+    //         // }
+    //         $totalDeductions = $deductions->sum('amount');
+    //         return $totalDeductions;
+    //     }
+    //     return 0;
+    // }
+    // public function getLatesAttribute($value)
+    // {
+    //     $date = request()->query('date');
+    //     if ($date) {
+    //         $lates = Late::where('type', 'Unjustified')
+    //             ->where('user_id', $this->id);
+    //         if (strpos($date, 'day') !== false) {
+    //             $lates->whereDay('lateDate', date('d', strtotime($date)));
+    //         } elseif (strpos($date, 'month') !== false) {
+    //             $lates->whereMonth('lateDate', date('m', strtotime($date)));
+    //         } elseif (strpos($date, 'year') !== false) {
+    //             $lates->whereYear('lateDate', date('Y', strtotime($date)));
+    //         }
+    //         $totalLates = $lates->sum('hours_num');
+    //         return $totalLates;
+    //     }
+    //     return 0;
+    // }
+    // public function getUserAbsence($date)
+    // {
+
+    //     // $today = Carbon::now();
+    //     // if ($today->eq($date)) {
+    //     //     $this->cuurentAbsence();
+    //     // } else {
+    //         $day = substr($date, 8, 2);
+    //         //$user = User::query()->get();
+    //         $result = $this->absences()
+    //             ->whereDay('startDate', $day)->get();
+
+    //         return $result;
+    //     //}
+    // }
+    // // public function getRateAttribute()
+    // // {
+    // //     $coachId = $this->id;
+
+    // //     $totalRating = Rate::query()
+    // //         ->where('coachId', $coachId)
+    // //         ->sum('rate');
+
+    // //     $userCount = Rate::query()
+    // //         ->where('coachId', $coachId)
+    // //         ->count('playerId');
+
+    // //     if ($userCount === 0) {
+    // //         return 0;
+    // //     }
+
+    // //     $averageRating = $totalRating / $userCount;
+
+    // //     return intval($averageRating);
+    // // }
 
 
 

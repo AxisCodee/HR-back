@@ -65,14 +65,14 @@ class AttendanceController extends Controller
             // the first of check the late
             $checkInDate = substr($log['DateTime'], 0, 10);
             $checkInHour = substr($log['DateTime'], 11, 15);
-            $checkOutHour = substr($log['DateTime'], 11, 15);
+           $checkOutHour = substr($log['DateTime'], 11, 15);
 
             $parsedHour = Carbon::parse($checkInHour);
             $parsedHourOut = Carbon::parse($checkOutHour);
             $companyStartTime = DateTime::createFromFormat('H:i', '09:35');
             $companyEndTime = DateTime::createFromFormat('H:i', '17:30');
 
-            //check if the persone late
+           // check if the persone late
 
             if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
                 ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)) {
