@@ -15,6 +15,9 @@ class Decision extends Model
         'type',
         'content',
         'amount',
+        'salary',
+        'fromSystem',
+        'dateTime'
     ];
 
 

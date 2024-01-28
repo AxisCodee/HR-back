@@ -64,25 +64,23 @@ class AttendanceController extends Controller
 
             // the first of check the late
             $checkInDate = substr($log['DateTime'], 0, 10);
-            $checkInHour=substr($log['DateTime'], 11, 15);
-            $checkOutHour = substr($log['DateTime'], 11, 15);
-
+            $checkInHour = substr($log['DateTime'], 11, 15);
+           $checkOutHour = substr($log['DateTime'], 11, 15);
 
             $parsedHour = Carbon::parse($checkInHour);
-            $parsedHourOut= Carbon::parse($checkOutHour);
-            $companyStartTime = DateTime::createFromFormat('H:i', '09:35');;
-            $companyEndTime = DateTime::createFromFormat('H:i', '17:30');;
+            $parsedHourOut = Carbon::parse($checkOutHour);
+            $companyStartTime = DateTime::createFromFormat('H:i', '09:35');
+            $companyEndTime = DateTime::createFromFormat('H:i', '17:30');
 
-            //check if the persone late
+           // check if the persone late
 
-
-            if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0)||
-            ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)) {
+            if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
+                ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)) {
                 if ($log['Status'] == 1) {
                     $checkOutHour = substr($log['DateTime'], 11, 15);
                 }
                 if ($log['Status'] == 0) {
-                    $checkInHour=substr($log['DateTime'], 11, 15);
+                    $checkInHour = substr($log['DateTime'], 11, 15);
                 }
 
                 $diffLate = $parsedHour->diff($companyStartTime);
@@ -104,9 +102,9 @@ class AttendanceController extends Controller
                     $newLateData = [
                         'user_id' => $userId,
                         'lateDate' => $checkInDate,
-                        'check_in' => $log['Status'] == 0 ? $checkInHour : null ,
+                        'check_in' => $log['Status'] == 0 ? $checkInHour : null,
                         'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                        'hours_num' =>$log['Status'] == 1 ? $hoursOverTime : $hoursLate
+                        'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
                     ];
 
                     if ($userId) {
@@ -114,22 +112,20 @@ class AttendanceController extends Controller
                     }
                 } else {
                     $lates->update([
-                        'check_in' => $checkInHour
+                        'check_in' => $checkInHour,
                     ]);
                 }
             }
 
-                // $numberOfHour = $lates->hours_num;
-                // if ($hoursLate > $numberOfHour) {
-                //     $moreLate = $hoursLate - $numberOfHour;
-                //     $lates->update(
-                //         [
-                //             'moreLate' => $moreLate,
-                //         ]
-                //     );
-                // }
-
-
+            // $numberOfHour = $lates->hours_num;
+            // if ($hoursLate > $numberOfHour) {
+            //     $moreLate = $hoursLate - $numberOfHour;
+            //     $lates->update(
+            //         [
+            //             'moreLate' => $moreLate,
+            //         ]
+            //     );
+            // }
 
             //store the days of job
             $checkInDate = substr($log['DateTime'], 0, 10);
@@ -175,10 +171,9 @@ class AttendanceController extends Controller
             }
         }
 
-            return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
+        return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
 
-        }
-
+    }
 
     public function showAttendanceLogs()
     {
