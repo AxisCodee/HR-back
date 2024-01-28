@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['overTime', 'rate', 'late', 'deduction'];
+    // protected $appends = ['overTime', 'rate', 'late', 'deduction'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -49,103 +49,103 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    public function getOverTimeAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $lates = Late::whereNotNull('check_out')
-                ->whereMonth('lateDate', date('m', strtotime($date)))
-                ->whereYear('lateDate', date('Y', strtotime($date)))
-                ->where('user_id', $this->id)
-                ->sum('hours_num');
-            return $lates;
-        }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
-    }
+    // public function getOverTimeAttribute($value)
+    // {
+    //     $date = request()->query('date');
+    //     if ($date) {
+    //         $lates = Late::whereNotNull('check_out')
+    //             ->whereMonth('lateDate', date('m', strtotime($date)))
+    //             ->whereYear('lateDate', date('Y', strtotime($date)))
+    //             ->where('user_id', $this->id)
+    //             ->sum('hours_num');
+    //         return $lates;
+    //     }
+    //     return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
+    // }
 
 
-    public function getRateAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            // $lates = Late::whereNotNull('check_out')
-            // ->whereMonth('lateDate', date('m', strtotime($date)))
-            //     ->whereYear('lateDate', date('Y', strtotime($date)))
-            //     ->where('user_id', $this->id)
-            //     ->sum('hours_num');
-            // return $lates;
-        }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
-    }
+    // public function getRateAttribute($value)
+    // {
+    //     $date = request()->query('date');
+    //     if ($date) {
+    //         // $lates = Late::whereNotNull('check_out')
+    //         // ->whereMonth('lateDate', date('m', strtotime($date)))
+    //         //     ->whereYear('lateDate', date('Y', strtotime($date)))
+    //         //     ->where('user_id', $this->id)
+    //         //     ->sum('hours_num');
+    //         // return $lates;
+    //     }
+    //     return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
+    // }
 
-    public function getAdvancesAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $advances = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id);
-            if (strpos($date, 'day') !== false) {
-                $advances->whereDay('dateTime', date('d', strtotime($date)));
-            } elseif (strpos($date, 'month') !== false) {
-                $advances->whereMonth('dateTime', date('m', strtotime($date)));
-            } elseif (strpos($date, 'year') !== false) {
-                $advances->whereYear('dateTime', date('Y', strtotime($date)));
-            }
-            $totalAdvances = $advances->sum('amount');
-            return $totalAdvances;
-        }
-        return 0;
-    }
-    public function getDeductionAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $deductions = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id);
-            if (strpos($date, 'day') !== false) {
-                $deductions->whereDay('dateTime', date('d', strtotime($date)));
-            } elseif (strpos($date, 'month') !== false) {
-                $deductions->whereMonth('dateTime', date('m', strtotime($date)));
-            } elseif (strpos($date, 'year') !== false) {
-                $deductions->whereYear('dateTime', date('Y', strtotime($date)));
-            }
-            $totalDeductions = $deductions->sum('amount');
-            return $totalDeductions;
-        }
-        return 0;
-    }
-    public function getLatesAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $deductions = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id);
-            if (strpos($date, 'day') !== false) {
-                $deductions->whereDay('dateTime', date('d', strtotime($date)));
-            } elseif (strpos($date, 'month') !== false) {
-                $deductions->whereMonth('dateTime', date('m', strtotime($date)));
-            } elseif (strpos($date, 'year') !== false) {
-                $deductions->whereYear('dateTime', date('Y', strtotime($date)));
-            }
-            $totalDeductions = $deductions->sum('amount');
-            return $totalDeductions;
-        }
-        return 0;
-    }
-    public function getUserAbsence($date)
-    {
-        // $today = Carbon::now();
-        // if ($today->eq($date)) {
-        //     $this->cuurentAbsence();
-        // } else {
-        $date = request()->query('date');
-            $day = substr($date, 8, 2);
-            //$user = User::query()->get();
-            $result = $this->absences()
-                ->whereDay('startDate', $day)->get();
-            return $result;
-        //}
-    }
+    // public function getAdvancesAttribute($value)
+    // {
+    //     $date = request()->query('date');
+    //     if ($date) {
+    //         $advances = Decision::where('type', 'deduction')
+    //             ->where('user_id', $this->id);
+    //         if (strpos($date, 'day') !== false) {
+    //             $advances->whereDay('dateTime', date('d', strtotime($date)));
+    //         } elseif (strpos($date, 'month') !== false) {
+    //             $advances->whereMonth('dateTime', date('m', strtotime($date)));
+    //         } elseif (strpos($date, 'year') !== false) {
+    //             $advances->whereYear('dateTime', date('Y', strtotime($date)));
+    //         }
+    //         $totalAdvances = $advances->sum('amount');
+    //         return $totalAdvances;
+    //     }
+    //     return 0;
+    // }
+    // public function getDeductionAttribute($value)
+    // {
+    //     $date = request()->query('date');
+    //     if ($date) {
+    //         $deductions = Decision::where('type', 'deduction')
+    //             ->where('user_id', $this->id);
+    //         if (strpos($date, 'day') !== false) {
+    //             $deductions->whereDay('dateTime', date('d', strtotime($date)));
+    //         } elseif (strpos($date, 'month') !== false) {
+    //             $deductions->whereMonth('dateTime', date('m', strtotime($date)));
+    //         } elseif (strpos($date, 'year') !== false) {
+    //             $deductions->whereYear('dateTime', date('Y', strtotime($date)));
+    //         }
+    //         $totalDeductions = $deductions->sum('amount');
+    //         return $totalDeductions;
+    //     }
+    //     return 0;
+    // }
+    // public function getLatesAttribute($value)
+    // {
+    //     $date = request()->query('date');
+    //     if ($date) {
+    //         $deductions = Decision::where('type', 'deduction')
+    //             ->where('user_id', $this->id);
+    //         if (strpos($date, 'day') !== false) {
+    //             $deductions->whereDay('dateTime', date('d', strtotime($date)));
+    //         } elseif (strpos($date, 'month') !== false) {
+    //             $deductions->whereMonth('dateTime', date('m', strtotime($date)));
+    //         } elseif (strpos($date, 'year') !== false) {
+    //             $deductions->whereYear('dateTime', date('Y', strtotime($date)));
+    //         }
+    //         $totalDeductions = $deductions->sum('amount');
+    //         return $totalDeductions;
+    //     }
+    //     return 0;
+    // }
+    // public function getUserAbsence($date)
+    // {
+    //     // $today = Carbon::now();
+    //     // if ($today->eq($date)) {
+    //     //     $this->cuurentAbsence();
+    //     // } else {
+    //     $date = request()->query('date');
+    //         $day = substr($date, 8, 2);
+    //         //$user = User::query()->get();
+    //         $result = $this->absences()
+    //             ->whereDay('startDate', $day)->get();
+    //         return $result;
+    //     //}
+    // }
     // public function getRateAttribute()
     // {
     //     $coachId = $this->id;
