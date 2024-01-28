@@ -208,13 +208,13 @@ class UserController extends Controller
 
     public function user_prof()
     {
-        $role = ["Junior","Mid","Senior"];
+        $levels = ["Junior","Mid","Senior"];
         $specialisation = ["UI-UX","Front-End","Back-End","Mobile","Graphic-Desgin","Project-Manager"];
         $department = Department::query()->get()->toArray();
 
         return ResponseHelper::success(
             [
-                'role'=> $role,
+                'levels'=> $levels,
                 'specialisation'=>$specialisation,
                 'departments'=>$department,
             ]

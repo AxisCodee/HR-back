@@ -39,6 +39,7 @@ class UserInfoRequest extends FormRequest
                 Rule::in(['Postponed', 'Exempt', 'Finished']),
             ],
             'salary' => 'required|integer',
+            'level'=>['in:Senior,Mid,Junior'],
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -91,6 +91,7 @@ class AuthController extends Controller
             'gender' => $request->gender,
             'nationalID' => $request->nationalID,
             'social_situation' => $request->social_situation,
+            'level'=>$request->level,
             'military_situation' => $request->military_situation,
             'image' => $path
         ]);
