@@ -18,6 +18,7 @@ class UserInfo extends Model
         'social_situation',
         'study_situation',
         'military_situation',
+        'level',
         'salary',
     ];
 
