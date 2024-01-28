@@ -25,7 +25,6 @@ class DepositRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'user_id' => ['required', 'exists:users,id'],
             'received_date' => ['required', 'date'],

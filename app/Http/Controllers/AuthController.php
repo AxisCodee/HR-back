@@ -91,6 +91,7 @@ class AuthController extends Controller
             'gender' => $request->gender,
             'nationalID' => $request->nationalID,
             'social_situation' => $request->social_situation,
+            'level'=>$request->level,
             'military_situation' => $request->military_situation,
             'image' => $path
         ]);
@@ -119,7 +120,7 @@ class AuthController extends Controller
         {
             $cerities = Certificate::query()->create([
                 'user_id' => $user->id,
-                'content' => $certificate,
+                'content' => $certificate['certificate'],
             ]);
         }
 
@@ -158,7 +159,7 @@ class AuthController extends Controller
         foreach ($experiences as $experience) {
             $new_exp = Career::query()->create([
                 'user_id' => $user->id,
-                'content' => $experience
+                'content' => $experience['experience'],
             ]);
         }
 
