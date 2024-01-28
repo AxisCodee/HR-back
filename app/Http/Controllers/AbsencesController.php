@@ -127,35 +127,34 @@ class AbsencesController extends Controller
         return ResponseHelper::success($usersWithoutAttendance, 'yaaaaaa', null);
     }
 
-// to make desicion to absence employee
-    public function DynamicDecision( Absences $Absences)
+    // to make desicion to absence employee
+    public function DynamicDecision(Absences $Absences)
     {
         $Absences->update(
             [
-                'type'=>'unjustified'
+                'type' => 'unjustified'
             ]
-            );
-     $salary= UserInfo::query()->where('user_id',$Absences->user_id)->value('salary');
-           $salaryInHour=$salary/208;
-           $deduction= $salaryInHour*8;
-            Decision::query()->updateOrCreate(
-                [
-                    'user_id'=>$Absences->user_id,
-                    'type'=>'warning',
-                    'salary'=>$salary,
-                    'dateTime'=>$Absences->startDate,
-                    'fromSystem'=>true,
-                    'content'=>'Unjustified absence',
-                    'amount'=> $deduction
-                ]
-                );
-            }
+        );
+        $salary = UserInfo::query()->where('user_id', $Absences->user_id)->value('salary');
+        $salaryInHour = $salary / 208;
+        $deduction = $salaryInHour * 8;
+        Decision::query()->updateOrCreate(
+            [
+                'user_id' => $Absences->user_id,
+                'type' => 'warning',
+                'salary' => $salary,
+                'dateTime' => $Absences->startDate,
+                'fromSystem' => true,
+                'content' => 'Unjustified absence',
+                'amount' => $deduction
+            ]
+        );
+    }
 
     //to get all users who don not take vacation and absence
     public function unjustifiedAbsence()
     {
-        $absence=Absences::query()->where('type','null')->where('status','waiting')->get();
-        return ResponseHelper::success( $absence, 'unjustifiedAbsence', null);
-
+        $absence = Absences::query()->where('type', 'null')->where('status', 'waiting')->get();
+        return ResponseHelper::success($absence, 'unjustifiedAbsence', null);
     }
 }
