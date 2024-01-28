@@ -120,7 +120,7 @@ class AuthController extends Controller
         {
             $cerities = Certificate::query()->create([
                 'user_id' => $user->id,
-                'content' => $certificate,
+                'content' => $certificate['certificate'],
             ]);
         }
 
@@ -159,7 +159,7 @@ class AuthController extends Controller
         foreach ($experiences as $experience) {
             $new_exp = Career::query()->create([
                 'user_id' => $user->id,
-                'content' => $experience
+                'content' => $experience['experience'],
             ]);
         }
 
