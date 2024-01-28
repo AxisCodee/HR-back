@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Requests\ReportRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use App\Models\Note;
 use Carbon\Carbon;
 
 class ReportController extends Controller
@@ -91,31 +92,42 @@ class ReportController extends Controller
         $date = $request->date;
         $user = User::find($request->user_id);
         $salary = $user->userInfo()->select('salary')->first();
-
         $deductions = $user->getDeductionAttribute($date);
         $overTime = $user->getOverTimeAttribute($date);
+        $rewards = $user->my_decisions()->where('type', 'reward')->whereDate('dateTime', $date)->get();
         $warnings = $user->my_decisions()->where('type', 'warning')->whereDate('dateTime', $date)->get();
+        if ($warnings->count() == 3) {
+            $alert = 1;
+        } else {
+            $alert = null;
+        }
+        if ($deductions) {
+            $penalties = 'Deduction';
+        } else {
+            $penalties = null;
+        }
         $advances = $user->getAdvancesAttribute($date);
-        // $absences = $user->absences()->whereDate('startDate', $date)->get();
-        $deposits=$user->deposits()->get();
+        $absence = $user->getUserAbsence($date)->first();
+        $deposits = $user->deposits()->get();
+        $notes = Note::query()->where('user_id', $request->user_id)->get();
         return ResponseHelper::success([
             'warnings' => $warnings,
-            'alerts' => 'no alerts',
-            'penalties' => 'no penalties',
+            'alerts' => $alert,
+            'penalties' => $penalties,
 
             'salary' => $salary->salary,
             'overtime' => $overTime,
-            'rewards' => '200000',
+            'rewards' => $rewards,
             'advances' => $advances,
             'deductions' => $deductions,
 
 
             'check in' => '09:00 AM',
             'check out' => '05:00 PM',
-            'absences' => 'no absences',
+            'absence' => $absence,
 
             'deposits' => $deposits,
-            'notes' => 'no notes',
+            'notes' => $notes,
         ]);
     }
 }

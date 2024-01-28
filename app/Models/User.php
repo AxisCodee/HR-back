@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -82,7 +83,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         if ($date) {
             $advances = Decision::where('type', 'deduction')
-            ->where('user_id', $this->id);
+                ->where('user_id', $this->id);
             if (strpos($date, 'day') !== false) {
                 $advances->whereDay('dateTime', date('d', strtotime($date)));
             } elseif (strpos($date, 'month') !== false) {
@@ -118,7 +119,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         if ($date) {
             $deductions = Decision::where('type', 'deduction')
-            ->where('user_id', $this->id);
+                ->where('user_id', $this->id);
             if (strpos($date, 'day') !== false) {
                 $deductions->whereDay('dateTime', date('d', strtotime($date)));
             } elseif (strpos($date, 'month') !== false) {
@@ -130,6 +131,20 @@ class User extends Authenticatable implements JWTSubject
             return $totalDeductions;
         }
         return 0;
+    }
+    public function getUserAbsence($date)
+    {
+        // $today = Carbon::now();
+        // if ($today->eq($date)) {
+        //     $this->cuurentAbsence();
+        // } else {
+        $date = request()->query('date');
+            $day = substr($date, 8, 2);
+            //$user = User::query()->get();
+            $result = $this->absences()
+                ->whereDay('startDate', $day)->get();
+            return $result;
+        //}
     }
     // public function getRateAttribute()
     // {
