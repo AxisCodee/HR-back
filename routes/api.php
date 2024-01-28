@@ -120,6 +120,10 @@ Route::prefix('Report')->group(function () {
         Route::get('All', 'all_reports');
         Route::delete('remove/{report}', 'remove');
         Route::post('InsnOuts', 'user_checks');
+
+        //
+        Route::post('reportByDay', 'reportByDay');
+
     });
 });
 
@@ -240,6 +244,9 @@ Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
+        Route::get('Uabsences','unjustifiedAbsence');
+        Route::post('DynamicDecision/{absences}','DynamicDecision');
+
     });
 });
 

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('moreLate')->nullable();
             $table->double('hours_num')->nullable(true)->default(NULL);
             $table->enum('status',['waiting','accepted','rejected']);
-            $table->enum('type',['Unjustified','justified']);
+            $table->enum('type',['null','Unjustified','justified']);
 
 
             $table->timestamps();
