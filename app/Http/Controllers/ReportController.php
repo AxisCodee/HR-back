@@ -60,7 +60,6 @@ class ReportController extends Controller
         $date_time = Carbon::parse($request->date);
         $checks = Attendance::where('pin', $request->user_id)
             ->whereDate('datetime', $date_time->format('Y-m-d'))->get();
-
         foreach ($checks as $check) {
             if ($check->status == 0) {
                 $enter = Carbon::parse($check->datetime)->format('H:i:s');
@@ -74,17 +73,49 @@ class ReportController extends Controller
                 $overtime_in_hrs = $work_time_end->diffInHours($out);
             }
         }
-
         return ResponseHelper::success(
-                [
-                    'late_in_mins' => $lateness_in_mins,
-                    'late_in_hrs' => $lateness_in_hrs,
-                    'over_in_mins' => $overtime_in_mins,
-                    'over_in_hrs' => $overtime_in_hrs,
-                ],
-                null,
-                'user check insNouts returned successfully',
-                200
-            );
+            [
+                'late_in_mins' => $lateness_in_mins,
+                'late_in_hrs' => $lateness_in_hrs,
+                'over_in_mins' => $overtime_in_mins,
+                'over_in_hrs' => $overtime_in_hrs,
+            ],
+            null,
+            'user check insNouts returned successfully',
+            200
+        );
+    }
+
+    public function reportByDay(Request $request)
+    {
+        $date = $request->date;
+        $user = User::find($request->user_id);
+        $salary = $user->userInfo()->select('salary')->first();
+
+        $deductions = $user->getDeductionAttribute($date);
+        $overTime = $user->getOverTimeAttribute($date);
+        $warnings = $user->my_decisions()->where('type', 'warning')->whereDate('dateTime', $date)->get();
+        $advances = $user->getAdvancesAttribute($date);
+        // $absences = $user->absences()->whereDate('startDate', $date)->get();
+        $deposits=$user->deposits()->get();
+        return ResponseHelper::success([
+            'warnings' => $warnings,
+            'alerts' => 'no alerts',
+            'penalties' => 'no penalties',
+
+            'salary' => $salary->salary,
+            'overtime' => $overTime,
+            'rewards' => '200000',
+            'advances' => $advances,
+            'deductions' => $deductions,
+
+
+            'check in' => '09:00 AM',
+            'check out' => '05:00 PM',
+            'absences' => 'no absences',
+
+            'deposits' => $deposits,
+            'notes' => 'no notes',
+        ]);
     }
 }

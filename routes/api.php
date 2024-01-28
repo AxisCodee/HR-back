@@ -64,8 +64,6 @@ Route::prefix('Users')->group(function () {
         Route::get('Deps&Roles', 'all_dep_rul');
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
-
-
     });
 });
 
@@ -121,6 +119,10 @@ Route::prefix('Report')->group(function () {
         Route::get('All', 'all_reports');
         Route::delete('remove/{report}', 'remove');
         Route::post('InsnOuts', 'user_checks');
+
+        //
+        Route::post('reportByDay', 'reportByDay');
+
     });
 });
 
