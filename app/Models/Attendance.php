@@ -11,12 +11,12 @@ class Attendance extends Model
     protected $guarded = [];
 
     public function user()
-{
-    return $this->belongsTo('App\Models\User', 'pin', 'pin');
-}
-public function dates()
     {
-        return $this->belongsToMany(Date::class,'date_pins','pin','pin');
+        return $this->belongsTo('App\Models\User', 'pin', 'pin');
+    }
+    public function dates()
+    {
+        return $this->belongsToMany(Date::class, 'date_pins', 'pin', 'pin');
     }
 
 }

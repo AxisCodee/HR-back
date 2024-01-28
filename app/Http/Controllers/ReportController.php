@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Report;
 use App\Helper\ResponseHelper;
-use Illuminate\Support\Facades\Http;
 use App\Http\Requests\ReportRequest;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\Note;
+use App\Models\Report;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -45,7 +44,6 @@ class ReportController extends Controller
         $all = Report::query()->get()->toArray();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
     }
-
 
     //get all reports of today
     public function daily_reports()
@@ -108,15 +106,23 @@ class ReportController extends Controller
         }
         $advances = $user->getAdvancesAttribute($date);
         $absence = $user->getUserAbsence($date)->first();
-        if($absence)
-        {
-            $result=true;
-        }
-        else{
-            $result=false;
+        if ($absence) {
+            $result = true;
+        } else {
+            $result = false;
         }
         $deposits = $user->deposits()->get();
         $notes = Note::query()->where('user_id', $request->user_id)->get();
+        $checkIn = Attendance::query()->where('pin', $request->user_id)
+            ->whereDate('datetime', $request->date)->where('status', 0)->get();
+        if (!$checkIn->isEmpty()) {
+            $checkIn = $checkIn[0]->datetime;
+        } else { $checkIn == null;}
+        $checkOut = Attendance::query()->where('pin', $request->user_id)
+            ->whereDate('datetime', $request->date)->where('status', 1)->get();
+        if (!$checkOut->isEmpty()) {
+            $checkOut = $checkOut[0]->datetime;
+        } else { $checkIn == null;}
         return ResponseHelper::success([
             'warnings' => $warnings,
             'alerts' => $alert,
@@ -128,9 +134,8 @@ class ReportController extends Controller
             'advances' => $advances,
             'deductions' => $deductions,
 
-
-            'check in' => '09:00 AM',
-            'check out' => '05:00 PM',
+            'check in' => $checkIn,
+            'check out' => $checkOut,
             'absence' => $result,
 
             'deposits' => $deposits,
