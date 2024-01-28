@@ -64,7 +64,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function getRateAttribute($value)
+    public function getRateAttribute($value)//not ready
     {
         $date = request()->query('date');
         if ($date) {
@@ -82,7 +82,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         if ($date) {
-            $advances = Decision::where('type', 'deduction')
+            $advances = Decision::where('type', 'advanced')
                 ->where('user_id', $this->id);
             if (strpos($date, 'day') !== false) {
                 $advances->whereDay('dateTime', date('d', strtotime($date)));
@@ -118,17 +118,17 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         if ($date) {
-            $deductions = Decision::where('type', 'deduction')
+            $lates = Late::where('type', 'Unjustified')
                 ->where('user_id', $this->id);
             if (strpos($date, 'day') !== false) {
-                $deductions->whereDay('dateTime', date('d', strtotime($date)));
+                $lates->whereDay('lateDate', date('d', strtotime($date)));
             } elseif (strpos($date, 'month') !== false) {
-                $deductions->whereMonth('dateTime', date('m', strtotime($date)));
+                $lates->whereMonth('lateDate', date('m', strtotime($date)));
             } elseif (strpos($date, 'year') !== false) {
-                $deductions->whereYear('dateTime', date('Y', strtotime($date)));
+                $lates->whereYear('lateDate', date('Y', strtotime($date)));
             }
-            $totalDeductions = $deductions->sum('amount');
-            return $totalDeductions;
+            $totalLates = $lates->sum('hours_num');
+            return $totalLates;
         }
         return 0;
     }
