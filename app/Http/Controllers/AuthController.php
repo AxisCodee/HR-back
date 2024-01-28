@@ -163,14 +163,31 @@ class AuthController extends Controller
             ]);
         }
 
-        foreach($contacts as $contact)
+        if($contacts['emails'])
         {
-            $multi = Contact::create([
-                'user_id' => $user->id,
-                'type' => $contact['type'],
-                'contact' => $contact['contact']
-            ]);
+            foreach($contacts['emails'] as $contact)
+            {
+                $multi = Contact::create([
+                    'user_id' => $user->id,
+                    'type' => 'email',
+                    'contact' => $contact['email'],
+                ]);
+            }
         }
+
+        if($contacts['phonenumbers'])
+        {
+            foreach($contacts['phonenumbers'] as $contact)
+            {
+                $multi = Contact::create([
+                    'user_id' => $user->id,
+                    'type' => 'user_num',
+                    'contact' => $contact['phonenumber'],
+                ]);
+            }
+        }
+
+
 
         if($request->emergency_contact){
             foreach($emergency_contact as $emergency)
