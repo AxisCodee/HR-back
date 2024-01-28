@@ -64,8 +64,7 @@ Route::prefix('Users')->group(function () {
         Route::get('Deps&Roles', 'all_dep_rul');
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
-
-
+        Route::get('professional','user_prof');
     });
 });
 
