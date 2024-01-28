@@ -135,15 +135,16 @@ class AbsencesController extends Controller
                 'type' => 'unjustified'
             ]
             );
+
      $salary= UserInfo::query()->where('user_id',$Absences->user_id)->value('salary');
            $salaryInHour=$salary/208;
            $deduction= $salaryInHour*8;
             Decision::query()->updateOrCreate(
                 [
                     'user_id'=>$Absences->user_id,
-                    'type'=>'warning',
+                    'type'=>'deduction',
                     'salary'=>$salary,
-                    'dateTime'=>$Absences->startDate,
+                    'dateTime'=>Carbon::now(),
                     'fromSystem'=>true,
                     'content'=>'Unjustified absence',
                     'amount'=> $deduction

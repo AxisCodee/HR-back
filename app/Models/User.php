@@ -49,9 +49,9 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    public function getOverTimeAttribute($value)
+    public function getOverTimeAttribute($date)
     {
-        $date = request()->query('date');
+       // $date = request()->query('date');
         if ($date) {
             $lates = Late::whereNotNull('check_out')
                 ->whereMonth('lateDate', date('m', strtotime($date)))
@@ -96,19 +96,24 @@ class User extends Authenticatable implements JWTSubject
         }
         return 0;
     }
-    public function getDeductionAttribute($value)
+    public function getDeductionAttribute($date)
     {
-        $date = request()->query('date');
+
+      //  $date = request()->query('date');
+
+
         if ($date) {
+
             $deductions = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id);
-            if (strpos($date, 'day') !== false) {
-                $deductions->whereDay('dateTime', date('d', strtotime($date)));
-            } elseif (strpos($date, 'month') !== false) {
-                $deductions->whereMonth('dateTime', date('m', strtotime($date)));
-            } elseif (strpos($date, 'year') !== false) {
-                $deductions->whereYear('dateTime', date('Y', strtotime($date)));
-            }
+                ->where('user_id', $this->id)->whereDate('dateTime',$date)->get();
+
+            // if (strpos($date, 'day') !== false) {
+            //     $deductions->whereDay('dateTime', date('d', strtotime($date)));
+            // } elseif (strpos($date, 'month') !== false) {
+            //     $deductions->whereMonth('dateTime', date('m', strtotime($date)));
+            // } elseif (strpos($date, 'year') !== false) {
+            //     $deductions->whereYear('dateTime', date('Y', strtotime($date)));
+            // }
             $totalDeductions = $deductions->sum('amount');
             return $totalDeductions;
         }
@@ -134,15 +139,16 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getUserAbsence($date)
     {
+
         // $today = Carbon::now();
         // if ($today->eq($date)) {
         //     $this->cuurentAbsence();
         // } else {
-        $date = request()->query('date');
             $day = substr($date, 8, 2);
             //$user = User::query()->get();
             $result = $this->absences()
                 ->whereDay('startDate', $day)->get();
+
             return $result;
         //}
     }

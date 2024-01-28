@@ -108,6 +108,13 @@ class ReportController extends Controller
         }
         $advances = $user->getAdvancesAttribute($date);
         $absence = $user->getUserAbsence($date)->first();
+        if($absence)
+        {
+            $result=true;
+        }
+        else{
+            $result=false;
+        }
         $deposits = $user->deposits()->get();
         $notes = Note::query()->where('user_id', $request->user_id)->get();
         return ResponseHelper::success([
@@ -124,7 +131,7 @@ class ReportController extends Controller
 
             'check in' => '09:00 AM',
             'check out' => '05:00 PM',
-            'absence' => $absence,
+            'absence' => $result,
 
             'deposits' => $deposits,
             'notes' => $notes,
