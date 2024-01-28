@@ -214,7 +214,7 @@ class UserController extends Controller
 
         return ResponseHelper::success(
             [
-                'levels'=> $role,
+                'levels'=> $levels,
                 'specialisation'=>$specialisation,
                 'departments'=>$department,
             ]
