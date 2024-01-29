@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['deductions','reward'];
+    protected $appends = ['deduction','reward'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -49,19 +49,19 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    public function getOverTimeAttribute($date)
-    {
-       // $date = request()->query('date');
-        if ($date) {
-            $lates = Late::whereNotNull('check_out')
-                ->whereMonth('lateDate', date('m', strtotime($date)))
-                ->whereYear('lateDate', date('Y', strtotime($date)))
-                ->where('user_id', $this->id)
-                ->sum('hours_num');
-            return $lates;
-        }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
-    }
+    // public function getOverTimeAttribute($date)
+    // {
+    //    // $date = request()->query('date');
+    //     if ($date) {
+    //         $lates = Late::whereNotNull('check_out')
+    //             ->whereMonth('lateDate', date('m', strtotime($date)))
+    //             ->whereYear('lateDate', date('Y', strtotime($date)))
+    //             ->where('user_id', $this->id)
+    //             ->sum('hours_num');
+    //         return $lates;
+    //     }
+    //     return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
+    // }
 
 
     // public function getRateAttribute($value)//not ready
@@ -98,7 +98,7 @@ class User extends Authenticatable implements JWTSubject
     //     }
     //     return 0;
     // }
-    public function getDeductionsAttribute($date)
+    public function getDeductionAttribute($date)
 {
     if ($date) {
         $deductions = Decision::where('type', 'deduction')
