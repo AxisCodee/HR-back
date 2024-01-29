@@ -23,6 +23,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function __construct(UserOvertimeService $overtimeService)
     {
+         parent::__construct();
         $this->overtimeService = $overtimeService;
     }
     protected $fillable =
