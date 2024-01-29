@@ -38,7 +38,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['deduction','reward','advance','overtime'];
+    protected $appends = ['deduction','reward','advance','overtime','absence'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -83,7 +83,6 @@ class User extends Authenticatable implements JWTSubject
 
             $advance = Decision::where('type', 'advanced')
                 ->where('user_id', $this->id);
-
         $advanced = app(UsertimeService::class);
         $advance = $advanced->checkTimeDate($advance, $date);
       $totalAdvance =$advance->sum('amount');
@@ -104,10 +103,21 @@ class User extends Authenticatable implements JWTSubject
 
                 return $totalDeduction;
 
-
-
 }
 
+
+public function getAbsenceAttribute($date)
+{
+    $date = request()->query('date');
+
+        $abcences = Absences::where('user_id', $this->id);
+            $abcence = app(UsertimeService::class);
+            $abcence = $abcence->checkTimeDate($abcences, $date);
+          $totalAbsence=$abcences->count('id');
+
+                return $totalAbsence;
+
+}
 
 
     public function getRewardAttribute()
@@ -126,59 +136,9 @@ class User extends Authenticatable implements JWTSubject
 
 
 
-    public function getLatesAttribute($value)
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $lates = Late::where('type', 'Unjustified')
-                ->where('user_id', $this->id);
-            if (strpos($date, 'day') !== false) {
-                $lates->whereDay('lateDate', date('d', strtotime($date)));
-            } elseif (strpos($date, 'month') !== false) {
-                $lates->whereMonth('lateDate', date('m', strtotime($date)));
-            } elseif (strpos($date, 'year') !== false) {
-                $lates->whereYear('lateDate', date('Y', strtotime($date)));
-            }
-            $totalLates = $lates->sum('hours_num');
-            return $totalLates;
-        }
-        return 0;
-    }
-    public function getUserAbsence($date)
-    {
 
-        // $today = Carbon::now();
-        // if ($today->eq($date)) {
-        //     $this->cuurentAbsence();
-        // } else {
-            $day = substr($date, 8, 2);
-            //$user = User::query()->get();
-            $result = $this->absences()
-                ->whereDay('startDate', $day)->get();
+ 
 
-            return $result;
-        //}
-    }
-    // public function getRateAttribute()
-    // {
-    //     $coachId = $this->id;
-
-    //     $totalRating = Rate::query()
-    //         ->where('coachId', $coachId)
-    //         ->sum('rate');
-
-    //     $userCount = Rate::query()
-    //         ->where('coachId', $coachId)
-    //         ->count('playerId');
-
-    //     if ($userCount === 0) {
-    //         return 0;
-    //     }
-
-    //     $averageRating = $totalRating / $userCount;
-
-    //     return intval($averageRating);
-    // }
 
 
 
