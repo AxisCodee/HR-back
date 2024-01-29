@@ -124,12 +124,15 @@ class ReportController extends Controller
             $checkOut = $checkOut[0]->datetime;
         } else { $checkIn == null;}
         return ResponseHelper::success([
+            'user'=> $user ,
+
             'warnings' => $warnings,
             'alerts' => $alert,
             'penalties' => $penalties,
 
             'salary' => $salary->salary,
             'overtime' => $overTime,
+            'rewards' => $rewards,
             'advances' => $advances,
             'deductions' => $deductions,
 
@@ -141,7 +144,6 @@ class ReportController extends Controller
             'notes' => $notes,
         ]);
     }
-
 
 
 
