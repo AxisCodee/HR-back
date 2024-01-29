@@ -19,7 +19,12 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles, SoftDeletes;
 
-    //protected $with = ['department'];
+    protected $overtimeService;
+
+    public function __construct(UserOvertimeService $overtimeService)
+    {
+        $this->overtimeService = $overtimeService;
+    }
     protected $fillable =
     [
         'first_name',
@@ -48,10 +53,7 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function __construct(UserOvertimeService $overtimeService)
-    {
-        $this->overtimeService = $overtimeService;
-    }
+
     public function getOverTimeAttribute()
     {
         $lates = Late::whereNotNull('check_out')
