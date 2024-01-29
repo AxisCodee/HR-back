@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['deductions'];
+    protected $appends = ['deductions','rewards'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -121,6 +121,30 @@ class User extends Authenticatable implements JWTSubject
         }
         return 0;
     }
+
+
+
+    public function getRewardAttribute($date)
+    {
+
+      //  $date = request()->query('date');
+
+
+        if ($date) {
+
+            $deductions = Decision::where('type', 'reward')
+                ->where('user_id', $this->id)
+                ->whereDate('dateTime',$date)
+                ->sum('amount');
+            return $deductions;
+        }
+        return 0;
+    }
+
+
+
+
+
     public function getLatesAttribute($value)
     {
         $date = request()->query('date');
