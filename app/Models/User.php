@@ -100,15 +100,16 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getDeductionAttribute($date)
 {
-    if ($date) {
+    $date = request()->query('date');
+
         $deductions = Decision::where('type', 'deduction')
             ->where('user_id', $this->id)
             ->whereDate('dateTime', $date)
             ->sum('amount');
         return $deductions;
-    }
 
-    return 0;
+
+
 }
 
 
@@ -121,8 +122,6 @@ class User extends Authenticatable implements JWTSubject
                 ->whereDate('dateTime', $date)
                 ->sum('amount');
             return $reward;
-
-
 
     }
 
