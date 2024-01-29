@@ -126,21 +126,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function getRewardAttribute($date)
     {
-
-      //  $date = request()->query('date');
-
-
         if ($date) {
-
             $reward = Decision::where('type', 'reward')
                 ->where('user_id', $this->id)
-                ->whereDate('dateTime',$date)
+                ->whereDate('dateTime', $date)
                 ->sum('amount');
             return $reward;
         }
+
         return 0;
     }
-
 
 
 
