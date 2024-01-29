@@ -82,11 +82,13 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
 
             $advance = Decision::where('type', 'advanced')
-                ->where('user_id', $this->id)
-                ->whereDate('dateTime',$date)
-                ->sum('amount');
+                ->where('user_id', $this->id);
 
-            return $advance;
+        $advanced = app(UsertimeService::class);
+        $advance = $advanced->checkOvertimeDate($advance, $date);
+      $totalAdvance =$advance->sum('amount');
+
+            return $totalAdvance;
 
 
     }
@@ -95,10 +97,12 @@ class User extends Authenticatable implements JWTSubject
     $date = request()->query('date');
 
         $deductions = Decision::where('type', 'deduction')
-            ->where('user_id', $this->id)
-            ->whereDate('dateTime', $date)
-            ->sum('amount');
-        return $deductions;
+            ->where('user_id', $this->id);
+            $deduction = app(UsertimeService::class);
+            $deductions = $deduction->checkOvertimeDate($deductions, $date);
+          $totalDeduction =$deduction->sum('amount');
+
+                return $totalDeduction;
 
 
 
@@ -109,11 +113,13 @@ class User extends Authenticatable implements JWTSubject
     public function getRewardAttribute()
     {
         $date = request()->query('date');
-            $reward = Decision::where('type', 'reward')
-                ->where('user_id', $this->id)
-                ->whereDate('dateTime', $date)
-                ->sum('amount');
-            return $reward;
+            $rewards = Decision::where('type', 'reward')
+                ->where('user_id', $this->id);
+                $reward = app(UsertimeService::class);
+                $rewards = $reward->checkOvertimeDate($rewards, $date);
+              $totalReward =$reward->sum('amount');
+
+                    return $totalReward;
 
     }
 
