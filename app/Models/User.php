@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    //protected $appends = ['overTime', 'rate', 'late', 'deduction'];
+    protected $appends = ['deduction'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -107,7 +107,7 @@ class User extends Authenticatable implements JWTSubject
         if ($date) {
 
             $deductions = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id)->whereDate('dateTime',$date)->get();
+                ->where('user_id', $this->id)->whereDate('dateTime',$date)->sum('amount');
 
             // if (strpos($date, 'day') !== false) {
             //     $deductions->whereDay('dateTime', date('d', strtotime($date)));
@@ -116,8 +116,8 @@ class User extends Authenticatable implements JWTSubject
             // } elseif (strpos($date, 'year') !== false) {
             //     $deductions->whereYear('dateTime', date('Y', strtotime($date)));
             // }
-            $totalDeductions = $deductions->sum('amount');
-            return $totalDeductions;
+
+            return $deductions;
         }
         return 0;
     }
