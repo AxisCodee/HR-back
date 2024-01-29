@@ -49,18 +49,18 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    public function getOverTimeAttribute($date)
+    public function getOverTimeAttribute()
     {
-       // $date = request()->query('date');
-        if ($date) {
+       $date = request()->query('date');
+
             $lates = Late::whereNotNull('check_out')
                 ->whereMonth('lateDate', date('m', strtotime($date)))
                 ->whereYear('lateDate', date('Y', strtotime($date)))
                 ->where('user_id', $this->id)
                 ->sum('hours_num');
             return $lates;
-        }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
+
+
     }
 
 
@@ -83,9 +83,9 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
 
             $advance = Decision::where('type', 'advanced')
-                ->where('user_id', $this->id)->whereDate('dateTime',$date)->sum('amount');
-
-
+                ->where('user_id', $this->id)
+                ->whereDate('dateTime',$date)
+                ->sum('amount');
 
             return $advance;
 
