@@ -23,6 +23,7 @@ class UserInfoSeeder extends Seeder
                 'social_situation' => 'Married', // Example social situation
                 'military_situation' => 'Postponed', // Example military situation
                 'salary' => 97777, // Example salary
+                'health_status' => 'very good',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -35,6 +36,7 @@ class UserInfoSeeder extends Seeder
                 'social_situation' => 'Married', // Example social situation
                 'military_situation' => 'Postponed', // Example military situation
                 'salary' => 97777, // Example salary
+                'health_status' => 'very good',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -47,6 +49,7 @@ class UserInfoSeeder extends Seeder
                 'social_situation' => 'Married', // Example social situation
                 'military_situation' => 'Postponed', // Example military situation
                 'salary' => 97777, // Example salary
+                'health_status' => 'very good',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

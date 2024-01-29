@@ -19,6 +19,7 @@ class UserInfo extends Model
         'study_situation',
         'military_situation',
         'level',
+        'health_status',
         'salary',
     ];
 
@@ -27,5 +28,4 @@ class UserInfo extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }
