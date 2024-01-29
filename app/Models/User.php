@@ -49,29 +49,31 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     public function getOverTimeAttribute()
-    {
-        $date = request()->query('date');
+{
+    $date = request()->query('date');
 
-        $lates = Late::whereNotNull('check_out')
-            ->where('user_id', $this->id);
+    $lates = Late::whereNotNull('check_out')
+        ->where('user_id', $this->id);
 
-        if ($date) {
+    $lates->when($date, function ($query, $date) {
+        return $query->where(function ($query) use ($date) {
             if (strpos($date, '-') !== false) {
                 // إذا تم تمرير تاريخ كامل (سنة-شهر-يوم)
-                $lates->whereDate('lateDate', $date);
+                $query->whereDate('lateDate', $date);
             } elseif (strpos($date, '-') === false && strlen($date) === 7) {
                 // إذا تم تمرير سنة وشهر (سنة-شهر)
-                $lates->whereYear('lateDate', substr($date, 0, 4))
+                $query->whereYear('lateDate', substr($date, 0, 4))
                     ->whereMonth('lateDate', substr($date, 5, 2));
             } elseif (strlen($date) === 4) {
                 // إذا تم تمرير سنة (سنة)
-                $lates->whereYear('lateDate', $date);
+                $query->whereYear('lateDate', $date);
             }
-        }
+        });
+    });
 
-        $totalLateHours = $lates->sum('hours_num');
-        return $totalLateHours;
-    }
+    $totalLateHours = $lates->sum('hours_num');
+    return $totalLateHours;
+}
 
 
     public function getRateAttribute($value)//not ready
