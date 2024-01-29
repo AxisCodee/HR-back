@@ -98,29 +98,18 @@ class User extends Authenticatable implements JWTSubject
         }
         return 0;
     }
-    public function getDeductionAttribute($date)
-    {
-
-      //  $date = request()->query('date');
-
-
-        if ($date) {
-
-            $deductions = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id)->whereDate('dateTime',$date)->sum('amount');
-
-            // if (strpos($date, 'day') !== false) {
-            //     $deductions->whereDay('dateTime', date('d', strtotime($date)));
-            // } elseif (strpos($date, 'month') !== false) {
-            //     $deductions->whereMonth('dateTime', date('m', strtotime($date)));
-            // } elseif (strpos($date, 'year') !== false) {
-            //     $deductions->whereYear('dateTime', date('Y', strtotime($date)));
-            // }
-
-            return $deductions;
-        }
-        return 0;
+    public function getDeductionsAttribute($date)
+{
+    if ($date) {
+        $deductions = Decision::where('type', 'deduction')
+            ->where('user_id', $this->id)
+            ->whereDate('dateTime', $date)
+            ->sum('amount');
+        return $deductions;
     }
+
+    return 0;
+}
 
 
 
