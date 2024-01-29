@@ -51,15 +51,20 @@ class User extends Authenticatable implements JWTSubject
 
     public function getOverTimeAttribute()
     {
-       $date = request()->query('date');
+        $date = request()->query('date');
 
-            $lates = Late::whereNotNull('check_out')
-             ->whereDate('lateDate',$date)
-                ->where('user_id', $this->id)
-                ->sum('hours_num');
-            return $lates;
+        $lates = Late::whereNotNull('check_out')
+            ->where('user_id', $this->id)
+            ->where(function ($query) use ($date) {
+                $query->whereDate('lateDate', $date)
+                    ->orWhere(function ($query) use ($date) {
+                        $query->whereYear('lateDate', $date)
+                            ->orWhereMonth('lateDate', $date);
+                    });
+            })
+            ->sum('hours_num');
 
-
+        return $lates;
     }
 
 
