@@ -48,7 +48,6 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
@@ -57,10 +56,8 @@ class User extends Authenticatable implements JWTSubject
             ->where('user_id', $this->id)
             ->where(function ($query) use ($date) {
                 $query->whereDate('lateDate', $date)
-                    ->orWhere(function ($query) use ($date) {
-                        $query->whereYear('lateDate', $date)
-                            ->orWhereMonth('lateDate', $date);
-                    });
+                    ->orWhereMonth('lateDate', $date)
+                    ->orWhereYear('lateDate', $date);
             })
             ->sum('hours_num');
 
