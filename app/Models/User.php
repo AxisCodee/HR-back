@@ -53,15 +53,24 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
 
         $lates = Late::whereNotNull('check_out')
-            ->where('user_id', $this->id)
-            ->when($date, fn ($query, $date) => $query
-                ->where(fn ($query) => strpos($date, '-') !== false ? $query->whereDate('lateDate', $date) : $query)
-                ->where(fn ($query) => strpos($date, '-') === false && strlen($date) === 7 ? $query->whereYear('lateDate', substr($date, 0, 4))->whereMonth('lateDate', substr($date, 5, 2)) : $query)
-                ->where(fn ($query) => strlen($date) === 4 ? $query->whereYear('lateDate', $date) : $query)
-            )
-            ->sum('hours_num');
+            ->where('user_id', $this->id);
 
-        return $lates;
+        if ($date) {
+            if (strpos($date, '-') !== false) {
+                // إذا تم تمرير تاريخ كامل (سنة-شهر-يوم)
+                $lates->whereDate('lateDate', $date);
+            } elseif (strpos($date, '-') === false && strlen($date) === 7) {
+                // إذا تم تمرير سنة وشهر (سنة-شهر)
+                $lates->whereYear('lateDate', substr($date, 0, 4))
+                    ->whereMonth('lateDate', substr($date, 5, 2));
+            } elseif (strlen($date) === 4) {
+                // إذا تم تمرير سنة (سنة)
+                $lates->whereYear('lateDate', $date);
+            }
+        }
+
+        $totalLateHours = $lates->sum('hours_num');
+        return $totalLateHours;
     }
 
 
