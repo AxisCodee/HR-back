@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['deduction','reward'];
+    protected $appends = ['deduction','reward','advance'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -78,25 +78,18 @@ class User extends Authenticatable implements JWTSubject
         return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
     }
 
-    public function getAdvancesAttribute($date)
+    public function getAdvanceAttribute()
     {
-       // $date = request()->query('date');
-        if ($date) {
-            $advances = Decision::where('type', 'advanced')
+        $date = request()->query('date');
+
+            $advance = Decision::where('type', 'advanced')
                 ->where('user_id', $this->id)->whereDate('dateTime',$date)->get();
 
 
-            // if (strpos($date, 'day') !== false) {
-            //     $advances->whereDay('dateTime', date('d', strtotime($date)));
-            // } elseif (strpos($date, 'month') !== false) {
-            //     $advances->whereMonth('dateTime', date('m', strtotime($date)));
-            // } elseif (strpos($date, 'year') !== false) {
-            //     $advances->whereYear('dateTime', date('Y', strtotime($date)));
-            // }
-            //$totalAdvances = $advances->sum('amount');
-            return $advances;
-        }
-        return 0;
+
+            return $advance;
+
+
     }
     public function getDeductionAttribute($date)
 {
