@@ -89,60 +89,61 @@ class ReportController extends Controller
     {
         $date = $request->date;
         $user = User::find($request->user_id);
-        $salary = $user->userInfo()->select('salary')->first();
-        $deductions = $user->getDeductionAttribute($date);
-        $overTime = $user->getOverTimeAttribute($date);
-        $rewards = $user->my_decisions()->where('type', 'reward')->whereDate('dateTime', $date)->get();
-        $warnings = $user->my_decisions()->where('type', 'warning')->whereDate('dateTime', $date)->get();
-        if ($warnings->count() == 3) {
-            $alert = 1;
-        } else {
-            $alert = null;
-        }
-        if ($deductions) {
-            $penalties = 'Deduction';
-        } else {
-            $penalties = null;
-        }
-        $advances = $user->getAdvancesAttribute($date);
-        $absence = $user->getUserAbsence($date)->first();
-        if ($absence) {
-            $result = true;
-        } else {
-            $result = false;
-        }
-        $deposits = $user->deposits()->get();
-        $notes = Note::query()->where('user_id', $request->user_id)->get();
-        $checkIn = Attendance::query()->where('pin', $request->user_id)
-            ->whereDate('datetime', $request->date)->where('status', 0)->get();
-        if (!$checkIn->isEmpty()) {
-            $checkIn = $checkIn[0]->datetime;
-        } else { $checkIn == null;}
-        $checkOut = Attendance::query()->where('pin', $request->user_id)
-            ->whereDate('datetime', $request->date)->where('status', 1)->get();
-        if (!$checkOut->isEmpty()) {
-            $checkOut = $checkOut[0]->datetime;
-        } else { $checkIn == null;}
+        // $salary = $user->userInfo()->select('salary')->first();
+        // $deductions = $user->getDeductionAttribute($date);
+        // $overTime = $user->getOverTimeAttribute($date);
+        // $rewards = $user->my_decisions()->where('type', 'reward')->whereDate('dateTime', $date)->get();
+        // $warnings = $user->my_decisions()->where('type', 'warning')->whereDate('dateTime', $date)->get();
+        // if ($warnings->count() == 3) {
+        //     $alert = 1;
+        // } else {
+        //     $alert = null;
+        // }
+        // if ($deductions) {
+        //     $penalties = 'Deduction';
+        // } else {
+        //     $penalties = null;
+        // }
+        // $advances = $user->getAdvancesAttribute($date);
+        // $absence = $user->getUserAbsence($date)->first();
+        // if ($absence) {
+        //     $result = true;
+        // } else {
+        //     $result = false;
+        // }
+        // $deposits = $user->deposits()->get();
+        // $notes = Note::query()->where('user_id', $request->user_id)->get();
+        // $checkIn = Attendance::query()->where('pin', $request->user_id)
+        //     ->whereDate('datetime', $request->date)->where('status', 0)->get();
+        // if (!$checkIn->isEmpty()) {
+        //     $checkIn = $checkIn[0]->datetime;
+        // } else { $checkIn == null;}
+        // $checkOut = Attendance::query()->where('pin', $request->user_id)
+        //     ->whereDate('datetime', $request->date)->where('status', 1)->get();
+        // if (!$checkOut->isEmpty()) {
+        //     $checkOut = $checkOut[0]->datetime;
+        // } else { $checkIn == null;}
         return ResponseHelper::success([
             'user'=> $user ,
 
-            'warnings' => $warnings,
-            'alerts' => $alert,
-            'penalties' => $penalties,
+        //     'warnings' => $warnings,
+        //     'alerts' => $alert,
+        //     'penalties' => $penalties,
 
-            'salary' => $salary->salary,
-            'overtime' => $overTime,
-            'rewards' => $rewards,
-            'advances' => $advances,
-            'deductions' => $deductions,
+        //     'salary' => $salary->salary,
+        //     'overtime' => $overTime,
+        //     'rewards' => $rewards,
+        //     'advances' => $advances,
+        //     'deductions' => $deductions,
 
-            'check in' => $checkIn,
-            'check out' => $checkOut,
-            'absence' => $result,
+        //     'check in' => $checkIn,
+        //     'check out' => $checkOut,
+        //     'absence' => $result,
 
-            'deposits' => $deposits,
-            'notes' => $notes,
-        ]);
+        //     'deposits' => $deposits,
+        //     'notes' => $notes,
+        //
+     ]);
     }
 
 
