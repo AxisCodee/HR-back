@@ -85,7 +85,7 @@ class User extends Authenticatable implements JWTSubject
                 ->where('user_id', $this->id);
 
         $advanced = app(UsertimeService::class);
-        $advance = $advanced->checkOvertimeDate($advance, $date);
+        $advance = $advanced->checkTimeDate($advance, $date);
       $totalAdvance =$advance->sum('amount');
 
             return $totalAdvance;
@@ -99,7 +99,7 @@ class User extends Authenticatable implements JWTSubject
         $deductions = Decision::where('type', 'deduction')
             ->where('user_id', $this->id);
             $deduction = app(UsertimeService::class);
-            $deductions = $deduction->checkOvertimeDate($deductions, $date);
+            $deductions = $deduction->checkTimeDate($deductions, $date);
           $totalDeduction =$deductions->sum('amount');
 
                 return $totalDeduction;
@@ -116,7 +116,7 @@ class User extends Authenticatable implements JWTSubject
             $rewards = Decision::where('type', 'reward')
                 ->where('user_id', $this->id);
                 $reward = app(UsertimeService::class);
-                $rewards = $reward->checkOvertimeDate($rewards, $date);
+                $rewards = $reward->checkTimeDate($rewards, $date);
               $totalReward =$rewards->sum('amount');
 
                     return $totalReward;
