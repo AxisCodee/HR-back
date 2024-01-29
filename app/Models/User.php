@@ -54,7 +54,7 @@ class User extends Authenticatable implements JWTSubject
        $date = request()->query('date');
 
             $lates = Late::whereNotNull('check_out')
-             ->whereDate('dateTime',$date)
+             ->whereDate('lateDate',$date)
                 ->where('user_id', $this->id)
                 ->sum('hours_num');
             return $lates;
