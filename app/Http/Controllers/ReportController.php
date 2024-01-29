@@ -88,7 +88,10 @@ class ReportController extends Controller
     public function reportByDay(Request $request)
     {
         $date = $request->date;
-        $user = User::find($request->user_id);
+        $user = User::with(['notes','deposits','department', 'attendence' => function ($query) use ($date) {
+            $query->whereDate('datetime', $date);
+        }])
+        ->find($request->user_id);
         // $salary = $user->userInfo()->select('salary')->first();
         // $deductions = $user->getDeductionAttribute($date);
         // $overTime = $user->getOverTimeAttribute($date);
@@ -124,7 +127,7 @@ class ReportController extends Controller
         //     $checkOut = $checkOut[0]->datetime;
         // } else { $checkIn == null;}
         return ResponseHelper::success([
-            $user 
+            $user
 
         //     'warnings' => $warnings,
         //     'alerts' => $alert,
