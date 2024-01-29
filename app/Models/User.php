@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
+use App\Services\UserOvertimeService;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -47,30 +48,18 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function __construct(UserOvertimeService $overtimeService)
+    {
+        $this->overtimeService = $overtimeService;
+    }
     public function getOverTimeAttribute()
     {
-        $date = request()->query('date');
-
         $lates = Late::whereNotNull('check_out')
             ->where('user_id', $this->id);
 
-        if ($date) {
-            $year = substr($date, 0, 4);
-            $month = substr($date, 5, 2);
-            $day = substr($date, 8, 2);
+        $date = request()->query('date');
 
-            if ($day) {
-                // إذا تم تمرير يوم محدد (سنة-شهر-يوم)
-                $lates->whereDate('lateDate', $date);
-            } elseif ($month) {
-                // إذا تم تمرير شهر وسنة (سنة-شهر)
-                $lates->whereYear('lateDate', $year)
-                    ->whereMonth('lateDate', $month);
-            } else {
-                // إذا تم تمرير سنة فقط (سنة)
-                $lates->whereYear('lateDate', $year);
-            }
-        }
+        $lates = $this->overtimeService->checkOvertimeDate($lates, $date);
 
         $totalLateHours = $lates->sum('hours_num');
         return $totalLateHours;
