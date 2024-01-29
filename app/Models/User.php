@@ -19,13 +19,7 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles, SoftDeletes;
 
-    protected $overtimeService;
 
-    public function __construct(UserOvertimeService $overtimeService)
-    {
-         parent::__construct();
-        $this->overtimeService = $overtimeService;
-    }
     protected $fillable =
     [
         'first_name',
@@ -62,7 +56,8 @@ class User extends Authenticatable implements JWTSubject
 
         $date = request()->query('date');
 
-        $lates = $this->overtimeService->checkOvertimeDate($lates, $date);
+        $overtimeService = app(UserOvertimeService::class);
+        $lates = $overtimeService->checkOvertimeDate($lates, $date);
 
         $totalLateHours = $lates->sum('hours_num');
         return $totalLateHours;
