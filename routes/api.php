@@ -1,27 +1,26 @@
 <?php
 
+use App\Http\Controllers\AbsencesController;
 use App\Http\Controllers\AddressController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\DecisionController;
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\ContractController;
-use App\Http\Controllers\ReportController;
 use App\Http\Controllers\api\GmailController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\ContractController;
+use App\Http\Controllers\DecisionController;
 use App\Http\Controllers\DepositController;
+use App\Http\Controllers\EmpOfMonthController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\NoteController;
-use App\Http\Controllers\RequestController;
-use App\Http\Controllers\RateController;
-use App\Http\Controllers\StudySituationController;
-use App\Http\Controllers\UserInfoController;
-use App\Http\Controllers\AbsencesController;
-use App\Http\Controllers\EmpOfMonthController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RequestController;
+use App\Http\Controllers\StudySituationController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserInfoController;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
@@ -36,7 +35,6 @@ Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 Route::get('DayAttendance/{date}', [AttendanceController::class, 'DayAttendance']);
 
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
-
 
 Route::prefix('contract')->group(function () {
 
@@ -64,7 +62,7 @@ Route::prefix('Users')->group(function () {
         Route::get('Deps&Roles', 'all_dep_rul');
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
-        Route::get('professional','user_prof');
+        Route::get('professional', 'user_prof');
     });
 });
 
@@ -149,8 +147,6 @@ Route::prefix('Calendar')->group(function () {
         Route::get('/EventDate/{date}', 'getEvenetsByDay');
     });
 });
-
-
 
 Route::prefix('Request')->group(function () {
     Route::controller(RequestController::class)->group(function () {
@@ -244,8 +240,8 @@ Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
-        Route::get('Uabsences','unjustifiedAbsence');
-        Route::post('DynamicDecision/{absences}','DynamicDecision');
+        Route::get('Uabsences', 'unjustifiedAbsence');
+        Route::post('DynamicDecision/{absences}', 'DynamicDecision');
 
     });
 });

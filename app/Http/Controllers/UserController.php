@@ -186,20 +186,20 @@ class UserController extends Controller
                     'image' => $leader->userInfo ? $leader->userInfo->image : null,
                     'Level3' => $leader->my_team->map(function ($member) {
                         return [
-                           'member'=> $member,
+                            'member' => $member,
                             'image' => $member->userInfo ? $member->userInfo->image : null,
                         ];
                     })
                 ];
         });
-        $response =[
-          'CEO' => $admins,
-        'Level1' => $managers,
-        'level2' => $teamMembers,];
+        $response = [
+            'CEO' => $admins,
+            'Level1' => $managers,
+            'level2' => $teamMembers,
+        ];
         return ResponseHelper::success(
 
-             [ $response]
-            ,
+            [$response],
             null,
             'Roles hierarchy returned successfully',
             200
@@ -208,18 +208,18 @@ class UserController extends Controller
 
     public function user_prof()
     {
-        $levels = ["Junior","Mid","Senior"];
-        $specialisation = ["UI-UX","Front-End","Back-End","Mobile","Graphic-Desgin","Project-Manager"];
+        $levels = ["Junior", "Mid", "Senior"];
+        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Desgin", "Project-Manager"];
         $department = Department::query()->get()->toArray();
 
         return ResponseHelper::success(
             [
-                'levels'=> $levels,
-                'specialisation'=>$specialisation,
-                'departments'=>$department,
-            ]
-        ,"Professional selects returned successfully",200);
+                'levels' => $levels,
+                'specialisation' => $specialisation,
+                'departments' => $department,
+            ],
+            "Professional selects returned successfully",
+            200
+        );
     }
 }
-
-
