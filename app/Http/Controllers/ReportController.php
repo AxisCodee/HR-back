@@ -130,7 +130,6 @@ class ReportController extends Controller
 
             'salary' => $salary->salary,
             'overtime' => $overTime,
-            'rewards' => $rewards,
             'advances' => $advances,
             'deductions' => $deductions,
 
@@ -145,5 +144,5 @@ class ReportController extends Controller
 
 
 
-    
+
 }
