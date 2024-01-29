@@ -112,7 +112,7 @@ public function getAbsenceAttribute($date)
 
         $abcences = Absences::where('user_id', $this->id);
             $abcence = app(UsertimeService::class);
-            $abcence = $abcence->checkTimeDate($abcences, $date);
+            $abcence = $abcence->checkAbsenceTimeDate($abcences, $date);
           $totalAbsence=$abcences->count('id');
 
                 return $totalAbsence;
@@ -137,7 +137,7 @@ public function getAbsenceAttribute($date)
 
 
 
- 
+
 
 
 
