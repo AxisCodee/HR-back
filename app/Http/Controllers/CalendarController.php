@@ -62,7 +62,8 @@ class CalendarController extends Controller
 
     public function getEvenetsByDay(Request $request, $date)
     {
-        $data = Calendar::whereDate('start', $date)->get()->toArray();
+        $data = Calendar::whereDate('start', $date)
+        ->get()->toArray();
         if (empty($data)) {
             return ResponseHelper::success('events not found');
 
