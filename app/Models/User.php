@@ -132,11 +132,11 @@ class User extends Authenticatable implements JWTSubject
 
         if ($date) {
 
-            $deductions = Decision::where('type', 'reward')
+            $reward = Decision::where('type', 'reward')
                 ->where('user_id', $this->id)
                 ->whereDate('dateTime',$date)
                 ->sum('amount');
-            return $deductions;
+            return $reward;
         }
         return 0;
     }
