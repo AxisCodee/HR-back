@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
-use App\Services\UserOvertimeService;
+use App\Services\UsertimeService;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -56,7 +56,7 @@ class User extends Authenticatable implements JWTSubject
 
         $date = request()->query('date');
 
-        $overtimeService = app(UserOvertimeService::class);
+        $overtimeService = app(UsertimeService::class);
         $lates = $overtimeService->checkOvertimeDate($lates, $date);
 
         $totalLateHours = $lates->sum('hours_num');
