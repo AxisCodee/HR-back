@@ -56,12 +56,12 @@ class UsertimeService
             $day = substr($date, 8, 2);
 
             if ($day) {
-                $lates->whereDate('dateTime', $date);
+                $lates->whereDate('startDate', $date);
             } elseif ($month) {
-                $lates->whereYear('dateTime', $year)
-                    ->whereMonth('dateTime', $month);
+                $lates->whereYear('startDate', $year)
+                    ->whereMonth('startDate', $month);
             } else {
-                $lates->whereYear('dateTime', $year);
+                $lates->whereYear('startDate', $year);
             }
         }
 
