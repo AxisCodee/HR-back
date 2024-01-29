@@ -83,7 +83,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
 
             $advance = Decision::where('type', 'advanced')
-                ->where('user_id', $this->id)->whereDate('dateTime',$date)->get();
+                ->where('user_id', $this->id)->whereDate('dateTime',$date)->sum('amount');
 
 
 
