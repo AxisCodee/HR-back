@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Late;
 
-class UserOvertimeService
+class UsertimeService
 {
     public function checkOvertimeDate($lates, $date)
     {
