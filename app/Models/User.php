@@ -47,7 +47,6 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
@@ -58,9 +57,19 @@ class User extends Authenticatable implements JWTSubject
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
 
-            $lates->whereYear('lateDate', $year)
-                ->whereMonth('lateDate', $month);
+            if ($day) {
+                // إذا تم تمرير يوم محدد (سنة-شهر-يوم)
+                $lates->whereDate('lateDate', $date);
+            } elseif ($month) {
+                // إذا تم تمرير شهر وسنة (سنة-شهر)
+                $lates->whereYear('lateDate', $year)
+                    ->whereMonth('lateDate', $month);
+            } else {
+                // إذا تم تمرير سنة فقط (سنة)
+                $lates->whereYear('lateDate', $year);
+            }
         }
 
         $totalLateHours = $lates->sum('hours_num');
