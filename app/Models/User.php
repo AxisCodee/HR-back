@@ -157,40 +157,43 @@ public function getAbsenceAttribute($date)
 
 
     public function getCheckInPercentageAttribute()
-    {
-        $date = request()->query('date');
+{
+    $date = request()->query('date');
 
-        $check_outes = Attendance::where('status', '0')
-            ->where('pin', $this->pin)
-            ->when($date, function ($query, $date) {
-                $year = substr($date, 0, 4);
-                $month = substr($date, 5, 2);
+    $check_outes = Attendance::where('status', '0')
+        ->where('pin', $this->pin)
+        ->when($date, function ($query, $date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
 
-                if ($month) {
-                    return $query->whereYear('datetime', $year)
-                        ->whereMonth('datetime', $month);
-                } else {
-                    return $query->whereYear('datetime', $year);
-                }
-            })
-            ->count('id');
+            if ($month) {
+                return $query->whereYear('datetime', $year)
+                    ->whereMonth('datetime', $month);
+            } else {
+                return $query->whereYear('datetime', $year);
+            }
+        })
+        ->count('id');
 
-            $dates = Attendance::where('status', '0')
-            ->when($date, function ($query, $date) {
-                $year = substr($date, 0, 4);
-                $month = substr($date, 5, 2);
+    $dates = Attendance::where('status', '0')
+        ->when($date, function ($query, $date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
 
-                if ($month) {
-                    return $query->whereYear('datetime', $year)
-                        ->whereMonth('datetime', $month);
-                } else {
-                    return $query->whereYear('datetime', $year);
-                }
-            })
-            ->selectRaw('count(distinct datetime) as date_count')
-            ->first()
-            ->date_count;
-    }
+            if ($month) {
+                return $query->whereYear('datetime', $year)
+                    ->whereMonth('datetime', $month);
+            } else {
+                return $query->whereYear('datetime', $year);
+            }
+        })
+        ->groupBy('datetime')
+        ->count();
+
+    $percentage = ($check_outes / $dates) * 100;
+
+    return $percentage;
+}
     public function getCheckOutPercentageAttribute()
     {
         $overTimes = Attendance::whereNotNull('check_out')
