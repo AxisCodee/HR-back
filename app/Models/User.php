@@ -188,7 +188,7 @@ public function getAbsenceAttribute($date)
                 }
             })
             ->groupBy('datetime')
-            ->count();
+            ->count('datetime');
     }
     public function getCheckOutPercentageAttribute()
     {
