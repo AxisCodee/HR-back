@@ -62,8 +62,8 @@ class AttendanceController extends Controller
             ];
 
             Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
-            Date::updateOrCreate(['date' => $log['DateTime']]);
-
+            $date = date('Y-m-d', strtotime($log['DateTime']));
+            Date::updateOrCreate(['date' => $date]);
 
             // the first of check the late
             $checkInDate = substr($log['DateTime'], 0, 10);
