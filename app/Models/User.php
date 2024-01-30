@@ -74,8 +74,7 @@ class User extends Authenticatable implements JWTSubject
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $totalOverTimeHours = $userServices
+        $totalOverTimeHours =$this->userServices
             ->getOverTime($this, $date);
         return $totalOverTimeHours;
     }
@@ -86,8 +85,7 @@ class User extends Authenticatable implements JWTSubject
     public function getLateAttribute()
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $totalLateHours = $userServices
+        $totalLateHours = $this->userServices
             ->getLate($this, $date);
         return $totalLateHours;
     }
@@ -111,8 +109,7 @@ class User extends Authenticatable implements JWTSubject
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $totalAdvance = $userServices
+        $totalAdvance = $this->userServices
             ->getAdvance($this, $date);
         return $totalAdvance;
     }
@@ -123,8 +120,7 @@ class User extends Authenticatable implements JWTSubject
     public function getDeductionAttribute($date)
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $totalDeduction = $userServices
+        $totalDeduction = $this->userServices
             ->getDeduction($this, $date);
         return $totalDeduction;
     }
@@ -133,9 +129,8 @@ class User extends Authenticatable implements JWTSubject
     public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $totalAbsence = $userServices
-            ->getAbsence($this, $date);
+        $totalAbsence = $this->userServices
+         ->getAbsence($this, $date);
         return $totalAbsence;
     }
 
@@ -143,9 +138,8 @@ class User extends Authenticatable implements JWTSubject
     public function getRewardAttribute()
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $totalReward = $userServices
-            ->getReward($this, $date);
+        $totalReward = $this->userServices
+        ->getReward($this, $date);
         return $totalReward;
     }
 
@@ -153,9 +147,8 @@ class User extends Authenticatable implements JWTSubject
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $percentage = $userServices
-            ->getCheckInPercentage($this, $date);
+        $percentage = $this->userServices
+        ->getCheckInPercentage($this, $date);
         return $percentage;
     }
 
