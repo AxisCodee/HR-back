@@ -164,6 +164,7 @@ class UserServices
     public function getLate($user, $date)
     {
         $lates = Late::whereNotNull('check_in')
+        ->where('type','Unjustified')
             ->where('user_id', $user->id);
 
         $usertimeService = app(UsertimeService::class);
@@ -179,6 +180,7 @@ class UserServices
     public function getOverTime($user, $date)
     {
         $overTimes = Late::whereNotNull('check_out')
+        ->where('type','justified')
             ->where('user_id', $user->id);
 
         $usertimeService = app(UsertimeService::class);
