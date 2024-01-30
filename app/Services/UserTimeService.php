@@ -87,4 +87,27 @@ class UsertimeService
 
         return $lates;
     }
+
+
+
+
+    public static function getDateConditions($date)
+    {
+        $conditions = [];
+
+        $year = substr($date, 0, 4);
+        $month = substr($date, 5, 2);
+        $day = substr($date, 8, 2);
+
+        if ($day) {
+            $conditions[] = ['date', $date];
+        } elseif ($month) {
+            $conditions[] = ['year', $year];
+            $conditions[] = ['month', $month];
+        } else {
+            $conditions[] = ['year', $year];
+        }
+
+        return $conditions;
+    }
 }
