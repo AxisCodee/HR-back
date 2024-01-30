@@ -62,7 +62,7 @@ class AttendanceController extends Controller
             ];
 
             Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
-            Date::updateOrCreate(['datetime' => $log['DateTime']]);
+            Date::updateOrCreate(['date' => $log['DateTime']]);
 
 
             // the first of check the late
