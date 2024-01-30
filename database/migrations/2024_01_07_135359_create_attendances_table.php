@@ -16,14 +16,23 @@ return new class extends Migration
             $table->id();
             $table->integer('pin');
             $table->timestamp('datetime');
-            $table->string('verified');
-            $table->string('status');
+            $table->string('verified', 255); // Specify appropriate length
+            $table->string('status', 255);   // Specify appropriate length
             $table->string('work_code');
             $table->timestamps();
 
-            $table->unique(['pin', DB::raw('DATE(datetime)'), 'status']);
+            // Create a unique constraint for pin, datetime, and status columns
+            $table->unique(['pin', 'datetime', 'status'], 'unique_attendances_pin_datetime_status');
+
+            // Add a generated column for the date part of the datetime column
+            $table->date('date_part')->generatedAs('DATE(`datetime`)')->stored();
+
+            // Index for the generated column
+            $table->index(['date_part'], 'index_attendances_date');
         });
     }
+
+
     /**
      * Reverse the migrations.
      */
