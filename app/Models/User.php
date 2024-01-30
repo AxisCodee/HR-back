@@ -184,12 +184,12 @@ public function getAbsenceAttribute($date)
                     return $query->selectRaw('DATE(datetime) as date')
                         ->whereYear('datetime', $year)
                         ->whereMonth('datetime', $month)
-                        ->groupBy('date')
+                        ->groupBy('datetime')
                         ->count();
                 } else {
                     return $query->selectRaw('DATE(datetime) as date')
                         ->whereYear('datetime', $year)
-                        ->groupBy('date')
+                        ->groupBy('datetime')
                         ->count();
                 }
             })
