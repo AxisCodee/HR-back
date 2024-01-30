@@ -97,7 +97,7 @@ class UsertimeService
         $day = substr($date, 8, 2);
 
         if ($day) {
-            $conditions[] = ['date', $date];
+            $conditions[] = ['datetime', $date];
         } elseif ($month) {
             $conditions[] = ['date', $year];
             $conditions[] = ['date', $month];
