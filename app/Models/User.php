@@ -160,7 +160,7 @@ public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');
 
-        $check_in = Attendance::where('status', '0')
+        $checkIns = Attendance::where('status', '0')
             ->where('pin', $this->pin)
             ->when($date, function ($query, $date) {
                 $year = substr($date, 0, 4);
@@ -194,7 +194,7 @@ public function getAbsenceAttribute($date)
                 $count = $dates->count('id');
             }
 
-        $percentage = ($check_in / $count) * 100;
+            $percentage = ($count != 0) ? ($checkIns / $count) * 100 : 0;
 
         return $percentage;
     }
