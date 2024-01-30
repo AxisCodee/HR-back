@@ -38,7 +38,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['deduction','reward','advance','overtime','absence','late','CheckInPercentage'];
+    protected $appends = ['deduction','reward','advance','overtime','absence','late','CheckInPercentage','CheckOutPercentage'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -160,7 +160,49 @@ public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');
 
-        $check_outes = Attendance::where('status', '0')
+        $check_in = Attendance::where('status', '0')
+            ->where('pin', $this->pin)
+            ->when($date, function ($query, $date) {
+                $year = substr($date, 0, 4);
+                $month = substr($date, 5, 2);
+
+                if ($month) {
+                    return $query->whereYear('datetime', $year)
+                        ->whereMonth('datetime', $month);
+                } else {
+                    return $query->whereYear('datetime', $year);
+                }
+            })
+            ->count('id');
+
+            if ($date) {
+                $year = substr($date, 0, 4);
+                $month = substr($date, 5, 2);
+                $day = substr($date, 8, 2);
+
+                $dates = Date::query();
+
+                if ($day) {
+                    $dates->whereDate('date', $date);
+                } elseif ($month) {
+                    $dates->whereYear('date', $year)
+                        ->whereMonth('date', $month);
+                } else {
+                    $dates->whereYear('date', $year);
+                }
+
+                $count = $dates->count('id');
+            }
+
+        $percentage = ($check_in / $count) * 100;
+
+        return $percentage;
+    }
+    public function getCheckOutPercentageAttribute()
+    {
+        $date = request()->query('date');
+
+        $check_outes = Attendance::where('status', '1')
             ->where('pin', $this->pin)
             ->when($date, function ($query, $date) {
                 $year = substr($date, 0, 4);
@@ -197,19 +239,6 @@ public function getAbsenceAttribute($date)
         $percentage = ($check_outes / $count) * 100;
 
         return $percentage;
-    }
-    public function getCheckOutPercentageAttribute()
-    {
-        $overTimes = Attendance::whereNotNull('check_out')
-            ->where('user_id', $this->id);
-
-        $date = request()->query('date');
-
-        $overtimeService = app(UsertimeService::class);
-        $overTimes = $overtimeService->checkOvertimeDate($overTimes, $date);
-
-        $totalLateHours = $overTimes->sum('hours_num');
-        return $totalLateHours;
     }
 
 

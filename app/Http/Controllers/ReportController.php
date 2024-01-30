@@ -92,7 +92,7 @@ class ReportController extends Controller
             $query->whereDate('datetime', $date);
         }])
         ->find($request->user_id);
-      
+
         return ResponseHelper::success([
             $user
 
