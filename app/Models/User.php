@@ -181,18 +181,13 @@ public function getAbsenceAttribute($date)
                 $month = substr($date, 5, 2);
 
                 if ($month) {
-                    return $query->selectRaw('DATE(datetime) as date')
-                        ->whereYear('datetime', $year)
-                        ->whereMonth('datetime', $month)
-                        ->groupBy('datetime')
-                        ->count();
+                    return $query->whereYear('datetime', $year)
+                        ->whereMonth('datetime', $month);
                 } else {
-                    return $query->selectRaw('DATE(datetime) as date')
-                        ->whereYear('datetime', $year)
-                        ->groupBy('datetime')
-                        ->count();
+                    return $query->whereYear('datetime', $year);
                 }
             })
+            ->distinct('datetime')
             ->count();
 
         $percentage = ($check_outes / $dates) * 100;
