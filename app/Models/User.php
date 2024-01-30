@@ -206,7 +206,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function my_team()
     {
-        return $this->hasMany(User::class, 'department_id', 'department_id')->where('role', 'employee')->with('userInfo');
+        return $this->hasMany(User::class, 'department_id', 'department_id')
+        ->where('role', 'employee')
+        ->with('userInfo');
     }
 
     public function my_contacts()
