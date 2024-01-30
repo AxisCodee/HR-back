@@ -39,7 +39,16 @@ class User extends Authenticatable implements JWTSubject
     ];
 
 
-    protected $appends = ['deduction','reward','advance','overtime','absence','late','CheckInPercentage','CheckOutPercentage'];
+    protected $appends = [
+        'deduction',
+        'reward',
+        'advance',
+        'overtime',
+        'absence',
+        'late',
+        'CheckInPercentage',
+        'CheckOutPercentage'
+    ];
     protected $hidden = [
         'password',
         'remember_token',
@@ -52,16 +61,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function getOverTimeAttribute()
     {
-        $overTimes = Late::whereNotNull('check_out')
-            ->where('user_id', $this->id);
-
         $date = request()->query('date');
-
-        $overtimeService = app(UsertimeService::class);
-        $overTimes = $overtimeService->checkOvertimeDate($overTimes, $date);
-
-        $totalLateHours = $overTimes->sum('hours_num');
-        return $totalLateHours;
+        $userServices = new UserServices();
+        $totalOverTimeHours = $userServices
+            ->getOverTime($this, $date);
+        return $totalOverTimeHours;
     }
 
 
@@ -69,21 +73,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function getLateAttribute()
     {
-        $lates = Late::whereNotNull('check_in')
-            ->where('user_id', $this->id);
-
         $date = request()->query('date');
-
-        $overtimeService = app(UsertimeService::class);
-        $lates = $overtimeService->checkOvertimeDate($lates, $date);
-
-        $totalLateHours = $lates->sum('hours_num');
+        $userServices = new UserServices();
+        $totalLateHours = $userServices
+            ->getLate($this, $date);
         return $totalLateHours;
     }
 
 
 
-    public function getRateAttribute($value)//not ready
+    public function getRateAttribute($value) //not ready
     {
         $date = request()->query('date');
         if ($date) {
@@ -100,118 +99,63 @@ class User extends Authenticatable implements JWTSubject
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
-
-            $advance = Decision::where('type', 'advanced')
-                ->where('user_id', $this->id);
-        $advanced = app(UsertimeService::class);
-        $advance = $advanced->checkTimeDate($advance, $date);
-      $totalAdvance =$advance->sum('amount');
-
-            return $totalAdvance;
-
-
+        $userServices = new UserServices();
+        $totalAdvance = $userServices
+            ->getAdvance($this, $date);
+        return $totalAdvance;
     }
+
+
+
+
     public function getDeductionAttribute($date)
-{
-    $date = request()->query('date');
-
-        $deductions = Decision::where('type', 'deduction')
-            ->where('user_id', $this->id);
-            $deduction = app(UsertimeService::class);
-            $deductions = $deduction->checkTimeDate($deductions, $date);
-          $totalDeduction =$deductions->sum('amount');
-
-                return $totalDeduction;
-
-}
+    {
+        $date = request()->query('date');
+        $userServices = new UserServices();
+        $totalDeduction = $userServices
+            ->getDeduction($this, $date);
+        return $totalDeduction;
+    }
 
 
-public function getAbsenceAttribute($date)
-{
-    $date = request()->query('date');
-
-        $abcences = Absences::where('user_id', $this->id);
-            $abcence = app(UsertimeService::class);
-            $abcence = $abcence->checkAbsenceTimeDate($abcences, $date);
-          $totalAbsence=$abcences->count('id');
-
-                return $totalAbsence;
-
-}
+    public function getAbsenceAttribute($date)
+    {
+        $date = request()->query('date');
+        $userServices = new UserServices();
+        $totalAbsence = $userServices
+            ->getAbsence($this, $date);
+        return $totalAbsence;
+    }
 
 
     public function getRewardAttribute()
     {
         $date = request()->query('date');
-            $rewards = Decision::where('type', 'reward')
-                ->where('user_id', $this->id);
-                $reward = app(UsertimeService::class);
-                $rewards = $reward->checkTimeDate($rewards, $date);
-              $totalReward =$rewards->sum('amount');
-
-                    return $totalReward;
-
+        $userServices = new UserServices();
+        $totalReward = $userServices
+            ->getReward($this, $date);
+        return $totalReward;
     }
-
-
-
 
 
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
-
         $userServices = new UserServices();
-
-        $percentage = $userServices->getCheckInPercentage($this, $date);
-
+        $percentage = $userServices
+            ->getCheckInPercentage($this, $date);
         return $percentage;
     }
-
-
 
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
-
-        $check_outes = Attendance::where('status', '1')
-            ->where('pin', $this->pin)
-            ->when($date, function ($query, $date) {
-                $year = substr($date, 0, 4);
-                $month = substr($date, 5, 2);
-
-                if ($month) {
-                    return $query->whereYear('datetime', $year)
-                        ->whereMonth('datetime', $month);
-                } else {
-                    return $query->whereYear('datetime', $year);
-                }
-            })
-            ->count('id');
-
-            if ($date) {
-                $year = substr($date, 0, 4);
-                $month = substr($date, 5, 2);
-                $day = substr($date, 8, 2);
-
-                $dates = Date::query();
-
-                if ($day) {
-                    $dates->whereDate('date', $date);
-                } elseif ($month) {
-                    $dates->whereYear('date', $year)
-                        ->whereMonth('date', $month);
-                } else {
-                    $dates->whereYear('date', $year);
-                }
-
-                $count = $dates->count('id');
-            }
-
-        $percentage = ($check_outes / $count) * 100;
-
+        $userServices = new UserServices();
+        $percentage = $userServices
+            ->getCheckOutPercentage($this, $date);
         return $percentage;
     }
+
 
 
 
