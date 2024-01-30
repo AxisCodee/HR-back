@@ -45,8 +45,12 @@ class UserServices
 
             $count = $dates->count('id');
         }
-
         $percentage = ($checkIns / $count) * 100;
+
+        if ($count!=0)
+   {
+      $percentage = 0;
+   }
 
         return $percentage;
     }
@@ -62,7 +66,7 @@ class UserServices
 
     $date = request()->query('date');
 
-    $check_outes = Attendance::where('status', '1')
+    $checkOut = Attendance::where('status', '1')
         ->where('pin',  $user->pin)
         ->when($date, function ($query, $date) {
             $year = substr($date, 0, 4);
@@ -96,9 +100,14 @@ class UserServices
             $count = $dates->count('id');
         }
 
-    $percentage = ($check_outes / $count) * 100;
+        $percentage = ($checkOut / $count) * 100;
 
-    return $percentage;
+        if ($count!=0)
+   {
+      $percentage = 0;
+   }
+
+        return $percentage;
     }
 
 
