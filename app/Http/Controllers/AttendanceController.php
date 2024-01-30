@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Models\Absences;
 use App\Models\Attendance;
+use App\Models\Date;
 use App\Models\Late;
 use App\Models\User;
 use Carbon\Carbon;
@@ -61,6 +62,8 @@ class AttendanceController extends Controller
             ];
 
             Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+            Date::updateOrCreate(['datetime' => $log['DateTime']]);
+
 
             // the first of check the late
             $checkInDate = substr($log['DateTime'], 0, 10);

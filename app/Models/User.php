@@ -187,12 +187,8 @@ public function getAbsenceAttribute($date)
                     return $query->whereYear('datetime', $year);
                 }
             })
-            ->selectRaw('count(distinct datetime) as date_count')
-            ->first()
-            ->date_count;
-            $percentage = ($check_outes / $dates) * 100;
-
-            return $dates;
+            ->groupBy('datetime')
+            ->count('datetime');
     }
     public function getCheckOutPercentageAttribute()
     {
