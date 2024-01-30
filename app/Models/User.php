@@ -21,6 +21,18 @@ class User extends Authenticatable implements JWTSubject
     use HasRoles, SoftDeletes;
 
 
+
+
+
+    protected $userServices;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->userServices = new UserServices();
+    }
+
+
     protected $fillable =
     [
         'first_name',
@@ -147,15 +159,14 @@ class User extends Authenticatable implements JWTSubject
         return $percentage;
     }
 
+
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
-        $userServices = new UserServices();
-        $percentage = $userServices
-            ->getCheckOutPercentage($this, $date);
+        $percentage = $this->userServices
+        ->getCheckOutPercentage($this, $date);
         return $percentage;
     }
-
 
 
 
