@@ -192,7 +192,7 @@ public function getAbsenceAttribute($date)
 
         $percentage = ($check_outes / $dates) * 100;
 
-        return $check_outes;
+        return $dates;
     }
     public function getCheckOutPercentageAttribute()
     {
