@@ -45,12 +45,13 @@ class UserServices
 
             $count = $dates->count('id');
         }
+        if ($count==0)
+        {
+           $percentage = 0;
+        }
+        else{
         $percentage = ($checkIns / $count) * 100;
-
-        if ($count!=0)
-   {
-      $percentage = 0;
-   }
+        }
 
         return $percentage;
     }
@@ -99,13 +100,14 @@ class UserServices
 
             $count = $dates->count('id');
         }
-
+        if ($count==0)
+        {
+           $percentage = 0;
+        }
+        else{
         $percentage = ($checkOut / $count) * 100;
+        }
 
-        if ($count!=0)
-   {
-      $percentage = 0;
-   }
 
         return $percentage;
     }
