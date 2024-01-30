@@ -175,20 +175,9 @@ public function getAbsenceAttribute($date)
             })
             ->count('id');
 
-            $dates = Attendance::where('status', '0')
-            ->when($date, function ($query, $date) {
-                $year = substr($date, 0, 4);
-                $month = substr($date, 5, 2);
+           // $percentage = ($check_outes / $dates) * 100;
 
-                if ($month) {
-                    return $query->whereYear('datetime', $year)
-                        ->whereMonth('datetime', $month);
-                } else {
-                    return $query->whereYear('datetime', $year);
-                }
-            })
-            ->groupBy('datetime')
-            ->count('datetime');
+        return $check_outes;
     }
     public function getCheckOutPercentageAttribute()
     {
