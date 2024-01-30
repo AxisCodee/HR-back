@@ -167,7 +167,7 @@ public function getAbsenceAttribute($date)
                 $month = substr($date, 5, 2);
 
                 if ($month) {
-                    return $query->whereYear('datetime', $year)
+                     return $query->whereYear('datetime', $year)
                         ->whereMonth('datetime', $month);
                 } else {
                     return $query->whereYear('datetime', $year);
