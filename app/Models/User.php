@@ -191,7 +191,7 @@ public function getAbsenceAttribute($date)
                     $dates->whereYear('date', $year);
                 }
 
-                $count = $dates->count();
+                $count = $dates->count('id');
             }
 
         $percentage = ($check_outes / $dates) * 100;
