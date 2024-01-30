@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Date;
 use App\Models\Late;
 
 class UsertimeService
@@ -88,26 +89,35 @@ class UsertimeService
         return $lates;
     }
 
-    public static function getDateConditions($date)
+
+    public function checkPercentageTimeDate($lates, $date)
     {
-        $conditions = [];
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
 
-        $year = substr($date, 0, 4);
-        $month = substr($date, 5, 2);
-        $day = substr($date, 8, 2);
-
-        if ($day) {
-            $conditions[] = ['datetime', $date];
-        } elseif ($month) {
-            $conditions[] = ['date', $year];
-            $conditions[] = ['date', $month];
-        } else {
-            $conditions[] = ['date', $year];
+            if ($day) {
+                $lates->whereDate('date', $date);
+            } elseif ($month) {
+                $lates->whereYear('date', $year)
+                    ->whereMonth('date', $month);
+            } else {
+                $lates->whereYear('date', $year);
+            }
         }
 
-        return $conditions;
+        return $lates;
     }
+
 }
+
+
+
+
+
+
+
 
 
 

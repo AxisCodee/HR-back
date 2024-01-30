@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\UsertimeService;
+use App\Services\UserServices;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -160,14 +161,27 @@ public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');
 
-        $checkIns = Attendance::where('status', '0')
+        $userServices = new UserServices();
+
+        $percentage = $userServices->getCheckInPercentage($this, $date);
+
+        return $percentage;
+    }
+
+
+
+    public function getCheckOutPercentageAttribute()
+    {
+        $date = request()->query('date');
+
+        $check_outes = Attendance::where('status', '1')
             ->where('pin', $this->pin)
             ->when($date, function ($query, $date) {
                 $year = substr($date, 0, 4);
                 $month = substr($date, 5, 2);
 
                 if ($month) {
-                     return $query->whereYear('datetime', $year)
+                    return $query->whereYear('datetime', $year)
                         ->whereMonth('datetime', $month);
                 } else {
                     return $query->whereYear('datetime', $year);
@@ -194,33 +208,12 @@ public function getAbsenceAttribute($date)
                 $count = $dates->count('id');
             }
 
-            $percentage = ($count != 0) ? ($checkIns / $count) * 100 : 0;
+        $percentage = ($check_outes / $count) * 100;
 
         return $percentage;
     }
-    public function getCheckOutPercentageAttribute()
-    {
-        $date = request()->query('date');
 
-        $checkOuts = Attendance::where('status', '1')
-            ->where('pin', $this->pin)
-            ->when($date, function ($query, $date) {
-                $conditions = UsertimeService::getDateConditions($date);
-                return $query->where($conditions);
-            })
-            ->count('id');
 
-        $count = 0;
-
-        if ($date) {
-            $conditions = UsertimeService::getDateConditions($date);
-            $count = Date::where($conditions)->count('id');
-        }
-
-        $percentage = ($count != 0) ? ($checkOuts / $count) * 100 : 0;
-
-        return $percentage;
-    }
 
     public function getJWTIdentifier()
     {
