@@ -88,9 +88,6 @@ class UsertimeService
         return $lates;
     }
 
-
-
-
     public static function getDateConditions($date)
     {
         $conditions = [];
@@ -100,14 +97,17 @@ class UsertimeService
         $day = substr($date, 8, 2);
 
         if ($day) {
-            $conditions[] = ['datetime', $date];
+            $conditions[] = ['date', $date];
         } elseif ($month) {
-            $conditions[] = ['datetime', $year];
-            $conditions[] = ['datetime', $month];
+            $conditions[] = ['date', $year];
+            $conditions[] = ['date', $month];
         } else {
-            $conditions[] = ['datetime', $year];
+            $conditions[] = ['date', $year];
         }
 
         return $conditions;
     }
 }
+
+
+
