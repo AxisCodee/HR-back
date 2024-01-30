@@ -48,6 +48,26 @@ class UsertimeService
 
 
 
+    public function checkDate($lates, $date)
+    {
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
+
+            if ($day) {
+                $lates->whereDate('datetime', $date);
+            } elseif ($month) {
+                $lates->whereYear('datetime', $year)
+                    ->whereMonth('datetime', $month);
+            } else {
+                $lates->whereYear('datetime', $year);
+            }
+        }
+
+        return $lates;
+    }
+
     public function checkAbsenceTimeDate($lates, $date)
     {
         if ($date) {
