@@ -210,12 +210,14 @@ public function getAbsenceAttribute($date)
             })
             ->count('id');
 
+        $count = 0;
+
         if ($date) {
             $conditions = UsertimeService::getDateConditions($date);
             $count = Date::where($conditions)->count('id');
         }
 
-        $percentage = ($checkOuts / $count) * 100;
+        $percentage = ($count != 0) ? ($checkOuts / $count) * 100 : 0;
 
         return $percentage;
     }
