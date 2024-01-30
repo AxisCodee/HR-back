@@ -188,7 +188,7 @@ public function getAbsenceAttribute($date)
                 }
             })
             ->distinct('datetime')
-            ->count('id');
+            ->count('datetime');
 
         $percentage = ($check_outes / $dates) * 100;
 
