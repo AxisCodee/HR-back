@@ -50,10 +50,11 @@ class UserServices
         else{
         $percentage = ($checkIns / $count) * 100;
         }
+   return $percentage;
         }
 
 
-        return $percentage;
+
     }
 
 
@@ -105,11 +106,12 @@ class UserServices
         else{
         $percentage = ($checkOut / $count) * 100;
         }
+ return $percentage;
         }
 
 
 
-        return $percentage;
+
     }
 
 
