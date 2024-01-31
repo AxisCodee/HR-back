@@ -63,7 +63,6 @@ Route::prefix('Users')->group(function () {
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
         Route::get('professional', 'user_prof');
-        Route::post('updateSalary/{id}', 'updateSalary');
 
 
     });
@@ -236,6 +235,8 @@ Route::prefix('UserInfo')->group(function () {
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::get('Show/{id}', 'show');
+        Route::post('updateSalary/{id}', 'updateSalary');
+
     });
 });
 
