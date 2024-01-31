@@ -20,6 +20,8 @@ use App\Models\Career;
 use App\Models\Contact;
 use App\Models\Deposit;
 use App\Models\StudySituation;
+use App\Models\User_Salary;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
@@ -57,13 +59,7 @@ class AuthController extends Controller
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($request) {
-            // $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
-            // $tad = $tad_factory->get_instance();
-            //$r = $tad->set_user_info([
-            //    'pin' => $request->id,//this is the pin2 in the returned response
-            //    'name'=> $request->first_name,
-            //    'privilege'=> 0,//if you want to add a superadmin user make the privilege as '14'.
-            //    'password' => $request->password]);
+
 
             $user = User::create([
                 'first_name' => $request->first_name,
@@ -77,6 +73,14 @@ class AuthController extends Controller
                 'pin' => $request->pin, //this is the pin2 in the returned response
                 'address' => $request->address
             ]);
+
+            //    $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
+            // $tad = $tad_factory->get_instance();
+            // $r = $tad->set_user_info([
+            //    'pin' => $user->id,//this is the pin2 in the returned response
+            //    'name'=> $request->first_name,
+            //    'privilege'=> 0,//if you want to add a superadmin user make the privilege as '14'.
+            //    'password' => $request->password]);
             $path = null;
             if ($request->image) {
                 $path = Files::saveImageProfile($request->image);
@@ -95,7 +99,12 @@ class AuthController extends Controller
             ]);
             $user->assignRole($request->role);
 
-
+            $sal = User_Salary::query()->create([
+                'user_id' => $user->id,
+                'date' => Carbon::now()->format('Y-m'),
+                'salary' => $userInfo->salary
+            ]);
+            
             $educations = $request->educations;
             $certificates = $request->certificates;
             $languages = $request->languages;

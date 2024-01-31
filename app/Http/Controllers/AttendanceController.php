@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Models\Absences;
 use App\Models\Attendance;
+use App\Models\Date;
 use App\Models\Late;
 use App\Models\User;
 use Carbon\Carbon;
@@ -61,6 +62,8 @@ class AttendanceController extends Controller
             ];
 
             Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+            $date = date('Y-m-d', strtotime($log['DateTime']));
+            Date::updateOrCreate(['date' => $date]);
 
             // the first of check the late
             $checkInDate = substr($log['DateTime'], 0, 10);
@@ -128,10 +131,10 @@ class AttendanceController extends Controller
             // }
 
             //store the days of job
-            $checkInDate = substr($log['DateTime'], 0, 10);
-            if (!in_array($checkInDate, $uniqueDates)) {
-                $uniqueDates[] = $checkInDate;
-            }
+            // $checkInDate = substr($log['DateTime'], 0, 10);
+            // if (!in_array($checkInDate, $uniqueDates)) {
+            //     $uniqueDates[] = $checkInDate;
+            // }
         }
 
         // store the absence
