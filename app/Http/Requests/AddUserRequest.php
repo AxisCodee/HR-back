@@ -37,7 +37,7 @@ class AddUserRequest extends FormRequest
             'social_situation' => ['required', 'string', 'in:Single,Married'],
             'specialization' => ['required', 'string'],
             'contacts.emails.*.email' => ['email'],
-            'contacts.phonenumbers*' => ['numeric', 'digits:10'],
+            'contacts.phonenumbers.*' => ['numeric', 'digits:10'],
             'additional_files', 'emergency_contact' => ['nullable', 'array'],
             'certificates' => ['required', 'array'],
             'experiences' => ['required', 'array'],
@@ -61,8 +61,6 @@ class AddUserRequest extends FormRequest
             'contacts' => ['array', 'max:2'],
             'contacts.emails' => ['nullable', 'array'],
             'contacts.emails.*' => ['email', 'string'],
-            'contacts.phonenumbers' => ['min:1', 'array', 'required'],
-            'contacts.phonenumbers.*' => ['digits:10', 'numeric', 'required'],
         ];
     }
 
