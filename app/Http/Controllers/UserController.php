@@ -31,7 +31,19 @@ class UserController extends Controller
     //get a specific user by the ID
     public function specific_user($id)
     {
-        $spec_user = User::findOrFail($id);
+        $spec_user = User::query()->where('id',$id)
+        ->with('userInfo',
+        'department',
+        'contract',
+        'my_files',
+        'my_contacts',
+        'address',
+        'careers',
+        'deposits',
+        'notes',
+        'certificates',
+        'languages',
+        'study_situations');
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
     //edit a specific user info by his ID
