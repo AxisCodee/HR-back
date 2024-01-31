@@ -44,7 +44,7 @@ class UserController extends Controller
         'notes',
         'certificates',
         'languages',
-        'study_situations')->get();
+        'study_situations')->get()->toArray();;
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
     //edit a specific user info by his ID

@@ -37,6 +37,8 @@ class UserInfoController extends Controller
             $userInfo = UserInfo::query()
                 ->where('user_id', $id)
                 ->update($validate);
+
+                
             return ResponseHelper::success('info has been updated', null);
         });
         return ResponseHelper::error('error', null);
@@ -64,7 +66,7 @@ class UserInfoController extends Controller
 
     public function dailyReport(Request $request)
     {
-        
+
 
     }
 
