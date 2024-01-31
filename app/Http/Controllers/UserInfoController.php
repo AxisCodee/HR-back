@@ -6,11 +6,13 @@ use App\Helper\ResponseHelper;
 use App\Http\Requests\UpdateUserInfoRequest;
 use App\Http\Requests\UserInfoRequest;
 use App\Models\User;
+use App\Models\User_Salary;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Traits\Files;
+use Carbon\Carbon;
 
 class UserInfoController extends Controller
 {
@@ -38,7 +40,7 @@ class UserInfoController extends Controller
                 ->where('user_id', $id)
                 ->update($validate);
 
-                
+
             return ResponseHelper::success('info has been updated', null);
         });
         return ResponseHelper::error('error', null);
@@ -64,10 +66,19 @@ class UserInfoController extends Controller
     }
 
 
-    public function dailyReport(Request $request)
+    public function updateSalary(Request $request,  $id)
     {
-
-
+        $salary=$request->salary;
+        $result=UserInfo::query()
+        ->where('id',$id)
+        ->update([
+            'salary'=>$salary
+        ]);
+        $sal = User_Salary::query()->create([
+            'user_id' => $id,
+            'date' => Carbon::now()->format('Y-m'),
+            'salary' =>$salary
+        ]);
     }
 
 }
