@@ -31,7 +31,8 @@ class UserController extends Controller
     //get a specific user by the ID
     public function specific_user($id)
     {
-        $spec_user = User::query()->where('id',$id)
+        $spec_user = User::query()
+        ->where('id',$id)
         ->with('userInfo',
         'department',
         'contract',
@@ -43,7 +44,7 @@ class UserController extends Controller
         'notes',
         'certificates',
         'languages',
-        'study_situations');
+        'study_situations')->get();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
     //edit a specific user info by his ID
