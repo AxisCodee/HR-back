@@ -159,7 +159,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function checkPercentageTimeDate($lates)
+    public function checkPercentageTimeDate($lates , $date)
     {
         $date = request()->query('date');
 
