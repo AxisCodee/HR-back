@@ -168,6 +168,8 @@ if ($date){
         $baseSalary = $salary->sum('salary');
         return $baseSalary;
     }
+    else
+     return 0;
 
 
     }
