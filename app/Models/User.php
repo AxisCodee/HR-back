@@ -159,14 +159,21 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function getBaseSalaryAttribute()
+    public function checkPercentageTimeDate($lates, $date)
     {
-        $date = request()->query('date');
-        $salary = User_Salary::where('user_id', $this->id)
-            ->where('date', $date);
-       
-        $baseSalary = $salary->sum('salary');
-        return $baseSalary;
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+
+            if ($month && $year) {
+                $lates->whereYear('date', $year)
+                    ->whereMonth('date', $month);
+            } elseif ($year) {
+                $lates->whereYear('date', $year);
+            }
+        }
+
+        return $lates;
     }
 
 
