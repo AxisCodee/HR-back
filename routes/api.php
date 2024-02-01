@@ -19,6 +19,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LateController;
 use App\Http\Controllers\UserInfoController;
 use Illuminate\Support\Facades\Route;
 
@@ -241,7 +242,9 @@ Route::prefix('Absence')->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
         Route::get('Uabsences', 'unjustifiedAbsence');
-        Route::post('DynamicDecision/{absences}', 'DynamicDecision');
+        Route::post('makeDecision/{absences}', 'makeDecision');
+        Route::post(' dynamicDecision','dynamicDecision');
+
 
     });
 });
@@ -260,4 +263,13 @@ Route::prefix('Policy')->group(function () {
         Route::post('Add', 'store');
         Route::post('Update', 'update');
     });
+});
+    Route::prefix('Late')->group(function () {
+        Route::controller(LateController::class)->group(function () {
+        Route::get('Lates', ' unjustifiedLate');
+        Route::post('makeDecision/{lates}', 'makeDecision');
+        Route::post('dynamicDecision','dynamicDecision');
+
+
+});
 });

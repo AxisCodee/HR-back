@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Late;
+use App\Helper\ResponseHelper;
 use App\Http\Requests\StoreLateRequest;
 use App\Http\Requests\UpdateLateRequest;
+use App\Models\UserInfo;
+use App\Models\Decision;
+use Carbon\Carbon;
 
 class LateController extends Controller
 {
@@ -47,4 +51,48 @@ class LateController extends Controller
     {
         //
     }
+
+    public function makeDecision(Late $late)
+    {
+        $late->update(
+            [
+                'type' => 'unjustified'
+            ]
+            );
+
+     $salary= UserInfo::query()->where('user_id',$late->user_id)->value('salary');
+           $salaryInHour=$salary/208;
+           $HourNum= $late->hours_num;
+           $deduction= $salaryInHour*$HourNum;
+            Decision::query()->updateOrCreate(
+                [
+                    'user_id'=>$late->user_id,
+                    'type'=>'deduction',
+                    'salary'=>$salary,
+                    'dateTime'=>Carbon::now(),
+                    'fromSystem'=>true,
+                    'content'=>'Unjustified late',
+                    'amount'=> $deduction
+                ]
+                );
+            }
+
+
+
+    public function unjustifiedLate()
+    {
+        $lates=Late::query()->where('type','normal')->where('status','waiting')->get();
+        return ResponseHelper::success($lates, 'unjustifiedLate', null);
+
+    }
+    public function dynamicDecision()
+    {
+        $lates=Late::query()->where('type','null')->where('status','waiting')->get();
+        foreach( $lates as $late )
+        {
+            $this->makeDecision($late->id);
+
+        }
+        return ResponseHelper::success( null, 'Decision done successfully', null);
+}
 }

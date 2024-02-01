@@ -128,20 +128,20 @@ class AbsencesController extends Controller
     }
 
     // to make desicion to absence employee
-    public function DynamicDecision(Absences $Absences)
+    public function makeDecision(Absences $Absence)
     {
-        $Absences->update(
+        $Absence->update(
             [
                 'type' => 'unjustified'
             ]
             );
 
-     $salary= UserInfo::query()->where('user_id',$Absences->user_id)->value('salary');
+     $salary= UserInfo::query()->where('user_id',$Absence->user_id)->value('salary');
            $salaryInHour=$salary/208;
            $deduction= $salaryInHour*8;
             Decision::query()->updateOrCreate(
                 [
-                    'user_id'=>$Absences->user_id,
+                    'user_id'=>$Absence->user_id,
                     'type'=>'deduction',
                     'salary'=>$salary,
                     'dateTime'=>Carbon::now(),
@@ -159,4 +159,15 @@ class AbsencesController extends Controller
         return ResponseHelper::success( $absence, 'unjustifiedAbsence', null);
 
     }
+    // if the admin want to make a decision dynamic
+    public function dynamicDecision()
+    {
+        $absences=Absences::query()->where('type','null')->where('status','waiting')->get();
+        foreach($absences as $absence )
+        {
+            $this->makeDecision($absence->id);
+
+        }
+        return ResponseHelper::success( null, 'Decision done successfully', null);
+}
 }
