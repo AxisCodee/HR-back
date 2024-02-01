@@ -162,16 +162,13 @@ class User extends Authenticatable implements JWTSubject
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
-        $salary = User_Salary::where('user_id', $this->id);
-
+        $salary = User_Salary::where('user_id', $this->id)
+            ->where('date', $date); 
         $usertimeService = app(UsertimeService::class);
         $salary = $usertimeService->checkPercentageTimeDate($salary, $date);
-
-        $BaseSalary = $salary->sum('salary');
-
-        return $BaseSalary;
+        $baseSalary = $salary->sum('salary');
+        return $baseSalary;
     }
-
 
 
     public function getJWTIdentifier()
