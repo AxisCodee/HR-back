@@ -26,6 +26,7 @@ class PolicyRequest extends FormRequest
             'annual_salary_increase' => 'required',
             'warnings' => 'required',
             'absence_management' => 'required',
+            'deduction_status' => 'required',
         ];
 
     }

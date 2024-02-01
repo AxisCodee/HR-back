@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Policy extends Model
 {
     use HasFactory;
-    protected $fillable = ['work_time', 'annual_salary_increase', 'warnings', 'absence_management'];
+    protected $fillable = [
+        'work_time', 'annual_salary_increase',
+        'warnings', 'absence_management', 'deduction_status'
+    ];
 
     protected $casts = [
         'work_time' => 'array',

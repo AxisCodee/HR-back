@@ -9,9 +9,9 @@ use App\Models\Policy;
 
 class PolicyController extends Controller
 {
-    public function show()
+    public function show($id)
     {
-        $policy = Policy::find(1);
+        $policy = Policy::find($id);
         if (!$policy) {
             return ResponseHelper::error('the policy is not saved yet', null);
         }
@@ -23,10 +23,10 @@ class PolicyController extends Controller
         $policy = Policy::query()->create($validated);
         return ResponseHelper::success([$policy], null);
     }
-    public function update(PolicyRequest $request)
+    public function update(PolicyRequest $request, $id)
     {
         $validated = $request->validated();
-        $policy = Policy::find(1);
+        $policy = Policy::find($id);
         if (!$policy) {
             return ResponseHelper::error('the policy is not saved yet', null);
         }

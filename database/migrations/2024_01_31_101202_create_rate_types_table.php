@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('policies', function (Blueprint $table) {
+        Schema::create('rate_types', function (Blueprint $table) {
             $table->id();
-            $table->json('work_time');
-            $table->json('annual_salary_increase');
-            $table->json('warnings');
-            $table->json('absence_management');
-            $table->boolean('deduction_status')->default(true);
+            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete();
+            $table->string('rate_type')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ploicies');
+        Schema::dropIfExists('rate_types');
     }
 };
