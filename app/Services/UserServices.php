@@ -51,6 +51,8 @@ class UserServices
             }
             return $percentage;
         }
+        else
+        return 0;
     }
 
 
@@ -104,6 +106,8 @@ class UserServices
             }
             return $percentage;
         }
+        else
+        return 0;
     }
 
 
