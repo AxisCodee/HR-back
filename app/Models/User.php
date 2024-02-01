@@ -71,7 +71,7 @@ class User extends Authenticatable implements JWTSubject
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
-        $totalOverTimeHours =$this->userServices
+        $totalOverTimeHours = $this->userServices
             ->getOverTime($this, $date);
         return $totalOverTimeHours;
     }
@@ -127,7 +127,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $totalAbsence = $this->userServices
-         ->getAbsence($this, $date);
+            ->getAbsence($this, $date);
         return $totalAbsence;
     }
 
@@ -136,7 +136,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $totalReward = $this->userServices
-        ->getReward($this, $date);
+            ->getReward($this, $date);
         return $totalReward;
     }
 
@@ -145,7 +145,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $percentage = $this->userServices
-        ->getCheckInPercentage($this, $date);
+            ->getCheckInPercentage($this, $date);
         return $percentage;
     }
 
@@ -154,14 +154,22 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $percentage = $this->userServices
-        ->getCheckOutPercentage($this, $date);
+            ->getCheckOutPercentage($this, $date);
         return $percentage;
     }
 
 
-    public function getBaseSalaryAttribute(){
+    public function getBaseSalaryAttribute()
+    {
+        $date = request()->query('date');
+        $salary = User_Salary::where('user_id', $this->id);
 
+        $usertimeService = app(UsertimeService::class);
+        $salary = $usertimeService->checkTimeDate($salary, $date);
 
+        $BaseSalary = $salary->sum('salary');
+
+        return $BaseSalary;
     }
 
 
@@ -223,8 +231,8 @@ class User extends Authenticatable implements JWTSubject
     public function my_team()
     {
         return $this->hasMany(User::class, 'department_id', 'department_id')
-        ->where('role', 'employee')
-        ->with('userInfo');
+            ->where('role', 'employee')
+            ->with('userInfo');
     }
 
     public function my_contacts()
