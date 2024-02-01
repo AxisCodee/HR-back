@@ -165,7 +165,7 @@ class User extends Authenticatable implements JWTSubject
         $salary = User_Salary::where('user_id', $this->id);
 
         $usertimeService = app(UsertimeService::class);
-        $salary = $usertimeService->checkTimeDate($salary, $date);
+        $salary = $usertimeService->checkPercentageTimeDate($salary, $date);
 
         $BaseSalary = $salary->sum('salary');
 
