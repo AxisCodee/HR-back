@@ -180,6 +180,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(AdditionalFile::class, 'user_id', 'id');
     }
+    public function skills()
+    {
+        return $this->hasMany(Skils::class, 'user_id');
+    }
 
     public function contract()
     {
