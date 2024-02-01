@@ -166,9 +166,10 @@ if ($date){
         $salary = User_Salary::where('user_id', $this->id)
             ->where('date', $date);
         $baseSalary = $salary->sum('salary');
+        return $baseSalary;
     }
 
-        return $baseSalary;
+
     }
 
 
