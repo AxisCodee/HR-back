@@ -41,6 +41,7 @@ class UserController extends Controller
         'careers',
         'deposits',
         'notes',
+        'skills',
         'certificates',
         'languages',
         'study_situations')->get()->toArray();
