@@ -161,7 +161,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function checkPercentageTimeDate($lates , $date)
     {
-        $date = request()->query('date');
 
         if ($date) {
             $year = substr($date, 0, 4);
