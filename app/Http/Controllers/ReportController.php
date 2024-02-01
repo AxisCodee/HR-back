@@ -88,18 +88,12 @@ class ReportController extends Controller
     public function reportByDay(Request $request)
     {
         $date = $request->date;
-        $user = User::with(['notes','deposits','department', 'attendance' => function ($query) use ($date) {
+        $user = User::with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
             $query->whereDate('datetime', $date);
         }])
-        ->find($request->user_id);
-
+            ->find($request->user_id);
         return ResponseHelper::success([
             $user
-
-
-     ]);
+        ]);
     }
-
-
-
 }

@@ -15,6 +15,7 @@ use App\Http\Controllers\EmpOfMonthController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\RateTypeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\StudySituationController;
@@ -123,7 +124,6 @@ Route::prefix('Report')->group(function () {
 
         //
         Route::post('reportByDay', 'reportByDay');
-
     });
 });
 
@@ -246,7 +246,6 @@ Route::prefix('Absence')->group(function () {
         Route::get('Show/{user}', 'show');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
-
     });
 });
 
@@ -260,8 +259,19 @@ Route::prefix('EmployeeOfMonth')->group(function () {
 
 Route::prefix('Policy')->group(function () {
     Route::controller(PolicyController::class)->group(function () {
-        Route::get('Show', 'show');
+        Route::get('Show/{id}', 'show');
         Route::post('Add', 'store');
-        Route::post('Update', 'update');
+        Route::post('Update/{id}', 'update');
+    });
+});
+
+Route::prefix('Rate')->group(function () {
+    Route::controller(RateTypeController::class)->group(function () {
+
+
+        Route::get('BranchTypes/{id}', 'show'); //show types for branch
+        //Route::get('ShowType/{id}', 'show');//
+        Route::post('AddType', 'store');//
+        Route::post('UpdateType/{id}', 'update');
     });
 });
