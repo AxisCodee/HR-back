@@ -195,8 +195,7 @@ class AuthController extends Controller
 
             if ($request->emergency_contact) {
                 foreach ($emergency_contact as $emergency) {
-                    if (isset($emergency['phonenumber']) || isset($emergency['email']))
-                    {
+                    if (isset($emergency['phonenumber']) || isset($emergency['email'])) {
                         $contact = Contact::query()->create([
                             'user_id' => $user->id,
                             'type' => "emergency",
@@ -204,13 +203,11 @@ class AuthController extends Controller
                             'address' => $emergency['address'],
                             'contact' => $emergency['phonenumber'] ?? $emergency['email'],
                         ]);
-                    }
-                    else
-                    {
+                    } else {
                         throw new Exception("Emergency contact must have either a phone number or an email.");
                     }
                 }
-                }
+            }
 
 
             foreach ($secretaraits as $secretarait) {
