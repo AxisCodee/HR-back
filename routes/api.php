@@ -15,12 +15,12 @@ use App\Http\Controllers\EmpOfMonthController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\RateTypeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserInfoController;
-use App\Models\RateType;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function () {
@@ -266,12 +266,12 @@ Route::prefix('Policy')->group(function () {
 });
 
 Route::prefix('Rate')->group(function () {
-    Route::controller(RateType::class)->group(function () {
+    Route::controller(RateTypeController::class)->group(function () {
 
 
-        Route::get('BranchTypes/{id}', 'index'); //show types for branch
-        Route::get('ShowType/{id}', 'show');
-        Route::post('AddType', 'store');
+        Route::get('BranchTypes/{id}', 'show'); //show types for branch
+        //Route::get('ShowType/{id}', 'show');//
+        Route::post('AddType', 'store');//
         Route::post('UpdateType/{id}', 'update');
     });
 });

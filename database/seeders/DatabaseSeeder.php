@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ContractSeeder::class);
         $this->call(UserInfoSeeder::class);
         $this->call(CalendarsSeeder::class);
+        $this->call(BranchSeeder::class);
 
         // \App\Models\User::factory(10)->create();
 

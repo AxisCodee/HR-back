@@ -27,6 +27,8 @@ class PolicyRequest extends FormRequest
             'warnings' => 'required',
             'absence_management' => 'required',
             'deduction_status' => 'required',
+            'branch_id' => 'required|integer|exists:branches,id',
+            'rate_type' => 'sometimes|array'
         ];
 
     }

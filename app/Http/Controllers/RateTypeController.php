@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class RateTypeController extends Controller
 {
-    public function show($id)//show types for branch
+    public function show($id) //show types for branch
     {
         $types = RateType::query()->where('branch_id', $id)->get();
         if (!$types) {
@@ -27,7 +27,9 @@ class RateTypeController extends Controller
 
     public function update(Request $request, $id)
     {
-        $rateType = RateType::query()->find($id)->update($request->rate_type);
-        return ResponseHelper::success($rateType, null, 'RateType', 200);
+        $rateType = RateType::query()->find($id)->update(
+            ['rate_type'   => $request->rate_type]
+        );
+        return ResponseHelper::updated(null, 'Updated', 200);
     }
 }
