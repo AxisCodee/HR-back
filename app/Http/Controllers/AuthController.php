@@ -20,6 +20,9 @@ use App\Models\Career;
 use App\Models\Contact;
 use App\Models\Deposit;
 use App\Models\StudySituation;
+use App\Models\User_Salary;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 
@@ -97,6 +100,11 @@ class AuthController extends Controller
             ]);
             $user->assignRole($request->role);
 
+            $sal = User_Salary::query()->create([
+                'user_id' => $user->id,
+                'date' => Carbon::now()->format('Y-m'),
+                'salary' => $userInfo->salary
+            ]);
 
             $educations = $request->educations;
             $certificates = $request->certificates;
@@ -187,15 +195,20 @@ class AuthController extends Controller
 
             if ($request->emergency_contact) {
                 foreach ($emergency_contact as $emergency) {
-                    $contact = Contact::query()->create([
-                        'user_id' => $user->id,
-                        'type' => "emergency",
-                        'name' => $emergency['name'],
-                        'address' => $emergency['address'],
-                        'contact' => $emergency['contact'],
-                    ]);
+                    if (isset($emergency['phonenumber']) || isset($emergency['email'])) {
+                        $contact = Contact::query()->create([
+                            'user_id' => $user->id,
+                            'type' => "emergency",
+                            'name' => $emergency['name'],
+                            'address' => $emergency['address'],
+                            'contact' => $emergency['phonenumber'] ?? $emergency['email'],
+                        ]);
+                    } else {
+                        throw new Exception("Emergency contact must have either a phone number or an email.");
+                    }
                 }
             }
+
 
             foreach ($secretaraits as $secretarait) {
                 $recieved = Deposit::query()->create([

@@ -20,10 +20,6 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles, SoftDeletes;
 
-
-
-
-
     protected $userServices;
 
     public function __construct(array $attributes = [])
@@ -59,7 +55,8 @@ class User extends Authenticatable implements JWTSubject
         'absence',
         'late',
         'CheckInPercentage',
-        'CheckOutPercentage'
+        'CheckOutPercentage',
+        'BaseSalary'
     ];
     protected $hidden = [
         'password',
@@ -162,6 +159,12 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
+    public function getBaseSalaryAttribute(){
+
+
+    }
+
+
 
     public function getJWTIdentifier()
     {
@@ -176,6 +179,10 @@ class User extends Authenticatable implements JWTSubject
     public function my_files()
     {
         return $this->hasMany(AdditionalFile::class, 'user_id', 'id');
+    }
+    public function skills()
+    {
+        return $this->hasMany(Skils::class, 'user_id');
     }
 
     public function contract()
@@ -201,6 +208,11 @@ class User extends Authenticatable implements JWTSubject
     public function my_decisions()
     {
         return $this->hasMany(Decision::class, 'user_id', 'id');
+    }
+
+    public function salary()
+    {
+        return $this->hasMany(User_Salary::class, 'user_id');
     }
 
     public function permissions()
