@@ -38,7 +38,6 @@ class UserController extends Controller
         'contract',
         'my_files',
         'my_contacts',
-        'address',
         'careers',
         'deposits',
         'notes',
