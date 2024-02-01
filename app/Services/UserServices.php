@@ -44,16 +44,13 @@ class UserServices
             }
 
             $count = $dates->count('id');
+            if ($count == 0) {
+                $percentage = 0;
+            } else {
+                $percentage = ($checkIns / $count) * 100;
+            }
+            return $percentage;
         }
-        if ($count==0)
-        {
-           $percentage = 0;
-        }
-        else{
-        $percentage = ($checkIns / $count) * 100;
-        }
-
-        return $percentage;
     }
 
 
@@ -63,24 +60,25 @@ class UserServices
 
 
 
-    public function getCheckOutPercentage($user, $date){
+    public function getCheckOutPercentage($user, $date)
+    {
 
-    $date = request()->query('date');
+        $date = request()->query('date');
 
-    $checkOut = Attendance::where('status', '1')
-        ->where('pin',  $user->pin)
-        ->when($date, function ($query, $date) {
-            $year = substr($date, 0, 4);
-            $month = substr($date, 5, 2);
+        $checkOut = Attendance::where('status', '1')
+            ->where('pin',  $user->pin)
+            ->when($date, function ($query, $date) {
+                $year = substr($date, 0, 4);
+                $month = substr($date, 5, 2);
 
-            if ($month) {
-                return $query->whereYear('datetime', $year)
-                    ->whereMonth('datetime', $month);
-            } else {
-                return $query->whereYear('datetime', $year);
-            }
-        })
-        ->count('id');
+                if ($month) {
+                    return $query->whereYear('datetime', $year)
+                        ->whereMonth('datetime', $month);
+                } else {
+                    return $query->whereYear('datetime', $year);
+                }
+            })
+            ->count('id');
 
         if ($date) {
             $year = substr($date, 0, 4);
@@ -99,17 +97,13 @@ class UserServices
             }
 
             $count = $dates->count('id');
+            if ($count == 0) {
+                $percentage = 0;
+            } else {
+                $percentage = ($checkOut / $count) * 100;
+            }
+            return $percentage;
         }
-        if ($count==0)
-        {
-           $percentage = 0;
-        }
-        else{
-        $percentage = ($checkOut / $count) * 100;
-        }
-
-
-        return $percentage;
     }
 
 
@@ -175,7 +169,7 @@ class UserServices
     public function getLate($user, $date)
     {
         $lates = Late::whereNotNull('check_in')
-        ->where('type','Unjustified')
+            ->where('type', 'Unjustified')
             ->where('user_id', $user->id);
 
         $usertimeService = app(UsertimeService::class);
@@ -191,7 +185,7 @@ class UserServices
     public function getOverTime($user, $date)
     {
         $overTimes = Late::whereNotNull('check_out')
-        ->where('type','justified')
+            ->where('type', 'justified')
             ->where('user_id', $user->id);
 
         $usertimeService = app(UsertimeService::class);
@@ -201,6 +195,4 @@ class UserServices
 
         return $totalOverTimeHours;
     }
-
-
 }

@@ -20,6 +20,8 @@ use App\Models\Career;
 use App\Models\Contact;
 use App\Models\Deposit;
 use App\Models\StudySituation;
+use App\Models\User_Salary;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
@@ -96,7 +98,12 @@ class AuthController extends Controller
                 'image' => $path
             ]);
             $user->assignRole($request->role);
-
+ 
+            $sal = User_Salary::query()->create([
+                'user_id' => $user->id,
+                'date' => Carbon::now()->format('Y-m'),
+                'salary' => $userInfo->salary
+            ]);
 
             $educations = $request->educations;
             $certificates = $request->certificates;
