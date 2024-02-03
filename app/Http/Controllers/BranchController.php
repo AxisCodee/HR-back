@@ -44,6 +44,6 @@ class BranchController extends Controller
             return ResponseHelper::error('not authorized', null);
         }
         $branch->delete();
-        return ResponseHelper::deleted('deleted', null);
+        return ResponseHelper::success('deleted');
     }
 }
