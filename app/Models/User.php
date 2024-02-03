@@ -162,16 +162,13 @@ class User extends Authenticatable implements JWTSubject
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
-if ($date){
-        $salary = User_Salary::where('user_id', $this->id)
-            ->where('date', $date);
-        $baseSalary = $salary->sum('salary');
-        return $baseSalary;
-    }
-    else
-     return 0;
-
-
+        if ($date) {
+            $salary = User_Salary::where('user_id', $this->id)
+                ->where('date', $date);
+            $baseSalary = $salary->sum('salary');
+            return $baseSalary;
+        } else
+            return 0;
     }
 
 

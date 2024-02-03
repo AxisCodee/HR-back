@@ -5,6 +5,7 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\api\GmailController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\CertificateController;
@@ -64,8 +65,6 @@ Route::prefix('Users')->group(function () {
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
         Route::get('professional', 'user_prof');
-
-
     });
 });
 
@@ -236,7 +235,6 @@ Route::prefix('UserInfo')->group(function () {
         Route::post('Update/{id}', 'update');
         Route::get('Show/{id}', 'show');
         Route::post('updateSalary/{id}', 'updateSalary');
-
     });
 });
 
@@ -264,14 +262,22 @@ Route::prefix('Policy')->group(function () {
         Route::post('Update/{id}', 'update');
     });
 });
-
+Route::prefix('branch')->group(function () {
+    Route::controller(BranchController::class)->group(function () {
+        Route::get('All', 'index');
+        Route::get('Show/{id}', 'show');
+        Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::post('Delete/{id}', 'destroy');
+    });
+});
 Route::prefix('Rate')->group(function () {
     Route::controller(RateTypeController::class)->group(function () {
 
 
         Route::get('BranchTypes/{id}', 'show'); //show types for branch
         //Route::get('ShowType/{id}', 'show');//
-        Route::post('AddType', 'store');//
+        Route::post('AddType', 'store'); //
         Route::post('UpdateType/{id}', 'update');
     });
 });
