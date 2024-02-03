@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\ReportRequest;
 use App\Models\Attendance;
-use App\Models\Note;
 use App\Models\Report;
 use App\Models\User;
 use Carbon\Carbon;
@@ -90,8 +89,7 @@ class ReportController extends Controller
         $date = $request->date;
         $user = User::with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
             $query->whereDate('datetime', $date);
-        }])
-            ->find($request->user_id);
+        }])->find($request->user_id);
         return ResponseHelper::success([
             $user
         ]);

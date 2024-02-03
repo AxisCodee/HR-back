@@ -50,7 +50,8 @@ class UserServices
                 $percentage = ($checkIns / $count) * 100;
             }
             return $percentage;
-        }
+        } else
+            return 0;
     }
 
 
@@ -103,7 +104,8 @@ class UserServices
                 $percentage = ($checkOut / $count) * 100;
             }
             return $percentage;
-        }
+        } else
+            return 0;
     }
 
 

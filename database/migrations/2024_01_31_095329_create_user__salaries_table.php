@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user__salaries', function (Blueprint $table) {
             $table->id();
             $table->string('date');
-            $table->string('salary');
+            $table->double('salary');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
