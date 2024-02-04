@@ -7,13 +7,23 @@ use App\Models\User;
 use App\Http\Requests\StoreRateRequest;
 use App\Http\Requests\UpdateRateRequest;
 use App\Helper\ResponseHelper;
+use App\Http\Requests\RateRequest;
 use App\Models\RateType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
-
+use App\Services\RateService;
+use Illuminate\Http\Request;
 class RateController extends Controller
 {
+
+
+    protected $rateService;
+
+    public function __construct(RateService $rateService)
+    {
+        $this->rateService = $rateService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -31,28 +41,23 @@ class RateController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function setRate(StoreRateRequest $request)
-{
-    $user = User::find(Auth::id());
 
-    try {
-        $rateType = RateType::findOrFail($request->rate_type_id);
+    public function setRate(RateRequest $request)
+    {
+        $userId = auth()->id();
+        $rateTypeId = $request->rate_type_id;
+        $rate = $request->rate;
+        try {
+            $result = $this
+            ->rateService
+            ->setRate($userId, $rateTypeId, $rate);
 
-        $result = Rate::query()->create([
-            'user_id' => $request->user_id,
-            'rate_type_id' => $request->rate_type_id,
-            'rate' => $request->rate,
-            'evaluator_id' => $user->id,
-        ]);
-
-        return ResponseHelper::success($result, null, 'rate added successfully', 200);
-    } catch (ModelNotFoundException $e) {
-        return ResponseHelper::error('Invalid rate type ID', 422);
+            return ResponseHelper::success($result, null, 'Rate added successfully', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
+        }
     }
-}
+
     /**
      * Display the specified resource.
      */
