@@ -33,13 +33,10 @@ class RateController extends Controller
      * Store a newly created resource in storage.
      */
     public function setRate(StoreRateRequest $request)
-    {
-        $user = User::find(Auth::id());
+{
+    $user = User::find(Auth::id());
 
-        if(empty($request->rate_type_id)){
-            return ResponseHelper::error('rate type is empty', null, 400);
-        }
-
+    try {
         $result = Rate::query()->create([
             'user_id' => $request->user_id,
             'rate_type_id' => $request->rate_type_id,
@@ -47,12 +44,11 @@ class RateController extends Controller
             'evaluator_id' => $user->id,
         ]);
 
-        if(!$result){
-            return ResponseHelper::success($result, null, 'not found', 200);
-        }
-
-        return ResponseHelper::success($result, null, 'rate added successfully   ', 200);
+        return ResponseHelper::success($result, null, 'rate added successfully', 200);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return ResponseHelper::success(null, null, 'not found', 200);
     }
+}
     /**
      * Display the specified resource.
      */
