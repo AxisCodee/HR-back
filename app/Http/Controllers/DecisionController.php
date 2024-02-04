@@ -54,47 +54,11 @@ class DecisionController extends Controller
     }
 
 
-    public function DynamicDecision($Absences)
-    {
-
-     $salary= UserInfo::query()->where('user_id',$Absences->user_id)->value('salary');
-   
-           $salaryInHour=$salary/208;
-           $deduction= $salaryInHour*8;
-            Decision::query()->createOrUpdate(
-                [
-                    'user_id'=>$Absences->user_id,
-                    'type'=>'warning',
-                    'salary'=>$salary,
-                    'dateTime'=>$Absences->startDate,
-                    'fromSystem'=>true,
-                    'content'=>'Unjustified absence',
-                    'ammount'=> $deduction
-                ]
-                );
-
-        $lates=Late::query()->where('type','Unjustified')->get();
-        foreach($lates as $late)
-{
-    $salary= UserInfo::query()->where('user_id',$late->user_id)->value('salary');
-    $salaryInHour=$salary/208;
-    $numberOfHour=$late->hours_num;
-    $deduction= $salaryInHour*$numberOfHour;
-
-    Decision::query()->createOrUpdate(
-        [
-            'user_id'=>$late->user_id,
-            'type'=>'warning',
-            'salary'=>$salary,
-            'dateTime'=>$late->startDate,
-            'fromSystem'=>true,
-            'content'=>'Unjustified late',
-            'ammount'=> $deduction
-        ]
-        );
-
 }
 
+    
 
-    }
-}
+
+
+
+

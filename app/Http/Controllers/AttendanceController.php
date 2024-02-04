@@ -20,7 +20,6 @@ class AttendanceController extends Controller
     {
         $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
         $tad = $tad_factory->get_instance();
-
         $logs = $tad->get_att_log();
 
         $xml = simplexml_load_string($logs);

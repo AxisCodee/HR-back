@@ -21,6 +21,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LateController;
 use App\Http\Controllers\UserInfoController;
 use Illuminate\Support\Facades\Route;
 
@@ -280,4 +281,12 @@ Route::prefix('Rate')->group(function () {
         Route::post('AddType', 'store'); //
         Route::post('UpdateType/{id}', 'update');
     });
+});
+    Route::prefix('Late')->group(function () {
+        Route::controller(LateController::class)->group(function () {
+        Route::get('Lates', ' unjustifiedLate');
+        Route::post('makeDecision/{lates}', 'makeDecision');
+        Route::post('dynamicDecision','dynamicDecision');
+
+});
 });
