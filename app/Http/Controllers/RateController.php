@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Http\Requests\StoreRateRequest;
 use App\Http\Requests\UpdateRateRequest;
 use App\Helper\ResponseHelper;
+use App\Models\RateType;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 
 class RateController extends Controller
@@ -37,6 +39,8 @@ class RateController extends Controller
     $user = User::find(Auth::id());
 
     try {
+        $rateType = RateType::findOrFail($request->rate_type_id);
+
         $result = Rate::query()->create([
             'user_id' => $request->user_id,
             'rate_type_id' => $request->rate_type_id,
@@ -45,8 +49,8 @@ class RateController extends Controller
         ]);
 
         return ResponseHelper::success($result, null, 'rate added successfully', 200);
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        return ResponseHelper::success(null, null, 'not found', 200);
+    } catch (ModelNotFoundException $e) {
+        return ResponseHelper::error('Invalid rate type ID', 422);
     }
 }
     /**
