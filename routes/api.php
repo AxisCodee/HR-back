@@ -16,6 +16,7 @@ use App\Http\Controllers\EmpOfMonthController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\RateController;
 use App\Http\Controllers\RateTypeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestController;
@@ -273,6 +274,14 @@ Route::prefix('branch')->group(function () {
     });
 });
 Route::prefix('Rate')->group(function () {
+    Route::controller(RateController::class)
+    ->group(function () {
+        Route::post('setRate', 'setRate');
+
+    });
+
+
+
     Route::controller(RateTypeController::class)->group(function () {
 
 
