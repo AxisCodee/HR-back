@@ -32,7 +32,7 @@ class RateController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRateRequest $request)
+    public function setRate(StoreRateRequest $request)
     {
         $user = User::find(Auth::id());
 
@@ -43,7 +43,6 @@ class RateController extends Controller
                 'type' => $request->type,
                 'rate' => $request->rate,
                 'evaluator_id' => $user->id,
-                'evaluator_role' => $user->role
             ]
         );
         return ResponseHelper::success($result, null, 'your rate added successfully', 200);
