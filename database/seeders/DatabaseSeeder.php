@@ -20,7 +20,11 @@ class DatabaseSeeder extends Seeder
         $this->call(ContractSeeder::class);
         $this->call(UserInfoSeeder::class);
         $this->call(CalendarsSeeder::class);
+<<<<<<< HEAD
         $this->call(PermissionSeeder::class);
+=======
+        $this->call(BranchSeeder::class);
+>>>>>>> 314b2b4908c2836f6513e653e822d9c0f7b0badc
 
         // \App\Models\User::factory(10)->create();
 

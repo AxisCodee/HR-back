@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user__salaries', function (Blueprint $table) {
+        Schema::create('rate_types', function (Blueprint $table) {
             $table->id();
-            $table->string('date');
-            $table->double('salary');
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete();
+            $table->string('rate_type')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user__salaries');
+        Schema::dropIfExists('rate_types');
     }
 };

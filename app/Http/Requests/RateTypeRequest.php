@@ -3,8 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
-class PolicyRequest extends FormRequest
+class RateTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,14 +24,17 @@ class PolicyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'work_time' => 'required',
-            'annual_salary_increase' => 'required',
-            'warnings' => 'required',
-            'absence_management' => 'required',
-            'deduction_status' => 'required',
             'branch_id' => 'required|integer|exists:branches,id',
-            'rate_type' => 'sometimes|array'
+            'rate_type' => 'required'
         ];
+    }
 
+    //if there is an error with the validation display the error as a Json response.
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

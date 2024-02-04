@@ -21,12 +21,10 @@ class Rate extends Model
 
     public function users()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function evaluators()
     {
-        return $this->belongsTo(User::class,'evaluator_id');
+        return $this->belongsTo(User::class, 'evaluator_id');
     }
-
-
 }

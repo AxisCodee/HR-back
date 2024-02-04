@@ -16,7 +16,7 @@ class Late extends Model
         'check_out',
         'lateDate',
         'moreLate',
-    
+
 
 
     ];

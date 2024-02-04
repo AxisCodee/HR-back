@@ -8,5 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Branch extends Model
 {
     use HasFactory;
-    protected $fillable=['name'];
+    protected $fillable = ['name'];
+
+
+    public function  rateTypes()
+    {
+        return $this->hasMany(RateType::class);
+    }
 }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->json('annual_salary_increase');
             $table->json('warnings');
             $table->json('absence_management');
+            $table->boolean('deduction_status')->default(true);
+            $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
