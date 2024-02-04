@@ -36,23 +36,23 @@ class RateController extends Controller
     {
         $user = User::find(Auth::id());
 
+        if(empty($request->rate_type_id)){
+            return ResponseHelper::error('rate type is empty', null, 400);
+        }
 
-        $result = Rate::query()->create(
-            [
-                'user_id' => $request->user_id,
-                'rate_type_id' => $request->rate_type_id,
-                'rate' => $request->rate,
-                'evaluator_id' => $user->id,
-            ]
-        );
+        $result = Rate::query()->create([
+            'user_id' => $request->user_id,
+            'rate_type_id' => $request->rate_type_id,
+            'rate' => $request->rate,
+            'evaluator_id' => $user->id,
+        ]);
+
         if(!$result){
             return ResponseHelper::success($result, null, 'not found', 200);
-
-
         }
-        return ResponseHelper::success($result, null, 'your rate added successfully', 200);
-    }
 
+        return ResponseHelper::success($result, null, 'rate added successfully   ', 200);
+    }
     /**
      * Display the specified resource.
      */
