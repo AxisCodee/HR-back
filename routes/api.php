@@ -274,6 +274,5 @@ Route::prefix('Policy')->group(function () {
         Route::post('makeDecision/{lates}', 'makeDecision');
         Route::post('dynamicDecision','dynamicDecision');
 
-
 });
 });
