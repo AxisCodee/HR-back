@@ -162,16 +162,13 @@ class User extends Authenticatable implements JWTSubject
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
-if ($date){
-        $salary = User_Salary::where('user_id', $this->id)
-            ->where('date', $date);
-        $baseSalary = $salary->sum('salary');
-        return $baseSalary;
-    }
-    else
-     return 0;
-
-
+        if ($date) {
+            $salary = User_Salary::where('user_id', $this->id)
+                ->where('date', $date);
+            $baseSalary = $salary->sum('salary');
+            return $baseSalary;
+        } else
+            return 0;
     }
 
 
@@ -238,8 +235,13 @@ if ($date){
 
     public function my_contacts()
     {
-        return $this->hasMany(Contact::class, 'user_id', 'id');
+        return $this->hasMany(Contact::class, 'user_id', 'id')->where('type','user_num')->orwhere('type','email');
     }
+    public function emergrgency()
+    {
+        return $this->hasMany(Contact::class, 'user_id', 'id')->where('type','emergency');
+    }
+
 
     public function Requests()
     {
