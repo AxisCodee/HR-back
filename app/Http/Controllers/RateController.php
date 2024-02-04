@@ -45,6 +45,11 @@ class RateController extends Controller
                 'evaluator_id' => $user->id,
             ]
         );
+        if(!$result){
+            return ResponseHelper::success($result, null, 'not found', 200);
+
+
+        }
         return ResponseHelper::success($result, null, 'your rate added successfully', 200);
     }
 
