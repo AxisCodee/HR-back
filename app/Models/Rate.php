@@ -27,4 +27,9 @@ class Rate extends Model
     {
         return $this->belongsTo(User::class, 'evaluator_id');
     }
+
+    public function rateType()
+    {
+        return $this->belongsTo(RateType::class, 'rate_type_id');
+    }
 }
