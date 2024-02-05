@@ -104,15 +104,16 @@ class RateController extends Controller
     }
 
 
-    public function getRate($id){
+    public function getRate($id)
+    {
+        $rates = User::query()
+            ->where('id', $id)
+            ->with('userRates.rateType')
+            ->with('department')
+            ->get()
+            ->toArray();
 
-        $rates=User::query()->where('id',$id)
-        ->with('userRates')
-        ->with('department')
-        ->get();
-
-        return ResponseHelper::success($rates,null,'Rates',200);
-
+        return ResponseHelper::success($rates, null, 'Rates', 200);
     }
 
 }
