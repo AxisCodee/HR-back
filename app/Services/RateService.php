@@ -32,6 +32,10 @@ class RateService
         }
     }
 
+
+
+
+    
     public function getRate($request, $id)
     {
         try {
