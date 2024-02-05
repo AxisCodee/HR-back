@@ -112,7 +112,7 @@ class RateController extends Controller
             $user = User::with('department')
                 ->with(['userRates' => function ($query) use ($date) {
                     $query->whereDate('date', '=', $date)
-                        ->with('rateType')->with('evaluatorRates');
+                        ->with('rateType');
                 }])
                 ->findOrFail($id);
 
