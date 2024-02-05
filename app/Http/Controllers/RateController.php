@@ -48,7 +48,8 @@ class RateController extends Controller
         $rateTypeId = $request->rate_type_id;
         $rate = $request->rate;
         try {
-            $result = $this
+            $result =
+             $this
             ->rateService
             ->setRate($userId, $rateTypeId, $rate);
 
