@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Rate;
 use App\Models\RateType;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RateService
@@ -20,6 +21,7 @@ class RateService
                 'user_id' => $userId,
                 'rate_type_id' => $rateTypeId,
                 'rate' => $rate,
+                'date' => Carbon::now()->format('Y-m-d'),
                 'evaluator_id' => $user->id,
             ]);
 

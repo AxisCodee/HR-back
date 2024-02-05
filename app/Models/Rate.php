@@ -12,7 +12,7 @@ class Rate extends Model
     [
         'user_id',
         'evaluator_id',
-
+        'date',
         'rate',
         'rate_type_id'
 
