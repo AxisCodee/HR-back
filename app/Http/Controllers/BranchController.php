@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;

@@ -3,21 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contract;
-use App\Models\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreContractRequest;
 use App\Http\Requests\UpdateContractRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Traits\Files;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Exists;
+use Illuminate\Support\Facades\DB;
 
 class ContractController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $contracts = Contract::with('user')->get();
@@ -34,7 +29,6 @@ class ContractController extends Controller
                 } else {
                     $status = 'active';
                 }
-
 
                 $results[] = $result = [
                     'startDate' => $contract['startTime'],
@@ -61,21 +55,25 @@ class ContractController extends Controller
      */
     public function store(StoreContractRequest $request)
     {
-        $path = Files::saveFile($request);
-        $contract = Contract::create(
-            [
-                'path' => $path,
-                'startTime' => $request->startTime,
-                'endTime' => $request->endTime,
-                'user_id' => $request->user_id
-            ]
-        );
-        return ResponseHelper::success(
-            $contract,
-            null,
-            'contract',
-            200
-        );
+        return DB::transaction(function () use ($request) {
+            $path = Files::saveFile($request);
+            $contract = Contract::create(
+                [
+                    'path' => $path,
+                    'startTime' => $request->startTime,
+                    'endTime' => $request->endTime,
+                    'user_id' => $request->user_id
+                ]
+            );
+            return ResponseHelper::success(
+                $contract,
+                null,
+                'contract',
+                200
+            );
+        });
+
+        return ResponseHelper::error('error', null);
     }
 
     /**

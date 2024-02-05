@@ -218,7 +218,7 @@ class AuthController extends Controller
 
             return ResponseHelper::success($user);
         });
-        return ResponseHelper::error();
+        return ResponseHelper::error('error', null);
     }
 
     public function logout()
