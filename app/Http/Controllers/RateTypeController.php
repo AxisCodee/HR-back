@@ -11,7 +11,7 @@ class RateTypeController extends Controller
 {
     public function show($id) //show types for branch
     {
-        $types = RateType::query()->where('branch_id', $id)->get();
+        $types = RateType::query()->where('branch_id', $id)->get()->toArray();
         if (!$types) {
             return ResponseHelper::error('branch doesnt have Rate Types', null);
         }
