@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helper\ResponseHelper;
 use App\Models\Rate;
 use App\Models\RateType;
 use App\Models\User;
@@ -31,5 +32,27 @@ class RateService
         }
     }
 
-    
+    public function getRate($request, $id)
+    {
+        try {
+            $date = $request->input('date');
+
+            $user = User::with('department')
+                ->with(['userRates' => function ($query) use ($date) {
+                    $query->whereDate('date', '=', $date)
+                        ->with(['rateType', 'evaluators' => function ($query) {
+                            $query->with('department');
+                        }]);
+                }])
+                ->findOrFail($id);
+
+            if (empty($user->userRates)) {
+                return ResponseHelper::success([], null, 'No rates found', 200);
+            }
+
+            return ResponseHelper::success($user, null, 'User rates', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 500);
+        }
+    }
 }

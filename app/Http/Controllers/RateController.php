@@ -48,8 +48,7 @@ class RateController extends Controller
         $rateTypeId = $request->rate_type_id;
         $rate = $request->rate;
         try {
-            $result =
-             $this
+            $result = $this
             ->rateService
             ->setRate($userId, $rateTypeId, $rate);
 
@@ -106,27 +105,7 @@ class RateController extends Controller
 
     public function getRate(Request $request, $id)
     {
-        try {
-            $date = $request->input('date');
-
-            $user = User::with('department')
-    ->with(['userRates' => function ($query) use ($date) {
-        $query->whereDate('date', '=', $date)
-            ->with(['rateType', 'evaluators' => function ($query) {
-                $query->with('department');
-            }]);
-    }])
-    ->findOrFail($id);
-
-            if (empty($user->userRates)) {
-                return ResponseHelper::success([], null, 'No rates found', 200);
-            }
-
-            return ResponseHelper::success($user, null, 'User rates', 200);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), 500);
-        }
-
+        return $this->rateService->getRate($request, $id);
     }
 
 }
