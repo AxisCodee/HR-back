@@ -104,16 +104,29 @@ class RateController extends Controller
     }
 
 
-    public function getRate($id)
+    public function getRate(Request $request, $id)
     {
-        $rates = User::query()
-            ->where('id', $id)
-            ->with('userRates.rateType')
-            ->with('department')
-            ->get()
-            ->toArray();
+        try {
+            $date = $request->input('date');
 
-        return ResponseHelper::success($rates, null, 'Rates', 200);
+            $user = User::findOrFail($id);
+
+            $rates = User::query()
+                ->where('id', $id)
+                ->whereDate('date', '=', $date)
+                ->with('userRates.rateType')
+                ->with('department')
+                ->get()
+                ->toArray();
+
+            if (empty($rates)) {
+                return ResponseHelper::success([], null, 'No rates found', 200);
+            }
+
+            return ResponseHelper::success($rates, null, 'Rates', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 500);
+        }
     }
 
 }
