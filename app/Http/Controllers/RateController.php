@@ -111,10 +111,9 @@ class RateController extends Controller
 
             $user = User::findOrFail($id);
 
-            $rates = User::query()
-                ->where('id', $id)
+            $rates = $user->userRates()
                 ->whereDate('date', '=', $date)
-                ->with('userRates.rateType')
+                ->with('rateType')
                 ->with('department')
                 ->get()
                 ->toArray();
