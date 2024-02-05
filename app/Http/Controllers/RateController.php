@@ -110,11 +110,13 @@ class RateController extends Controller
             $date = $request->input('date');
 
             $user = User::with('department')
-                ->with(['userRates' => function ($query) use ($date) {
-                    $query->whereDate('date', '=', $date)
-                        ->with('rateType')->with('evaluators');
-                }])
-                ->findOrFail($id);
+    ->with(['userRates' => function ($query) use ($date) {
+        $query->whereDate('date', '=', $date)
+            ->with(['rateType', 'evaluators' => function ($query) {
+                $query->with('department');
+            }]);
+    }])
+    ->findOrFail($id);
 
             if (empty($user->userRates)) {
                 return ResponseHelper::success([], null, 'No rates found', 200);
