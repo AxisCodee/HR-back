@@ -44,7 +44,7 @@ class RateController extends Controller
 
     public function setRate(RateRequest $request)
     {
-        $userId = auth()->id();
+        $userId = $request->user_id;
         $rateTypeId = $request->rate_type_id;
         $rate = $request->rate;
         try {
@@ -124,7 +124,7 @@ class RateController extends Controller
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), 500);
         }
-    
+
     }
 
 }
