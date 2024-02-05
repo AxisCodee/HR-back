@@ -22,7 +22,7 @@ class RateService
                 'rate_type_id' => $rateTypeId,
                 'rate' => $rate,
                 'date' => Carbon::now()->format('Y-m-d'),
-                'evaluator_id' => $user->id,
+                'evaluator_id' => auth()->user()->id,
             ]);
 
             return $result;
