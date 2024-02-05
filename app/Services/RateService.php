@@ -21,7 +21,7 @@ class RateService
                 'user_id' => $userId,
                 'rate_type_id' => $rateTypeId,
                 'rate' => $rate,
-                'date'=>Carbon::now()->format('y','m','d'),
+                'date' => Carbon::now()->format('Y-m-d'),
                 'evaluator_id' => $user->id,
             ]);
 
