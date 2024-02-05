@@ -30,4 +30,6 @@ class RateService
             throw new \Exception('Invalid rate type ID');
         }
     }
+
+    
 }
