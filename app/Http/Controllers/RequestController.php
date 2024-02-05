@@ -12,6 +12,7 @@ use App\Models\Decision;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RequestController extends Controller
 {
@@ -103,26 +104,29 @@ class RequestController extends Controller
 
     public function acceptRequest(Request $request)
 {
-    $request->update([
-        'status' => 'accepted'
-    ]);
-// تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
-//  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل 
-    if ($request->type == 'advanced') {
-        $user = User::find($request->user_id);
-        $salary = $user->salary;
-        $result = Decision::query()->create([
-            'user_id' => $request->user_id,
-            'type' => 'advanced',
-            'amount' => ($salary / 2) ,
-            'dateTime' => $request->dateTime,
-            'salary' => $salary
+    return DB::transaction(function() use($request){
+        $request->update([
+            'status' => 'accepted'
         ]);
-    }
+    // تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
+    //  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل
+        if ($request->type == 'advanced') {
+            $user = User::find($request->user_id);
+            $salary = $user->salary;
+            $result = Decision::query()->create([
+                'user_id' => $request->user_id,
+                'type' => 'advanced',
+                'amount' => ($salary / 2) ,
+                'dateTime' => $request->dateTime,
+                'salary' => $salary
+            ]);
+        }
 
-    return ResponseHelper::updated([
-        'message' => 'Request accepted successfully',
-    ]);
+        return ResponseHelper::updated([
+            'message' => 'Request accepted successfully',
+        ]);
+    });
+
 }
     public function rejectRequest(Request $request)
     {
