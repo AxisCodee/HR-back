@@ -102,4 +102,17 @@ class RateController extends Controller
         }
         return ResponseHelper::success($userRate, null, 'yourRate', 200);
     }
+
+
+    public function getRate($id){
+
+        $rates=User::query()->where('id',$id)
+        ->with('userRates')
+        ->with('department')
+        ->get();
+
+        return ResponseHelper::success($rates,null,'Rates',200);
+
+    }
+
 }

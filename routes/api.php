@@ -277,6 +277,8 @@ Route::prefix('Rate')->group(function () {
     Route::controller(RateController::class)
     ->group(function () {
         Route::post('setRate', 'setRate');
+        Route::get('getRate/{id}', 'getRate');
+
 
     });
 
