@@ -6,7 +6,6 @@ use App\Helper\ResponseHelper;
 use App\Http\Requests\CertificateRequest;
 use App\Http\Requests\UpdateCertificateRequest;
 use App\Models\Certificate;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CertificateController extends Controller

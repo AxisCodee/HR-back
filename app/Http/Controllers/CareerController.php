@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Career;
-use Illuminate\Http\Request;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\CareerRequest;
 use App\Http\Requests\UpdateCareerRequest;
