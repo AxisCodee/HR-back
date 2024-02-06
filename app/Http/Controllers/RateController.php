@@ -117,7 +117,6 @@ class RateController extends Controller
             ->groupBy('date')
             ->map(function ($items, $date) {
                 $evaluatorCount = $items->countBy('evaluator_id');
-                $result = [];
                 foreach ($items as $item) {
                     $itemData = $item->toArray();
                     $itemData['evaluator_count'] = $evaluatorCount[$item->evaluator_id];
