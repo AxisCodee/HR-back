@@ -127,7 +127,6 @@ class RateController extends Controller
                 return $result;
             })
             ->values()
-            ->flatten()
 
             ->toArray();
 
