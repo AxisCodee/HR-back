@@ -31,7 +31,7 @@ class BranchController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error('لا يمكن تخزين نفس الاسم مرة واحدة', 400);
+            return ResponseHelper::error('cannot store duplicated name' , 400);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
