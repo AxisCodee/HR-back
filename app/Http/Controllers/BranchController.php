@@ -20,7 +20,7 @@ class BranchController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
-    public function index()
+    public function store()
     {
         try {
             $branches = Branch::withCount('users')->get()->toArray();
