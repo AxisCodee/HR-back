@@ -16,7 +16,7 @@ class DecisionController extends Controller
 {
 //add new decision for a user
     public function new_decision(DecisionRequest $request)
-    {
+    { 
         $new = $request->validated();
         $created = Decision::create($new);
         return ResponseHelper::created($created,'decision created successfully');
