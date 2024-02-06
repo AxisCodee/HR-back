@@ -108,4 +108,6 @@ class RateController extends Controller
         return $this->rateService->getRate($request, $id);
     }
 
+    
+
 }

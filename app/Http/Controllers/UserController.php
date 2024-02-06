@@ -114,24 +114,25 @@ class UserController extends Controller
     //add new team and add users to it
     public function storeTeams(Request $request)
     {
-        return DB::transaction(function () use ($request) {
-            $team = Department::updateOrCreate(['name' => $request->name]);
-            if ($request->users_array) {
-                foreach ($request->users_array as $user) {
-                    $update = User::where('id', $user)->first();
-                    $update->department_id = $team->id;
-                    $update->save();
-                }
-                return ResponseHelper::created('users added to the team successfully');
+        return DB::transaction(function() use($request){
+ $team = Department::updateOrCreate(['name' => $request->name]);
+        if ($request->users_array) {
+            foreach ($request->users_array as $user) {
+                $update = User::where('id', $user)->first();
+                $update->department_id = $team->id;
+                $update->save();
             }
+            return ResponseHelper::created('users added to the team successfully');
+        }
 
-            $teamLeader = User::query()
-                ->where('id', $request->team_leader)
-                ->update([
-                    'role' => 'Team_Leader'
-                ]);
-            return ResponseHelper::created('team added successfully');
+        $teamLeader = User::query()
+            ->where('id', $request->team_leader)
+            ->update([
+                'role' => 'Team_Leader'
+            ]);
+        return ResponseHelper::created('team added successfully');
         });
+
     }
     //update an existing team name
     public function updateTeams(Request $request, $id)
