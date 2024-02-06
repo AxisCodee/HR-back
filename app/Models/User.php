@@ -44,6 +44,7 @@ class User extends Authenticatable implements JWTSubject
         'provider_id',
         'provider_name',
         'google_access_token_json',
+        'branch_id'
     ];
 
 

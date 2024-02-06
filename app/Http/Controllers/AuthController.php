@@ -59,9 +59,8 @@ class AuthController extends Controller
     public function register(AddUserRequest $request)
     {
         $validate = $request->validated();
+
         return DB::transaction(function () use ($request) {
-
-
             $user = User::create([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
@@ -71,10 +70,11 @@ class AuthController extends Controller
                 'specialization' => $request->specialization,
                 'department_id' => $request->department_id,
                 'password' => Hash::make($request->password),
-                'pin' => $request->pin, //this is the pin2 in the returned response
-                'address' => $request->address
+                'pin' => null,
+                'address' => $request->address,
+                'branch_id' => $request->branch_id
             ]);
-
+            $user->update(['pin' => $user->id]);
             //    $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
             // $tad = $tad_factory->get_instance();
             // $r = $tad->set_user_info([
@@ -146,8 +146,6 @@ class AuthController extends Controller
                 ]);
             }
 
-
-
             if ($request->additional_files) {
                 foreach ($request->additional_files as $file) {
                     (function ($file) use ($user) {
@@ -190,6 +188,7 @@ class AuthController extends Controller
                     ]);
                 }
             }
+
             if ($request->emergency_contact) {
                 foreach ($emergency_contact as $emergency) {
                     if (isset($emergency['phonenumber']) || isset($emergency['email'])) {
@@ -206,7 +205,6 @@ class AuthController extends Controller
                 }
             }
 
-
             foreach ($secretaraits as $secretarait) {
                 $recieved = Deposit::query()->create([
                     'user_id' => $user->id,
@@ -214,7 +212,6 @@ class AuthController extends Controller
                     'recieved_date' => $secretarait['delivery_date'],
                 ]);
             }
-
 
             return ResponseHelper::success($user);
         });
