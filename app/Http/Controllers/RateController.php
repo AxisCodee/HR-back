@@ -112,9 +112,9 @@ class RateController extends Controller
     {
         $rates = Rate::where('date', $date)
             ->with(['rateType' => function ($query) use ($request) {
-                $query->where('branche_id', $request->branche_id);
+                $query->where('branch_id', $request->branch_id);
             }])
-            ->get();
+            ->get()->toArray();
 
         return ResponseHelper::success($rates,null,'rates',200);
     }
