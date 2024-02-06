@@ -282,6 +282,8 @@ Route::prefix('Rate')->group(function () {
         Route::post('setRate', 'setRate');
         Route::get('getRate/{id}', 'getRate');
         Route::get('allRates', 'allRates');
+        Route::get('userRates', 'userRates');
+
 
 
 
