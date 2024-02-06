@@ -118,8 +118,8 @@ class RateController extends Controller
                 return $items->map(function ($item) {
                     return $item->toArray();
                 });
-            })
-            ->toArray();
+            });
+            
 
         return ResponseHelper::success($rates, null, 'rates', 200);
     }
