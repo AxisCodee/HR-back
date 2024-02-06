@@ -124,7 +124,8 @@ class RateController extends Controller
                     $result[] = $itemData;
                 }
                 return $result;
-            })->toArray();
+            })
+            ->values();
 
 
         return ResponseHelper::success($rates, null, 'rates', 200);
