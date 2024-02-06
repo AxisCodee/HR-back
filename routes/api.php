@@ -280,7 +280,7 @@ Route::prefix('Rate')->group(function () {
     ->group(function () {
         Route::post('setRate', 'setRate');
         Route::get('getRate/{id}', 'getRate');
-        Route::get('allRates/{date}', 'allRates');
+        Route::get('allRates', 'allRates');
 
 
 
