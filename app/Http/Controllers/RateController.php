@@ -109,31 +109,29 @@ class RateController extends Controller
     }
 
     public function allRates(Request $request)
-{
-    $rates = Rate::with(['rateType' => function ($query) use ($request) {
-            $query->where('branch_id', $request->branch_id);
-        }])
-        ->get()
-        ->groupBy('date')
-        ->map(function ($items, $date) {
-            $evaluatorCount = $items->countBy('evaluator_id');
-            $result = [];
-            foreach ($items as $item) {
-                $itemData = $item->toArray();
-                $itemData['rate_type'] = [$itemData['rate_type']];
-                $itemData['evaluator_count'] = $evaluatorCount[$itemData['evaluator_id']];
-                unset($itemData['evaluator_id']);
-                $result[] = $itemData;
-            }
-            return $result;
-        })
-        ->values()
-        ->flatten()
-        ->toArray();
+    {
+        $rates = Rate::with(['rateType' => function ($query) use ($request) {
+                $query->where('branch_id', $request->branch_id);
+            }])
+            ->get()
+            ->groupBy('date')
+            ->map(function ($items, $date) {
+                $evaluatorCount = $items->countBy('evaluator_id');
+                $result = [];
+                foreach ($items as $item) {
+                    $itemData = $item->toArray();
+                    $itemData['rate_type'] = [$itemData['rate_type']];
+                    $itemData['evaluator_count'] = $evaluatorCount[$itemData['evaluator_id']];
+                    $result[] = [$itemData];
+                }
+                return $result;
+            })
+            ->values()
+            ->toArray();
 
-    $data = ['data' => $rates];
+        $data = ['data' => $rates];
 
-    return ResponseHelper::success($data, null, 'rates', 200);
-}
+        return ResponseHelper::success($data, null, 'rates', 200);
+    }
 
 }
