@@ -108,6 +108,15 @@ class RateController extends Controller
         return $this->rateService->getRate($request, $id);
     }
 
-    
+    public function allRates(Request $request, $date)
+    {
+        $rates = Rate::where('date', $date)
+            ->with(['rateType' => function ($query) use ($request) {
+                $query->where('branche_id', $request->branche_id);
+            }])
+            ->get();
+
+        return $rates;
+    }
 
 }
