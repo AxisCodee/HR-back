@@ -35,7 +35,7 @@ class RateTypeController extends Controller
     public function getRateType($id)
     {
         try {
-            $result = RateType::where('id', $id)->get()->toArray();
+            $result = RateType::where('branch_id', $id)->get()->toArray();
             return ResponseHelper::success($result, null, 'rateType', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
