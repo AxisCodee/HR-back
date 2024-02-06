@@ -120,16 +120,13 @@ class RateController extends Controller
                 $result = [];
                 foreach ($items as $item) {
                     $itemData = $item->toArray();
-                    $itemData['rate_type'] = [$itemData['rate_type']];
-                    $itemData['evaluator_count'] = $evaluatorCount[$itemData['evaluator_id']];
-                    $result[] = [$itemData];
+                    $itemData['evaluator_count'] = $evaluatorCount[$item->evaluator_id];
+                    $result[] = $itemData;
                 }
                 return $result;
             })
             ->values()
             ->toArray();
-
-
 
         return ResponseHelper::success($rates, null, 'rates', 200);
     }
