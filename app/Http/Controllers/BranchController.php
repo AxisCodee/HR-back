@@ -13,26 +13,25 @@ class BranchController extends Controller
 {
     public function index()
     {
-        try {
-            $branches = Branch::withCount('users')->get()->toArray();
-            return ResponseHelper::success($branches, null);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+        $branches = Branch::withCount('users')->get()->toArray();
+        return ResponseHelper::success($branches, null);
     }
-    public function store()
+    public function store(Request $request)
     {
         try {
-            $branches = Branch::withCount('users')->get()->toArray();
-            return ResponseHelper::success($branches, null);
+            $validatedData = $request->validate([
+                'name' => 'required|unique:branches,name',
+            ]);
+
+            $result = Branch::query()->create([
+                'name' => $validatedData['name']
+            ]);
+
+            return ResponseHelper::success($result, null);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() == 23000) {
-                return ResponseHelper::error('Cannot store duplicate branch name', 400);
-            } else {
-                return ResponseHelper::error($e->getMessage(), $e->getCode());
-            }
-        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
-            return ResponseHelper::error('Cannot store duplicate branch name', 400);
+            return ResponseHelper::error('لا يمكن تخزين نفس الاسم مرة واحدة', 400);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
