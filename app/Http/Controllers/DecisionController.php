@@ -32,13 +32,17 @@ public function remove_decision($id)
     }
 }
 //edit an exisiting decision
-    public function edit_decision(DecisionRequest $request,$id)
-    {
+public function edit_decision(DecisionRequest $request, $id)
+{
+    try {
         $validate = $request->validated();
-        $edited = Decision::where('id',$id);
+        $edited = Decision::where('id', $id)->firstOrFail();
         $edited->update($validate);
-        return ResponseHelper::updated($edited,'decision updated successfully');
+        return ResponseHelper::updated($edited, 'Decision updated successfully');
+    } catch (\Exception $e) {
+        return ResponseHelper::error($e->getMessage(), $e->getCode());
     }
+}
 //get all decisions for all users
     public function all_decisions()
     {
