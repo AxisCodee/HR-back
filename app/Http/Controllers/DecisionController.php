@@ -35,7 +35,7 @@ public function remove_decision($id)
     public function edit_decision(DecisionRequest $request,$id)
     {
         $validate = $request->validated();
-        $edited = Decision::findOrFail($id)->with('user_decision');
+        $edited = Decision::with('user_decision')->findOrFail($id);
         $edited->update($validate);
         return ResponseHelper::updated($edited,'decision updated successfully');
     }
