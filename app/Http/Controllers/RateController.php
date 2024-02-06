@@ -108,15 +108,16 @@ class RateController extends Controller
         return $this->rateService->getRate($request, $id);
     }
 
-    public function allRates(Request $request, $date)
-    {
-        $rates = Rate::where('date', $date)
-            ->with(['rateType' => function ($query) use ($request) {
-                $query->where('branch_id', $request->branch_id);
-            }])
-            ->get()->toArray();
+    public function allRates(Request $request)
+{
+    $rates = Rate::with(['rateType' => function ($query) use ($request) {
+            $query->where('branch_id', $request->branch_id);
+        }])
+        ->orderBy('date')
+        ->get()
+        ->toArray();
 
-        return ResponseHelper::success($rates,null,'rates',200);
-    }
+    return ResponseHelper::success($rates, null, 'rates', 200);
+}
 
 }
