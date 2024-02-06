@@ -13,8 +13,12 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $branches = Branch::withCount('users')->get()->toArray();
-        return ResponseHelper::success($branches, null);
+        try {
+            $branches = Branch::withCount('users')->get()->toArray();
+            return ResponseHelper::success($branches, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
     public function store(Request $request)
     {
