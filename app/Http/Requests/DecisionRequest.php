@@ -19,7 +19,7 @@ class DecisionRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'integer', 'exists:users,id'],
-            'type' => ['required', 'string','in:reward,warning,deduction'],//to make sure that the category does exist.
+            'type' => ['required', 'string','in:reward,warning,deduction,alert'],//to make sure that the category does exist.
             'content' => ['required','string', 'between:10,255'],
             'amount' =>['nullable','integer'],
             'dateTime'=>['required']
