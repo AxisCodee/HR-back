@@ -13,7 +13,7 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $branches = Branch::withCount('users')->paginate(10)->toArray();
+        $branches = Branch::withCount('users')->get()->toArray();
         return ResponseHelper::success($branches, null);
     }
     public function store(Request $request)
