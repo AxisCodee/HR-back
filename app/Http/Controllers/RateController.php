@@ -130,4 +130,15 @@ class RateController extends Controller
         return ResponseHelper::success($rates, null, 'rates', 200);
     }
 
+    public function userRates(Request $request)
+    {
+        try {
+            $result = RateType::query()->with('rate', 'rate.users')->get()->toArray();
+            return ResponseHelper::success($result, null, 'userRates', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+
+
 }

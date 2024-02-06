@@ -17,4 +17,8 @@ class RateType extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+    public function rate()
+    {
+        return $this->hasMany(Rate::class);
+    }
 }
