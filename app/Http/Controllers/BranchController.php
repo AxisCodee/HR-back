@@ -16,6 +16,12 @@ class BranchController extends Controller
         try {
             $branches = Branch::withCount('users')->get()->toArray();
             return ResponseHelper::success($branches, null);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return ResponseHelper::error('Duplicate branch name', 400);
+            } else {
+                return ResponseHelper::error($e->getMessage(), $e->getCode());
+            }
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
