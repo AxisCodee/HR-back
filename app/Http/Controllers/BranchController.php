@@ -58,4 +58,5 @@ class BranchController extends Controller
         $branch->delete();
         return ResponseHelper::success('deleted');
     }
+
 }

@@ -32,4 +32,14 @@ class RateTypeController extends Controller
         );
         return ResponseHelper::updated(null, 'Updated', 200);
     }
+    public function getRateType($id)
+    {
+        try {
+            $result = RateType::where('id', $id)->get()->toArray();
+            return ResponseHelper::success($result, null, 'rateType', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+
 }
