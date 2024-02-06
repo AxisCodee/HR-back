@@ -113,7 +113,6 @@ class RateController extends Controller
         $rates = Rate::with(['rateType' => function ($query) use ($request) {
                 $query->where('branch_id', $request->branch_id);
             }])
-            ->orderBy('date')
             ->get()
             ->groupBy('date')
             ->map(function ($items, $date) {
@@ -128,9 +127,8 @@ class RateController extends Controller
             })
             ->values()
             ->toArray();
-            $data = $rates[0];
 
-        return ResponseHelper::success($data, null, 'rates', 200);
+        return ResponseHelper::success($rates, null, 'rates', 200);
     }
 
 }
