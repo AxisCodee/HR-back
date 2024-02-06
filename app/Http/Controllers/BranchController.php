@@ -16,22 +16,26 @@ class BranchController extends Controller
         try {
             $branches = Branch::withCount('users')->get()->toArray();
             return ResponseHelper::success($branches, null);
-        } catch (\Illuminate\Database\QueryException $e) {
-            if ($e->getCode() == 23000) {
-                return ResponseHelper::error('Duplicate branch name', 400);
-            } else {
-                return ResponseHelper::error($e->getMessage(), $e->getCode());
-            }
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
-    public function store(Request $request)
+    public function index()
     {
-        $result = Branch::query()->create([
-            'name' => $request->name
-        ]);
-        return ResponseHelper::success($result, null);
+        try {
+            $branches = Branch::withCount('users')->get()->toArray();
+            return ResponseHelper::success($branches, null);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return ResponseHelper::error('Cannot store duplicate branch name', 400);
+            } else {
+                return ResponseHelper::error($e->getMessage(), $e->getCode());
+            }
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return ResponseHelper::error('Cannot store duplicate branch name', 400);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
     public function show($id)
     {
