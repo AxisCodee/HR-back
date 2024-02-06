@@ -116,7 +116,7 @@ class RateController extends Controller
             }])
             ->get();
 
-        return $rates;
+        return ResponseHelper::success($rates,null,'rates',200);
     }
 
 }
