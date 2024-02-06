@@ -52,11 +52,32 @@ class DecisionController extends Controller
                         ->get();
         return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
+//get decisions for a specific user by id
+    public function user_decisions($id)
+    {
+        $user = User::with('my_decisions')->findOrFail($id);
+        $decisions = $user->my_decisions;
+        $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
 
+        $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
+            return [$type => $decisions->where('type', $type)->values()];
+        })->all();
+
+        extract($groupedDecisions);
+
+        return ResponseHelper::success([
+            'rewards'=>$reward,
+            'warnings'=>$warning,
+            'deductions'=>$deduction,
+            'alerts'=>$alert,
+            'penalty'=>$penalty
+            ]
+            , null, 'user decisions returned successfully', 200);
+    }
 
 }
 
-    
+
 
 
 

@@ -28,7 +28,6 @@ class User extends Authenticatable implements JWTSubject
         $this->userServices = new UserServices();
     }
 
-
     protected $fillable =
     [
         'first_name',

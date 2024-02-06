@@ -79,6 +79,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('edit/{decision}', 'edit_decision');
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
+        Route::get('user_desicions/{id}','user_decisions');
     });
 });
 
