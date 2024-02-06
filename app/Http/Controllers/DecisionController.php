@@ -22,12 +22,15 @@ class DecisionController extends Controller
         return ResponseHelper::created($created,'decision created successfully');
     }
 //delete an exisiting decision
-    public function remove_decision($id)
-    {
-        $removed = Decision::findOrFail($id)
-                            ->delete();
-        return ResponseHelper::deleted(' decision deleted successfully');
+public function remove_decision($id)
+{
+    try {
+        $removed = Decision::findOrFail($id)->delete();
+        return ResponseHelper::success('Decision deleted successfully');
+    } catch (\Exception $e) {
+        return ResponseHelper::error($e->getMessage(), $e->getCode());
     }
+}
 //edit an exisiting decision
     public function edit_decision(DecisionRequest $request,$id)
     {
