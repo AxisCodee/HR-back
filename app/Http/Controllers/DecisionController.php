@@ -26,7 +26,7 @@ class DecisionController extends Controller
     {
         $removed = Decision::findOrFail($id)
                             ->delete();
-        return ResponseHelper::deleted(' decision deleted successfully');
+        return ResponseHelper::success(' decision deleted successfully');
     }
 //edit an exisiting decision
     public function edit_decision(DecisionRequest $request,$id)
