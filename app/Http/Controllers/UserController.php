@@ -32,41 +32,47 @@ class UserController extends Controller
     public function specific_user($id)
     {
         $spec_user = User::query()
-        ->where('id',$id)
-        ->with('userInfo',
-        'department',
-        'contract',
-        'my_files',
-        'my_contacts',
-        'careers',
-        'deposits',
-        'notes',
-        'skills',
-        'certificates',
-        'languages',
-        'study_situations','emergrgency')->get()->toArray();
+            ->where('id', $id)
+            ->with(
+                'userInfo',
+                'department',
+                'contract',
+                'my_files',
+                'my_contacts',
+                'careers',
+                'deposits',
+                'notes',
+                'skills',
+                'certificates',
+                'languages',
+                'study_situations',
+                'emergency'
+            )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        $spec_user = User::findOrFail($id);
-        if ($spec_user->role != $request->role) {
-            $add_exp = Career::create([
-                'user_id' => $id,
-                'content' => 'worked as a ' . $spec_user->role,
+        return DB::transaction(function () use ($id, $request) {
+            $spec_user = User::findOrFail($id);
+            if ($spec_user->role != $request->role) {
+                $add_exp = Career::create([
+                    'user_id' => $id,
+                    'content' => 'worked as a ' . $spec_user->role,
+                ]);
+            }
+            $spec_user->update([
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name'  => $request->last_name,
+                'email'      => $request->email,
+                'password'   => Hash::make($request->password),
+                'role'    => $request->role,
+                'department_id' => $request->department_id,
             ]);
-        }
-        $spec_user->update([
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name'  => $request->last_name,
-            'email'      => $request->email,
-            'password'   => Hash::make($request->password),
-            'role'    => $request->role,
-            'department_id' => $request->department_id,
-        ]);
-        return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
+            return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
+        });
+        return ResponseHelper::error('Error', null);
     }
     //remove a user from a team
     public function remove_from_team($id)
@@ -95,18 +101,21 @@ class UserController extends Controller
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
-        foreach ($request->users_array as $user) {
-            $add = User::findOrFail($user);
-            $add->department_id = $team;
-            $add->save();
-        }
-        return ResponseHelper::created('users added to the team successfully');
+        return DB::transaction(function () use ($request, $team) {
+            foreach ($request->users_array as $user) {
+                $add = User::findOrFail($user);
+                $add->department_id = $team;
+                $add->save();
+            }
+            return ResponseHelper::created('users added to the team successfully');
+        });
     }
 
     //add new team and add users to it
     public function storeTeams(Request $request)
     {
-        $team = Department::updateOrCreate(['name' => $request->name]);
+        return DB::transaction(function() use($request){
+ $team = Department::updateOrCreate(['name' => $request->name]);
         if ($request->users_array) {
             foreach ($request->users_array as $user) {
                 $update = User::where('id', $user)->first();
@@ -122,6 +131,8 @@ class UserController extends Controller
                 'role' => 'Team_Leader'
             ]);
         return ResponseHelper::created('team added successfully');
+        });
+
     }
     //update an existing team name
     public function updateTeams(Request $request, $id)

@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->string('provider_id')->nullable();
             $table->string('provider_name')->default('google');
             $table->text('google_access_token_json')->nullable();
-            $table->foreignId('branch_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('branch_id')->nullable()->constrained('branches')->cascadeOnDelete();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

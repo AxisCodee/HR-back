@@ -12,9 +12,9 @@ class Rate extends Model
     [
         'user_id',
         'evaluator_id',
-        'evaluator_role',
+        'date',
         'rate',
-        'type'
+        'rate_type_id'
 
     ];
 
@@ -26,5 +26,10 @@ class Rate extends Model
     public function evaluators()
     {
         return $this->belongsTo(User::class, 'evaluator_id');
+    }
+
+    public function rateType()
+    {
+        return $this->belongsTo(RateType::class, 'rate_type_id');
     }
 }

@@ -7,11 +7,23 @@ use App\Models\User;
 use App\Http\Requests\StoreRateRequest;
 use App\Http\Requests\UpdateRateRequest;
 use App\Helper\ResponseHelper;
+use App\Http\Requests\RateRequest;
+use App\Models\RateType;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
-
+use App\Services\RateService;
+use Illuminate\Http\Request;
 class RateController extends Controller
 {
+
+
+    protected $rateService;
+
+    public function __construct(RateService $rateService)
+    {
+        $this->rateService = $rateService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -29,24 +41,21 @@ class RateController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRateRequest $request)
+
+    public function setRate(RateRequest $request)
     {
-        $user = User::find(Auth::id());
+        $userId = $request->user_id;
+        $rateTypeId = $request->rate_type_id;
+        $rate = $request->rate;
+        try {
+            $result = $this
+            ->rateService
+            ->setRate($userId, $rateTypeId, $rate);
 
-
-        $result = Rate::query()->create(
-            [
-                'user_id' => $request->user_id,
-                'type' => $request->type,
-                'rate' => $request->rate,
-                'evaluator_id' => $user->id,
-                'evaluator_role' => $user->role
-            ]
-        );
-        return ResponseHelper::success($result, null, 'your rate added successfully', 200);
+            return ResponseHelper::success($result, null, 'Rate added successfully', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
+        }
     }
 
     /**
@@ -92,4 +101,46 @@ class RateController extends Controller
         }
         return ResponseHelper::success($userRate, null, 'yourRate', 200);
     }
+
+
+    public function getRate(Request $request, $id)
+    {
+        return $this->rateService->getRate($request, $id);
+    }
+
+    public function allRates(Request $request)
+    {
+        $rates = Rate::with(['rateType' => function ($query) use ($request) {
+                $query->where('branch_id', $request->branch_id);
+            }])
+            ->get()
+            ->groupBy('date')
+            ->map(function ($items, $date) {
+                $evaluatorCount = $items->countBy('evaluator_id');
+                foreach ($items as $item) {
+                    $itemData = $item->toArray();
+                    $itemData['evaluator_count'] = $evaluatorCount[$item->evaluator_id];
+                    $result[] = $itemData;
+                }
+                return $result;
+            })
+            ->values();
+
+
+        return ResponseHelper::success($rates, null, 'rates', 200);
+    }
+
+    public function userRates(Request $request, $date)
+    {
+        try {
+            $result = RateType::with(['rate' => function ($query) use ($date) {
+                $query->whereDate('date', $date);
+            }, 'rate.users'])->get()->toArray();
+            return ResponseHelper::success($result, null, 'userRates', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+
+
 }

@@ -61,6 +61,7 @@ class AddUserRequest extends FormRequest
             'contacts' => ['array', 'max:2'],
             'contacts.emails' => ['nullable', 'array'],
             'contacts.emails.*' => ['email', 'string'],
+            'branch_id'=>['required','integer','exists:branches,id'],
         ];
     }
 

@@ -16,6 +16,7 @@ use App\Http\Controllers\EmpOfMonthController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\RateController;
 use App\Http\Controllers\RateTypeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RequestController;
@@ -30,7 +31,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
+
 });
+
 Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
@@ -76,6 +79,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('edit/{decision}', 'edit_decision');
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
+        Route::get('user_desicions/{id}','user_decisions');
     });
 });
 
@@ -273,8 +277,24 @@ Route::prefix('branch')->group(function () {
     });
 });
 Route::prefix('Rate')->group(function () {
+    Route::controller(RateController::class)
+    ->group(function () {
+        Route::post('setRate', 'setRate');
+        Route::get('getRate/{id}', 'getRate');
+        Route::get('allRates', 'allRates');
+        Route::get('userRates/{date}', 'userRates');
+
+
+
+
+    });
+
+
+
+
     Route::controller(RateTypeController::class)->group(function () {
 
+        Route::get('getRateType/{id}', 'getRateType');
 
         Route::get('BranchTypes/{id}', 'show'); //show types for branch
         //Route::get('ShowType/{id}', 'show');//

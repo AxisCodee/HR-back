@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -14,15 +13,28 @@ class BranchController extends Controller
 {
     public function index()
     {
-        $branches = Branch::paginate(10)->toArray();
+        $branches = Branch::withCount('users')->get()->toArray();
         return ResponseHelper::success($branches, null);
     }
     public function store(Request $request)
     {
-        $result = Branch::query()->create([
-            'name' => $request->name
-        ]);
-        return ResponseHelper::success($result, null);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|unique:branches,name',
+            ]);
+
+            $result = Branch::query()->create([
+                'name' => $validatedData['name']
+            ]);
+
+            return ResponseHelper::success($result, null);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ResponseHelper::error($e->validator->errors()->first(), 400);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return ResponseHelper::error('cannot store duplicated name' , 400);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
     public function show($id)
     {
@@ -46,4 +58,5 @@ class BranchController extends Controller
         $branch->delete();
         return ResponseHelper::success('deleted');
     }
+
 }

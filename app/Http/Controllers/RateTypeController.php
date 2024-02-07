@@ -11,7 +11,7 @@ class RateTypeController extends Controller
 {
     public function show($id) //show types for branch
     {
-        $types = RateType::query()->where('branch_id', $id)->get();
+        $types = RateType::query()->where('branch_id', $id)->get()->toArray();
         if (!$types) {
             return ResponseHelper::error('branch doesnt have Rate Types', null);
         }
@@ -32,4 +32,14 @@ class RateTypeController extends Controller
         );
         return ResponseHelper::updated(null, 'Updated', 200);
     }
+    public function getRateType($id)
+    {
+        try {
+            $result = RateType::where('branch_id', $id)->get()->toArray();
+            return ResponseHelper::success($result, null, 'rateType', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+
 }
