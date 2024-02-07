@@ -22,10 +22,6 @@ class BranchController extends Controller
     {
         try {
             $validatedData = $request->validated();
-            // $validatedData = $request->validate([
-            //     'name' => 'required|unique:branches,name',
-            //     'fingerprint_scanner_ip' => 'required',
-            // ]);
             return DB::transaction(function () use ($validatedData) {
                 $result = Branch::query()->create($validatedData);
                 return ResponseHelper::success($result, null);
