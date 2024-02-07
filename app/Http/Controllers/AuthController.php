@@ -20,7 +20,7 @@ use App\Models\Career;
 use App\Models\Contact;
 use App\Models\Deposit;
 use App\Models\StudySituation;
-use App\Models\User_Salary;
+use App\Models\UserSalary;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -100,7 +100,7 @@ class AuthController extends Controller
             ]);
             $user->assignRole($request->role);
 
-            $sal = User_Salary::query()->create([
+            $sal = UserSalary::query()->create([
                 'user_id' => $user->id,
                 'date' => Carbon::now()->format('Y-m'),
                 'salary' => $userInfo->salary
