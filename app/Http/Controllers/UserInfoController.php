@@ -71,9 +71,8 @@ class UserInfoController extends Controller
             ->update([
                 'salary' => $salary
             ]);
-        dd($result);
         if ($result) {
-            UserSalary::query()->create([
+            $newSalary = UserSalary::query()->create([
                 'user_id' => $id,
                 'date' => Carbon::now()->format('Y-m'),
                 'salary' => $salary
