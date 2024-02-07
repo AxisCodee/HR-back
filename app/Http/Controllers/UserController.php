@@ -138,6 +138,25 @@ class UserController extends Controller
             return ResponseHelper::error('No users or team leader specified');
         });
     }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //update an existing team name
     public function updateTeams(Request $request, $id)
     {
