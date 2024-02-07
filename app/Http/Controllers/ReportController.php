@@ -86,18 +86,15 @@ class ReportController extends Controller
         );
     }
 
-    public function report(Request $request)
+    public function report(Request $request, $branchId)
     {
         $date = $request->date;
-        $userId = $request->user_id;
-
-        $result = User::query()
-            ->where('id', $userId)
-            ->with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
-                $query->whereDate('datetime', $date);
-            }])
-            ->get();
-
-        return ResponseHelper::success($result);
+        $user = User::where('branch_id', $branchId);
+        $result = $user->with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
+            $query->whereDate('datetime', $date);
+        }])->find($request->user_id);
+        return ResponseHelper::success([
+            $result
+        ]);
     }
 }
