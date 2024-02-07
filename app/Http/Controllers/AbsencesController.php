@@ -146,19 +146,7 @@ class AbsencesController extends Controller
         return ResponseHelper::success(null, 'Decision done successfully', null);
     }
 
-<<<<<<< HEAD
 
-=======
-    public function store_absence(Request $request)
-    {
-        $new_abs = Absences::create([
-            'type'=>'Unjustified',
-            'user_id'=>$request->user_id,
-            'startDate'=>$request->date,
-        ]);
 
-        return ResponseHelper::success($new_abs,null, 'Absence added successfully');
-    }
->>>>>>> 75c54194abd426bb6b0d13640d582440f79ed19e
 }
 

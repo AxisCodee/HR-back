@@ -16,7 +16,7 @@ class DecisionController extends Controller
 {
 //add new decision for a user
     public function new_decision(DecisionRequest $request)
-    { 
+    {
         $new = $request->validated();
         $created = Decision::create($new);
         return ResponseHelper::created($created,'decision created successfully');
@@ -44,10 +44,11 @@ public function edit_decision(DecisionRequest $request, $id)
     }
 }
 //get all decisions for all users
-    public function all_decisions()
+    public function all_decisions($branchId)
     {
         $all = Decision::query()
-                        ->with('user_decision')
+                        ->with('user_decision')->whereHas('user_decision', function ($query) use ($branchId) {
+                            $query->where('branch_id', $branchId);})
                         ->get();
         return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
     }
