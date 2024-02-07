@@ -144,7 +144,6 @@ class AbsencesController extends Controller
         return ResponseHelper::success(null, 'Decision done successfully', null);
     }
 
-<<<<<<< HEAD
     public function store_absence(Request $request)
     {
         $new_abs = Absences::create([
@@ -155,8 +154,4 @@ class AbsencesController extends Controller
 
         return ResponseHelper::success($new_abs,null, 'Absence added successfully');
     }
-=======
-
-    
->>>>>>> a7732e44942242db76b7fdd47605f428a92c68fb
 }
