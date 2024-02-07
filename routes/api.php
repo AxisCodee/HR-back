@@ -248,10 +248,6 @@ Route::prefix('Rate')->group(function () {
 
 
     });
-
-
-
-
     Route::controller(RateTypeController::class)->group(function () {
 
         Route::get('getRateType/{id}', 'getRateType');

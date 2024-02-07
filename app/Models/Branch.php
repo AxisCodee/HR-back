@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Branch extends Model
 {
     use HasFactory;
-    protected $fillable = ['name'];
+    protected $fillable = ['name','fingerprint_scanner_ip'];
 
 
     public function  rateTypes()
     {
         return $this->hasMany(RateType::class);
-
     }
 
     public function  users()
     {
-        return $this->hasMany(User::class,'branch_id');
+        return $this->hasMany(User::class, 'branch_id');
     }
 }

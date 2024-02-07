@@ -15,7 +15,6 @@ class PolicyController extends Controller
     {
         $policy = Policy::query()->where('branch_id', $id)->first();
         $rateTypes = RateType::query()->where('branch_id', $id)->get();
-        //dd($rateTypes);
         if (!$policy) {
             return ResponseHelper::error('this branch doesnt have policy', null);
         }
@@ -24,7 +23,7 @@ class PolicyController extends Controller
     public function store(PolicyRequest $request)
     {
         $validated = $request->validated();
-        return DB::transaction(function() use ($validated){
+        return DB::transaction(function () use ($validated) {
             $types = $validated['rate_type'];
             $validated = collect($validated)->except('rate_type')->toArray();
             $branchID = $validated['branch_id'];
@@ -44,7 +43,7 @@ class PolicyController extends Controller
     public function update(PolicyRequest $request, $id)
     {
         $validated = $request->validated();
-        return DB::transaction(function() use ($validated,$id){
+        return DB::transaction(function () use ($validated, $id) {
             $policy = Policy::query()->where('branch_id', $id)->first();
             if (!$policy) {
                 return ResponseHelper::error('the policy is not saved yet', null);
@@ -64,6 +63,5 @@ class PolicyController extends Controller
             }
             return ResponseHelper::updated('updated', null);
         });
-
     }
 }
