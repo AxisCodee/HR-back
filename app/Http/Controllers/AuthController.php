@@ -168,12 +168,11 @@ class AuthController extends Controller
             }
 
             if (isset($contacts['emails'])) {
-
                 foreach ($contacts['emails'] as $contact) {
 
                     $multi = Contact::create([
                         'user_id' => $user->id,
-                        'type' => 'email',
+                        'type' => 'normal',
                         'contact' => $contact,
                     ]);
                 }
@@ -183,7 +182,7 @@ class AuthController extends Controller
                 foreach ($contacts['phonenumbers'] as $contact) {
                     $multi = Contact::create([
                         'user_id' => $user->id,
-                        'type' => 'user_num',
+                        'type' => 'normal',
                         'contact' => $contact,
                     ]);
                 }
@@ -198,7 +197,8 @@ class AuthController extends Controller
                             'type' => "emergency",
                             'name' => $emergency['name'],
                             'address' => $emergency['address'],
-                            'contact' => $emergency['phonenumber'] ?? $emergency['email'],
+                            'phone_num' => $emergency['phonenumber'] ?? null,
+                             'email' => $emergency['email'] ?? null,
                         ]);
                     } else {
                         throw new Exception("Emergency contact must have either a phone number or an email.");
