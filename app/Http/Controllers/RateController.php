@@ -151,7 +151,7 @@ class RateController extends Controller
                 $query->whereDate('date', $date);
             }, 'rate.users'])
             ->whereHas('rate.users', function ($query) use ($request) {
-                $query->where('user_id', $request->user_id);
+                $query->where('id', $request->user_id);
             })
             ->get()
             ->toArray();
