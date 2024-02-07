@@ -134,6 +134,25 @@ class UserController extends Controller
             return ResponseHelper::created('team added successfully');
         });
     }
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //update an existing team name
     public function updateTeams(Request $request, $id)
     {
