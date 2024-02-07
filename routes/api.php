@@ -78,7 +78,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('edit/{decision}', 'edit_decision');
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
-        Route::get('user_desicions/{id}','user_decisions');
+        Route::get('user_desicions/{id}', 'user_decisions');
     });
 });
 
@@ -126,7 +126,7 @@ Route::prefix('Report')->group(function () {
         Route::post('InsnOuts', 'user_checks');
 
         //
-        Route::post('reportByDay', 'reportByDay');
+        Route::post('report', 'report');
     });
 });
 
@@ -248,7 +248,7 @@ Route::prefix('Absence')->group(function () {
         Route::get('Show/{user}', 'show');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
-        Route::post('AddAbsence','store_absence');
+        Route::post('AddAbsence', 'store_absence');
     });
 });
 
@@ -278,16 +278,12 @@ Route::prefix('branch')->group(function () {
 });
 Route::prefix('Rate')->group(function () {
     Route::controller(RateController::class)
-    ->group(function () {
-        Route::post('setRate', 'setRate');
-        Route::get('getRate/{id}', 'getRate');
-        Route::get('allRates', 'allRates');
-        Route::get('userRates/{date}', 'userRates');
-
-
-
-
-    });
+        ->group(function () {
+            Route::post('setRate', 'setRate');
+            Route::get('getRate/{id}', 'getRate');
+            Route::get('allRates', 'allRates');
+            Route::get('userRates/{date}', 'userRates');
+        });
     Route::controller(RateTypeController::class)->group(function () {
 
         Route::get('getRateType/{id}', 'getRateType');
@@ -298,11 +294,10 @@ Route::prefix('Rate')->group(function () {
         Route::post('UpdateType/{id}', 'update');
     });
 });
-    Route::prefix('Late')->group(function () {
-        Route::controller(LateController::class)->group(function () {
+Route::prefix('Late')->group(function () {
+    Route::controller(LateController::class)->group(function () {
         Route::get('Lates', ' unjustifiedLate');
         Route::post('makeDecision/{lates}', 'makeDecision');
-        Route::post('dynamicDecision','dynamicDecision');
-
-});
+        Route::post('dynamicDecision', 'dynamicDecision');
+    });
 });
