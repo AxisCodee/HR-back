@@ -18,14 +18,13 @@ return new class extends Migration
             $table->enum('type', ['warning' , 'reward', 'deduction' , 'advanced', 'alert' ,'penalty']);
             $table->string('content');
             $table->double('amount')->nullable(true)->default(null);
+
             $table->string('dateTime')->nullable(true)->default(null);
             $table->double('salary')->nullable(true)->default(null);
             $table->boolean('fromSystem')->default(false);
-
-
-
             $table->timestamps();
         });
+
     }
 
     /**

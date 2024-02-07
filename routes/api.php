@@ -69,7 +69,19 @@ Route::prefix('Decision')->group(function () {
         Route::post('edit/{decision}', 'edit_decision');
         Route::get('all/{branchId}', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
-        Route::get('user_desicions/{id}','user_decisions');
+        Route::get('user_desicions/{id}', 'user_decisions');
+    });
+});
+
+Route::prefix('Calendar')->group(function () {
+    Route::controller(CalendarController::class)->group(function () {
+        Route::post('Add', 'add_event');
+        Route::delete('Remove/{event}', 'cancel_event');
+        Route::get('All', 'all_events');
+        Route::post('Edit/{event}', 'update_event');
+        Route::get('EventsByDay', 'day_events');
+        Route::get('EventsByWeek', 'week_events');
+        Route::get('EventsByMonth', 'month_events');
     });
 });
 
@@ -86,6 +98,7 @@ Route::prefix('Gmail')->group(function () {
         Route::post('google/starMessages', 'starMessages');
     });
 });
+<<<<<<< HEAD
 Route::prefix('contract')->group(function () {
     Route::controller(ContractController::class)->group(function () {
         Route::post('Add', 'store');
@@ -94,6 +107,8 @@ Route::prefix('contract')->group(function () {
         Route::delete('Delete/{contract}', 'destroy');
     });
 });
+=======
+>>>>>>> 75c54194abd426bb6b0d13640d582440f79ed19e
 
 Route::prefix('Report')->group(function () {
     Route::controller(ReportController::class)->group(function () {
@@ -219,7 +234,7 @@ Route::prefix('Absence')->group(function () {
         Route::get('Show/{user}', 'show');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
-        Route::post('AddAbsence','store_absence');
+        Route::post('AddAbsence', 'store_absence');
     });
 });
 
@@ -249,17 +264,12 @@ Route::prefix('branch')->group(function () {
 });
 Route::prefix('Rate')->group(function () {
     Route::controller(RateController::class)
-    ->group(function () {
-        Route::post('setRate', 'setRate');
-        Route::get('getRate/{id}', 'getRate');
-        Route::get('allRates', 'allRates');
-        Route::get('userRates/{date}', 'userRates');
-        Route::get('userRate/{id}', 'getRate');
-
-
-
-
-    });
+        ->group(function () {
+            Route::post('setRate', 'setRate');
+            Route::get('getRate/{id}', 'getRate');
+            Route::get('allRates', 'allRates');
+            Route::get('userRates/{date}', 'userRates');
+        });
     Route::controller(RateTypeController::class)->group(function () {
 
         Route::get('getRateType/{id}', 'getRateType');
@@ -270,11 +280,10 @@ Route::prefix('Rate')->group(function () {
         Route::post('UpdateType/{id}', 'update');
     });
 });
-    Route::prefix('Late')->group(function () {
-        Route::controller(LateController::class)->group(function () {
+Route::prefix('Late')->group(function () {
+    Route::controller(LateController::class)->group(function () {
         Route::get('Lates', ' unjustifiedLate');
         Route::post('makeDecision/{lates}', 'makeDecision');
-        Route::post('dynamicDecision','dynamicDecision');
-
-});
+        Route::post('dynamicDecision', 'dynamicDecision');
+    });
 });

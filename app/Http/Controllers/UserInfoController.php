@@ -6,7 +6,7 @@ use App\Helper\ResponseHelper;
 use App\Http\Requests\UpdateUserInfoRequest;
 use App\Http\Requests\UserInfoRequest;
 use App\Models\User;
-use App\Models\User_Salary;
+use App\Models\UserSalary;
 use App\Models\UserInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +30,6 @@ class UserInfoController extends Controller
     public function update(UpdateUserInfoRequest $request, $id)
     {
         $validate = $request->validated();
-        //dd($validate['image']);
         if ($validate['image']) {
             $path = Files::saveImage($request);
             $validate['image'] = $path;
@@ -39,8 +38,6 @@ class UserInfoController extends Controller
             $userInfo = UserInfo::query()
                 ->where('user_id', $id)
                 ->update($validate);
-
-
             return ResponseHelper::success('info has been updated', null);
         });
         return ResponseHelper::error('error', null);
@@ -68,17 +65,20 @@ class UserInfoController extends Controller
 
     public function updateSalary(Request $request,  $id)
     {
-        $salary=$request->salary;
-        $result=UserInfo::query()
-        ->where('id',$id)
-        ->update([
-            'salary'=>$salary
-        ]);
-        $sal = User_Salary::query()->create([
-            'user_id' => $id,
-            'date' => Carbon::now()->format('Y-m'),
-            'salary' =>$salary
-        ]);
+        $salary = $request->salary;
+        $result = UserInfo::query()
+            ->where('id', $id)
+            ->update([
+                'salary' => $salary
+            ]);
+        if ($result) {
+            $newSalary = UserSalary::query()->create([
+                'user_id' => $id,
+                'date' => Carbon::now()->format('Y-m'),
+                'salary' => $salary
+            ]);
+            return ResponseHelper::updated('salary updated', null);
+        }
+        return ResponseHelper::error('not updated', null);
     }
-
 }

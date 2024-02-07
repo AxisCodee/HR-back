@@ -40,15 +40,15 @@ class ReportController extends Controller
 
     public function all_reports($branchId)
     {
-        $user=User::where('branch_id',$branchId);
-        $all =$user->reports()->get()->toArray();
+        $user = User::where('branch_id', $branchId);
+        $all = $user->reports()->get()->toArray();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
     }
 
     //get all reports of today
     public function daily_reports($branchId)
     {
-        $user=User::where('branch_id',$branchId);
+        $user = User::where('branch_id', $branchId);
         $today = $user->reports()->whereDate('created_at', now()->format('Y-m-d'))->get()->toArray();
         return ResponseHelper::success($today, null, 'today reports returned successfully', 200);
     }
@@ -86,7 +86,7 @@ class ReportController extends Controller
         );
     }
 
-    public function reportByDay(Request $request,$branchId)
+    public function report(Request $request, $branchId)
     {
         $date = $request->date;
         $user=User::where('branch_id',$branchId);
