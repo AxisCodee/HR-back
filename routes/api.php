@@ -31,7 +31,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
-
 });
 
 Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
@@ -249,6 +248,7 @@ Route::prefix('Absence')->group(function () {
         Route::get('Show/{user}', 'show');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
+        Route::post('AddAbsence','store_absence');
     });
 });
 
@@ -289,10 +289,6 @@ Route::prefix('Rate')->group(function () {
 
 
     });
-
-
-
-
     Route::controller(RateTypeController::class)->group(function () {
 
         Route::get('getRateType/{id}', 'getRateType');

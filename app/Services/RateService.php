@@ -14,10 +14,8 @@ class RateService
     public function setRate($userId, $rateTypeId, $rate)
     {
         $user = User::find($userId);
-
         try {
             $rateType = RateType::findOrFail($rateTypeId);
-
             $result = Rate::query()->create([
                 'user_id' => $userId,
                 'rate_type_id' => $rateTypeId,
@@ -25,17 +23,12 @@ class RateService
                 'date' => Carbon::now()->format('Y-m-d'),
                 'evaluator_id' => auth()->user()->id,
             ]);
-
             return $result;
         } catch (ModelNotFoundException $e) {
             throw new \Exception('Invalid rate type ID');
         }
     }
 
-
-
-
-    
     public function getRate($request, $id)
     {
         try {
@@ -49,11 +42,9 @@ class RateService
                         }]);
                 }])
                 ->findOrFail($id);
-
             if (empty($user->userRates)) {
                 return ResponseHelper::success([], null, 'No rates found', 200);
             }
-
             return ResponseHelper::success($user, null, 'User rates', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), 500);

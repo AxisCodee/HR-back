@@ -23,9 +23,10 @@ class UserController extends Controller
 {
 
     //get all users info
-    public function all_users()
+    public function all_users(Request $request)
     {
-        $all_users = User::query()->get()->toArray();
+        $branch_id = $request->input('branch_id');
+        $all_users = User::query()->where('branch_id', $branch_id)->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
     //get a specific user by the ID
@@ -114,25 +115,24 @@ class UserController extends Controller
     //add new team and add users to it
     public function storeTeams(Request $request)
     {
-        return DB::transaction(function() use($request){
- $team = Department::updateOrCreate(['name' => $request->name]);
-        if ($request->users_array) {
-            foreach ($request->users_array as $user) {
-                $update = User::where('id', $user)->first();
-                $update->department_id = $team->id;
-                $update->save();
+        return DB::transaction(function () use ($request) {
+            $team = Department::updateOrCreate(['name' => $request->name]);
+            if ($request->users_array) {
+                foreach ($request->users_array as $user) {
+                    $update = User::where('id', $user)->first();
+                    $update->department_id = $team->id;
+                    $update->save();
+                }
+                return ResponseHelper::created('users added to the team successfully');
             }
-            return ResponseHelper::created('users added to the team successfully');
-        }
 
-        $teamLeader = User::query()
-            ->where('id', $request->team_leader)
-            ->update([
-                'role' => 'Team_Leader'
-            ]);
-        return ResponseHelper::created('team added successfully');
+            $teamLeader = User::query()
+                ->where('id', $request->team_leader)
+                ->update([
+                    'role' => 'Team_Leader'
+                ]);
+            return ResponseHelper::created('team added successfully');
         });
-
     }
     //update an existing team name
     public function updateTeams(Request $request, $id)

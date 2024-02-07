@@ -65,7 +65,7 @@ public function edit_decision(DecisionRequest $request, $id)
         $user = User::with('my_decisions')->findOrFail($id);
         $decisions = $user->my_decisions;
         $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
-
+        $abs = Absences::query()->where('user_id',$id)->get()->toArray();
         $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
             return [$type => $decisions->where('type', $type)->values()];
         })->all();
@@ -77,7 +77,8 @@ public function edit_decision(DecisionRequest $request, $id)
             'warnings'=>$warning,
             'deductions'=>$deduction,
             'alerts'=>$alert,
-            'penalty'=>$penalty
+            'penalty'=>$penalty,
+            'absences'=>$abs,
             ]
             , null, 'user decisions returned successfully', 200);
     }

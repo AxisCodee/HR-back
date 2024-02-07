@@ -15,13 +15,14 @@ class DatabaseSeeder extends Seeder
 
         $this->call(DepartmentSeeder::class);
         $this->call(RoleSeeder::class);
+        $this->call(BranchSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(RequestSeeder::class);
         $this->call(ContractSeeder::class);
         $this->call(UserInfoSeeder::class);
         $this->call(CalendarsSeeder::class);
         $this->call(PermissionSeeder::class);
-        $this->call(BranchSeeder::class);
+        $this->call(PolicySeeder::class);
 
         // \App\Models\User::factory(10)->create();
 

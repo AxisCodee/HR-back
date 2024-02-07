@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->enum('type', ['null', 'justified', 'Unjustified']);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->dateTime('startDate')->nullable(true);
-            $table->dateTime('endDate')->nullable(true);
+            $table->string('startDate')->nullable(true);
+            $table->string('endDate')->nullable(true);
             $table->enum('duration', ['daily', 'hourly']);
             $table->enum('status', ['waiting', 'accepted', 'rejected'])->nullable(false)->default('waiting');
             $table->integer('hours_num')->nullable(true)->default(NULL);

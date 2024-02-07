@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Models\Absences;
 use App\Models\Attendance;
+use App\Models\Branch;
 use App\Models\Date;
 use App\Models\Late;
+use App\Models\Policy;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
@@ -47,19 +49,17 @@ class AttendanceController extends Controller
     {
         return DB::transaction(function () {
             //store the attendence
-            $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
+            $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
+            $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
             $tad = $tad_factory->get_instance();
-
             $all_user_info = $tad->get_all_user_info();
             $dt = $tad->get_date();
             $logs = $tad->get_att_log();
-
             $xml = simplexml_load_string($logs);
             $array = json_decode(json_encode($xml), true);
             $logsData = $array['Row'];
             $uniqueDates = [];
             foreach ($logsData as $log) {
-
                 $attendance = [
                     'pin' => $log['PIN'],
                     'datetime' => $log['DateTime'],
@@ -67,11 +67,9 @@ class AttendanceController extends Controller
                     'status' => $log['Status'],
                     'work_code' => $log['WorkCode'],
                 ];
-
                 Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
                 $date = date('Y-m-d', strtotime($log['DateTime']));
                 Date::updateOrCreate(['date' => $date]);
-
                 // the first of check the late
                 $checkInDate = substr($log['DateTime'], 0, 10);
                 $checkInHour = substr($log['DateTime'], 11, 15);
@@ -79,9 +77,9 @@ class AttendanceController extends Controller
 
                 $parsedHour = Carbon::parse($checkInHour);
                 $parsedHourOut = Carbon::parse($checkOutHour);
-                $companyStartTime = DateTime::createFromFormat('H:i', '09:35');
-                $companyEndTime = DateTime::createFromFormat('H:i', '17:30');
-
+                $policy = Policy::query()->where('branch_id', $branche->id)->first();
+                $companyStartTime = $policy->work_time['start'];
+                $companyEndTime = $policy->work_time['end'];
                 // check if the persone late
 
                 if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
