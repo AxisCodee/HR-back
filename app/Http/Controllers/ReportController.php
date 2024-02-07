@@ -18,7 +18,7 @@ class ReportController extends Controller
     {
         $validate = $request->validated();
         $new_report = Report::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::id(),
             'content' => $request->content,
         ]);
         return ResponseHelper::success($new_report, null, 'report created successfully', 200);
@@ -90,7 +90,7 @@ class ReportController extends Controller
     {
         $date = $request->date;
         $user=User::where('branch_id',$$branchId);
-        $result =  $user->with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
+        $result = $user->with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
             $query->whereDate('datetime', $date);
         }])->find($request->user_id);
         return ResponseHelper::success([

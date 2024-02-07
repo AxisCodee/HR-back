@@ -19,10 +19,11 @@ class RequestController extends Controller
 
     public function index($branchId)
     {
+
         $results = Request::query()
-            ->with(['user:id,first_name,last_name'=> function ($query) use ($branchId) {
+             ->with('user')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
-            }])
+            })
             ->with('user.department:id,name')
             ->get()
             ->toArray();
@@ -157,9 +158,9 @@ class RequestController extends Controller
 
     public function getComplaints($branchId)
     {
-        $result = Request::query()->with(['users'=> function ($query) use ($branchId) {
+        $result = Request::query()->with('user')->whereHas('user', function ($query) use ($branchId) {
             $query->where('branch_id', $branchId);
-          }])
+        })
             ->where('type', 'complaint')
             ->get()->toArray();
         return ResponseHelper::success($result, 'your request');

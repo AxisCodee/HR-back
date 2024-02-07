@@ -111,7 +111,7 @@ Route::prefix('contract')->group(function () {
     Route::controller(ContractController::class)->group(function () {
         Route::post('Add', 'store');
         Route::get('Show/{id}', 'show');
-        Route::get('All/{$branchId}', 'index');
+        Route::get('All/{branchId}', 'index');
         Route::delete('Delete/{contract}', 'destroy');
     });
 });
@@ -119,14 +119,14 @@ Route::prefix('contract')->group(function () {
 Route::prefix('Report')->group(function () {
     Route::controller(ReportController::class)->group(function () {
         Route::post('Add', 'store');
-        Route::get('daily', 'daily_reports');
+        Route::get('daily/{branchId}', 'daily_reports');
         Route::get('myReports', 'my_reports');
         Route::get('All', 'all_reports');
         Route::delete('remove/{report}', 'remove');
         Route::post('InsnOuts', 'user_checks');
 
         //
-        Route::post('reportByDay', 'reportByDay');
+        Route::post('reportByDay/{branchId}', 'reportByDay');
     });
 });
 
@@ -155,7 +155,7 @@ Route::prefix('Calendar')->group(function () {
 
 Route::prefix('Request')->group(function () {
     Route::controller(RequestController::class)->group(function () {
-        Route::get('All', 'index');
+        Route::get('All/{branchId}', 'index');
         Route::get('Me', 'show');
         Route::get('Complaints','getComplaints');
         Route::get('info/{id}', 'getRequest');
@@ -188,7 +188,7 @@ Route::prefix('Address')->group(function () {
 });
 Route::prefix('Deposit')->group(function () {
     Route::controller(DepositController::class)->group(function () {
-        Route::get('All', 'index');
+        Route::get('All/{branchId}', 'index');
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::get('Show', 'show');
@@ -255,9 +255,9 @@ Route::prefix('Absence')->group(function () {
 
 Route::prefix('EmployeeOfMonth')->group(function () {
     Route::controller(EmpOfMonthController::class)->group(function () {
-        Route::get('All', 'index');
+        Route::get('All/{branchId}', 'index');
         Route::post('Add', 'store');
-        Route::get('Show', 'show');
+        Route::get('Show/{branchId}', 'show');
     });
 });
 

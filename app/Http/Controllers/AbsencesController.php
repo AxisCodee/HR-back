@@ -111,6 +111,7 @@ class AbsencesController extends Controller
             $salary = UserInfo::query()->where('user_id', $Absence->user_id)->value('salary');
             $salaryInHour = $salary / 208;
             $deduction = $salaryInHour * 8;
+            $user=User::find($Absence->user_id);
             Decision::query()->updateOrCreate(
                 [
                     'user_id' => $Absence->user_id,
@@ -119,7 +120,8 @@ class AbsencesController extends Controller
                     'dateTime' => Carbon::now(),
                     'fromSystem' => true,
                     'content' => 'Unjustified absence',
-                    'amount' => $deduction
+                    'amount' => $deduction,
+                    'branch_id'=> $user->branch_id
                 ]
             );
             return ResponseHelper::success(null, 'Decision made successfully', null);
@@ -145,20 +147,5 @@ class AbsencesController extends Controller
     }
 
 
-
-<<<<<<< HEAD
-    public function store_absence(Request $request)
-    {
-        $new_abs = Absences::create([
-            'type'=>'Unjustified',
-            'user_id'=>$request->user_id,
-            'startDate'=>$request->date,
-        ]);
-
-        return ResponseHelper::success($new_abs,null, 'Absence added successfully');
-    }
-=======
-
-
->>>>>>> a7732e44942242db76b7fdd47605f428a92c68fb
 }
+
