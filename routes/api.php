@@ -42,7 +42,6 @@ Route::get('DayAttendance/{date}', [AttendanceController::class, 'DayAttendance'
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
 
 Route::prefix('contract')->group(function () {
-
     Route::controller(ContractController::class)->group(function () {
         Route::post('Add', 'store');
         Route::get('Show/{id}', 'show');
@@ -51,14 +50,6 @@ Route::prefix('contract')->group(function () {
     });
 });
 
-Route::prefix('Report')->group(function () {
-    Route::controller(ReportController::class)->group(function () {
-        Route::post('Add', 'store');
-        Route::get('daily', 'daily_reports');
-        Route::get('myReports', 'all_reports');
-        Route::delete('remove/{report}', 'remove');
-    });
-});
 Route::prefix('Users')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('allUser', 'all_users');
@@ -107,14 +98,6 @@ Route::prefix('Gmail')->group(function () {
         Route::post('google/starMessages', 'starMessages');
     });
 });
-Route::prefix('contract')->group(function () {
-    Route::controller(ContractController::class)->group(function () {
-        Route::post('Add', 'store');
-        Route::get('Show/{id}', 'show');
-        Route::get('All', 'index');
-        Route::delete('Delete/{contract}', 'destroy');
-    });
-});
 
 Route::prefix('Report')->group(function () {
     Route::controller(ReportController::class)->group(function () {
@@ -127,16 +110,6 @@ Route::prefix('Report')->group(function () {
 
         //
         Route::post('report', 'report');
-    });
-});
-
-Route::prefix('Decision')->group(function () {
-    Route::controller(DecisionController::class)->group(function () {
-        Route::post('Add', 'new_decision');
-        Route::delete('remove/{decision}', 'remove_decision');
-        Route::post('edit/{decision}', 'edit_decision');
-        Route::get('all', 'all_decisions');
-        Route::get('my_decisions', 'my_decisions');
     });
 });
 
@@ -160,7 +133,7 @@ Route::prefix('Request')->group(function () {
         Route::get('info/{id}', 'getRequest');
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
-        Route::post('accepteRequest/{request}', 'accepteRequest');
+        Route::post('accepteRequest/{request}', 'acceptRequest');
         Route::post('rejectRequest/{request}', 'rejectRequest');
         Route::delete('Delete/{request}', 'destroy');
     });
@@ -230,6 +203,7 @@ Route::prefix('Notes')->group(function () {
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::delete('Delete/{id}', 'destroy');
+        Route::get('userNote/{id}','user_notes');
     });
 });
 

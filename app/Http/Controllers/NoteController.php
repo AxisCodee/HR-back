@@ -67,4 +67,10 @@ class NoteController extends Controller
             return ResponseHelper::error('An error occurred while deleting the note.', null);
         }
     }
+
+    public function user_notes($id)
+    {
+        $note = Note::where('user_id',$id)->get()->toArray();
+        return ResponseHelper::success($note,'Note returned successfully', null);
+    }
 }
