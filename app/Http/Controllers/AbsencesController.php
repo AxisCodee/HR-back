@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class AbsencesController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request , $branch)
     {
 
         if ($request->has('date')) {
@@ -25,7 +25,7 @@ class AbsencesController extends Controller
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
         }
-        $user = User::query()->get();
+        $user = User::query()->where('branch_id',$branch)->get();
 
         foreach ($user as $item) {
 
@@ -70,7 +70,7 @@ class AbsencesController extends Controller
         return ResponseHelper::success($result);
     }
 
-    public function getDailyAbsence(Request $request)
+    public function getDailyAbsence(Request $request,$branch)
     {
         $today = Carbon::now();
         if ($today->eq($request->date)) {
@@ -78,7 +78,7 @@ class AbsencesController extends Controller
         } else {
             $dateInput = request()->input('date');
             $day = substr($dateInput, 8, 2);
-            $user = User::query()->get();
+            $user = User::query()->where('branch_id',$branch)->get();
             $result = $user->with('absences')
                 ->whereDay('startDate', $day)->get();
             return ResponseHelper::success($result);
@@ -111,6 +111,7 @@ class AbsencesController extends Controller
             $salary = UserInfo::query()->where('user_id', $Absence->user_id)->value('salary');
             $salaryInHour = $salary / 208;
             $deduction = $salaryInHour * 8;
+            $user=User::find($Absence->user_id);
             Decision::query()->updateOrCreate(
                 [
                     'user_id' => $Absence->user_id,
@@ -119,7 +120,8 @@ class AbsencesController extends Controller
                     'dateTime' => Carbon::now(),
                     'fromSystem' => true,
                     'content' => 'Unjustified absence',
-                    'amount' => $deduction
+                    'amount' => $deduction,
+                    'branch_id'=> $user->branch_id
                 ]
             );
             return ResponseHelper::success(null, 'Decision made successfully', null);
@@ -144,6 +146,9 @@ class AbsencesController extends Controller
         return ResponseHelper::success(null, 'Decision done successfully', null);
     }
 
+<<<<<<< HEAD
+
+=======
     public function store_absence(Request $request)
     {
         $new_abs = Absences::create([
@@ -154,4 +159,6 @@ class AbsencesController extends Controller
 
         return ResponseHelper::success($new_abs,null, 'Absence added successfully');
     }
+>>>>>>> 75c54194abd426bb6b0d13640d582440f79ed19e
 }
+

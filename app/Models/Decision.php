@@ -17,7 +17,8 @@ class Decision extends Model
         'amount',
         'salary',
         'fromSystem',
-        'dateTime'
+        'dateTime',
+        'branch_id'
     ];
 
 

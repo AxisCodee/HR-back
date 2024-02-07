@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('decisions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->enum('type', ['warning', 'reward', 'deduction', 'advanced', 'alert', 'penalty']);
+            $table->foreignId('branch_id')->constrained('branches');
+            $table->enum('type', ['warning' , 'reward', 'deduction' , 'advanced', 'alert' ,'penalty']);
             $table->string('content');
             $table->double('amount')->nullable(true)->default(null);
             $table->string('dateTime')->nullable(true)->default(null);
