@@ -38,16 +38,18 @@ class ReportController extends Controller
 
     //get all reports
 
-    public function all_reports()
+    public function all_reports($branchId)
     {
-        $all = Report::query()->get()->toArray();
+        $user=User::where('branch_id',$branchId);
+        $all =$user->reports()->get()->toArray();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
     }
 
     //get all reports of today
-    public function daily_reports()
+    public function daily_reports($branchId)
     {
-        $today = Report::whereDate('created_at', now()->format('Y-m-d'))->get()->toArray();
+        $user=User::where('branch_id',$branchId);
+        $today = $user->reports()->whereDate('created_at', now()->format('Y-m-d'))->get()->toArray();
         return ResponseHelper::success($today, null, 'today reports returned successfully', 200);
     }
     //get CHECK-INs & CHECK-OUTs of a user in a specific day
@@ -84,14 +86,15 @@ class ReportController extends Controller
         );
     }
 
-    public function reportByDay(Request $request)
+    public function reportByDay(Request $request,$branchId)
     {
         $date = $request->date;
-        $user = User::with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
+        $user=User::where('branch_id',$$branchId);
+        $result =  $user->with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
             $query->whereDate('datetime', $date);
         }])->find($request->user_id);
         return ResponseHelper::success([
-            $user
+            $result
         ]);
     }
 }

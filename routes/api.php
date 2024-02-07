@@ -112,7 +112,7 @@ Route::prefix('contract')->group(function () {
     Route::controller(ContractController::class)->group(function () {
         Route::post('Add', 'store');
         Route::get('Show/{id}', 'show');
-        Route::get('All', 'index');
+        Route::get('All/{$branchId}', 'index');
         Route::delete('Delete/{contract}', 'destroy');
     });
 });
@@ -158,6 +158,7 @@ Route::prefix('Request')->group(function () {
     Route::controller(RequestController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Me', 'show');
+        Route::get('Complaints','getComplaints');
         Route::get('info/{id}', 'getRequest');
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');

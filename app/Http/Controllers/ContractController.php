@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\DB;
 
 class ContractController extends Controller
 {
-    public function index()
+    public function index($branchId)
     {
-        $contracts = Contract::with('user')->get();
+
+        $contracts = Contract::with(['user' => function ($query) use ($branchId) {
+            $query->where('branch_id', $branchId);
+        }])->get();
 
         if ($contracts->isEmpty()) {;
             return ResponseHelper::success([
