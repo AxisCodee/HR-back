@@ -283,6 +283,7 @@ Route::prefix('Rate')->group(function () {
         Route::get('getRate/{id}', 'getRate');
         Route::get('allRates', 'allRates');
         Route::get('userRates/{date}', 'userRates');
+        Route::get('userRate/{id}', 'getRate');
 
 
 
