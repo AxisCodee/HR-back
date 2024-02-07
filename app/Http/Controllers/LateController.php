@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateLateRequest;
 use App\Models\UserInfo;
 use App\Models\Decision;
 use Carbon\Carbon;
+use App\Models\User;
+
 use Illuminate\Support\Facades\DB;
 
 class LateController extends Controller
@@ -66,6 +68,7 @@ class LateController extends Controller
             $salaryInHour = $salary / 208;
             $HourNum = $late->hours_num;
             $deduction = $salaryInHour * $HourNum;
+            $user=User::find($late->user_id);
             Decision::query()->updateOrCreate(
                 [
                     'user_id' => $late->user_id,
@@ -74,7 +77,8 @@ class LateController extends Controller
                     'dateTime' => Carbon::now(),
                     'fromSystem' => true,
                     'content' => 'Unjustified late',
-                    'amount' => $deduction
+                    'amount' => $deduction,
+                    'branch_d'=> $user->branch_id
                 ]
             );
             return ResponseHelper::success($late, 'unjustifiedLate', null);

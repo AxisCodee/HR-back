@@ -16,4 +16,9 @@ class Contract extends Model
     {
       return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function userInBranch()
+{
+    return $this->belongsTo(User::class)->where('branch_id', $this->branch_id);
+}
 }

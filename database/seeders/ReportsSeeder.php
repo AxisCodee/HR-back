@@ -5,26 +5,20 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class RateSeeder extends Seeder
+class ReportsSeeder extends Seeder
 {
     public function run()
     {
-        DB::table('rates')->insert([
+        DB::table('reports')->insert([
             [
                 'user_id' => 1,
-                'evaluator_id' => 2,
-                'rate_type_id' => 1,
-                'date' => '2024-02-06',
-                'rate' => 4,
+                'content' => 'This is a sample report for user 1.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'user_id' => 3,
-                'evaluator_id' => 4,
-                'rate_type_id' => 2,
-                'date' => '2024-02-01',
-                'rate' => 5,
+                'user_id' => 2,
+                'content' => 'User 2 submitted a progress report.',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
