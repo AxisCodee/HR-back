@@ -119,7 +119,7 @@ Route::prefix('Request')->group(function () {
         Route::get('info/{id}', 'getRequest');
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
-        Route::post('accepteRequest/{request}', 'accepteRequest');
+        Route::post('accepteRequest/{request}', 'acceptRequest');
         Route::post('rejectRequest/{request}', 'rejectRequest');
         Route::delete('Delete/{request}', 'destroy');
     });
@@ -189,7 +189,7 @@ Route::prefix('Notes')->group(function () {
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::delete('Delete/{id}', 'destroy');
-        Route::get('specificNote/{id}','specific_note');
+        Route::get('userNote/{id}','user_notes');
     });
 });
 
