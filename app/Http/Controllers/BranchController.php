@@ -77,4 +77,5 @@ class BranchController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
+
 }
