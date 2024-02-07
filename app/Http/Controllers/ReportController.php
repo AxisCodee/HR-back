@@ -86,7 +86,7 @@ class ReportController extends Controller
         );
     }
 
-    public function reportByDay(Request $request, $branchId)
+    public function report(Request $request, $branchId)
     {
         $date = $request->date;
         $user = User::where('branch_id', $$branchId);
