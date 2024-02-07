@@ -24,8 +24,7 @@ class UpdateCareerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => ['required', 'string'],
-            'status' => ['required', Rule::in(['skill', 'career'])],
+            'content' => ['string'],
         ];
     }
 }
