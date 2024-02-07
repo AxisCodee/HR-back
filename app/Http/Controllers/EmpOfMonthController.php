@@ -13,10 +13,11 @@ class EmpOfMonthController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() //show all employees of the monthes
+    public function index($branchId) //show all employees of the monthes
     {
         $result = EmpOfMonth::query()
-            ->with('user')->get()->toArray();
+            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId); })->get()->toArray();
         return ResponseHelper::success($result, null);
     }
 
@@ -64,11 +65,12 @@ class EmpOfMonthController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show() //show emp for current month
+    public function show($branchId) //show emp for current month
     {
         $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
-            ->with('user')->first();
+            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId); })->first();
         return ResponseHelper::success($result, null);
     }
 

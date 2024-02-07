@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use App\Services\RateService;
 use Illuminate\Http\Request;
+
 class RateController extends Controller
 {
 
@@ -29,7 +30,6 @@ class RateController extends Controller
      */
     public function index(User $user)
     {
-
         // $userRate= $user->evaluatorRates()->get();
         $rate = $user->userRates()->get(['rate', 'evaluator_role'])
             ->toArray();
@@ -49,9 +49,8 @@ class RateController extends Controller
         $rate = $request->rate;
         try {
             $result = $this
-            ->rateService
-            ->setRate($userId, $rateTypeId, $rate);
-
+                ->rateService
+                ->setRate($userId, $rateTypeId, $rate);
             return ResponseHelper::success($result, null, 'Rate added successfully', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), 422);
@@ -102,7 +101,6 @@ class RateController extends Controller
         return ResponseHelper::success($userRate, null, 'yourRate', 200);
     }
 
-
     public function getRate(Request $request, $id)
     {
         return $this->rateService->getRate($request, $id);
@@ -111,8 +109,8 @@ class RateController extends Controller
     public function allRates(Request $request)
     {
         $rates = Rate::with(['rateType' => function ($query) use ($request) {
-                $query->where('branch_id', $request->branch_id);
-            }])
+            $query->where('branch_id', $request->branch_id);
+        }])
             ->get()
             ->groupBy('date')
             ->map(function ($items, $date) {
@@ -125,8 +123,6 @@ class RateController extends Controller
                 return $result;
             })
             ->values();
-
-
         return ResponseHelper::success($rates, null, 'rates', 200);
     }
 

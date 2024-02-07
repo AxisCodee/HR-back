@@ -17,10 +17,13 @@ use Illuminate\Support\Facades\DB;
 class RequestController extends Controller
 {
 
-    public function index()
+    public function index($branchId)
     {
+
         $results = Request::query()
-            ->with('user:id,first_name,last_name')
+             ->with('user')->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })
             ->with('user.department:id,name')
             ->get()
             ->toArray();
@@ -153,9 +156,11 @@ class RequestController extends Controller
         return ResponseHelper::created($complaint, 'request created successfully');
     }
 
-    public function getComplaints()
+    public function getComplaints($branchId)
     {
-        $result = Request::query()->with('users')
+        $result = Request::query()->with('user')->whereHas('user', function ($query) use ($branchId) {
+            $query->where('branch_id', $branchId);
+        })
             ->where('type', 'complaint')
             ->get()->toArray();
         return ResponseHelper::success($result, 'your request');
