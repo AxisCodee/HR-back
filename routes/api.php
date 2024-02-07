@@ -109,7 +109,7 @@ Route::prefix('Report')->group(function () {
         Route::post('InsnOuts', 'user_checks');
 
         //
-        Route::get('reportByDay/{branchId}', 'reportByDay');
+        Route::get('reportByDay', 'reportByDay');
     });
 });
 
