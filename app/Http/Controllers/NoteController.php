@@ -57,4 +57,10 @@ class NoteController extends Controller
         });
         return ResponseHelper::error('not deleted', null);
     }
+
+    public function specific_note($id)
+    {
+        $note = Note::findOrFail($id);
+        return ResponseHelper::success($note,'Note returned successfully', null);
+    }
 }
