@@ -282,6 +282,8 @@ Route::prefix('Rate')->group(function () {
         Route::post('setRate', 'setRate');
         Route::get('getRate/{id}', 'getRate');
         Route::get('allRates', 'allRates');
+        Route::get('userRates/{date}', 'userRates');
+
 
 
 
@@ -289,8 +291,10 @@ Route::prefix('Rate')->group(function () {
 
 
 
+
     Route::controller(RateTypeController::class)->group(function () {
 
+        Route::get('getRateType/{id}', 'getRateType');
 
         Route::get('BranchTypes/{id}', 'show'); //show types for branch
         //Route::get('ShowType/{id}', 'show');//

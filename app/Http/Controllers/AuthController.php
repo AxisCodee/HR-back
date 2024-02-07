@@ -189,6 +189,7 @@ class AuthController extends Controller
             }
 
             if ($request->emergency_contact) {
+
                 foreach ($emergency_contact as $emergency) {
                     if (isset($emergency['phonenumber']) || isset($emergency['email'])) {
                         $contact = Contact::query()->create([

@@ -14,5 +14,11 @@ class Branch extends Model
     public function  rateTypes()
     {
         return $this->hasMany(RateType::class);
+
+    }
+
+    public function  users()
+    {
+        return $this->hasMany(User::class,'branch_id');
     }
 }
