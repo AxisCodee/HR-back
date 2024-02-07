@@ -89,11 +89,15 @@ class ReportController extends Controller
     public function report(Request $request)
     {
         $date = $request->date;
-        $result = User::where('id',$request->user_id)->with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
-            $query->whereDate('datetime', $date);
-        }])->get();
-        return ResponseHelper::success([
-            $result
-        ]);
+        $userId = $request->user_id;
+
+        $result = User::query()
+            ->where('id', $userId)
+            ->with(['notes', 'deposits', 'department', 'attendance' => function ($query) use ($date) {
+                $query->whereDate('datetime', $date);
+            }])
+            ->get();
+
+        return ResponseHelper::success($result);
     }
 }
