@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddUserRequest;
 use App\Models\Certificate;
 use App\Models\Language;
-use App\Models\Skils;
+use App\Models\Skills;
 use App\Models\UserInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -139,7 +139,7 @@ class AuthController extends Controller
             }
 
             foreach ($skills as $skill) {
-                $skill = Skils::query()->create([
+                $skill = Skills::query()->create([
                     'name' => $skill['skills'],
                     'rate' => $skill['rate'],
                     'user_id' => $user->id,
