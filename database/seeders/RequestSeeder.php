@@ -13,92 +13,91 @@ class RequestSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('requests')->insert
-        ([
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs ',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 's',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs  flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-            [
-                'user_id' => 1,
-                'type' =>'vacation',
-                'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
-                'title'=> 'asksmfskdmf',
-                'status'=>'waiting',
-            ],
-       ]);
+        DB::table('requests')->insert([
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs ',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 's',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs  flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+                [
+                    'user_id' => 1,
+                    'type' => 'vacation',
+                    'description' => 'skmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsfskmfkdmsfkmsldfs flsf',
+                    'title' => 'asksmfskdmf',
+                    'status' => 'waiting',
+                ],
+            ]);
     }
 }
