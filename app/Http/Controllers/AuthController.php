@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AddUserRequest;
 use App\Models\Certificate;
 use App\Models\Language;
-use App\Models\Skils;
+use App\Models\Skills;
 use App\Models\UserInfo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -58,11 +58,11 @@ class AuthController extends Controller
 
     public function register(AddUserRequest $request)
     {
-        try {
+         try {
         $validate = $request->validated();
 
         return DB::transaction(function () use ($request) {
-            try {
+
             $user = User::create([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
@@ -77,9 +77,7 @@ class AuthController extends Controller
                 'branch_id' => $request->branch_id
             ]);
             $user->update(['pin' => $user->id]);
-        } catch (\Exception $e) {
-            return ResponseHelper::error('User creation failed', $e->getMessage());
-        }
+
             //    $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
             // $tad = $tad_factory->get_instance();
             // $r = $tad->set_user_info([
@@ -144,7 +142,7 @@ class AuthController extends Controller
             }
 
             foreach ($skills as $skill) {
-                $skill = Skils::query()->create([
+                $skill = Skills::query()->create([
                     'name' => $skill['skills'],
                     'rate' => $skill['rate'],
                     'user_id' => $user->id,
@@ -221,11 +219,16 @@ class AuthController extends Controller
 
             return ResponseHelper::success($user);
         });
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // Handle the validation exception and return an error response with the validation errors
+        $errorMessage = $e->validator->errors()->first();
+        return ResponseHelper::error($errorMessage, null);
     } catch (\Exception $e) {
-
+        // Handle other exceptions and return an error response
         return ResponseHelper::error($e->getMessage(), $e->getCode());
     }
 }
+
 
     public function logout()
     {

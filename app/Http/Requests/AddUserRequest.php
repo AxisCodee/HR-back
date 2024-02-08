@@ -25,7 +25,9 @@ class AddUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name', 'middle_name', 'last_name' => ['required', 'string', 'min:3', 'max:25'],
+            'first_name' => ['required', 'string', 'min:3', 'max:25'],
+            'middle_name'=> ['required', 'string', 'min:3', 'max:25'],
+            'last_name'=> ['required', 'string', 'min:3', 'max:25'],
             'password' => ['required', 'string', RulesPassword::min(8)],
             'email' => ['required', 'email', 'unique:users,email,' . $this->id],
             'address' => ['required', 'string', 'min:3', 'max:25'],
