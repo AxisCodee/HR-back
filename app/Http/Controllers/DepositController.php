@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Auth;
 class DepositController extends Controller
 {
 
-    public function index($branchId) //all users with department and deposits
+    public function index(Request $request) //all users with department and deposits
     {
+        $branchId = $request->input('branch_id');
         $user = User::where('branch_id', $branchId);
         $results = $user
             ->with('department')
