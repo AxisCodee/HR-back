@@ -38,7 +38,7 @@ class UserInfoRequest extends FormRequest
                 'required',
                 Rule::in(['Postponed', 'Exempt', 'Finished']),
             ],
-            'health_status' => '|string',
+            'health_status' => 'required|string',
             'salary' => 'required|integer',
             'level' => ['in:Senior,Mid,Junior'],
         ];
