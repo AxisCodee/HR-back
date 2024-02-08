@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class NoteRequest extends FormRequest
 {
@@ -25,5 +27,13 @@ class NoteRequest extends FormRequest
             'content' => ['required', 'string'],
             'user_id' => ['required', 'exists:users,id'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

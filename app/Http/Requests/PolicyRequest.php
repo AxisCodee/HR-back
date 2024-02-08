@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PolicyRequest extends FormRequest
 {
@@ -30,6 +32,13 @@ class PolicyRequest extends FormRequest
             'branch_id' => 'required|integer|exists:branches,id',
             'rate_type' => 'sometimes|array'
         ];
+    }
 
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }
