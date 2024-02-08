@@ -22,8 +22,9 @@ class LanguageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string'],
+            'name' => ['required', 'string'],
             'user_id' => ['required', 'exists:users,id'],
+            'rate'=>['required','integer','between:0,5'],
         ];
     }
 }
