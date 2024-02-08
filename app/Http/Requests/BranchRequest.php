@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BranchRequest extends FormRequest
 {
@@ -23,7 +25,15 @@ class BranchRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:branches,name',
-            'fingerprint_scanner_ip' => 'required',
+            'fingerprint_scanner_ip' => 'sometimes',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }
