@@ -67,7 +67,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('Add', 'new_decision');
         Route::delete('remove/{decision}', 'remove_decision');
         Route::post('edit/{decision}', 'edit_decision');
-        Route::get('all', 'all_decisions');
+        Route::get('all/{branchId}', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
         Route::get('user_desicions/{id}', 'user_decisions');
     });
@@ -109,7 +109,7 @@ Route::prefix('Report')->group(function () {
         Route::post('InsnOuts', 'user_checks');
 
         //
-        Route::post('reportByDay/{branchId}', 'reportByDay');
+        Route::post('reportByDay', 'report');
     });
 });
 
