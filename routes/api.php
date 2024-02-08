@@ -67,7 +67,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('Add', 'new_decision');
         Route::delete('remove/{decision}', 'remove_decision');
         Route::post('edit/{decision}', 'edit_decision');
-        Route::get('all/{branchId}', 'all_decisions');
+        Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
         Route::get('user_desicions/{id}', 'user_decisions');
     });
@@ -102,7 +102,7 @@ Route::prefix('Gmail')->group(function () {
 Route::prefix('Report')->group(function () {
     Route::controller(ReportController::class)->group(function () {
         Route::post('Add', 'store');
-        Route::get('daily/{branchId}', 'daily_reports');
+        Route::get('daily', 'daily_reports');
         Route::get('myReports', 'my_reports');
         Route::get('All', 'all_reports');
         Route::delete('remove/{report}', 'remove');
@@ -128,7 +128,7 @@ Route::prefix('Calendar')->group(function () {
 
 Route::prefix('Request')->group(function () {
     Route::controller(RequestController::class)->group(function () {
-        Route::get('All/{branchId}', 'index');
+        Route::get('All', 'index');
         Route::get('Me', 'show');
         Route::get('Complaints', 'getComplaints');
         Route::get('info/{id}', 'getRequest');
@@ -161,7 +161,7 @@ Route::prefix('Address')->group(function () {
 });
 Route::prefix('Deposit')->group(function () {
     Route::controller(DepositController::class)->group(function () {
-        Route::get('All/{branchId}', 'index');
+        Route::get('All', 'index');
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::get('Show', 'show');
@@ -219,7 +219,7 @@ Route::prefix('UserInfo')->group(function () {
 
 Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
-        Route::get('All/{branch}', 'index');
+        Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
@@ -229,7 +229,7 @@ Route::prefix('Absence')->group(function () {
 
 Route::prefix('EmployeeOfMonth')->group(function () {
     Route::controller(EmpOfMonthController::class)->group(function () {
-        Route::get('All/{branchId}', 'index');
+        Route::get('All', 'index');
         Route::post('Add', 'store');
         Route::get('Show/{branchId}', 'show');
     });

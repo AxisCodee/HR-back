@@ -85,16 +85,18 @@ class UserController extends Controller
         return ResponseHelper::success('user removed from team successfully');
     }
     //delete a specific user by his id
-    public function remove_user($id)
+    public function remove_user($user)
     {
-        $remove_user = User::findOrFail($id)->delete();
+        $remove_user = User::findOrFail($user)->delete();
         return ResponseHelper::deleted('user removed successfully');
     }
     //get all teams with their users
-    public function getTeams()
+    public function getTeams(Request $request)
     {
+        $branchId = $request->input('branch_id');
         $department = Department::query()
-            ->with('user')
+            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);    })
             ->get()
             ->toArray();
         return ResponseHelper::success($department);
@@ -116,7 +118,7 @@ class UserController extends Controller
     public function storeTeams(Request $request)
     {
         return DB::transaction(function () use ($request) {
-            $team = Department::updateOrCreate(['name' => $request->name]);
+            $team = Department::updateOrCreate(['name' => $request->name,'branch_id'=>$request->branch_id]);
             if ($request->users_array && is_array($request->users_array)) {
                 foreach ($request->users_array as $user_id) {
                     $update = User::where('id', $user_id)->first();
@@ -139,7 +141,7 @@ class UserController extends Controller
         });
     }
 
-    
+
 
 
 

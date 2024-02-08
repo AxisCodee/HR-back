@@ -25,9 +25,9 @@ class StoreContractRequest extends FormRequest
     {
         return [
             'path' => ['required'],
-            'startTime' => ['required'],
-            'endTime' => ['required'],
-            'user_id' => ['required']
+            'startTime' => ['required','date','min:9'],
+            'endTime' => ['required','date','min:9'],
+            'user_id' => ['required','exists:users,id']
         ];
     }
 

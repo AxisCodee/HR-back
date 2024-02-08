@@ -44,8 +44,9 @@ public function edit_decision(DecisionRequest $request, $id)
     }
 }
 //get all decisions for all users
-    public function all_decisions($branchId)
+    public function all_decisions( Request $request)
     {
+        $branchId = $request->input('branch_id');
         $all = Decision::query()
                         ->with('user_decision')->whereHas('user_decision', function ($query) use ($branchId) {
                             $query->where('branch_id', $branchId);})

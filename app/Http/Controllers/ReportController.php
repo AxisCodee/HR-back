@@ -46,8 +46,9 @@ class ReportController extends Controller
     }
 
     //get all reports of today
-    public function daily_reports($branchId)
+    public function daily_reports( Request $request)
     {
+        $branchId = $request->input('branch_id');
         $user = User::where('branch_id', $branchId);
         $today = $user->reports()->whereDate('created_at', now()->format('Y-m-d'))->get()->toArray();
         return ResponseHelper::success($today, null, 'today reports returned successfully', 200);

@@ -9,13 +9,14 @@ use App\Http\Requests\UpdateContractRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Traits\Files;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ContractController extends Controller
 {
-    public function index($branchId)
+    public function index(Request $request)
     {
-
+        $branchId = $request->input('branch_id');
         $contracts = Contract::with('user')->whereHas('user', function ($query) use ($branchId) {
             $query->where('branch_id', $branchId); })->get();
 
