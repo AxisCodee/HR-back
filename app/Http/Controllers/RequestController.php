@@ -14,13 +14,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+
 class RequestController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
     {
-
-        $branchId = $request->input('branch_id');
+        $branchId = request('branch_id');
         $results = Request::query()
              ->with('user')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
