@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CertificateRequest extends FormRequest
 {
@@ -25,5 +27,14 @@ class CertificateRequest extends FormRequest
             'user_id' => 'required|integer|exists:users,id',
             'content' => 'required|string',
         ];
+    }
+
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }
