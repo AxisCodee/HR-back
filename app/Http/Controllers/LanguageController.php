@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Http\Requests\LanguageRequest;
+use App\Http\Requests\UpdateLanguageRequest;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,25 +20,24 @@ class LanguageController extends Controller
         });
         return ResponseHelper::error('error', null);
     }
-    // public function update(StudySitRequest $request, $id)
-    // {
-    //     $validate = $request->validated();
-    //     return DB::transaction(function () use ($validate, $id) {
-    //         Language::query()
-    //             ->findOrFail($id) //????
-    //             ->update($validate);
-    //         return ResponseHelper::success('Study has been updated', null);
-    //     });
-    //     return ResponseHelper::error('error', null);
-    // }
+    public function update(UpdateLanguageRequest $request, $id)
+    {
+        $validate = $request->validated();
+        $lang = Language::query()->findOrFail($id);
+        return DB::transaction(function () use ($validate, $lang) {
+            $lang->update($validate);
+            return ResponseHelper::success('Language has been updated', null);
+        });
+        return ResponseHelper::error('error', null);
+    }
 
     public function destroy($id)
     {
-        return DB::transaction(function () use ($id) {
-            $lang = Language::query()->findOrFail($id);
+        $lang = Language::query()->findOrFail($id);
+        return DB::transaction(function () use ($lang) {
             $lang->delete();
             return ResponseHelper::success('Language has been deleted', null);
         });
-        return ResponseHelper::error('not deleted', null);
+        return ResponseHelper::error('error', null);
     }
 }

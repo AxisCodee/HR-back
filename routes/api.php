@@ -130,7 +130,7 @@ Route::prefix('Request')->group(function () {
     Route::controller(RequestController::class)->group(function () {
         Route::get('All/{branchId}', 'index');
         Route::get('Me', 'show');
-        Route::get('Complaints','getComplaints');
+        Route::get('Complaints', 'getComplaints');
         Route::get('info/{id}', 'getRequest');
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
@@ -194,7 +194,7 @@ Route::prefix('Certificates')->group(function () {
 Route::prefix('Language')->group(function () {
     Route::controller(LanguageController::class)->group(function () {
         Route::post('Add', 'store');
-        //Route::post('Update/{id}', 'update');
+        Route::post('Update/{id}', 'update');
         Route::delete('Delete/{id}', 'destroy');
     });
 });
@@ -204,7 +204,7 @@ Route::prefix('Notes')->group(function () {
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::delete('Delete/{id}', 'destroy');
-        Route::get('userNote/{id}','user_notes');
+        Route::get('userNote/{id}', 'user_notes');
     });
 });
 
@@ -219,7 +219,7 @@ Route::prefix('UserInfo')->group(function () {
 
 Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
-        Route::get('All', 'index');
+        Route::get('All/{branch}', 'index');
         Route::get('Show/{user}', 'show');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
