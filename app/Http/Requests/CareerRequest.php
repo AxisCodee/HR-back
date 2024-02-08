@@ -28,7 +28,6 @@ class CareerRequest extends FormRequest
         return [
             'content' => ['required', 'string'],
             'user_id' => ['required', 'exists:users,id'],
-            'status' => ['required', Rule::in(['skill', 'career'])],
         ];
     }
 
