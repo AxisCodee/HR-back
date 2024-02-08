@@ -30,7 +30,7 @@ class UserInfoController extends Controller
     public function update(UpdateUserInfoRequest $request, $id)
     {
         $validate = $request->validated();
-        if ($validate['image']) {
+        if ($request->image) {
             $path = Files::saveImage($request);
             $validate['image'] = $path;
         }

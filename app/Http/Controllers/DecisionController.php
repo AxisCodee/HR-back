@@ -58,7 +58,7 @@ public function edit_decision(DecisionRequest $request, $id)
     {
         $mine = Decision::query()
                         ->where('user_id',Auth::id())
-                        ->get();
+                        ->get()->toArray();
         return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
 //get decisions for a specific user by id
