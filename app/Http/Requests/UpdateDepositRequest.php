@@ -22,9 +22,8 @@ class UpdateDepositRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string'],
-            'description' => ['required', 'string'],
-            'received_date' => ['required', 'date'],
+            'description' => [ 'string'],
+            'received_date' => [ 'date'],
         ];
     }
 }
