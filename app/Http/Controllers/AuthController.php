@@ -58,9 +58,11 @@ class AuthController extends Controller
 
     public function register(AddUserRequest $request)
     {
+        try {
         $validate = $request->validated();
 
         return DB::transaction(function () use ($request) {
+            try {
             $user = User::create([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
@@ -75,6 +77,9 @@ class AuthController extends Controller
                 'branch_id' => $request->branch_id
             ]);
             $user->update(['pin' => $user->id]);
+        } catch (\Exception $e) {
+            return ResponseHelper::error('User creation failed', $e->getMessage());
+        }
             //    $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
             // $tad = $tad_factory->get_instance();
             // $r = $tad->set_user_info([
@@ -216,8 +221,11 @@ class AuthController extends Controller
 
             return ResponseHelper::success($user);
         });
-        return ResponseHelper::error('error', null);
+    } catch (\Exception $e) {
+
+        return ResponseHelper::error($e->getMessage(), $e->getCode());
     }
+}
 
     public function logout()
     {
