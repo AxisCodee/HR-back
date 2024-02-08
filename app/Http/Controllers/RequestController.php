@@ -17,9 +17,10 @@ use Illuminate\Support\Facades\DB;
 class RequestController extends Controller
 {
 
-    public function index($branchId)
+    public function index(Request $request)
     {
 
+        $branchId = $request->input('branch_id');
         $results = Request::query()
              ->with('user')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);

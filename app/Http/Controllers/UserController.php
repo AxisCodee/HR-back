@@ -116,7 +116,7 @@ class UserController extends Controller
     public function storeTeams(Request $request)
     {
         return DB::transaction(function () use ($request) {
-            $team = Department::updateOrCreate(['name' => $request->name]);
+            $team = Department::updateOrCreate(['name' => $request->name,'branch_id'=>$request->branch_id]);
             if ($request->users_array && is_array($request->users_array)) {
                 foreach ($request->users_array as $user_id) {
                     $update = User::where('id', $user_id)->first();

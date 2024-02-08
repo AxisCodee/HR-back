@@ -67,7 +67,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('Add', 'new_decision');
         Route::delete('remove/{decision}', 'remove_decision');
         Route::post('edit/{decision}', 'edit_decision');
-        Route::get('all/{branchId}', 'all_decisions');
+        Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
         Route::get('user_desicions/{id}', 'user_decisions');
     });
@@ -128,7 +128,7 @@ Route::prefix('Calendar')->group(function () {
 
 Route::prefix('Request')->group(function () {
     Route::controller(RequestController::class)->group(function () {
-        Route::get('All/{branchId}', 'index');
+        Route::get('All', 'index');
         Route::get('Me', 'show');
         Route::get('Complaints', 'getComplaints');
         Route::get('info/{id}', 'getRequest');
