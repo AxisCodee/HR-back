@@ -98,17 +98,6 @@ Route::prefix('Gmail')->group(function () {
         Route::post('google/starMessages', 'starMessages');
     });
 });
-<<<<<<< HEAD
-Route::prefix('contract')->group(function () {
-    Route::controller(ContractController::class)->group(function () {
-        Route::post('Add', 'store');
-        Route::get('Show/{id}', 'show');
-        Route::get('All/{branchId}', 'index');
-        Route::delete('Delete/{contract}', 'destroy');
-    });
-});
-=======
->>>>>>> 75c54194abd426bb6b0d13640d582440f79ed19e
 
 Route::prefix('Report')->group(function () {
     Route::controller(ReportController::class)->group(function () {
@@ -120,7 +109,7 @@ Route::prefix('Report')->group(function () {
         Route::post('InsnOuts', 'user_checks');
 
         //
-        Route::post('reportByDay/{branchId}', 'reportByDay');
+        Route::post('reportByDay', 'report');
     });
 });
 

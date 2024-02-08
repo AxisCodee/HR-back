@@ -49,7 +49,7 @@ public function edit_decision(DecisionRequest $request, $id)
         $all = Decision::query()
                         ->with('user_decision')->whereHas('user_decision', function ($query) use ($branchId) {
                             $query->where('branch_id', $branchId);})
-                        ->get();
+                        ->get()->toArray();
         return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
     }
 //get decisions for the current user
