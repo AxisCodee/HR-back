@@ -24,7 +24,7 @@ class UpdateLanguageRequest extends FormRequest
         return [
             'name' => ['string'],
             'user_id' => ['exists:users,id'],
-            'rate' => ['exists:users,id'],
+            'rate' => ['integer|between:0,5'],
         ];
     }
 }
