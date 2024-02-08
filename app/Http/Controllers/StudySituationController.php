@@ -15,18 +15,17 @@ class StudySituationController extends Controller
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate) {
-            $stuSit = StudySituation::query()->create($validate);
-            return ResponseHelper::success($stuSit, null);
+            $studySit = StudySituation::query()->create($validate);
+            return ResponseHelper::success($studySit, null);
         });
         return ResponseHelper::error('error', null);
     }
     public function update(UpdateStudySitRequest $request, $id)
     {
         $validate = $request->validated();
-        return DB::transaction(function () use ($validate, $id) {
-            StudySituation::query()
-                ->findOrFail($id) //????
-                ->update($validate);
+        $studySit = StudySituation::query()->findOrFail($id);
+        return DB::transaction(function () use ($validate, $studySit) {
+            $studySit->update($validate);
             return ResponseHelper::success('Study has been updated', null);
         });
         return ResponseHelper::error('error', null);
@@ -34,9 +33,9 @@ class StudySituationController extends Controller
 
     public function destroy($id)
     {
-        return DB::transaction(function () use ($id) {
-            $stuSit = StudySituation::query()->findOrFail($id);
-            $stuSit->delete();
+        $studySit = StudySituation::query()->findOrFail($id);
+        return DB::transaction(function () use ($studySit) {
+            $studySit->delete();
             return ResponseHelper::success('Study has been deleted', null);
         });
         return ResponseHelper::error('not deleted', null);

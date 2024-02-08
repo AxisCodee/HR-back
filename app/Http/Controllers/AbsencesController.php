@@ -16,7 +16,6 @@ class AbsencesController extends Controller
 {
     public function index(Request $request, $branch)
     {
-
         if ($request->has('date')) {
             $dateInput = request()->input('date');
             $year = substr($dateInput, 0, 4);
@@ -26,9 +25,7 @@ class AbsencesController extends Controller
             $month = Carbon::now()->format('m');
         }
         $user = User::query()->where('branch_id', $branch)->get();
-
         foreach ($user as $item) {
-
             $justified = $item->absences()
                 ->where('type', 'justified')
                 ->whereYear('startDate', $year)
@@ -38,9 +35,6 @@ class AbsencesController extends Controller
                 ->whereYear('startDate', $year)
                 ->whereMonth('startDate', $month)
                 ->count();
-
-
-
             $results[] = $result =
                 [
                     'id' => $item->id,
@@ -86,7 +80,6 @@ class AbsencesController extends Controller
     }
     public function cuurentAbsence()
     {
-
         $usersWithoutAttendance = DB::table('users')
             ->leftJoin('attendances', function ($join) {
                 $join->on('users.pin', '=', 'attendances.pin')
@@ -95,7 +88,6 @@ class AbsencesController extends Controller
             ->whereNull('attendances.pin')
             ->select('users.*')
             ->get();
-
         return ResponseHelper::success($usersWithoutAttendance, 'yaaaaaa', null);
     }
 
@@ -126,7 +118,6 @@ class AbsencesController extends Controller
             );
             return ResponseHelper::success(null, 'Decision made successfully', null);
         });
-
         return ResponseHelper::error('error', null);
     }
 
@@ -146,7 +137,13 @@ class AbsencesController extends Controller
         return ResponseHelper::success(null, 'Decision done successfully', null);
     }
 
-
-
+    public function store_absence(Request $request)
+    {
+        $new_abs = Absences::create([
+            'type' => 'Unjustified',
+            'user_id' => $request->user_id,
+            'startDate' => $request->date,
+        ]);
+        return ResponseHelper::success($new_abs, null, 'Absence added successfully');
+    }
 }
-
