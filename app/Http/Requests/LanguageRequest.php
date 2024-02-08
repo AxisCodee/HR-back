@@ -25,7 +25,7 @@ class LanguageRequest extends FormRequest
             'name' => ['required', 'string'],
             'name' => ['required', 'string'],
             'user_id' => ['required', 'exists:users,id'],
-            'rate'=>['required','integer','between:0,5'],
+            'rate' => ['required', 'integer|between:0,5'],
         ];
     }
 }
