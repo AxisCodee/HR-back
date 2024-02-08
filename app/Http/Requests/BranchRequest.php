@@ -25,7 +25,7 @@ class BranchRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:branches,name',
-            'fingerprint_scanner_ip' => 'required',
+            'fingerprint_scanner_ip' => 'sometimes',
         ];
     }
 
