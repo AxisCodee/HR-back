@@ -91,10 +91,12 @@ class UserController extends Controller
         return ResponseHelper::deleted('user removed successfully');
     }
     //get all teams with their users
-    public function getTeams()
+    public function getTeams(Request $request)
     {
+        $branchId = $request->input('branch_id');
         $department = Department::query()
-            ->with('user')
+            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);    })
             ->get()
             ->toArray();
         return ResponseHelper::success($department);

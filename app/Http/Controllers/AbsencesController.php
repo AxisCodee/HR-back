@@ -14,8 +14,9 @@ use Carbon\Carbon;
 
 class AbsencesController extends Controller
 {
-    public function index(Request $request, $branch)
+    public function index(Request $request)
     {
+        $branchId = $request->input('branch_id');
         if ($request->has('date')) {
             $dateInput = request()->input('date');
             $year = substr($dateInput, 0, 4);
@@ -24,7 +25,7 @@ class AbsencesController extends Controller
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
         }
-        $user = User::query()->where('branch_id', $branch)->get();
+        $user = User::query()->where('branch_id',  $branchId)->get();
         foreach ($user as $item) {
             $justified = $item->absences()
                 ->where('type', 'justified')
