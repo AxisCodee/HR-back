@@ -35,7 +35,7 @@ class UserInfoController extends Controller
             $validate['image'] = $path;
         }
         return DB::transaction(function () use ($validate, $id) {
-            $userInfo = UserInfo::query()
+            UserInfo::query()
                 ->where('user_id', $id)
                 ->update($validate);
             return ResponseHelper::success('info has been updated', null);
@@ -54,8 +54,8 @@ class UserInfoController extends Controller
 
     public function destroy($id)
     {
-        return DB::transaction(function () use ($id) {
-            $career = UserInfo::query()->find($id);
+        $career = UserInfo::query()->find($id);
+        return DB::transaction(function () use ($career) {
             $career->delete();
             return ResponseHelper::success('info has been deleted', null);
         });
@@ -63,22 +63,42 @@ class UserInfoController extends Controller
     }
 
 
-    public function updateSalary(Request $request,  $id)
+    // public function updateSalary(Request $request,  $id)
+    // {
+    //     $salary = $request->salary;
+    //     $result = UserInfo::query()
+    //         ->where('id', $id)
+    //         ->update([
+    //             'salary' => $salary
+    //         ]);
+    //     if ($result) {
+    //         UserSalary::query()->create([
+    //             'user_id' => $id,
+    //             'date' => Carbon::now()->format('Y-m'),
+    //             'salary' => $salary
+    //         ]);
+    //         return ResponseHelper::updated('salary updated', null);
+    //     }
+    //     return ResponseHelper::error('not updated', null);
+    // }
+
+    public function updateSalary(Request $request, $id)
     {
         $salary = $request->salary;
-        $result = UserInfo::query()
-            ->where('id', $id)
-            ->update([
+        $result = UserInfo::query()->where('id', $id)->first();
+        return DB::transaction(function () use ($result, $salary, $id) {
+            $result->update([
                 'salary' => $salary
             ]);
-        if ($result) {
-            $newSalary = UserSalary::query()->create([
-                'user_id' => $id,
-                'date' => Carbon::now()->format('Y-m'),
-                'salary' => $salary
-            ]);
-            return ResponseHelper::updated('salary updated', null);
-        }
-        return ResponseHelper::error('not updated', null);
+            if ($result) {
+                UserSalary::query()->create([
+                    'user_id' => $id,
+                    'date' => Carbon::now()->format('Y-m'),
+                    'salary' => $salary
+                ]);
+                return ResponseHelper::updated('Salary updated', null);
+            }
+        });
+        return ResponseHelper::error('Not updated', null);
     }
 }

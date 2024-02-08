@@ -23,8 +23,8 @@ class StudySitRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'title' => 'required|string',
-            'description' => 'required|string',
+            'degree' => 'required|string',
+            'study' => 'required|string',
         ];
     }
 }

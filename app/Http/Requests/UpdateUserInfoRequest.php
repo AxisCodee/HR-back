@@ -24,19 +24,21 @@ class UpdateUserInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required',
-            'birth_date' => 'required|date',
-            'gender' => ['required', Rule::in(['Male', 'Female'])],
-            'nationalID' => 'required|string|max:11',
+            'image' => 'sometimes',
+            'birth_date' => 'date',
+            'gender' => [Rule::in(['Male', 'Female'])],
+            'nationalID' => 'string|max:11',
             'social_situation' => [
-                'required',
                 Rule::in(['Single', 'Married']),
             ],
             'military_situation' => [
-                'required',
                 Rule::in(['Postponed', 'Exempt', 'Finished']),
             ],
-            'salary' => 'required|integer',
+            'health_status' => 'string',
+            'salary' => 'integer',
+            'level' => [
+                Rule::in(['Senior', 'Mid', 'Junior'])
+            ],
         ];
     }
 }
