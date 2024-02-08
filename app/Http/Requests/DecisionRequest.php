@@ -22,7 +22,8 @@ class DecisionRequest extends FormRequest
             'type' => ['required', 'string','in:reward,warning,deduction,alert,penalty'],
             'content' => ['required','string', 'between:10,255'],
             'amount' =>['nullable','integer'],
-            'dateTime'=>['required']
+            'dateTime'=>['required'],
+            'branch_id'=>['required'],
         ];
     }
 
