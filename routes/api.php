@@ -231,7 +231,7 @@ Route::prefix('EmployeeOfMonth')->group(function () {
     Route::controller(EmpOfMonthController::class)->group(function () {
         Route::get('All', 'index');
         Route::post('Add', 'store');
-        Route::get('Show/{branchId}', 'show');
+        Route::get('Show', 'show');
     });
 });
 
