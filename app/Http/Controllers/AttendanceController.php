@@ -136,11 +136,10 @@ class AttendanceController extends Controller
                 //     );
                 // }
 
-                //store the days of job
-                // $checkInDate = substr($log['DateTime'], 0, 10);
-                // if (!in_array($checkInDate, $uniqueDates)) {
-                //     $uniqueDates[] = $checkInDate;
-                // }
+                $checkInDate = substr($log['DateTime'], 0, 10);
+                if (!in_array($checkInDate, $uniqueDates)) {
+                    $uniqueDates[] = $checkInDate;
+                }
             }
 
             // store the absence
