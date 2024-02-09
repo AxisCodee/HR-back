@@ -216,6 +216,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Decision::class, 'user_id', 'id');
     }
 
+    public function penalties()
+    {
+        return $this->hasMany(Decision::class, 'user_id', 'id')
+        ->where('type', 'penalties');
+    }
+
     public function salary()
     {
         return $this->hasMany(UserSalary::class, 'user_id');
@@ -235,11 +241,13 @@ class User extends Authenticatable implements JWTSubject
 
     public function my_contacts()
     {
-        return $this->hasMany(Contact::class, 'user_id', 'id')->where('type', 'user_num')->orwhere('type', 'email');
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+        ->where('type', 'user_num')->orwhere('type', 'email');
     }
     public function emergency()
     {
-        return $this->hasMany(Contact::class, 'user_id', 'id')->where('type', 'emergency');
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+        ->where('type', 'emergency');
     }
 
 

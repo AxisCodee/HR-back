@@ -143,22 +143,6 @@ class UserController extends Controller
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //update an existing team name
     public function updateTeams(Request $request, $id)
     {
