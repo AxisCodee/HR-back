@@ -78,8 +78,8 @@ class AttendanceController extends Controller
                 $parsedHour = Carbon::parse($checkInHour);
                 $parsedHourOut = Carbon::parse($checkOutHour);
                 $policy = Policy::query()->where('branch_id', $branche->id)->first();
-                $companyStartTime = $policy->work_time['start'];
-                $companyEndTime = $policy->work_time['end'];
+                $companyStartTime = $policy->work_time['start_time'];
+                $companyEndTime = $policy->work_time['end_time'];
                 // check if the persone late
 
                 if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
@@ -197,9 +197,9 @@ class AttendanceController extends Controller
     public function DayAttendance($date)
     {
         $users = User::with('department')
-        ->with(['attendance' => function ($query) use ($date) {
-            $query->whereDate('datetime', $date);
-        }])
+            ->with(['attendance' => function ($query) use ($date) {
+                $query->whereDate('datetime', $date);
+            }])
             ->has('attendance')
             ->get();
 
