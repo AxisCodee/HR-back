@@ -219,7 +219,7 @@ class User extends Authenticatable implements JWTSubject
     public function penalties()
     {
         return $this->hasMany(Decision::class, 'user_id', 'id')
-        ->where('type', 'penalties');
+        ->where('type', 'penalty');
     }
 
     public function salary()
