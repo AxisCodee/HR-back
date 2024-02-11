@@ -36,7 +36,7 @@ class AbsencesController extends Controller
                 ->whereYear('startDate', $year)
                 ->whereMonth('startDate', $month)
                 ->count();
-            $results = $result =
+            $results[] = $result =
                 [
                     'id' => $item->id,
                     'username' => $item->first_name,
