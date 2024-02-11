@@ -239,11 +239,7 @@ class User extends Authenticatable implements JWTSubject
             ->with('userInfo');
     }
 
-    public function image()
-    {
-        return $this->hasMany(UserInfo::class, 'user_id')
-            ->select('user_infos.id', 'user_infos.image');
-    }
+
 
     public function my_contacts()
     {
@@ -283,7 +279,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function userInfo()
     {
-        return $this->hasOne(UserInfo::class);
+        return $this->hasOne(UserInfo::class,'user_id');
     }
 
     public function address()
