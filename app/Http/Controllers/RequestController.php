@@ -29,7 +29,7 @@ class RequestController extends Controller
             ->get()
             ->toArray();
         if (empty($results)) {
-            return ResponseHelper::success('No requests available');
+            return ResponseHelper::success($results, 'No requests available');
         }
         return ResponseHelper::success($results, null, 'All requests', 200);
     }
@@ -57,6 +57,9 @@ class RequestController extends Controller
             ->where('user_id', Auth::user()->id)
             ->get()
             ->toArray();
+        if (empty($results)) {
+            return ResponseHelper::success($result, 'Request not exist');
+        }
         return ResponseHelper::success($result, 'my requests:');
     }
 
@@ -68,7 +71,7 @@ class RequestController extends Controller
             ->get()
             ->toArray();
         if (empty($result)) {
-            return ResponseHelper::success($result,'No requests found for the user');
+            return ResponseHelper::success($result, 'No requests found for the user');
         }
         return ResponseHelper::success($result, 'My requests:');
     }
@@ -119,13 +122,11 @@ class RequestController extends Controller
                     'salary' => $salary
                 ]);
             }
-
-        return ResponseHelper::updated([
-            'message' => 'Request accepted successfully',
-        ]);
-    });
-
-}
+            return ResponseHelper::updated([
+                'message' => 'Request accepted successfully',
+            ]);
+        });
+    }
     public function rejectRequest($request)
     {
         // $request->update(
@@ -134,7 +135,7 @@ class RequestController extends Controller
         //     ]
         // );
 
-        $result=Request::where('id',$request)->update([
+        $result = Request::where('id', $request)->update([
 
             'status' => 'rejected'
 
@@ -169,7 +170,6 @@ class RequestController extends Controller
     public function send_request(SendRequest $request)
     {
         $validate = $request->validated();
-
         if ($validate['duration'] == 'hourly') {
             $start_vac = Carbon::parse($validate['startDate']);
             $end_vac = Carbon::parse($validate['endDate']);
