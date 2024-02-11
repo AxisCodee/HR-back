@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserInfoSeeder::class);
         $this->call(CalendarsSeeder::class);
         $this->call(PermissionSeeder::class);
-        $this->call(PolicySeeder::class);
+       //$this->call(PolicySeeder::class);
         $this->call(EmpOfMonthSeeder::class);
 
         // \App\Models\User::factory(10)->create();
