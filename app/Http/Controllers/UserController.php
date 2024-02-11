@@ -43,11 +43,11 @@ class UserController extends Controller
                 'careers',
                 'deposits',
                 'notes',
-                'skills',
                 'certificates',
                 'languages',
                 'study_situations',
-                'emergency'
+                'emergency',
+                'absences'
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
