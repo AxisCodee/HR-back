@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Http\Requests\ContactRequest;
+use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Career;
 use Illuminate\Http\Request;
@@ -124,33 +125,40 @@ class UserController extends Controller
     }
 
     //add new team and add users to it
-    public function storeTeams(Request $request)
+    public function storeTeams(StoreTeamRequest $request)
     {
+        $validate = $request->validated();
         return DB::transaction(function () use ($request) {
-            $team = Department::updateOrCreate(['name' => $request->name, 'branch_id' => $request->branch_id]);
-            if ($request->users_array && is_array($request->users_array)) {
-                foreach ($request->users_array as $user_id) {
-                    $update = User::where('id', $user_id)->first();
-                    if ($update) {
-                        $update->department_id = $team->id;
-                        $update->save();
-                    }
+            $existing = Department::where('name', $request->name)->with('team_leader')->first();
+
+            if ($existing) {
+                if ($request->has('team_leader')) {
+                    $existing->team_leader->update(['role' => 'employee']);
+                    $newleader = User::findOrFail($request->team_leader)
+                        ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
                 }
-                return ResponseHelper::success('Users added to the team successfully');
+                if ($request->has('users_array')) {
+                    goto addusersloop;
+                }
+                return ResponseHelper::success('team already exists');
             }
-            if ($request->team_leader) {
-                $teamLeader = User::query()
-                    ->where('id', $request->team_leader)
-                    ->update([
-                        'role' => 'Team_Leader'
-                    ]);
-                return ResponseHelper::created('Team added successfully');
+
+            $new_team = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
+            $team_leader = User::where('id', $request->team_leader)->first();
+            $team_leader->update(['role' => 'team_leader']);
+            if ($request->has('users_array')) {
+                goto addusersloop;
             }
-            return ResponseHelper::error('No users or team leader specified');
+            return ResponseHelper::success('Team created successfuly');
+
+            addusersloop:
+            foreach ($request->users_array as $user) {
+                $adduser = User::where('id', $user)->first();
+                $adduser->update(['department_id' => $existing->id]);
+            }
+            return ResponseHelper::success('Team created and members added successfuly');
         });
     }
-
-
 
     //update an existing team name
     public function updateTeams(Request $request, $id)
