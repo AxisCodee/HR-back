@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Helper\ResponseHelper;
 use Illuminate\Http\Request;
 
-class UserDecisionService
+class DecisionService
 {
     public static function user_decisions(Request $request)
     {

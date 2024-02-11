@@ -14,7 +14,7 @@ use App\Models\UserInfo;
 use App\Services\UserServices;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Services\UserDecisionService;
+use App\Services\DecisionService;
 
 class DecisionController extends Controller
 {
@@ -71,7 +71,7 @@ class DecisionController extends Controller
 
     public function getUserDecisions(Request $request)
     {
-        $result = UserDecisionService::user_decisions($request);
+        $result = DecisionService::user_decisions($request);
     }
 
 
