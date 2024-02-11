@@ -9,12 +9,16 @@ use App\Models\User;
 use App\Http\Requests\DecisionRequest;
 use App\Models\Absences;
 use App\Models\Late;
+use App\Models\Rate;
 use App\Models\UserInfo;
-use Carbon\Carbon;
+use App\Services\UserServices;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Auth;
 
 class DecisionController extends Controller
 {
+    protected $userServices;
+
     //add new decision for a user
     public function new_decision(DecisionRequest $request)
     {
@@ -64,31 +68,33 @@ class DecisionController extends Controller
         return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
     //get decisions for a specific user by id
-    public function user_decisions($id)
+    public function user_decisions(Request $request)
     {
-        $user = User::with('my_decisions')->findOrFail($id);
-        $decisions = $user->my_decisions;
-        $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
-        $abs = Absences::query()->where('user_id', $id)->get()->map(function ($absence) {
-            $startDate = Carbon::parse($absence['startDate']);
-            $absence['formattedDate'] = $startDate->toDateString();
-            $absence['dayOfWeek'] = $startDate->dayName; // أو dayOfWeekIso للحصول على رقم اليوم
-            return $absence;
-        })->toArray();
+        $decisions =  User::with('my_decisions')->findOrFail($request->user_id);
+        $result = $decisions->my_decisions
+            ->where('type', $request->type)
+            ->whereDate('date', $request->date)->toArray();
+        //$time = $this->userServices->getReward($decisions, $request->date);
 
-        $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
-            return [$type => $decisions->where('type', $type)->values()];
-        })->all();
+        return ResponseHelper::success($result, null);
+        //     $user = User::with('my_decisions')->findOrFail($id);
+        //     $decisions = $user->my_decisions;
+        //     $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
+        //     $abs = Absences::query()->where('user_id',$id)->get()->toArray();
+        //     $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
+        //         return [$type => $decisions->where('type', $type)->values()];
+        //     })->all();
 
-        extract($groupedDecisions);
+        //     extract($groupedDecisions);
 
-        return ResponseHelper::success([
-            'rewards' => $reward,
-            'warnings' => $warning,
-            'deductions' => $deduction,
-            'alerts' => $alert,
-            'penalty' => $penalty,
-            'absences' => $abs,
-        ], null, 'user decisions returned successfully', 200);
+        //     return ResponseHelper::success([
+        //         'rewards'=>$reward,
+        //         'warnings'=>$warning,
+        //         'deductions'=>$deduction,
+        //         'alerts'=>$alert,
+        //         'penalty'=>$penalty,
+        //         'absences'=>$abs,
+        //         ]
+        //         , null, 'user decisions returned successfully', 200);
     }
 }
