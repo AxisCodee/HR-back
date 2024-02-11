@@ -75,7 +75,8 @@ public function edit_decision(DecisionRequest $request, $id)
 
         foreach ($abs as &$absence) {
             $startDate = Carbon::parse($absence['startDate']);
-            $day = Lang::get('date.days.' . $startDate->dayOfWeek);
+            $dayOfWeek = $startDate->dayOfWeek;
+            $day = Lang::get('date.days.' . $dayOfWeek);
             $absence['day'] = $day;
         }
 
