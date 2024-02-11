@@ -70,7 +70,7 @@ public function getEvenetsByDay(Request $request, $date)
     } else {
         foreach ($data as &$event) {
             $start = Carbon::parse($event['start']);
-            $event['day_number'] = $start->day;
+            $event['day'] = $start->day;
         }
 
         return ResponseHelper::success($data, null, 'events by date', 200);
