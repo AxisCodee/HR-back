@@ -29,7 +29,7 @@ class RequestController extends Controller
             ->get()
             ->toArray();
         if (empty($results)) {
-            return ResponseHelper::success($results,null,'No requests found for the user',200);
+            return ResponseHelper::success($results, null, 'No requests found for the user', 200);
         }
         return ResponseHelper::success($results, null, 'All requests', 200);
     }
@@ -57,18 +57,22 @@ class RequestController extends Controller
             ->where('user_id', Auth::user()->id)
             ->get()
             ->toArray();
+        if (empty($results)) {
+            return ResponseHelper::success($result, 'Request not exist');
+        }
         return ResponseHelper::success($result, 'my requests:');
     }
 
-    public function getRequest(Request $request)
+    public function getRequest($request)
     {
         $result = Request::query()
+            ->where('id', $request)
             ->with('user:id,first_name,last_name')
             ->with('user.department:id,name')
             ->get()
             ->toArray();
         if (empty($result)) {
-            return ResponseHelper::success($result,null,'No requests found for the user',200);
+            return ResponseHelper::success($result, null, 'No requests found for the user', 200);
         }
         return ResponseHelper::success($result, 'My requests:');
     }
@@ -119,13 +123,11 @@ class RequestController extends Controller
                     'salary' => $salary
                 ]);
             }
-
-        return ResponseHelper::updated([
-            'message' => 'Request accepted successfully',
-        ]);
-    });
-
-}
+            return ResponseHelper::updated([
+                'message' => 'Request accepted successfully',
+            ]);
+        });
+    }
     public function rejectRequest($request)
     {
         // $request->update(
@@ -134,7 +136,7 @@ class RequestController extends Controller
         //     ]
         // );
 
-        $result=Request::where('id',$request)->update([
+        $result = Request::where('id', $request)->update([
 
             'status' => 'rejected'
 
@@ -150,7 +152,6 @@ class RequestController extends Controller
                 'user_id' => Auth::id(),
                 'type' => 'complaint',
                 'description' => $request->description
-
             ]
         );
         return ResponseHelper::created($complaint, 'request created successfully');
@@ -163,13 +164,15 @@ class RequestController extends Controller
         })
             ->where('type', 'complaint')
             ->get()->toArray();
+        if (empty($result)) {
+            return ResponseHelper::success($result, 'Empty');
+        }
         return ResponseHelper::success($result, 'your request');
     }
 
     public function send_request(SendRequest $request)
     {
         $validate = $request->validated();
-
         if ($validate['duration'] == 'hourly') {
             $start_vac = Carbon::parse($validate['startDate']);
             $end_vac = Carbon::parse($validate['endDate']);
