@@ -224,6 +224,9 @@ Route::prefix('Absence')->group(function () {
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
         Route::post('AddAbsence', 'store_absence');
+        Route::get('getUnjustified/{user}', 'getUnjustified');
+
+
     });
 });
 
