@@ -29,7 +29,7 @@ class RequestController extends Controller
             ->get()
             ->toArray();
         if (empty($results)) {
-            return ResponseHelper::success('No requests available');
+            return ResponseHelper::success($results,null,'No requests found for the user',200);
         }
         return ResponseHelper::success($results, null, 'All requests', 200);
     }
@@ -68,7 +68,7 @@ class RequestController extends Controller
             ->get()
             ->toArray();
         if (empty($result)) {
-            return ResponseHelper::success($result);
+            return ResponseHelper::success($result,null,'No requests found for the user',200);
         }
         return ResponseHelper::success($result, 'My requests:');
     }
