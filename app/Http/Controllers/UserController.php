@@ -26,7 +26,8 @@ class UserController extends Controller
     public function all_users(Request $request)
     {
         $branch_id = $request->input('branch_id');
-        $all_users = User::query()->where('branch_id', $branch_id)->get()->toArray();
+        $all_users = User::query()->where('branch_id', $branch_id)
+        ->with('userInfo:id,user_id,image')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
     //get a specific user by the ID
