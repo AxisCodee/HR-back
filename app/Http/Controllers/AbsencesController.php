@@ -153,7 +153,7 @@ class AbsencesController extends Controller
         $absences = Absences::where('user_id', $user)->get();
 
         $groupedAbsences = $absences->groupBy('type')->toArray();
-    
+
         return ResponseHelper::success([
             'justified' => $groupedAbsences['Justified'] ?? [],
             'unjustified' => $groupedAbsences['Unjustified'] ?? [],
