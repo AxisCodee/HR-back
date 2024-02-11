@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Calendar;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\CalendarRequest;
+use Carbon\Carbon;
 
 class CalendarController extends Controller
 {
@@ -59,18 +60,22 @@ class CalendarController extends Controller
 
 
 
-    public function getEvenetsByDay(Request $request, $date)
-    {
-        $data = Calendar::whereDate('start', $date)
-        ->get()->toArray();
-        if (empty($data)) {
-            return ResponseHelper::success('events not found');
 
-        } else {
-            return ResponseHelper::success($data, null, 'events by date', 200);
+public function getEvenetsByDay(Request $request, $date)
+{
+    $data = Calendar::whereDate('start', $date)->get()->toArray();
 
+    if (empty($data)) {
+        return ResponseHelper::success('events not found');
+    } else {
+        foreach ($data as &$event) {
+            $start = Carbon::parse($event['start']);
+            $event['day_number'] = $start->day;
         }
+
+        return ResponseHelper::success($data, null, 'events by date', 200);
     }
+}
 
     public function week_events()
     {
