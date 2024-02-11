@@ -294,7 +294,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function deposits()
     {
-        return $this->hasMany(Deposit::class);
+        return $this->hasMany(Deposit::class,'user_id');
     }
 
     public function  notes()
