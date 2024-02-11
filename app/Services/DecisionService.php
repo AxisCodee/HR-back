@@ -37,5 +37,6 @@ class DecisionService
             }])
             ->first();
 
+        return ResponseHelper::success($result, null);
     }
 }

@@ -73,7 +73,6 @@ class DecisionController extends Controller
     {
         $result = DecisionService::user_decisions($request);
 
-        return ResponseHelper::success($result, null);
 
     }
 
