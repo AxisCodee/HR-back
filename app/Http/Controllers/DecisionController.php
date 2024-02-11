@@ -14,6 +14,7 @@ use App\Models\UserInfo;
 use App\Services\UserServices;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Auth;
+use App\Services\UserDecisionService;
 
 class DecisionController extends Controller
 {
@@ -67,37 +68,10 @@ class DecisionController extends Controller
             ->get()->toArray();
         return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
-    //get decisions for a specific user by id
-    public function user_decisions(Request $request)
+
+    public function getUserDecisions(Request $request)
     {
-        $userId = $request->user_id;
-        $date = $request->date;
-        $type = $request->type;
-
-        $year = null;
-        $month = null;
-
-        if (strlen($date) === 4) {
-            $year = $date;
-        } elseif (strlen($date) === 7) {
-            $year = substr($date, 0, 4);
-            $month = substr($date, 5, 2);
-        }
-
-        $result = User::query()
-            ->where('id', $userId)
-            ->with(['my_decisions' => function ($query) use ($year, $month, $type) {
-                if ($year && !$month) {
-                    $query->whereYear('dateTime', $year);
-                } elseif ($year && $month) {
-                    $query->whereYear('dateTime', $year)
-                        ->whereMonth('dateTime', $month);
-                }
-                $query->where('type', $type);
-            }])
-            ->first();
-
-        return ResponseHelper::success($result, null);
+        $result = UserDecisionService::user_decisions($request);
     }
 
 
