@@ -242,7 +242,7 @@ Route::prefix('Policy')->group(function () {
     Route::controller(PolicyController::class)->group(function () {
         Route::get('Show', 'show');
         Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
+        Route::post('Update', 'update');
     });
 });
 Route::prefix('branch')->group(function () {
