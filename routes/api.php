@@ -240,7 +240,7 @@ Route::prefix('EmployeeOfMonth')->group(function () {
 
 Route::prefix('Policy')->group(function () {
     Route::controller(PolicyController::class)->group(function () {
-        Route::get('Show/{id}', 'show');
+        Route::get('Show', 'show');
         Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
     });
