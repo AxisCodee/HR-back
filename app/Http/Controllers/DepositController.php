@@ -53,7 +53,7 @@ class DepositController extends Controller
     }
     public function show() //all deposits
     {
-        $result = Deposit::query()
+        $result = User::query()->with('deposits','userInfo:id,user_id,image')
             ->get()
             ->toArray();
         return ResponseHelper::success($result, null);
