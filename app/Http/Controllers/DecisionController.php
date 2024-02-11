@@ -74,11 +74,26 @@ class DecisionController extends Controller
         $date = $request->date;
         $type = $request->type;
 
+        $year = null;
+        $month = null;
+
+        if (strlen($date) === 4) {
+            $year = $date;
+        } elseif (strlen($date) === 7) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+        }
+
         $result = User::query()
             ->where('id', $userId)
-            ->with(['my_decisions' => function ($query) use ($date, $type) {
-                $query->whereDate('dateTime', $date)
-                    ->where('type', $type);
+            ->with(['my_decisions' => function ($query) use ($year, $month, $type) {
+                if ($year && !$month) {
+                    $query->whereYear('dateTime', $year);
+                } elseif ($year && $month) {
+                    $query->whereYear('dateTime', $year)
+                        ->whereMonth('dateTime', $month);
+                }
+                $query->where('type', $type);
             }])
             ->first();
 
