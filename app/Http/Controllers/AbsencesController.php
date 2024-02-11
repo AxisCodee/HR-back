@@ -36,7 +36,7 @@ class AbsencesController extends Controller
                 ->whereYear('startDate', $year)
                 ->whereMonth('startDate', $month)
                 ->count();
-            $results[] = $result =
+            $results = $result =
                 [
                     'id' => $item->id,
                     'username' => $item->first_name,
@@ -151,9 +151,7 @@ class AbsencesController extends Controller
     public function getAbsences($user)
     {
         $absences = Absences::where('user_id', $user)->get();
-
         $groupedAbsences = $absences->groupBy('type')->toArray();
-
         return ResponseHelper::success([
             'justified' => $groupedAbsences['justified'] ?? [],
             'unjustified' => $groupedAbsences['Unjustified'] ?? [],
