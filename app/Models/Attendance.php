@@ -18,5 +18,4 @@ class Attendance extends Model
     {
         return $this->belongsToMany(Date::class, 'date_pins', 'pin', 'pin');
     }
-
 }
