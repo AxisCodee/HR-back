@@ -70,7 +70,7 @@ class DecisionController extends Controller
     //get decisions for a specific user by id
     public function user_decisions(Request $request)
     {
-        $userId = $request->user->id;
+        $userId = $request->user_id;
         $date = $request->date;
         $type = $request->type;
 
@@ -89,7 +89,7 @@ class DecisionController extends Controller
 
 
 
-    
+
         //     $user = User::with('my_decisions')->findOrFail($id);
         //     $decisions = $user->my_decisions;
         //     $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
