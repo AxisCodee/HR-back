@@ -155,7 +155,7 @@ class AbsencesController extends Controller
         $groupedAbsences = $absences->groupBy('type')->toArray();
 
         return ResponseHelper::success([
-            'justified' => $groupedAbsences['Justified'] ?? [],
+            'justified' => $groupedAbsences['justified'] ?? [],
             'unjustified' => $groupedAbsences['Unjustified'] ?? [],
         ], null, 'Absences returned successfully');
     }
