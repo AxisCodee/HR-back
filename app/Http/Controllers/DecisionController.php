@@ -77,7 +77,7 @@ class DecisionController extends Controller
         $result = User::query()
             ->where('id', $userId)
             ->with(['my_decisions' => function ($query) use ($date, $type) {
-                $query->whereDate('date', $date)
+                $query->whereDate('dateTime', $date)
                     ->where('type', $type);
             }])
             ->first();
