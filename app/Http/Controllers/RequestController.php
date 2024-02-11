@@ -22,17 +22,15 @@ class RequestController extends Controller
     {
         $branchId = request('branch_id');
         $results = Request::query()
-             ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
             ->with('user.department:id,name')
             ->get()
             ->toArray();
-
         if (empty($results)) {
             return ResponseHelper::success('No requests available');
         }
-
         return ResponseHelper::success($results, null, 'All requests', 200);
     }
 
@@ -69,11 +67,9 @@ class RequestController extends Controller
             ->with('user.department:id,name')
             ->get()
             ->toArray();
-
         if (empty($result)) {
-            return ResponseHelper::success('No requests found for the user');
+            return ResponseHelper::success($result,'No requests found for the user');
         }
-
         return ResponseHelper::success($result, 'My requests:');
     }
 
@@ -87,9 +83,7 @@ class RequestController extends Controller
                 'type' => $request->type,
                 'description' => $request->description
             ]);
-
         if ($request) {
-
             return ResponseHelper::updated('Request updated successfully');
         } else {
             return ResponseHelper::success('You cannot update this request');
@@ -107,24 +101,24 @@ class RequestController extends Controller
     }
 
     public function acceptRequest(Request $request)
-{
-    return DB::transaction(function() use($request){
-        $request->update([
-            'status' => 'accepted'
-        ]);
-    // تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
-    //  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل
-        if ($request->type == 'advanced') {
-            $user = User::find($request->user_id);
-            $salary = $user->salary;
-            $result = Decision::query()->create([
-                'user_id' => $request->user_id,
-                'type' => 'advanced',
-                'amount' => ($salary / 2) ,
-                'dateTime' => $request->dateTime,
-                'salary' => $salary
+    {
+        return DB::transaction(function () use ($request) {
+            $request->update([
+                'status' => 'accepted'
             ]);
-        }
+            // تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
+            //  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل
+            if ($request->type == 'advanced') {
+                $user = User::find($request->user_id);
+                $salary = $user->salary;
+                $result = Decision::query()->create([
+                    'user_id' => $request->user_id,
+                    'type' => 'advanced',
+                    'amount' => ($salary / 2),
+                    'dateTime' => $request->dateTime,
+                    'salary' => $salary
+                ]);
+            }
 
         return ResponseHelper::updated([
             'message' => 'Request accepted successfully',
@@ -176,8 +170,7 @@ class RequestController extends Controller
     {
         $validate = $request->validated();
 
-        if($validate['duration'] == 'hourly')
-        {
+        if ($validate['duration'] == 'hourly') {
             $start_vac = Carbon::parse($validate['startDate']);
             $end_vac = Carbon::parse($validate['endDate']);
             $hours_number = $start_vac->diffInHours($end_vac);
@@ -189,20 +182,16 @@ class RequestController extends Controller
                 'hours_num' => $hours_number,
             ]);
             return ResponseHelper::created($new_req, 'Request sent successfully');
+        } elseif ($validate['duration'] == 'daily') {
+            $new_req = Absences::create([
+                'user_id' => $validate['user_id'],
+                'startDate' => $validate['startDate'],
+                'endDate' => $validate['endDate'],
+                'duration' => $validate['duration'],
+            ]);
+            return ResponseHelper::created($new_req, 'Request sent successfully');
+        } else {
+            return ResponseHelper::error($validate, null, 'error sending the request', 400);
         }
-            elseif ($validate['duration'] == 'daily')
-            {
-                $new_req = Absences::create([
-                    'user_id' => $validate['user_id'],
-                    'startDate' => $validate['startDate'],
-                    'endDate' => $validate['endDate'],
-                    'duration' => $validate['duration'],
-                ]);
-                return ResponseHelper::created($new_req, 'Request sent successfully');
-            }
-                else
-                {
-                    return ResponseHelper::error($validate, null, 'error sending the request', 400);
-                }
     }
 }
