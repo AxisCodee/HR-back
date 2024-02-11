@@ -147,4 +147,12 @@ class AbsencesController extends Controller
         ]);
         return ResponseHelper::success($new_abs, null, 'Absence added successfully');
     }
+
+    public function getUnjustified($user)
+    {
+        $new_abs = Absences::where('type','Unjustified')
+        ->where('user_id',$user)->get()->toArray();
+        return ResponseHelper::success($new_abs, null, 'Absence returned successfully');
+    }
+
 }

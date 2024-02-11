@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class PolicyController extends Controller
 {
-    public function show($id)
+    public function show(Request $request)
     {
-        $policy = Policy::query()->where('branch_id', $id)->first();
-        $rateTypes = RateType::query()->where('branch_id', $id)->get();
+        $policy = Policy::query()->where('branch_id', $request->branch_id)->first();
+        $rateTypes = RateType::query()->where('branch_id', $request->branch_id)->get();
         if (!$policy) {
             return ResponseHelper::error('this branch doesnt have policy', null);
         }
