@@ -72,7 +72,11 @@ class DecisionController extends Controller
     public function getUserDecisions(Request $request)
     {
         $result = DecisionService::user_decisions($request);
-
+        if ($result) {
+            return ResponseHelper::success($result, null);
+        } else {
+            return ResponseHelper::error('No results found', 404);
+        }
 
     }
 
