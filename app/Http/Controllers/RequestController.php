@@ -132,14 +132,19 @@ class RequestController extends Controller
     });
 
 }
-    public function rejectRequest(Request $request)
+    public function rejectRequest($request)
     {
-        $request->update(
-            [
-                'status' => 'rejected'
-            ]
-        );
+        // $request->update(
+        //     [
+        //         'status' => 'rejected'
+        //     ]
+        // );
 
+        $result=Request::where('id',$request)->update([
+
+            'status' => 'rejected'
+
+        ]);
         return ResponseHelper::success([
             'message' => 'request rejected successfully',
         ]);
