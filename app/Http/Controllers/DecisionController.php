@@ -70,13 +70,26 @@ class DecisionController extends Controller
     //get decisions for a specific user by id
     public function user_decisions(Request $request)
     {
-        $decisions =  User::with('my_decisions')->findOrFail($request->user_id);
-        $result = $decisions->my_decisions
-            ->where('type', $request->type)
-            ->whereDate('date', $request->date)->toArray();
-        //$time = $this->userServices->getReward($decisions, $request->date);
+        $userId = $request->user->id;
+        $date = $request->date;
+        $type = $request->type;
+
+        $result = User::query()
+            ->where('id', $userId)
+            ->with(['my_decisions' => function ($query) use ($date, $type) {
+                $query->whereDate('date', $date)
+                    ->where('type', $type);
+            }])
+            ->first();
 
         return ResponseHelper::success($result, null);
+    }
+
+
+
+
+
+    
         //     $user = User::with('my_decisions')->findOrFail($id);
         //     $decisions = $user->my_decisions;
         //     $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
@@ -96,5 +109,5 @@ class DecisionController extends Controller
         //         'absences'=>$abs,
         //         ]
         //         , null, 'user decisions returned successfully', 200);
-    }
+
 }
