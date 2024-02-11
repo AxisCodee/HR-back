@@ -63,9 +63,10 @@ class RequestController extends Controller
         return ResponseHelper::success($result, 'my requests:');
     }
 
-    public function getRequest(Request $request)
+    public function getRequest($request)
     {
         $result = Request::query()
+            ->where('id', $request)
             ->with('user:id,first_name,last_name')
             ->with('user.department:id,name')
             ->get()
