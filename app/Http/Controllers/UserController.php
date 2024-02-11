@@ -25,9 +25,17 @@ class UserController extends Controller
     //get all users info
     public function all_users(Request $request)
     {
-        $branch_id = $request->input('branch_id');
-        $all_users = User::query()->where('branch_id', $branch_id)->get()->toArray();
+        $all_users = User::query()->where('branch_id', $request->branch_id)
+            ->with('userInfo:id,user_id,image')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
+    }
+
+    public function usersWithoutDepartment(Request $request) //return users without departments
+    {
+        $all_users = User::query()->where('branch_id', $request->branch_id)
+            ->where('department_id', null)
+            ->with('userInfo:id,user_id,image')->get()->toArray();
+        return ResponseHelper::success($all_users, null, 'all users without departments', 200);
     }
     //get a specific user by the ID
     public function specific_user($id)
@@ -96,7 +104,8 @@ class UserController extends Controller
         $branchId = $request->input('branch_id');
         $department = Department::query()
             ->with('user')->whereHas('user', function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);    })
+                $query->where('branch_id', $branchId);
+            })
             ->get()
             ->toArray();
         return ResponseHelper::success($department);
@@ -118,7 +127,7 @@ class UserController extends Controller
     public function storeTeams(Request $request)
     {
         return DB::transaction(function () use ($request) {
-            $team = Department::updateOrCreate(['name' => $request->name,'branch_id'=>$request->branch_id]);
+            $team = Department::updateOrCreate(['name' => $request->name, 'branch_id' => $request->branch_id]);
             if ($request->users_array && is_array($request->users_array)) {
                 foreach ($request->users_array as $user_id) {
                     $update = User::where('id', $user_id)->first();
