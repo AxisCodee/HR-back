@@ -148,11 +148,16 @@ class AbsencesController extends Controller
         return ResponseHelper::success($new_abs, null, 'Absence added successfully');
     }
 
-    public function getUnjustified($user)
+    public function getAbsences($user)
     {
-        $new_abs = Absences::where('type','Unjustified')
-        ->where('user_id',$user)->get()->toArray();
-        return ResponseHelper::success($new_abs, null, 'Absence returned successfully');
+        $absences = Absences::where('user_id', $user)->get();
+
+        $groupedAbsences = $absences->groupBy('type')->toArray();
+    
+        return ResponseHelper::success([
+            'justified' => $groupedAbsences['Justified'] ?? [],
+            'unjustified' => $groupedAbsences['Unjustified'] ?? [],
+        ], null, 'Absences returned successfully');
     }
 
 }
