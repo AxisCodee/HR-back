@@ -226,6 +226,7 @@ Route::prefix('Absence')->group(function () {
         Route::post('AddAbsence', 'store_absence');
         Route::get('getAbsences/{user}', 'getAbsences');
 
+        Route::post('deleteAbsence/{absence}', 'deleteAbsence');
 
     });
 });
