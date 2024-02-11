@@ -12,6 +12,7 @@ use App\Models\Late;
 use App\Models\UserInfo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 
 class DecisionController extends Controller
 {
@@ -64,33 +65,35 @@ public function edit_decision(DecisionRequest $request, $id)
     }
 
 
-public function user_decisions($id)
-{
-    $user = User::with('my_decisions')->findOrFail($id);
-    $decisions = $user->my_decisions;
-    $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
-    $abs = Absences::query()->where('user_id', $id)->get()->toArray();
 
-    foreach ($abs as &$absence) {
-        $startDate = Carbon::parse($absence['startDate']);
-        $absence['day'] = $startDate->day;
+    public function user_decisions($id)
+    {
+        $user = User::with('my_decisions')->findOrFail($id);
+        $decisions = $user->my_decisions;
+        $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
+        $abs = Absences::query()->where('user_id', $id)->get()->toArray();
+
+        foreach ($abs as &$absence) {
+            $startDate = Carbon::parse($absence['startDate']);
+            $day = Lang::get('date.days.' . $startDate->dayOfWeek);
+            $absence['day'] = $day;
+        }
+
+        $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
+            return [$type => $decisions->where('type', $type)->values()];
+        })->all();
+
+        extract($groupedDecisions);
+
+        return ResponseHelper::success([
+            'rewards' => $reward,
+            'warnings' => $warning,
+            'deductions' => $deduction,
+            'alerts' => $alert,
+            'penalty' => $penalty,
+            'absences' => $abs,
+        ], null, 'user decisions returned successfully', 200);
     }
-
-    $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
-        return [$type => $decisions->where('type', $type)->values()];
-    })->all();
-
-    extract($groupedDecisions);
-
-    return ResponseHelper::success([
-        'rewards' => $reward,
-        'warnings' => $warning,
-        'deductions' => $deduction,
-        'alerts' => $alert,
-        'penalty' => $penalty,
-        'absences' => $abs,
-    ], null, 'user decisions returned successfully', 200);
-}
 
 }
 
