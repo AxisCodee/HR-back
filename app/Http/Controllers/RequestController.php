@@ -68,7 +68,7 @@ class RequestController extends Controller
             ->get()
             ->toArray();
         if (empty($result)) {
-            return ResponseHelper::success($result,'No requests found for the user');
+            return ResponseHelper::success($result,null,'No requests found for the user',200);
         }
         return ResponseHelper::success($result, 'My requests:');
     }
