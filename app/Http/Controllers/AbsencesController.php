@@ -169,7 +169,7 @@ class AbsencesController extends Controller
         }
 
         $result->update([
-            'type' => null
+            'type' => 'null'
         ]);
 
         return ResponseHelper::success([], null, 'Absence deleted successfully', 200);
