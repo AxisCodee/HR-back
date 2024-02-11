@@ -72,6 +72,9 @@ class DecisionController extends Controller
     public function getUserDecisions(Request $request)
     {
         $result = DecisionService::user_decisions($request);
+
+        return ResponseHelper::success($result, null);
+
     }
 
 
