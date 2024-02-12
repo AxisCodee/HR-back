@@ -134,7 +134,7 @@ class UserController extends Controller
             if ($existing) {
                 if ($request->has('team_leader')) {
                     $existing->team_leader->update(['role' => 'employee']);
-                    $newleader = User::where('id',$request->team_leader)
+                    $newleader = User::findOrFail($request->team_leader)
                         ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
                 }
                 if ($request->has('users_array')) {
