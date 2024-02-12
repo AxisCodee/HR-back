@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(AbsencesSeeder::class);
-        $this->call(AddressesSeeder::class);
         $this->call(CareersSeeder::class);
         $this->call(CertificateSeeder::class);
         $this->call(ContactSeeder::class);
