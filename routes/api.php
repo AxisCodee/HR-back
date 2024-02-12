@@ -227,7 +227,7 @@ Route::prefix('Absence')->group(function () {
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
         Route::post('AddAbsence', 'store_absence');
         Route::get('getAbsences/{user}', 'getAbsences');
-        Route::post('deleteAbsence/{absence}', 'deleteAbsence');
+        Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
 
 
     });

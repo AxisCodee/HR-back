@@ -27,7 +27,7 @@ class UserController extends Controller
     public function all_users(Request $request)
     {
         $all_users = User::query()->where('branch_id', $request->branch_id)
-            ->with('department','userInfo:id,user_id,image')->get()->toArray();
+            ->with('department', 'userInfo:id,user_id,image')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
@@ -129,11 +129,13 @@ class UserController extends Controller
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($request) {
-            $existing = Department::where('name', $request->name)->with('team_leader')->first();
+            $existing = Department::where('name', $request->name)->first();
 
             if ($existing) {
                 if ($request->has('team_leader')) {
-                    $existing->team_leader->update(['role' => 'employee']);
+                    $oldleader = User::where('department_id', $existing->id)
+                        ->where('role', 'team_leader')
+                        ->update(['role' => 'employee']);
                     $newleader = User::findOrFail($request->team_leader)
                         ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
                 }
@@ -144,13 +146,14 @@ class UserController extends Controller
             }
 
             $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
-            $team_leader = User::where('id', $request->team_leader)->update(['role' => 'team_leader','department_id'=>$existing->id]);
+            $team_leader = User::where('id', $request->team_leader)->first()->update(['role' => 'team_leader', 'department_id' => $existing->id]);
             if ($request->has('users_array')) {
                 goto addusersloop;
             }
             return ResponseHelper::success('Team created successfuly');
 
             addusersloop:
+
             foreach ($request->users_array as $user) {
                 $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
             }
@@ -161,17 +164,25 @@ class UserController extends Controller
     //update an existing team name
     public function updateTeams(Request $request, $id)
     {
-        $edit = Department::findOrFail($id);
-        $edited = $edit->update([
-            'name' => $request->name,
-        ]);
-        return ResponseHelper::updated($edit, 'team updated successfully');
+        try {
+            $edit = Department::findOrFail($id);
+            $edited = $edit->update([
+                'name' => $request->name,
+            ]);
+            return ResponseHelper::updated($edit, 'team updated successfully');
+        } catch (\Exception $e) {
+            return ResponseHelper::error('Team does not exist');
+        }
     }
     //delete an exisiting team
     public function deleteTeam($id)
     {
-        $remove = Department::findOrFail($id)->delete();
-        return ResponseHelper::deleted('team deleted successfully');
+        try {
+            $remove = Department::findOrFail($id)->delete();
+            return ResponseHelper::deleted('team deleted successfully');
+        } catch (\Exception $e) {
+            return ResponseHelper::error('Team does not exist');
+        }
     }
     //get all members of a team
     public function getMemberOfTeam(Department $department)
