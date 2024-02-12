@@ -222,10 +222,12 @@ Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
+        Route::post('update', 'update');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
         Route::post('AddAbsence', 'store_absence');
         Route::get('getAbsences/{user}', 'getAbsences');
+        Route::post('deleteAbsence/{absence}', 'deleteAbsence');
 
 
     });

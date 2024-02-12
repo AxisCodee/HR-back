@@ -25,7 +25,6 @@ class AbsencesController extends Controller
         } else {
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
-
         }
         $user = User::query()->where('branch_id',  $branchId)->get();
 
@@ -59,14 +58,18 @@ class AbsencesController extends Controller
         return ResponseHelper::success($userAbcences);
     }
 
-    public function update(UpdateAbsencesRequest $request, Absences $absences)
+    public function update(Request $request)
     {
-        $result = $absences->update(
-            [
-                'startDate' => $request->startDate
-            ]
-        );
-        return ResponseHelper::success($result);
+        try {
+            $result = Absences::query()->where('id', $request->id)->update(
+                [
+                    'startDate' => $request->startDate
+                ]
+            );
+            return ResponseHelper::success($result);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function getDailyAbsence(Request $request, $branch)
@@ -180,5 +183,4 @@ class AbsencesController extends Controller
 
         return ResponseHelper::success([], null, 'Absence deleted successfully', 200);
     }
-
 }
