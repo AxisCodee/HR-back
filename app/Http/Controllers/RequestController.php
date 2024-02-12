@@ -173,7 +173,7 @@ class RequestController extends Controller
             return ResponseHelper::success($result);
         }
 
-        return ResponseHelper::success('Your request', $result);
+        return ResponseHelper::success( $result,null,'complaint',200);
     }
 
     public function send_request(SendRequest $request)
