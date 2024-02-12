@@ -151,4 +151,30 @@ class AbsencesController extends Controller
         ]);
         return ResponseHelper::success($new_abs, null, 'Absence added successfully');
     }
+
+    public function getAbsences($user)
+    {
+        $absences = Absences::where('user_id', $user)->get();
+        $groupedAbsences = $absences->groupBy('type')->toArray();
+        return ResponseHelper::success([
+            'justified' => $groupedAbsences['justified'] ?? [],
+            'unjustified' => $groupedAbsences['Unjustified'] ?? [],
+        ], null, 'Absences returned successfully');
+    }
+
+    public function deleteAbsence($absence)
+    {
+        $result = Absences::find($absence);
+
+        if (!$result) {
+            return ResponseHelper::error('Absence not found', 404);
+        }
+
+        $result->update([
+            'type' => 'null'
+        ]);
+
+        return ResponseHelper::success([], null, 'Absence deleted successfully', 200);
+    }
+
 }

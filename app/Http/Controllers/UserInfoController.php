@@ -46,7 +46,7 @@ class UserInfoController extends Controller
     {
         $userId = Auth::id() ?? $id;
         $result = User::query()
-            ->with('userInfo', 'address', 'notes', 'languages', 'certificates', 'study_situations', 'skills')
+            ->with('userInfo', 'address', 'notes', 'languages', 'certificates', 'study_situations', 'absences')
             ->where('id', $userId)
             ->first()->toArray();
         return ResponseHelper::success([$result], null);

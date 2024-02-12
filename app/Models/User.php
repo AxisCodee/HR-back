@@ -216,6 +216,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Decision::class, 'user_id', 'id');
     }
 
+    public function penalties()
+    {
+        return $this->hasMany(Decision::class, 'user_id', 'id')
+        ->where('type', 'penalty');
+    }
+
     public function salary()
     {
         return $this->hasMany(UserSalary::class, 'user_id');
@@ -233,13 +239,17 @@ class User extends Authenticatable implements JWTSubject
             ->with('userInfo');
     }
 
+
+
     public function my_contacts()
     {
-        return $this->hasMany(Contact::class, 'user_id', 'id')->where('type', 'user_num')->orwhere('type', 'email');
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+        ->where('type', 'user_num')->orwhere('type', 'email');
     }
     public function emergency()
     {
-        return $this->hasMany(Contact::class, 'user_id', 'id')->where('type', 'emergency');
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+        ->where('type', 'emergency');
     }
 
 
@@ -269,7 +279,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function userInfo()
     {
-        return $this->hasOne(UserInfo::class);
+        return $this->hasOne(UserInfo::class,'user_id');
     }
 
     public function address()
@@ -284,7 +294,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function deposits()
     {
-        return $this->hasMany(Deposit::class);
+        return $this->hasMany(Deposit::class,'user_id');
     }
 
     public function  notes()

@@ -59,6 +59,7 @@ Route::prefix('Users')->group(function () {
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
         Route::get('professional', 'user_prof');
+        Route::get('usersWithoutDepartment', 'usersWithoutDepartment');
     });
 });
 
@@ -69,7 +70,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('edit/{decision}', 'edit_decision');
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
-        Route::get('user_desicions/{id}', 'user_decisions');
+        Route::get('getUserDecisions', 'getUserDecisions');
     });
 });
 
@@ -224,7 +225,6 @@ Route::prefix('Absence')->group(function () {
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
         Route::post('AddAbsence', 'store_absence');
-        Route::get('cuurentAbsence', 'cuurentAbsence');
     });
 });
 
@@ -232,15 +232,15 @@ Route::prefix('EmployeeOfMonth')->group(function () {
     Route::controller(EmpOfMonthController::class)->group(function () {
         Route::get('All', 'index');
         Route::post('Add', 'store');
-        Route::get('Show/{branchId}', 'show');
+        Route::get('Show', 'show');
     });
 });
 
 Route::prefix('Policy')->group(function () {
     Route::controller(PolicyController::class)->group(function () {
-        Route::get('Show/{id}', 'show');
+        Route::get('Show', 'show');
         Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
+        Route::post('Update', 'update');
     });
 });
 Route::prefix('branch')->group(function () {

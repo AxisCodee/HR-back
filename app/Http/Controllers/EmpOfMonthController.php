@@ -69,7 +69,7 @@ class EmpOfMonthController extends Controller
      */
     public function show(Request $request) //show emp for current month
     {
-        $branchId = $request->input('branch_id');
+        $branchId = $request->branch_id;
         $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
             ->with('user')->whereHas('user', function ($query) use ($branchId) {

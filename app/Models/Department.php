@@ -16,5 +16,10 @@ class Department extends Model
       return $this->hasMany('App\Models\User');
     }
 
+    public function team_leader()
+    {
+        return $this->hasOne(User::class)->where('role','team_leader');
+    }
+
     protected $hidden=['created_at','updated_at'];
 }
