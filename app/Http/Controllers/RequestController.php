@@ -157,8 +157,9 @@ class RequestController extends Controller
         return ResponseHelper::created($complaint, 'request created successfully');
     }
 
-    public function getComplaints($branchId)
+    public function getComplaints(Request $request)
     {
+        $branchId= $request->branch_id;
         $result = Request::query()->with('user')->whereHas('user', function ($query) use ($branchId) {
             $query->where('branch_id', $branchId);
         })
