@@ -146,7 +146,7 @@ class UserController extends Controller
             }
 
             $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
-            $team_leader = User::where('id', $request->team_leader)->first()->update(['role' => 'team_leader', 'department_id' => $existing->id]);
+            $team_leader = User::where('id', $request->team_leader)->update(['role' => 'team_leader', 'department_id' => $existing->id]);
             if ($request->has('users_array')) {
                 goto addusersloop;
             }
