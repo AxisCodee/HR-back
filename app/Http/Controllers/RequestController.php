@@ -159,16 +159,20 @@ class RequestController extends Controller
 
     public function getComplaints(Request $request)
     {
-        $branchId= $request->branch_id;
-        $result = Request::query()->with('user')->whereHas('user', function ($query) use ($branchId) {
-            $query->where('branch_id', $branchId);
-        })
+        $branchId = $request->branch_id;
+        $result = Request::with('user')
+            ->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })
             ->where('type', 'complaint')
-            ->get()->toArray();
+            ->get()
+            ->toArray();
+
         if (empty($result)) {
-            return ResponseHelper::success($result, 'Empty');
+            return ResponseHelper::success('Empty', $result);
         }
-        return ResponseHelper::success($result, 'your request');
+
+        return ResponseHelper::success('Your request', $result);
     }
 
     public function send_request(SendRequest $request)
