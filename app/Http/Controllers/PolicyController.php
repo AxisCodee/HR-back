@@ -11,14 +11,14 @@ use Illuminate\Support\Facades\DB;
 
 class PolicyController extends Controller
 {
-    public function show($id)
+    public function show(Request $request)
     {
-        $policy = Policy::query()->where('branch_id', $id)->first();
-        $rateTypes = RateType::query()->where('branch_id', $id)->get();
+        $policy = Policy::query()->where('branch_id', $request->branch_id)->first();
+        $rateTypes = RateType::query()->where('branch_id', $request->branch_id)->get();
         if (!$policy) {
             return ResponseHelper::error('this branch doesnt have policy', null);
         }
-        return ResponseHelper::success(["policy" => $policy, "rateTypes" => $rateTypes], null);
+        return ResponseHelper::success(["policy" => $policy,  "rateTypes" => $rateTypes], null);
     }
     public function store(PolicyRequest $request)
     {
@@ -40,20 +40,19 @@ class PolicyController extends Controller
         });
         return ResponseHelper::error('Error', null);
     }
-    public function update(PolicyRequest $request, $id)
+    public function update(Request $request)
     {
-        $validated = $request->validated();
-        return DB::transaction(function () use ($validated, $id) {
-            $policy = Policy::query()->where('branch_id', $id)->first();
+        return DB::transaction(function () use ($request) {
+            $policy = Policy::query()->where('branch_id', $request->branch_id)->first();
             if (!$policy) {
                 return ResponseHelper::error('the policy is not saved yet', null);
             }
-            $types = $validated['rate_type'];
-            $validated = collect($validated)->except('rate_type')->toArray();
+            $types = $request['rate_type'];
+            $validated = collect($request)->except('rate_type')->toArray();
             $policy->update($validated);
             $branchID = $validated['branch_id'];
             if ($types) {
-                RateType::query()->where('branch_id', $id)->pluck('rate_type')->toArray();
+                RateType::query()->where('branch_id', $request->branch_id)->pluck('rate_type')->toArray();
                 foreach ($types as $type) {
                     RateType::updateOrCreate(
                         ['branch_id' => $branchID, 'rate_type' => $type],

@@ -59,6 +59,7 @@ Route::prefix('Users')->group(function () {
         Route::get('MembersHierarchy', 'roleHierarchy');
         Route::get('user/{id}', 'specific_user');
         Route::get('professional', 'user_prof');
+        Route::get('usersWithoutDepartment', 'usersWithoutDepartment');
     });
 });
 
@@ -69,7 +70,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('edit/{decision}', 'edit_decision');
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
-        Route::get('user_desicions/{id}', 'user_decisions');
+        Route::get('getUserDecisions', 'getUserDecisions');
     });
 });
 
@@ -150,15 +151,6 @@ Route::prefix('Team')->group(function () {
     });
 });
 
-///thales
-Route::prefix('Address')->group(function () {
-    Route::controller(AddressController::class)->group(function () {
-        Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
-        //Route::get('Show/{id}', 'show');
-        Route::delete('Delete/{id}', 'destory');
-    });
-});
 Route::prefix('Deposit')->group(function () {
     Route::controller(DepositController::class)->group(function () {
         Route::get('All', 'index');
@@ -221,9 +213,14 @@ Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
+        Route::post('update', 'update');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
         Route::post('AddAbsence', 'store_absence');
+        Route::get('getAbsences/{user}', 'getAbsences');
+        Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
+
+
     });
 });
 
@@ -237,9 +234,9 @@ Route::prefix('EmployeeOfMonth')->group(function () {
 
 Route::prefix('Policy')->group(function () {
     Route::controller(PolicyController::class)->group(function () {
-        Route::get('Show/{id}', 'show');
+        Route::get('Show', 'show');
         Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
+        Route::post('Update', 'update');
     });
 });
 Route::prefix('branch')->group(function () {

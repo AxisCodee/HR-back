@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Department;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
-class UpdateAddressRequest extends FormRequest
+class StoreTeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +26,15 @@ class UpdateAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string'],
-            'city' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:25'],
+            'users_array' => ['array', 'nullable'],
+            'users_array.*' => ['nullable', 'integer', 'exists:users,id'],
+            'branch_id' => ['required', 'integer', 'exists:branches,id'],
+            'team_leader' => [
+                Rule::requiredIf(function(){
+                    return !Department::where('name', $this->input('name'))->exists();
+                }),
+            'integer', 'exists:users,id'],
         ];
     }
 

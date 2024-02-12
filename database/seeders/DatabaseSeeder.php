@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(AbsencesSeeder::class);
-        $this->call(AddressesSeeder::class);
         $this->call(CareersSeeder::class);
         $this->call(CertificateSeeder::class);
         $this->call(ContactSeeder::class);
@@ -38,7 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserInfoSeeder::class);
         $this->call(CalendarsSeeder::class);
         $this->call(PermissionSeeder::class);
-        $this->call(PolicySeeder::class);
+       //$this->call(PolicySeeder::class);
         $this->call(EmpOfMonthSeeder::class);
 
         // \App\Models\User::factory(10)->create();

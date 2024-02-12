@@ -20,17 +20,20 @@ class AbsencesController extends Controller
         if ($request->has('date')) {
             $dateInput = request()->input('date');
             $year = substr($dateInput, 0, 4);
+
             $month = substr($dateInput, 5, 2);
         } else {
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
         }
         $user = User::query()->where('branch_id',  $branchId)->get();
+
         foreach ($user as $item) {
             $justified = $item->absences()
                 ->where('type', 'justified')
                 ->whereYear('startDate', $year)
                 ->whereMonth('startDate', $month)->count();
+
             $Unjustified = $item->absences()
                 ->where('type', 'Unjustified')
                 ->whereYear('startDate', $year)
@@ -55,14 +58,18 @@ class AbsencesController extends Controller
         return ResponseHelper::success($userAbcences);
     }
 
-    public function update(UpdateAbsencesRequest $request, Absences $absences)
+    public function update(Request $request)
     {
-        $result = $absences->update(
-            [
-                'startDate' => $request->startDate
-            ]
-        );
-        return ResponseHelper::success($result);
+        try {
+            $result = Absences::query()->where('id', $request->id)->update(
+                [
+                    'startDate' => $request->startDate
+                ]
+            );
+            return ResponseHelper::success('updated successfully');
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function getDailyAbsence(Request $request, $branch)
@@ -140,11 +147,40 @@ class AbsencesController extends Controller
 
     public function store_absence(Request $request)
     {
+        foreach($request->absence as $item)
+        {
         $new_abs = Absences::create([
-            'type' => 'Unjustified',
-            'user_id' => $request->user_id,
-            'startDate' => $request->date,
+            'type' => $item['type'],
+            'user_id' => $item['user_id'],
+            'startDate' => $item['date'],
         ]);
-        return ResponseHelper::success($new_abs, null, 'Absence added successfully');
+        $results[]=$new_abs;
+    }
+        return ResponseHelper::success( $results, null, 'Absence added successfully');
+    }
+
+    public function getAbsences($user)
+    {
+        $absences = Absences::where('user_id', $user)->get();
+        $groupedAbsences = $absences->groupBy('type')->toArray();
+        return ResponseHelper::success([
+            'justified' => $groupedAbsences['justified'] ?? [],
+            'unjustified' => $groupedAbsences['Unjustified'] ?? [],
+        ], null, 'Absences returned successfully');
+    }
+
+    public function deleteAbsence($absence)
+    {
+        $result = Absences::find($absence);
+
+        if (!$result) {
+            return ResponseHelper::error('Absence not found', 404);
+        }
+
+        $result->update([
+            'type' => 'null'
+        ]);
+
+        return ResponseHelper::success([], null, 'Absence deleted successfully', 200);
     }
 }

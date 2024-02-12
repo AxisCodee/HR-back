@@ -239,6 +239,8 @@ class User extends Authenticatable implements JWTSubject
             ->with('userInfo');
     }
 
+
+
     public function my_contacts()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
@@ -277,13 +279,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function userInfo()
     {
-        return $this->hasOne(UserInfo::class);
+        return $this->hasOne(UserInfo::class,'user_id');
     }
 
-    public function address()
-    {
-        return $this->hasOne(Address::class);
-    }
 
     public function careers()
     {
@@ -292,7 +290,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function deposits()
     {
-        return $this->hasMany(Deposit::class);
+        return $this->hasMany(Deposit::class,'user_id');
     }
 
     public function  notes()

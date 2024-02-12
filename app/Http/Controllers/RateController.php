@@ -47,6 +47,7 @@ class RateController extends Controller
         $userId = $request->user_id;
         $rateTypeId = $request->rate_type_id;
         $rate = $request->rate;
+
         try {
             $result = $this
                 ->rateService
@@ -122,7 +123,7 @@ class RateController extends Controller
                 }
                 return $result;
             })
-            ->values();
+            ->values()->toArray();
         return ResponseHelper::success($rates, null, 'rates', 200);
     }
 
