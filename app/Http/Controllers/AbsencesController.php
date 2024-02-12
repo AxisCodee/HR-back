@@ -20,7 +20,7 @@ class AbsencesController extends Controller
         if ($request->has('date')) {
             $dateInput = request()->input('date');
             $year = substr($dateInput, 0, 4);
-           
+
             $month = substr($dateInput, 5, 2);
         } else {
             $year = Carbon::now()->format('Y');
