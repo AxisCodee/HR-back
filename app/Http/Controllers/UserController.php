@@ -143,9 +143,8 @@ class UserController extends Controller
                 return ResponseHelper::success('team already exists');
             }
 
-            $new_team = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
-            $team_leader = User::where('id', $request->team_leader)->first();
-            $team_leader->update(['role' => 'team_leader']);
+            $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
+            $team_leader = User::where('id', $request->team_leader)->first()->update(['role' => 'team_leader','department_id'=>$existing->id]);
             if ($request->has('users_array')) {
                 goto addusersloop;
             }
@@ -153,8 +152,7 @@ class UserController extends Controller
 
             addusersloop:
             foreach ($request->users_array as $user) {
-                $adduser = User::where('id', $user)->first();
-                $adduser->update(['department_id' => $existing->id]);
+                $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
             }
             return ResponseHelper::success('Team created and members added successfuly');
         });
