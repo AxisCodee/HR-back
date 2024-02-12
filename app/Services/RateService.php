@@ -13,9 +13,12 @@ class RateService
 {
     public function setRate($userId, $rateTypeId, $rate)
     {
+
         $user = User::find($userId);
+
         try {
             $rateType = RateType::findOrFail($rateTypeId);
+
             $result = Rate::query()->create([
                 'user_id' => $userId,
                 'rate_type_id' => $rateTypeId,
