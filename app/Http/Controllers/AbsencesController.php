@@ -20,17 +20,21 @@ class AbsencesController extends Controller
         if ($request->has('date')) {
             $dateInput = request()->input('date');
             $year = substr($dateInput, 0, 4);
+           
             $month = substr($dateInput, 5, 2);
         } else {
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
+
         }
         $user = User::query()->where('branch_id',  $branchId)->get();
+
         foreach ($user as $item) {
             $justified = $item->absences()
                 ->where('type', 'justified')
                 ->whereYear('startDate', $year)
                 ->whereMonth('startDate', $month)->count();
+
             $Unjustified = $item->absences()
                 ->where('type', 'Unjustified')
                 ->whereYear('startDate', $year)
