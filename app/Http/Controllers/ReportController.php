@@ -38,8 +38,9 @@ class ReportController extends Controller
 
     //get all reports
 
-    public function all_reports($branchId)
+    public function all_reports(Request $request)
     {
+        $branchId = $request->input('branch_id');
         $user = User::where('branch_id', $branchId);
         $all = $user->reports()->get()->toArray();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);

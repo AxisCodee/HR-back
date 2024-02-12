@@ -144,12 +144,16 @@ class AbsencesController extends Controller
 
     public function store_absence(Request $request)
     {
+        foreach($request->absence as $item)
+        {
         $new_abs = Absences::create([
-            'type' => 'Unjustified',
-            'user_id' => $request->user_id,
-            'startDate' => $request->date,
+            'type' => $item['type'],
+            'user_id' => $item['user_id'],
+            'startDate' => $item['date'],
         ]);
-        return ResponseHelper::success($new_abs, null, 'Absence added successfully');
+        $results[]=$new_abs;
+    }
+        return ResponseHelper::success( $results, null, 'Absence added successfully');
     }
 
     public function getAbsences($user)
