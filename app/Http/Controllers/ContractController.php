@@ -17,7 +17,7 @@ class ContractController extends Controller
     public function index(Request $request)
     {
         $branchId = $request->input('branch_id');
-        $contracts = Contract::with('user')->whereHas('user', function ($query) use ($branchId) {
+        $contracts = Contract::with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
             $query->where('branch_id', $branchId);
         })->get();
         if ($contracts->isEmpty()) {;
