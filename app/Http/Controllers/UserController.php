@@ -129,7 +129,7 @@ class UserController extends Controller
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($request) {
-            $existing = Department::where('name', $request->name)->with('team_leader')->first();
+            $existing = Department::where('name', $request->name)->with('team_leader');
 
             if ($existing) {
                 if ($request->has('team_leader')) {
