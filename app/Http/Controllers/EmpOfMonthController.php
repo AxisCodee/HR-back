@@ -7,6 +7,7 @@ use App\Models\EmpOfMonth;
 use App\Http\Requests\StoreEmpOfMonthRequest;
 use App\Http\Requests\UpdateEmpOfMonthRequest;
 use App\Models\Request;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\DB;
 
 class EmpOfMonthController extends Controller
@@ -67,10 +68,10 @@ class EmpOfMonthController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request) //show emp for current month
+    public function show(HttpRequest $request) //show emp for current month
     {
-        $branchId = $request->branch_id;
-        $result = EmpOfMonth::query()
+        $branchId =  $request->branch_id;
+                $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
             ->with('user')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId); })->first();
