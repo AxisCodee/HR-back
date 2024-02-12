@@ -15,7 +15,7 @@ class EmpOfMonthController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) //show all employees of the monthes
+    public function index(HttpRequest $request) //show all employees of the monthes
     {
         $branchId = $request->input('branch_id');
         $result = EmpOfMonth::query()
