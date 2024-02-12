@@ -32,7 +32,7 @@ class ReportController extends Controller
     //get all user's reports
     public function my_reports()
     {
-        $all = Report::query()->where('user_id', Auth::user()->id)->get()->toArray();
+        $all = Report::query()->where('user_id', Auth::id())->get()->toArray();
         return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
     }
 
@@ -47,7 +47,7 @@ class ReportController extends Controller
     }
 
     //get all reports of today
-    public function daily_reports( Request $request)
+    public function daily_reports(Request $request)
     {
         $branchId = $request->input('branch_id');
         $user = User::where('branch_id', $branchId);
@@ -91,7 +91,7 @@ class ReportController extends Controller
     public function report(Request $request)
     {
         $date = $request->date;
-        $result =  User::with(['notes', 'deposits', 'department', 'penalties' , 'attendance' => function ($query) use ($date) {
+        $result =  User::with(['notes', 'deposits', 'department', 'penalties', 'attendance' => function ($query) use ($date) {
             $query->whereDate('datetime', $date);
         }])->find($request->user_id);
         return ResponseHelper::success([

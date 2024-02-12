@@ -151,15 +151,6 @@ Route::prefix('Team')->group(function () {
     });
 });
 
-///thales
-Route::prefix('Address')->group(function () {
-    Route::controller(AddressController::class)->group(function () {
-        Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
-        //Route::get('Show/{id}', 'show');
-        Route::delete('Delete/{id}', 'destory');
-    });
-});
 Route::prefix('Deposit')->group(function () {
     Route::controller(DepositController::class)->group(function () {
         Route::get('All', 'index');
