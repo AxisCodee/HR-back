@@ -102,7 +102,7 @@ class UserController extends Controller
     //get all teams with their users
     public function getTeams(Request $request)
     {
-        $branchId = $request->input('branch_id');
+        $branchId = $request->branch_id;
         $department = Department::query()
             ->with('user')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
