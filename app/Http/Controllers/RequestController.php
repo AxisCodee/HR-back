@@ -150,7 +150,7 @@ class RequestController extends Controller
         $complaint = Request::query()->create(
             [
                 'user_id' => Auth::id(),
-                'type' => 'Complaint',
+                'type' => 'complaint',
                 'description' => $request->description
             ]
         );
