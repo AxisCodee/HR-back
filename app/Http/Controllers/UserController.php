@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\ContactRequest;
 use App\Http\Requests\StoreTeamRequest;
+use App\Http\Requests\UpdateTeamRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Career;
 use Illuminate\Http\Request;
@@ -133,9 +134,7 @@ class UserController extends Controller
 
             if ($existing) {
                 if ($request->has('team_leader')) {
-                    $oldleader = User::where('department_id', $existing->id)
-                        ->where('role', 'team_leader')
-                        ->update(['role' => 'employee']);
+                    $oldleader = $existing->team_leader->update(['role'=>'employee']);
                     $newleader = User::findOrFail($request->team_leader)
                         ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
                 }
@@ -162,16 +161,32 @@ class UserController extends Controller
     }
 
     //update an existing team name
-    public function updateTeams(Request $request, $id)
+    public function updateTeams(UpdateTeamRequest $request, $id)
     {
         try {
-            $edit = Department::findOrFail($id);
-            $edited = $edit->update([
-                'name' => $request->name,
-            ]);
-            return ResponseHelper::updated($edit, 'team updated successfully');
+            $request->validated();
+            DB::transaction(function () use ($request, $id) {
+                $edit = Department::with('team_leader')->findOrFail($id);
+                if ($request->name) {
+                    $edited = $edit->update([
+                        'name' => $request->name,
+                    ]);
+                }
+                if ($request->users_array) {
+                    foreach ($request->users_array as $user) {
+                        $add = User::findOrFail($user)->update(['department_id' => $id]);
+                    }
+                if($request->team_leader){
+                    $oldleader = $edit->team_leader->update(['role'=>'employee']);
+                    $newleader = User::findOrFail($request->team_leader)
+                        ->update(['role' => 'team_leader', 'department_id' =>$id]);
+                }
+                    return ResponseHelper::success('Members added & Team Updated successfuly');
+                }
+            });
+            return ResponseHelper::success('Team Updated successfuly');
         } catch (\Exception $e) {
-            return ResponseHelper::error('Team does not exist');
+            return ResponseHelper::error($e);
         }
     }
     //delete an exisiting team
