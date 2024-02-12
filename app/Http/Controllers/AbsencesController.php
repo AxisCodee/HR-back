@@ -66,7 +66,7 @@ class AbsencesController extends Controller
                     'startDate' => $request->startDate
                 ]
             );
-            return ResponseHelper::success($result);
+            return ResponseHelper::success('updated successfully');
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
