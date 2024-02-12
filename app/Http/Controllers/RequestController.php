@@ -11,6 +11,7 @@ use App\Models\Absences;
 use App\Models\Decision;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -157,7 +158,7 @@ class RequestController extends Controller
         return ResponseHelper::created($complaint, 'request created successfully');
     }
 
-    public function getComplaints(Request $request)
+    public function getComplaints(HttpRequest $request)
     {
         $branchId = $request->branch_id;
         $result = Request::with('user')
