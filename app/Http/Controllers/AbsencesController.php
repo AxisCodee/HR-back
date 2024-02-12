@@ -20,17 +20,20 @@ class AbsencesController extends Controller
         if ($request->has('date')) {
             $dateInput = request()->input('date');
             $year = substr($dateInput, 0, 4);
+
             $month = substr($dateInput, 5, 2);
         } else {
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
         }
         $user = User::query()->where('branch_id',  $branchId)->get();
+
         foreach ($user as $item) {
             $justified = $item->absences()
                 ->where('type', 'justified')
                 ->whereYear('startDate', $year)
                 ->whereMonth('startDate', $month)->count();
+
             $Unjustified = $item->absences()
                 ->where('type', 'Unjustified')
                 ->whereYear('startDate', $year)
@@ -55,14 +58,18 @@ class AbsencesController extends Controller
         return ResponseHelper::success($userAbcences);
     }
 
-    public function update(UpdateAbsencesRequest $request, Absences $absences)
+    public function update(Request $request)
     {
-        $result = $absences->update(
-            [
-                'startDate' => $request->startDate
-            ]
-        );
-        return ResponseHelper::success($result);
+        try {
+            $result = Absences::query()->where('id', $request->id)->update(
+                [
+                    'startDate' => $request->startDate
+                ]
+            );
+            return ResponseHelper::success($result);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function getDailyAbsence(Request $request, $branch)
@@ -172,5 +179,4 @@ class AbsencesController extends Controller
 
         return ResponseHelper::success([], null, 'Absence deleted successfully', 200);
     }
-
 }

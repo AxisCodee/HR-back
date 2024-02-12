@@ -27,7 +27,7 @@ class UserController extends Controller
     public function all_users(Request $request)
     {
         $all_users = User::query()->where('branch_id', $request->branch_id)
-            ->with('userInfo:id,user_id,image')->get()->toArray();
+            ->with('department','userInfo:id,user_id,image')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
@@ -102,7 +102,7 @@ class UserController extends Controller
     //get all teams with their users
     public function getTeams(Request $request)
     {
-        $branchId = $request->input('branch_id');
+        $branchId = $request->branch_id;
         $department = Department::query()
             ->with('user')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
@@ -143,9 +143,8 @@ class UserController extends Controller
                 return ResponseHelper::success('team already exists');
             }
 
-            $new_team = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
-            $team_leader = User::where('id', $request->team_leader)->first();
-            $team_leader->update(['role' => 'team_leader']);
+            $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
+            $team_leader = User::where('id', $request->team_leader)->first()->update(['role' => 'team_leader','department_id'=>$existing->id]);
             if ($request->has('users_array')) {
                 goto addusersloop;
             }
@@ -153,8 +152,7 @@ class UserController extends Controller
 
             addusersloop:
             foreach ($request->users_array as $user) {
-                $adduser = User::where('id', $user)->first();
-                $adduser->update(['department_id' => $existing->id]);
+                $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
             }
             return ResponseHelper::success('Team created and members added successfuly');
         });

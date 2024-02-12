@@ -70,7 +70,7 @@ Route::prefix('Decision')->group(function () {
         Route::post('edit/{decision}', 'edit_decision');
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
-        Route::post('user_decisions', 'user_decisions');
+        Route::get('getUserDecisions', 'getUserDecisions');
     });
 });
 
@@ -222,12 +222,13 @@ Route::prefix('Absence')->group(function () {
     Route::controller(AbsencesController::class)->group(function () {
         Route::get('All', 'index');
         Route::get('Show/{user}', 'show');
+        Route::post('update', 'update');
         Route::get('Uabsences', 'unjustifiedAbsence');
         Route::post('DynamicDecision/{absences}', 'DynamicDecision');
         Route::post('AddAbsence', 'store_absence');
         Route::get('getAbsences/{user}', 'getAbsences');
-
         Route::post('deleteAbsence/{absence}', 'deleteAbsence');
+
 
     });
 });
