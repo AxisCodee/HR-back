@@ -151,7 +151,6 @@ class UserController extends Controller
             return ResponseHelper::success('Team created successfuly');
 
             addusersloop:
-            $team_leader = User::where('id', $request->team_leader)->update(['role' => 'team_leader','department_id'=>$existing->id]);
 
             foreach ($request->users_array as $user) {
                 $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
