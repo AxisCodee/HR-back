@@ -105,7 +105,7 @@ class UserController extends Controller
     {
         $branchId = $request->branch_id;
         $department = Department::query()
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
             ->get()
