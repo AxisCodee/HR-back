@@ -71,6 +71,8 @@ Route::prefix('Decision')->group(function () {
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
         Route::get('getUserDecisions', 'getUserDecisions');
+        Route::get('getUserAbsence', 'getUserAbsence');
+
     });
 });
 
@@ -219,6 +221,7 @@ Route::prefix('Absence')->group(function () {
         Route::post('AddAbsence', 'store_absence');
         Route::get('getAbsences/{user}', 'getAbsences');
         Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
+
 
 
     });
