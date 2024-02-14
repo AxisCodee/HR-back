@@ -24,21 +24,25 @@ class PolicyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'work_time' => 'required',
-            'annual_salary_increase' => 'required',
-            'warnings' => 'required',
-            'absence_management' => 'required',
-            'deduction_status' => 'required',
-            'branch_id' => 'required|integer|exists:branches,id',
-            'rate_type' => 'sometimes|array'
+            'work_time' => ['required'],
+            'annual_salary_increase' => ['required'],
+            'warnings' => ['required'],
+            'absence_management' => ['required'],
+            'deduction_status' => ['required'],
+            'branch_id' => ['required', 'integer', 'exists:branches,id'],
+            'rate_type' => ['sometimes', 'array']
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }

@@ -26,8 +26,8 @@ class AddUserRequest extends FormRequest
     {
         return [
             'first_name' => ['required', 'string', 'min:3', 'max:25'],
-            'middle_name'=> ['required', 'string', 'min:3', 'max:25'],
-            'last_name'=> ['required', 'string', 'min:3', 'max:25'],
+            'middle_name' => ['required', 'string', 'min:3', 'max:25'],
+            'last_name' => ['required', 'string', 'min:3', 'max:25'],
             'password' => ['required', 'string', RulesPassword::min(8)],
             'email' => ['required', 'email', 'unique:users,email,' . $this->id],
             'address' => ['required', 'string', 'min:3', 'max:25'],
@@ -63,15 +63,20 @@ class AddUserRequest extends FormRequest
             'contacts' => ['array', 'max:2'],
             'contacts.emails' => ['nullable', 'array'],
             'contacts.emails.*' => ['email', 'string'],
-            'branch_id'=>['required','integer','exists:branches,id'],
+            'branch_id' => ['required', 'integer', 'exists:branches,id'],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }

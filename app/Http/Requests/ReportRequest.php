@@ -22,13 +22,16 @@ class ReportRequest extends FormRequest
             'content' => ['required','string', 'between:10,255'],
         ];
     }
-
-     //if there is an error with the validation display the error as a Json response.
-     protected function failedValidation(Validator $validator)
-     {
-         throw new HttpResponseException(response()->json([
-             'message' => 'Validation Error',
-             'errors' => $validator->errors(),
-         ], 422));
-     }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $transformedErrors,
+        ], 422));
+    }
 }

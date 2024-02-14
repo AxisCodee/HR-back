@@ -17,8 +17,6 @@ use Illuminate\Http\Request;
 
 class RateController extends Controller
 {
-
-
     protected $rateService;
 
     public function __construct(RateService $rateService)
@@ -40,14 +38,11 @@ class RateController extends Controller
             return ResponseHelper::success($rate, null, 'userRate', 200);
         }
     }
-
-
     public function setRate(RateRequest $request)
     {
         $userId = $request->user_id;
         $rateTypeId = $request->rate_type_id;
         $rate = $request->rate;
-
         try {
             $result = $this
                 ->rateService
@@ -138,20 +133,17 @@ class RateController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
-
-
-
     public function userRate(Request $request, $date)
     {
         try {
             $result = RateType::with(['rate' => function ($query) use ($date) {
                 $query->whereDate('date', $date);
             }, 'rate.users'])
-            ->whereHas('rate.users', function ($query) use ($request) {
-                $query->where('id', $request->user_id);
-            })
-            ->get()
-            ->toArray();
+                ->whereHas('rate.users', function ($query) use ($request) {
+                    $query->where('id', $request->user_id);
+                })
+                ->get()
+                ->toArray();
 
             return ResponseHelper::success($result, null, 'userRates', 200);
         } catch (\Exception $e) {

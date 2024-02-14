@@ -26,29 +26,27 @@ class UpdateUserInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'sometimes',
-            'birth_date' => 'date',
+            'image' => ['mimes:jpg,bmp,png'],
+            'birth_date' => ['date'],
             'gender' => [Rule::in(['Male', 'Female'])],
-            'nationalID' => 'string|max:11',
-            'social_situation' => [
-                Rule::in(['Single', 'Married']),
-            ],
-            'military_situation' => [
-                Rule::in(['Postponed', 'Exempt', 'Finished']),
-            ],
-            'health_status' => 'string',
-            'salary' => 'integer',
-            'level' => [
-                Rule::in(['Senior', 'Mid', 'Junior'])
-            ],
+            'nationalID' => ['string', 'max:11'],
+            'social_situation' => [Rule::in(['Single', 'Married'])],
+            'military_situation' => [Rule::in(['Postponed', 'Exempt', 'Finished'])],
+            'health_status' => ['string'],
+            'salary' => ['integer'],
+            'level' => [Rule::in(['in:Senior,Mid,Junior'])],
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }
