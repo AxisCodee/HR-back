@@ -24,7 +24,7 @@ class UpdateTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>['string','unique:departments,name,'.$this->name],
+            'name'=>['string'],
             'users_array'=>['array'],
             'users_array.*'=>['integer','exists:users,id'],
             'team_leader'=>['integer','exists:users,id'],
@@ -33,9 +33,14 @@ class UpdateTeamRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }
