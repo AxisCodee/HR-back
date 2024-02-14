@@ -22,10 +22,11 @@ class UserSeeder extends Seeder
                 'middle_name' => 'ahmad',
                 'last_name' => 'mhmd',
                 'role' => 'admin',
-                'department_id' => null,
+                'department_id' => 1,
                 'specialization' => 'spa',
                 'pin' => 1,
-                'branch_id' => 1
+                'branch_id' => 1,
+
             ],
             [
                 'email' => 'samy1@gmail.com',
@@ -34,7 +35,7 @@ class UserSeeder extends Seeder
                 'middle_name' => 'ahmad1',
                 'last_name' => 'mhmd1',
                 'role' => 'project_manager',
-                'department_id' => null,
+                'department_id' => 2,
                 'specialization' => 'spa',
                 'pin' => 2,
                 'branch_id' => 1
@@ -46,7 +47,7 @@ class UserSeeder extends Seeder
                 'middle_name' => 'ahmad2',
                 'last_name' => 'mhmd2',
                 'role' => 'project_manager',
-                'department_id' => null,
+                'department_id' => 3,
                 'specialization' => 'spa',
                 'pin' => 3,
                 'branch_id' => 2

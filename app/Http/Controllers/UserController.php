@@ -27,7 +27,7 @@ class UserController extends Controller
     public function all_users(Request $request)
     {
         $all_users = User::query()->where('branch_id', $request->branch_id)
-            ->with('department', 'userInfo:id,user_id,image')->get()->toArray();
+            ->with('department', 'userInfo:id,user_id,image')->whereNotNull('department_id')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
