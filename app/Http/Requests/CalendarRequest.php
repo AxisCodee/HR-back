@@ -32,10 +32,15 @@ class CalendarRequest extends FormRequest
     }
 
     protected function failedValidation(Validator $validator)
-     {
-         throw new HttpResponseException(response()->json([
-             'message' => 'Validation Error',
-             'errors' => $validator->errors(),
-         ], 422));
-     }
+    {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $transformedErrors,
+        ], 422));
+    }
 }

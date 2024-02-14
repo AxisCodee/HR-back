@@ -2,9 +2,13 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AdditionalFileRequest extends FormRequest
+
+
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +26,21 @@ class AdditionalFileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'path'=> ['required','file'],
-            'description' => ['required','string','max:100'],
+            'path' => ['required', 'file'],
+            'description' => ['required', 'string', 'max:100'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validation Error',
+            'errors' => $transformedErrors,
+        ], 422));
     }
 }
