@@ -24,7 +24,7 @@ class UpdateTeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>['string','unique:departments,name,'.$this->name],
+            'name'=>['string'],
             'users_array'=>['array'],
             'users_array.*'=>['integer','exists:users,id'],
             'team_leader'=>['integer','exists:users,id'],
