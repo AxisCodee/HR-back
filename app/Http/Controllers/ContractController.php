@@ -17,9 +17,9 @@ class ContractController extends Controller
     public function index(Request $request)
     {
         $branchId = $request->input('branch_id');
-        $contracts = Contract::with('user')->whereHas('user', function ($query) use ($branchId) {
-            $query->where('branch_id', $branchId); })->get();
-
+        $contracts = Contract::with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
+            $query->where('branch_id', $branchId);
+        })->get();
         if ($contracts->isEmpty()) {;
             return ResponseHelper::success([
                 'message' => 'there are not any contract'
@@ -32,7 +32,6 @@ class ContractController extends Controller
                 } else {
                     $status = 'active';
                 }
-
                 $results[] = $result = [
                     'startDate' => $contract['startTime'],
                     'path' => $contract['path'],
@@ -43,8 +42,6 @@ class ContractController extends Controller
                     'status' => $status,
                 ];
             }
-
-
             return ResponseHelper::success(
                 $results
 
@@ -75,7 +72,6 @@ class ContractController extends Controller
                 200
             );
         });
-
         return ResponseHelper::error('error', null);
     }
 
@@ -99,8 +95,6 @@ class ContractController extends Controller
 
         return ResponseHelper::success($result, null, 'contract:', 200);
     }
-
-
     /**
      * Update the specified resource in storage.
      */
@@ -115,9 +109,6 @@ class ContractController extends Controller
     public function destroy(Contract $contract)
     {
         $contract->delete();
-        return ResponseHelper::success([
-            null, null, 'contract deleted successfully'
-
-        ]);
+        return ResponseHelper::success('contract deleted successfully');
     }
 }

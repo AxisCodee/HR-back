@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AddressRequest extends FormRequest
+class UpdateTeamRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,12 @@ class AddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string'],
-            'user_id' => 'required|integer|exists:users,id',
-            'city' => ['required', 'string'],
+            'name'=>['string','unique:departments,name,'.$this->name],
+            'users_array'=>['array'],
+            'users_array.*'=>['integer','exists:users,id'],
+            'team_leader'=>['integer','exists:users,id'],
         ];
     }
-
 
     protected function failedValidation(Validator $validator)
     {
