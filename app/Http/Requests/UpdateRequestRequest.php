@@ -24,17 +24,21 @@ class UpdateRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required', 'string', 'in:advance,vacation,resignation,complaint'],
-            'description' => ['required', 'max:250'],
-            'title' => ['required', 'max:30']
+            'type' => ['string', 'in:advance,vacation,resignation,complaint'],
+            'description' => ['max:250'],
+            'title' => ['max:30']
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }

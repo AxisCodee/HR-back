@@ -25,29 +25,27 @@ class UserInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
-            'image' => 'required',
-            'birth_date' => 'required|date',
+            'image' => ['required', 'mimes:jpg,bmp,png'],
+            'birth_date' => ['required', 'date'],
             'gender' => ['required', Rule::in(['Male', 'Female'])],
-            'nationalID' => 'required|string|max:11',
-            'social_situation' => [
-                'required',
-                Rule::in(['Single', 'Married']),
-            ],
-            'military_situation' => [
-                'required',
-                Rule::in(['Postponed', 'Exempt', 'Finished']),
-            ],
-            'health_status' => 'required|string',
-            'salary' => 'required|integer',
-            'level' => ['in:Senior,Mid,Junior'],
+            'nationalID' => ['required', 'string', 'max:11'],
+            'social_situation' => ['required', Rule::in(['Single', 'Married'])],
+            'military_situation' => ['required', Rule::in(['Postponed', 'Exempt', 'Finished'])],
+            'health_status' => ['required', 'string'],
+            'salary' => ['required', 'integer'],
+            'level' => ['required', Rule::in(['in:Senior,Mid,Junior'])],
         ];
     }
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }
