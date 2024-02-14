@@ -25,7 +25,7 @@ class RateTypeRequest extends FormRequest
     {
         return [
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
-            'rate_type' => ['required', 'integer', 'exists:rate_types,id'],
+            'rate_type' => ['required', 'string'],
         ];
     }
     protected function failedValidation(Validator $validator)
