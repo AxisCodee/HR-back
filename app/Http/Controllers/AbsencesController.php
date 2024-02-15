@@ -61,11 +61,14 @@ class AbsencesController extends Controller
     public function update(Request $request)
     {
         try {
-            $result = Absences::query()->where('id', $request->id)->update(
-                [
-                    'startDate' => $request->startDate
-                ]
-            );
+            $result = Absences::query()
+                ->where('id', $request->id)
+                ->update(
+                    [
+                        'startDate' => $request->startDate,
+                        'type' => $request->type
+                    ]
+                );
             return ResponseHelper::success('updated successfully');
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
@@ -147,16 +150,15 @@ class AbsencesController extends Controller
 
     public function store_absence(Request $request)
     {
-        foreach($request->absence as $item)
-        {
-        $new_abs = Absences::create([
-            'type' => $item['type'],
-            'user_id' => $item['user_id'],
-            'startDate' => $item['date'],
-        ]);
-        $results[]=$new_abs;
-    }
-        return ResponseHelper::success( $results, null, 'Absence added successfully');
+        foreach ($request->absence as $item) {
+            $new_abs = Absences::create([
+                'type' => $item['type'],
+                'user_id' => $item['user_id'],
+                'startDate' => $item['date'],
+            ]);
+            $results[] = $new_abs;
+        }
+        return ResponseHelper::success($results, null, 'Absence added successfully');
     }
 
     public function getAbsences($user)
