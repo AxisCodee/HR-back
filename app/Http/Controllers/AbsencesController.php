@@ -61,11 +61,14 @@ class AbsencesController extends Controller
     public function update(Request $request)
     {
         try {
-            $result = Absences::query()->where('id', $request->id)->update(
-                [
-                    'startDate' => $request->startDate
-                ]
-            );
+            $result = Absences::query()
+                ->where('id', $request->id)
+                ->update(
+                    [
+                        'startDate' => $request->startDate,
+                        'type' => $request->type
+                    ]
+                );
             return ResponseHelper::success('updated successfully');
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
