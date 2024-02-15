@@ -26,7 +26,7 @@ class AbsencesController extends Controller
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
         }
-        $user = User::query()->where('branch_id',  $branchId)->get();
+        $user = User::query()->where('branch_id', $branchId)->get();
 
         foreach ($user as $item) {
             $justified = $item->absences()
@@ -45,7 +45,7 @@ class AbsencesController extends Controller
                     'username' => $item->first_name,
                     'userDepartment' => $item->department,
                     'userUnjustified' => $Unjustified,
-                    'userjustified' =>   $justified,
+                    'userjustified' => $justified,
                     'all' => $Unjustified + $justified
                 ];
         }
@@ -147,18 +147,25 @@ class AbsencesController extends Controller
 
     public function store_absence(Request $request)
     {
-        foreach($request->absence as $item)
-        {
+        foreach ($request->absence as $item) {
+            $new_abs = Absences::create([
+                'type' => $item['type'],
+                'user_id' => $item['user_id'],
+                'startDate' => $item['date'],
+            ]);
+            $results[] = $new_abs;
+        }
+        return ResponseHelper::success($results, null, 'Absence added successfully');
+    }
+    public function storeAbsence(Request $request)
+    {
         $new_abs = Absences::create([
-            'type' => $item['type'],
-            'user_id' => $item['user_id'],
-            'startDate' => $item['date'],
+            'type' => $request->type,
+            'user_id' => $request->user_id,
+            'startDate' => $request->date,
         ]);
-        $results[]=$new_abs;
+        return ResponseHelper::success($new_abs, null, 'Absence added successfully');
     }
-        return ResponseHelper::success( $results, null, 'Absence added successfully');
-    }
-
     public function getAbsences($user)
     {
         $absences = Absences::where('user_id', $user)->get();

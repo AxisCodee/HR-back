@@ -169,7 +169,6 @@ Route::prefix('Career')->group(function () {
         Route::delete('Delete/{id}', 'destroy');
     });
 });
-
 Route::prefix('StudySituations')->group(function () {
     Route::controller(StudySituationController::class)->group(function () {
         Route::post('Add', 'store');
@@ -222,7 +221,7 @@ Route::prefix('Absence')->group(function () {
         Route::get('getAbsences/{user}', 'getAbsences');
         Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
 
-
+        Route::post('store_one_absence', 'storeAbsence');//store one absence
 
     });
 });
