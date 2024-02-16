@@ -47,7 +47,7 @@ class LateController extends Controller
     $result = Late::query()
         ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
         ->where('type', 'normal')
-        ->with('user:id,first_name,department_id', 'department', 'alert')
+        ->with('user:id,first_name,department_id', 'user.department', 'user.alert')
         ->get()
         ->toArray();
 
