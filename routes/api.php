@@ -38,7 +38,6 @@ Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendance
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 Route::get('DayAttendance/{date}', [AttendanceController::class, 'DayAttendance']);
-
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
 
 Route::prefix('contract')->group(function () {
@@ -273,5 +272,8 @@ Route::prefix('Late')->group(function () {
         Route::get('Lates', ' unjustifiedLate');
         Route::post('makeDecision/{lates}', 'makeDecision');
         Route::post('dynamicDecision', 'dynamicDecision');
+        Route::get('showLate', 'showLate');
+
+
     });
 });
