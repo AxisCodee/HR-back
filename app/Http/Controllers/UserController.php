@@ -14,6 +14,7 @@ use App\Models\Contact;
 use App\Models\Department;
 use App\Models\Role;
 use App\Services\RoleService;
+use App\Services\TeamService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
@@ -28,10 +29,13 @@ class UserController extends Controller
 
 
     private $roleService;
+    private $teamService;
 
-    public function __construct(RoleService $roleService)
+    public function __construct(RoleService $roleService,TeamService $teamService)
     {
         $this->roleService = $roleService;
+        $this->teamService = $teamService;
+
     }
 
     //get all users info
@@ -137,37 +141,45 @@ class UserController extends Controller
 
     //add new team and add users to it
     public function storeTeams(StoreTeamRequest $request)
-    {
-        $validate = $request->validated();
-        return DB::transaction(function () use ($request) {
-            $existing = Department::where('name', $request->name)->first();
+     {
 
-            if ($existing) {
-                if ($request->has('team_leader')) {
-                    $oldleader = $existing->team_leader->update(['role' => 'employee']);
-                    $newleader = User::findOrFail($request->team_leader)
-                        ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
-                }
-                if ($request->has('users_array')) {
-                    goto addusersloop;
-                }
-                return ResponseHelper::success('team already exists');
-            }
+        $result = $this->teamService->storeTeams($request);
 
-            $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
-            $team_leader = User::where('id', $request->team_leader)->update(['role' => 'team_leader', 'department_id' => $existing->id]);
-            if ($request->has('users_array')) {
-                goto addusersloop;
-            }
-            return ResponseHelper::success('Team created successfuly');
 
-            addusersloop:
 
-            foreach ($request->users_array as $user) {
-                $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
-            }
-            return ResponseHelper::success('Team created and members added successfuly');
-        });
+        return $result;
+
+
+    //     $validate = $request->validated();
+    //     return DB::transaction(function () use ($request) {
+    //         $existing = Department::where('name', $request->name)->first();
+
+    //         if ($existing) {
+    //             if ($request->has('team_leader')) {
+    //                 $oldleader = $existing->team_leader->update(['role' => 'employee']);
+    //                 $newleader = User::findOrFail($request->team_leader)
+    //                     ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
+    //             }
+    //             if ($request->has('users_array')) {
+    //                 goto addusersloop;
+    //             }
+    //             return ResponseHelper::success('team already exists');
+    //         }
+
+    //         $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
+    //         $team_leader = User::where('id', $request->team_leader)->update(['role' => 'team_leader', 'department_id' => $existing->id]);
+    //         if ($request->has('users_array')) {
+    //             goto addusersloop;
+    //         }
+    //         return ResponseHelper::success('Team created successfuly');
+
+    //         addusersloop:
+
+    //         foreach ($request->users_array as $user) {
+    //             $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
+    //         }
+    //         return ResponseHelper::success('Team created and members added successfuly');
+    //     });
     }
 
     //update an existing team name
