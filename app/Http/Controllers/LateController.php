@@ -62,12 +62,29 @@ class LateController extends Controller
         }
     }
 
+    public function update(StoreLateRequest $request)
+    {
+        //
+    }
+
+
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateLateRequest $request, Late $late)
+    public function rejectAlert(Request $request)
     {
-        //
+        $late = Late::find($request->alert_id);
+
+        if (!$late) {
+            return ResponseHelper::error('Alert not found');
+        }
+
+        $late->update([
+            'type' => 'justified'
+        ]);
+
+        return ResponseHelper::success([], 'Alert rejected successfully');
     }
 
     /**

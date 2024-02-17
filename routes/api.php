@@ -273,6 +273,7 @@ Route::prefix('Late')->group(function () {
         Route::post('makeDecision/{lates}', 'makeDecision');
         Route::post('dynamicDecision', 'dynamicDecision');
         Route::get('showLate', 'showLate');
+        Route::post('rejectAlert', 'rejectAlert');
 
 
     });
