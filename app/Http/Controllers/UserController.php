@@ -15,6 +15,7 @@ use App\Models\Department;
 use App\Models\Role;
 use App\Services\RoleService;
 use App\Services\TeamService;
+use App\Services\UserServices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
@@ -30,11 +31,13 @@ class UserController extends Controller
 
     private $roleService;
     private $teamService;
+    protected $userService;
 
-    public function __construct(RoleService $roleService,TeamService $teamService)
+    public function __construct(RoleService $roleService,TeamService $teamService,UserServices $userService)
     {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
+        $this->userService = $userService;
 
     }
 
@@ -100,13 +103,10 @@ class UserController extends Controller
         return ResponseHelper::error('Error', null);
     }
     //remove a user from a team
-    public function remove_from_team($id)
+    public function removeFromTeam($id)
     {
-        $remove = User::query()
-            ->where('id', $id)
-            ->update(['department_id' => null]);
-
-        return ResponseHelper::success('user removed from team successfully');
+       $result= $this->teamService->remove_from_team($id);
+        return $result;
     }
     //delete a specific user by his id
     public function remove_user($user)
