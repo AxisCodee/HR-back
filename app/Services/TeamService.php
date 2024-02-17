@@ -123,4 +123,19 @@ public function addMembers($request, $team)
         }
     });
 }
+
+
+
+
+public function getTeams($branchId)
+{
+    $departments = Department::query()->where('branch_id', $branchId)
+        ->with('user', function ($query) use ($branchId) {
+            $query->where('branch_id', $branchId);
+        }, 'user.userInfo')
+        ->get()
+        ->toArray();
+
+    return ResponseHelper::success($departments);
+}
 }

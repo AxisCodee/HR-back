@@ -118,13 +118,9 @@ class UserController extends Controller
     public function getTeams(Request $request)
     {
         $branchId = $request->branch_id;
-        $department = Department::query()
-            ->with('user', 'user.userInfo')->whereHas('user', function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            })
-            ->get()
-            ->toArray();
-        return ResponseHelper::success($department);
+        $result= $this->teamService->getTeams($branchId);
+        return $result;
+
     }
     //add members to a team
     public function Addmembers(Request $request, $team)
