@@ -38,7 +38,6 @@ Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendance
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 Route::get('DayAttendance/{date}', [AttendanceController::class, 'DayAttendance']);
-
 Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
 
 Route::prefix('contract')->group(function () {
@@ -71,6 +70,8 @@ Route::prefix('Decision')->group(function () {
         Route::get('all', 'all_decisions');
         Route::get('my_decisions', 'my_decisions');
         Route::get('getUserDecisions', 'getUserDecisions');
+        Route::get('getUserAbsence', 'getUserAbsence');
+
     });
 });
 
@@ -167,7 +168,6 @@ Route::prefix('Career')->group(function () {
         Route::delete('Delete/{id}', 'destroy');
     });
 });
-
 Route::prefix('StudySituations')->group(function () {
     Route::controller(StudySituationController::class)->group(function () {
         Route::post('Add', 'store');
@@ -220,6 +220,7 @@ Route::prefix('Absence')->group(function () {
         Route::get('getAbsences/{user}', 'getAbsences');
         Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
 
+        Route::post('store_one_absence', 'storeAbsence');//store one absence
 
     });
 });
@@ -271,5 +272,8 @@ Route::prefix('Late')->group(function () {
         Route::get('Lates', ' unjustifiedLate');
         Route::post('makeDecision/{lates}', 'makeDecision');
         Route::post('dynamicDecision', 'dynamicDecision');
+        Route::get('showLate', 'showLate');
+
+
     });
 });

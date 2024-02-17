@@ -24,18 +24,20 @@ class UpdateRateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'=>['required'],
-            'rate'['required'],
-            'type'=>['required'],
-
+            'rate' => ['integer'],
+            'rate_type_id' => ['exists:rate_types,id'],
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }

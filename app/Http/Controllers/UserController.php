@@ -28,7 +28,7 @@ class UserController extends Controller
     public function all_users(Request $request)
     {
         $all_users = User::query()->where('branch_id', $request->branch_id)
-            ->with('department', 'userInfo:id,user_id,image')->get()->toArray();
+            ->with('department', 'userInfo:id,user_id,image')->whereNotNull('department_id')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
@@ -105,7 +105,7 @@ class UserController extends Controller
     {
         $branchId = $request->branch_id;
         $department = Department::query()
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user', 'user.userInfo')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
             ->get()
@@ -134,7 +134,7 @@ class UserController extends Controller
 
             if ($existing) {
                 if ($request->has('team_leader')) {
-                    $oldleader = $existing->team_leader->update(['role'=>'employee']);
+                    $oldleader = $existing->team_leader->update(['role' => 'employee']);
                     $newleader = User::findOrFail($request->team_leader)
                         ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
                 }
@@ -165,22 +165,22 @@ class UserController extends Controller
     {
         try {
             $request->validated();
-            DB::transaction(function () use ($request, $id) {
+           return DB::transaction(function () use ($request, $id) {
                 $edit = Department::with('team_leader')->findOrFail($id);
                 if ($request->name) {
-                    $edited = $edit->update([
-                        'name' => $request->name,
-                    ]);
+                    if ($request->name != $edit->name) {
+                        return  Department::where('name', $request->name)->exists() ? ResponseHelper::error('name already exists')  : $edit->update(['name' => $request->name]) ;
+                    }
                 }
                 if ($request->users_array) {
                     foreach ($request->users_array as $user) {
                         $add = User::findOrFail($user)->update(['department_id' => $id]);
                     }
-                if($request->team_leader){
-                    $oldleader = $edit->team_leader->update(['role'=>'employee']);
-                    $newleader = User::findOrFail($request->team_leader)
-                        ->update(['role' => 'team_leader', 'department_id' =>$id]);
-                }
+                    if ($request->team_leader) {
+                        $oldleader = $edit->team_leader->update(['role' => 'employee']);
+                        $newleader = User::findOrFail($request->team_leader)
+                            ->update(['role' => 'team_leader', 'department_id' => $id]);
+                    }
                     return ResponseHelper::success('Members added & Team Updated successfuly');
                 }
             });

@@ -10,7 +10,7 @@ use App\Models\UserInfo;
 use App\Models\Decision;
 use Carbon\Carbon;
 use App\Models\User;
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LateController extends Controller
@@ -18,6 +18,12 @@ class LateController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
+
+
+
+
     public function index()
     {
         //
@@ -34,10 +40,19 @@ class LateController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Late $late)
-    {
-        //
-    }
+    public function showLate(Request $request)
+{
+    $currentMonthYear = Carbon::now()->format('Y-m');
+
+    $result = Late::query()
+        ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
+        ->where('type', 'normal')
+        ->with('user:id,first_name,department_id', 'user.department', 'user.alert')
+        ->get()
+        ->toArray();
+
+        return ResponseHelper::success($result,null,'alerts',200);
+}
 
     /**
      * Update the specified resource in storage.
