@@ -41,18 +41,22 @@ class LateController extends Controller
      * Display the specified resource.
      */
     public function showLate(Request $request)
-{
-    $currentMonthYear = Carbon::now()->format('Y-m');
+    {
+        try {
+            $currentMonthYear = Carbon::now()->format('Y-m');
 
-    $result = Late::query()
-        ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
-        ->where('type', 'normal')
-        ->with('user:id,first_name,department_id', 'user.department', 'user.alert')
-        ->get()
-        ->toArray();
+            $result = Late::query()
+                ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
+                ->where('type', 'normal')
+                ->with('user:id,first_name,department_id', 'user.department', 'user.alert')
+                ->get()
+                ->toArray();
 
-        return ResponseHelper::success($result,null,'alerts',200);
-}
+            return ResponseHelper::success($result, null, 'alerts', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error(null, $e->getMessage(), 500);
+        }
+    }
 
     /**
      * Update the specified resource in storage.
