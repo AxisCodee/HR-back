@@ -243,17 +243,8 @@ class UserController extends Controller
     //get all departments and rules
     public function all_dep_rul()
     {
-        $departments = Department::query()->get()->toArray();
-        $roles = Role::query()->get()->toArray();
-        return ResponseHelper::success(
-            [
-                'Departments' => $departments,
-                'Roles' => $roles,
-            ],
-            null,
-            'departments and roles returned successfully',
-            200
-        );
+        $result = $this->roleService->allDepRul();
+        return $result;
     }
 
     //get roles hierarchy
@@ -267,6 +258,5 @@ class UserController extends Controller
     {
         $result = $this->roleService->userProf();
         return $result;
-
     }
 }

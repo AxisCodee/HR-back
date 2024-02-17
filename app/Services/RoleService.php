@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helper\ResponseHelper;
 use App\Models\Department;
+use App\Models\Role;
 use App\Models\User;
 
 class RoleService
@@ -59,7 +60,20 @@ class RoleService
     }
 
 
-
+    public function allDepRul()
+    {
+        $departments = Department::query()->get()->toArray();
+        $roles = Role::query()->get()->toArray();
+        return ResponseHelper::success(
+            [
+                'Departments' => $departments,
+                'Roles' => $roles,
+            ],
+            null,
+            'Departments and roles returned successfully',
+            200
+        );
+    }
 
 
 }
