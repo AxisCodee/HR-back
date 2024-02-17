@@ -105,4 +105,22 @@ class TeamService
     }
 }
 
+
+
+
+public function addMembers($request, $team)
+{
+    return DB::transaction(function () use ($request, $team) {
+        try {
+            foreach ($request->users_array as $user) {
+                $add = User::findOrFail($user);
+                $add->department_id = $team;
+                $add->save();
+            }
+            return ResponseHelper::created('users added to the team successfully');
+        } catch (\Exception $e) {
+            return ResponseHelper::error('Failed to add users to the team', $e->getCode());
+        }
+    });
+}
 }

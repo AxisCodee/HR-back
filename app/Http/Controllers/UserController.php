@@ -129,14 +129,9 @@ class UserController extends Controller
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
-        return DB::transaction(function () use ($request, $team) {
-            foreach ($request->users_array as $user) {
-                $add = User::findOrFail($user);
-                $add->department_id = $team;
-                $add->save();
-            }
-            return ResponseHelper::created('users added to the team successfully');
-        });
+      $result =  $this->teamService->addMembers($request, $team);
+      return $result;
+
     }
 
     //add new team and add users to it
