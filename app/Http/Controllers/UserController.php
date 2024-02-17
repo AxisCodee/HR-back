@@ -142,74 +142,15 @@ class UserController extends Controller
     //add new team and add users to it
     public function storeTeams(StoreTeamRequest $request)
      {
-
         $result = $this->teamService->storeTeams($request);
-
-
-
         return $result;
-
-
-    //     $validate = $request->validated();
-    //     return DB::transaction(function () use ($request) {
-    //         $existing = Department::where('name', $request->name)->first();
-
-    //         if ($existing) {
-    //             if ($request->has('team_leader')) {
-    //                 $oldleader = $existing->team_leader->update(['role' => 'employee']);
-    //                 $newleader = User::findOrFail($request->team_leader)
-    //                     ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
-    //             }
-    //             if ($request->has('users_array')) {
-    //                 goto addusersloop;
-    //             }
-    //             return ResponseHelper::success('team already exists');
-    //         }
-
-    //         $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
-    //         $team_leader = User::where('id', $request->team_leader)->update(['role' => 'team_leader', 'department_id' => $existing->id]);
-    //         if ($request->has('users_array')) {
-    //             goto addusersloop;
-    //         }
-    //         return ResponseHelper::success('Team created successfuly');
-
-    //         addusersloop:
-
-    //         foreach ($request->users_array as $user) {
-    //             $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
-    //         }
-    //         return ResponseHelper::success('Team created and members added successfuly');
-    //     });
     }
 
     //update an existing team name
     public function updateTeams(UpdateTeamRequest $request, $id)
     {
-        try {
-            $request->validated();
-           return DB::transaction(function () use ($request, $id) {
-                $edit = Department::with('team_leader')->findOrFail($id);
-                if ($request->name) {
-                    if ($request->name != $edit->name) {
-                        return  Department::where('name', $request->name)->exists() ? ResponseHelper::error('name already exists')  : $edit->update(['name' => $request->name]) ;
-                    }
-                }
-                if ($request->users_array) {
-                    foreach ($request->users_array as $user) {
-                        $add = User::findOrFail($user)->update(['department_id' => $id]);
-                    }
-                    if ($request->team_leader) {
-                        $oldleader = $edit->team_leader->update(['role' => 'employee']);
-                        $newleader = User::findOrFail($request->team_leader)
-                            ->update(['role' => 'team_leader', 'department_id' => $id]);
-                    }
-                    return ResponseHelper::success('Members added & Team Updated successfuly');
-                }
-            });
-            return ResponseHelper::success('Team Updated successfuly');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e);
-        }
+        $result = $this->teamService->updateTeams($request, $id);
+        return $result;
     }
     //delete an exisiting team
     public function deleteTeam($id)
