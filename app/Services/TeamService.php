@@ -130,9 +130,7 @@ public function addMembers($request, $team)
 public function getTeams($branchId)
 {
     $departments = Department::query()->where('branch_id', $branchId)
-        ->with('user', function ($query) use ($branchId) {
-            $query->where('branch_id', $branchId);
-        }, 'user.userInfo')
+        ->with('user','user.userInfo')
         ->get()
         ->toArray();
 

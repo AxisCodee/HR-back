@@ -43,12 +43,16 @@ class LateController extends Controller
     public function showLate(Request $request)
     {
         try {
+            $branchId = $request->branch_id;
             $currentMonthYear = Carbon::now()->format('Y-m');
 
             $result = Late::query()
                 ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
                 ->where('type', 'normal')
-                ->with('user:id,first_name,department_id', 'user.department', 'user.alert')
+                ->with('user:id,first_name,department_id', 'user.department', 'user.alert', 'user.userInfo:id,image')
+                ->whereHas('user', function ($query) use ($branchId) {
+                    $query->where('branch_id', $branchId);
+                })
                 ->get()
                 ->toArray();
 
