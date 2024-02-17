@@ -265,7 +265,7 @@ class UserController extends Controller
         // استخدم النتيجة كما ترغب
         // ...
 
-        return ResponseHelper::success($result);
+        return $result;
         // $admins = User::where('role', 'admin')->with('userInfo')->first();
         // $managers = User::where('role', 'project_manager')->with('userInfo')->get()->toArray();
         // $leaders = User::where('role', 'team_leader')->with('my_team')->get();
