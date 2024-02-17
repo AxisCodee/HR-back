@@ -90,9 +90,18 @@ class LateController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Late $late)
+    public function acceptAlert(Request $request)
     {
-        //
+        $late = Late::find($request->alert_id);
+        if (!$late) {
+            return ResponseHelper::error('Alert not found');
+        }
+
+        $late->update([
+            'type' => 'Unjustified'
+        ]);
+
+        return ResponseHelper::success([], 'Alert accepted successfully');
     }
 
     public function makeDecision(Late $late)
