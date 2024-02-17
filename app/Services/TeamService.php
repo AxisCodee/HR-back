@@ -65,7 +65,8 @@ class TeamService
                 $edit = Department::with('team_leader')->findOrFail($id);
                 if ($request->name) {
                     if ($request->name != $edit->name) {
-                        return Department::where('name', $request->name)->exists() ? ResponseHelper::error('Name already exists')  : $edit->update(['name' => $request->name]);
+                        return Department::where('name', $request->name)->exists() ?
+                         ResponseHelper::error('Name already exists')  : $edit->update(['name' => $request->name]);
                     }
                 }
                 if ($request->users_array) {
@@ -80,10 +81,10 @@ class TeamService
                     return ResponseHelper::success('Members added & Team updated successfully');
                 }
             });
-            return ResponseHelper::success('Team updated successfully');
         } catch (\Exception $e) {
             return ResponseHelper::error($e);
         }
+
     }
 
 
