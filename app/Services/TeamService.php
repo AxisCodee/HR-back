@@ -88,5 +88,21 @@ class TeamService
     }
 
 
+    public function remove_from_team($id)
+{
+    try {
+        $user = User::find($id);
+
+        if (!$user) {
+            return ResponseHelper::error('User not found', 404);
+        }
+
+        $remove = $user->update(['department_id' => null]);
+
+        return ResponseHelper::success('User removed from team successfully');
+    } catch (\Exception $e) {
+        return ResponseHelper::error('Failed to remove user from team', $e->getCode());
+    }
+}
 
 }
