@@ -255,7 +255,7 @@ class UserController extends Controller
             200
         );
     }
-    
+
     //get roles hierarchy
     public function roleHierarchy()
     {
@@ -265,18 +265,8 @@ class UserController extends Controller
 
     public function user_prof()
     {
-        $levels = ["Junior", "Mid", "Senior"];
-        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Desgin", "Project-Manager"];
-        $department = Department::query()->get()->toArray();
+        $result = $this->roleService->userProf();
+        return $result;
 
-        return ResponseHelper::success(
-            [
-                'levels' => $levels,
-                'specialisation' => $specialisation,
-                'departments' => $department,
-            ],
-            "Professional selects returned successfully",
-            200
-        );
     }
 }

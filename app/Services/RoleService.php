@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helper\ResponseHelper;
+use App\Models\Department;
 use App\Models\User;
 
 class RoleService
@@ -39,4 +40,26 @@ class RoleService
             200
         );
     }
+
+    public function userProf()
+    {
+        $levels = ["Junior", "Mid", "Senior"];
+        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Design", "Project-Manager"];
+        $departments = Department::query()->get()->toArray();
+
+        return ResponseHelper::success(
+            [
+                'levels' => $levels,
+                'specialisation' => $specialisation,
+                'departments' => $departments,
+            ],
+            "Professional selects returned successfully",
+            200
+        );
+    }
+
+
+
+
+
 }
