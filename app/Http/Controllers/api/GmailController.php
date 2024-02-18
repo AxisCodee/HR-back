@@ -7,15 +7,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\User;
+use App\Services\GmailService;
 use Google\Client;
 use Google_Service_Gmail_BatchDeleteMessagesRequest;
 use Google_Service_Gmail_ModifyMessageRequest;
 use Google\Service\Gmail;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class GmailController extends Controller
 {
+    protected $gmailService;
+    public function __construct(GmailService $gmailService)
+    {
+        $this->gmailService = $gmailService;
+    }
     /**
      * Gets a google client
      *
@@ -77,7 +84,7 @@ class GmailController extends Controller
          * Get authcode from the query string
          * Url decode if necessary
          */
-        $authCode = urldecode($request->input('auth_code'));
+        $authCode = urldecode($request->auth_code);
         /**
          * Google client
          */
@@ -100,530 +107,211 @@ class GmailController extends Controller
             ->first();
         if (!$user) {
             return ResponseHelper::error(
-                'Your email is not exist! ,Register with your gmail account.',
+                'Your email is not exist! ,Please Register with your Gmail account.',
                 null,
             );
         }
         $user->google_access_token_json = json_encode($accessToken);
         $user->provider_id = $userFromGoogle->id;
         $user->save();
-        $token = $user->createToken("Google")->accessToken;
+        $user->createToken("Google")->accessToken;
         return ResponseHelper::success('access token updated succsessfuly.', null, Response::HTTP_OK);
     }
-    public function getUserInfo(Request $request)
+    public function getUserInfo() //service Done !!
     {
-        $user = User::find(Auth::id()); //replace with auth
-        // Access the 'google_access_token_json' column from the user model
-        $jsonData = $user->google_access_token_json;
-        // Decode the JSON data
-        $tokenData = json_decode($jsonData, true);
-        // Extract the access token
-        $accessToken = $tokenData['access_token'];
-        $refreshToken = $tokenData['refresh_token'];
-        // Now $accessToken contains the Google access token
-        //dd($refreshToken);
-        $userAccessToken = urldecode($accessToken);
-        // Create a new instance of the Google API client
-        $client = $this->getClient();
-        // Set the access token obtained for the user
-        $client->setAccessToken($userAccessToken); // Replace $userAccessToken with the actual user's access token
-        if ($client->isAccessTokenExpired()) {
-            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-            $client->getRefreshToken();
-            $client->setAccessToken($client->getAccessToken());
-            $user->google_access_token_json = json_encode($at);
-            $user->save();
+        try {
+            $user = User::find(Auth::id());
+            // Create a new instance of the Google API client
+            $client = $this->getClient();
+            //refresh the access token if expired
+            $this->gmailService->refreshAccessToken($user, $client);
+            // Create a new Gmail service using the authenticated client
+            $service = new \Google\Service\Oauth2($client);
+            // Use the Gmail service to retrieve user info
+            $userInfo = $service->userinfo->get();
+            return ResponseHelper::success($userInfo, null, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
-        // Create a new Gmail service using the authenticated client
-        $service = new \Google\Service\Oauth2($client);
-        // Use the Gmail service to retrieve user info
-        $userInfo = $service->userinfo->get();
-        return ResponseHelper::success($userInfo, null, Response::HTTP_OK);
     }
 
     public function getMessageById(Request $request)
     {
-        $client = $this->getClient();
-        $user = User::find(Auth::id());
-        // Access the 'google_access_token_json' column from the user model
-        $jsonData = $user->google_access_token_json;
-        // Decode the JSON data
-        $tokenData = json_decode($jsonData, true);
-        // Extract the access token
-        $accessToken = $tokenData['access_token'];
-        $refreshToken = $tokenData['refresh_token'];
-        // Now $accessToken contains the Google access token
-        $userAccessToken = urldecode($accessToken);
-        // Create a new instance of the Google API client
-        $client = $this->getClient();
-        // Set the access token obtained for the user
-        $client->setAccessToken($userAccessToken); // Replace $userAccessToken with the actual user's access token
-        if ($client->isAccessTokenExpired()) {
-            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-            $client->getRefreshToken();
-            $client->setAccessToken($client->getAccessToken());
-            $user->google_access_token_json = json_encode($at);
-            $user->save();
-        }
-        $service = new Gmail($client);
-        $messageId = $request->messageId;
-
-        if (!$messageId) {
-            return ResponseHelper::error('Message id could not be null.', null);
-        }
-        $user = 'me'; // 'me' indicates the authenticated user
         try {
+            $client = $this->getClient();
+            $user = User::find(Auth::id());
+            $this->gmailService->refreshAccessToken($user, $client);
+            $service = new Gmail($client);
+            $messageId = $request->messageId;
+            if (!$messageId) {
+                return ResponseHelper::error('Message id could not be null.', null);
+            }
+            $user = 'me'; // 'me' indicates the authenticated user
             $message = $service->users_messages->get($user, $request->messageId, ['format' => 'full']);
-            $payload = $message->getPayload();
-            //sender info
-            $headers = $payload['headers'];
-            $fromHeader = Arr::first($headers, function ($header) {
-                return $header['name'] === 'From';
-            });
-            $fromValue = $fromHeader['value']; // This will be "Ashampoo News <info@news.ashampoo.com>"
-            preg_match('/^(.*)<(.*)>$/', $fromValue, $matches);
-            $senderName = $matches[1]; // This will be "Ashampoo News"
-            $senderEmail = $matches[2]; // This will be "info@news.ashampoo.com"
-            $gravatarUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($senderEmail)));
-            //$gravatarUrl = $service->userinfo->get()->picture;
-            //reciever info
-            $headers = $payload['headers'];
-            $toHeader = Arr::first($headers, function ($header) {
-                return $header['name'] === 'Delivered-To';
-            });
-            $toValue = $toHeader['value'];
-            //subject
-            $headers = $payload['headers'];
-            $subjectHeader = Arr::first($headers, function ($header) {
-                return $header['name'] === 'Subject';
-            });
-            $subjectValue = $subjectHeader['value'];
-            //cc
-            //bc
-            //body
-            function parseParts($parts)
-            {
-                $data = [
-                    'text/plain' => '',
-                    'text/html' => ''
-                ];
-                foreach ($parts as $part) {
-                    if ($part['mimeType'] === 'text/plain') {
-                        $data['text/plain'] = $part['body']['data'];
-                    } elseif ($part['mimeType'] === 'text/html') {
-                        $data['text/html'] = $part['body']['data'];
-                    } elseif ($part['mimeType'] === 'multipart/alternative') {
-                        $data = array_merge($data, parseParts($part['parts']));
-                    }
-                }
-                return $data;
-            }
-            $body = $payload->getBody();
-            $messageData = parseParts($message['payload']['parts']);
-            //attachments
-            $attachments = [];
-            $parts = $payload['parts'] ?? null;
-            if ($parts) {
-                foreach ($parts as $part) {
-                    if (isset($part['body']['attachmentId'])) {
-                        $attachmentId = $part['body']['attachmentId'];
-                        $filename = $part['filename'];
-                        $size = $part['body']['size'];
-                        // Construct the thumbnail URL based on the file type
-                        $thumbnail = ''; // You may need to handle different file types differently
-                        // Construct the URL to download the attachment
-                        $attachmentUrl = "https://www.googleapis.com/gmail/v1/users/me/messages/{$messageId}/attachments/{$attachmentId}";
-                        $attachmentDetails = [
-                            'filename' => $filename,
-                            'thumbnail' => $thumbnail,
-                            'url' => $attachmentUrl,
-                            'size' => $size
-                        ];
-                        $attachments[] = $attachmentDetails;
-                    }
-                }
-            }
-            //lables
-            $labelIds = $message['labelIds'] ?? [];
-            $isStarred = in_array('STARRED', $labelIds);
-            $isPROMOTIONS = in_array('CATEGORY_PROMOTIONS', $labelIds);
-            $isPERSONAL = in_array('CATEGORY_PERSONAL', $labelIds);
-            $isSOCIAL = in_array('CATEGORY_SOCIAL', $labelIds);
-            // Initialize the array to hold the merged values
-            $labelStatus = [];
-            // Check if each label exists in the labelIds array and assign the result to the corresponding key
-            $labelStatus['isPROMOTIONS'] = in_array('CATEGORY_PROMOTIONS', $labelIds);
-            $labelStatus['isPERSONAL'] = in_array('CATEGORY_PERSONAL', $labelIds);
-            $labelStatus['isSOCIAL'] = in_array('CATEGORY_SOCIAL', $labelIds);
-            //Date
-            $headers = $payload['headers'];
-            $dateHeader = Arr::first($headers, function ($header) {
-                return $header['name'] === 'Date';
-            });
-            $dateValue = $dateHeader['value'];
-            //replies
-            $threadId = $messageId; // Replace with the actual thread ID
-            try {
-                $thread = $service->users_threads->get('me', $threadId);
-                $messages = $thread->getMessages();
-                $replies = [];
-                foreach ($messages as $message) {
-                    if ($message->getId() !== $messageId) {
-                        $replies[] = [
-                            'id' => $message->getId(),
-                            'snippet' => $message->getSnippet(),
-                            // Add any other relevant information you need
-                        ];
-                    }
-                }
-            } catch (\Google_Service_Exception $e) { // Note the double backslash here
-                if ($e->getCode() == 404) {
-                    error_log('Error: ' . $e->getMessage());
-                    $replies = null;
-                } else {
-                    throw $e; // If the error is not 404, rethrow the exception
-                }
-            }
-            //folder (inbox)
-            $isInbox = in_array('INBOX', $labelIds);
-            //readen
-            $isUnread = in_array('UNREAD', $labelIds);
+            $mail = $this->gmailService->messageFormat($message, $messageId);
+            $replies = $this->gmailService->messageReplies($messageId, $service);
             return ResponseHelper::email(
                 $messageId,
-                $senderEmail,
-                $senderName,
-                $gravatarUrl,
-                $toValue,
-                $subjectValue,
-                $messageData,
-                $attachments,
-                $isStarred,
-                $labelStatus,
-                $dateValue,
+                $mail['senderEmail'],
+                $mail['senderName'],
+                $mail['gravatarUrl'],
+                $mail['receiver'],
+                $mail['subject'],
+                $mail['messageData'],
+                $mail['attachments'],
+                $mail['isStarred'],
+                $mail['labelStatus'],
+                $mail['date'],
                 $replies,
-                $isInbox,
-                $isUnread,
+                $mail['isInbox'],
+                $mail['isUnread'],
                 $service = null,
                 $message = 'true'
             );
         } catch (\Exception $e) {
-            // Handle any exceptions that may occur
-            return ResponseHelper::error(
-                $e->getMessage(),
-                null,
-            );
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
 
     public function sendEmail(Request $request)
     {
-        $client = $this->getClient();
-        $user = User::find(Auth::id());
-        // Access the 'google_access_token_json' column from the user model
-        $jsonData = $user->google_access_token_json;
-        // Decode the JSON data
-        $tokenData = json_decode($jsonData, true);
-        // Extract the access token
-        $accessToken = $tokenData['access_token'];
-        $refreshToken = $tokenData['refresh_token'];
-        // Now $accessToken contains the Google access token
-        $userAccessToken = urldecode($accessToken);
-        // Create a new instance of the Google API client
-        $client = $this->getClient();
-        // Set the access token obtained for the user
-        $client->setAccessToken($userAccessToken);
-        //dd($client->isAccessTokenExpired());
-        if ($client->isAccessTokenExpired()) {
-            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-            $client->getRefreshToken();
-            $client->setAccessToken($client->getAccessToken());
-            $user->google_access_token_json = json_encode($at);
-            $user->save();
-        }
-        $service = new \Google\Service\Gmail($client);
-        $userInfoService = new \Google\Service\Oauth2($client);
-        // Use the Gmail service to retrieve user info
-        $userInfo = $userInfoService->userinfo->get();
-        // Define the email parameters
-        $strSubject = $request->subject;
-        $strRawMessage = "From: $userInfo->name <$userInfo->email>\r\n";
-        $strRawMessage .= "To: <$request->recieverEmail>\r\n";
-        $strRawMessage .= 'Subject: =?utf-8?B?' . base64_encode($strSubject) . "?=\r\n";
-        $strRawMessage .= "MIME-Version: 1.0\r\n";
-        $strRawMessage .= "Content-Type: multipart/mixed; boundary=foo_bar_baz\r\n";
-        $strRawMessage .= "\r\n";
-        $strRawMessage .= "--foo_bar_baz\r\n";
-        $strRawMessage .= "Content-Type: text/plain\r\n\r\n";
-        $strRawMessage .= "$request->content\r\n";
-        // Check if there is an uploaded file
-        if ($request->hasFile('attachment')) {
-            $file = $request->file('attachment');
-            $attachment = chunk_split(base64_encode(file_get_contents($file->getRealPath())));
-            $strRawMessage .= "--foo_bar_baz\r\n";
-            $strRawMessage .= "Content-Type: application/octet-stream; name=" . $file->getClientOriginalName() . "\r\n" .
-                "Content-Transfer-Encoding: base64\r\n" .
-                "Content-Disposition: attachment; filename=" . $file->getClientOriginalName() . "\r\n\r\n" .
-                $attachment . "\r\n";
-        }
-        $strRawMessage .= "--foo_bar_baz--";
-        // The message needs to be encoded in Base64URL
-        $mime = rtrim(strtr(base64_encode($strRawMessage), '+/', '-_'), '=');
-        $msg = new \Google\Service\Gmail\Message();
-        $msg->setRaw($mime);
-        // Send the message
-        $sentMessage = $service->users_messages->send('me', $msg);
-        // Check if the message was sent successfully
-        if ($sentMessage->getId() != null) {
-            return ResponseHelper::success("Message sent successfully", null);
-        } else {
-            return ResponseHelper::error("Message not sent", null);
+        try {
+            $client = $this->getClient();
+            $user = User::find(Auth::id());
+            $this->gmailService->refreshAccessToken($user, $client);
+            $service = new \Google\Service\Gmail($client);
+            $userInfoService = new \Google\Service\Oauth2($client);
+            // Use the Gmail service to retrieve user info
+            $userInfo = $userInfoService->userinfo->get();
+            $msg = new \Google\Service\Gmail\Message();
+            return DB::transaction(function () use ($service, $msg, $request, $userInfo) {
+                $msg->setRaw($this->gmailService->sendMessage($request, $userInfo));
+                $sentMessage = $service->users_messages->send('me', $msg);
+                // Check if the message was sent successfully
+                if ($sentMessage->getId() != null) {
+                    return ResponseHelper::success("Message sent successfully", null);
+                }
+            });
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
 
-    public function mail(Request $request)
+    public function mail(Request $request)//mail box by type
     {
-        $client = $this->getClient();
-        $user = User::find(Auth::id());
-        // Access the 'google_access_token_json' column from the user model
-        $jsonData = $user->google_access_token_json;
-        // Decode the JSON data
-        $tokenData = json_decode($jsonData, true);
-        // Extract the access token
-        $accessToken = $tokenData['access_token'];
-        $refreshToken = $tokenData['refresh_token'];
-        // Now $accessToken contains the Google access token
-        $userAccessToken = urldecode($accessToken);
-        // Create a new instance of the Google API client
-        $client = $this->getClient();
-        // Set the access token obtained for the user
-        $client->setAccessToken($userAccessToken);
-        if ($client->isAccessTokenExpired()) {
-            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-            $client->getRefreshToken();
-            $client->setAccessToken($client->getAccessToken());
-            $user->google_access_token_json = json_encode($at);
-            $user->save();
-        }
-        $service = new Gmail($client);
-        $user = 'me'; // 'me' indicates the authenticated user
-        $client->setAccessType('offline');
-        $client->setPrompt('select_account consent');
-        // Assuming $service is an instance of Google\Service\Gmail
-        $pageToken = NULL;
-        $messages = [];
-        do {
-            $optParams = [
-                'labelIds' => $request->boxType,
-                'pageToken' => $pageToken
-            ];
-            $results = $service->users_messages->listUsersMessages('me', $optParams);
-            if ($results->getNextPageToken()) {
-                $pageToken = $results->getNextPageToken();
-            } else {
-                $pageToken = NULL;
-            }
-            if (!$results->getMessages()) {
-                return response()->json(['The Folder is empty.']);
-            }
-            foreach ($results->getMessages() as $email) {
-                $message = $service->users_messages->get('me', $email->getId(), ['format' => 'metadata', 'metadataHeaders' => ['From', 'To', 'Subject', 'Date']]);
-                $headers = $message->getPayload()->getHeaders();
-                $data = [
-                    'id' => $email->getId(),
-                    'sender' => '',
-                    'senderImage' => '', // New key for sender's image
-                    'subject' => '',
-                    'date' => '',
-                    'isStarred' => in_array('STARRED', $message->getLabelIds())
+        try {
+            $client = $this->getClient();
+            $user = User::find(Auth::id());
+            $this->gmailService->refreshAccessToken($user, $client);
+            $service = new Gmail($client);
+            $user = 'me'; // 'me' indicates the authenticated user
+            $client->setAccessType('offline');
+            $client->setPrompt('select_account consent');
+            // Assuming $service is an instance of Google\Service\Gmail
+            $pageToken = NULL;
+            $messages = [];
+            do {
+                $optParams = [
+                    'labelIds' => $request->boxType,
+                    'pageToken' => $pageToken
                 ];
-                foreach ($headers as $header) {
-                    if ($header->getName() == 'id') {
-                        $data['id'] = $header->getValue();
-                    }
-                    if ($header->getName() == 'From') {
-                        $data['sender'] = $header->getValue();
-                        $senderEmail = $header->getValue();
-                        preg_match('/^(.*)<(.*)>$/', $senderEmail, $matches);
-                        $senderEmail = $matches[2];
-
-                        // Fetch Gravatar image URL
-                        $gravatarUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($senderEmail)));
-                        $data['senderImage'] = $gravatarUrl;
-                    }
-                    if ($header->getName() == 'Subject') {
-                        $data['subject'] = $header->getValue();
-                    }
-                    if ($header->getName() == 'Date') {
-                        $data['date'] = $header->getValue();
-                    }
+                $results = $service->users_messages->listUsersMessages('me', $optParams);
+                if ($results->getNextPageToken()) {
+                    $pageToken = $results->getNextPageToken();
+                } else {
+                    $pageToken = NULL;
                 }
-                $messages[] = $data;
-            }
-        } while ($pageToken);
-
-        return ResponseHelper::success($messages, null);
+                if (!$results->getMessages()) {
+                    return response()->json(['The Folder is empty.']);
+                }
+                $messages = $this->gmailService->mailBox($results, $service);
+            } while ($pageToken);
+            return ResponseHelper::success($messages, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
     public function search(Request $request)
     {
-        $client = $this->getClient();
-        $user = User::find(Auth::id());
-        // Access the 'google_access_token_json' column from the user model
-        $jsonData = $user->google_access_token_json;
-        // Decode the JSON data
-        $tokenData = json_decode($jsonData, true);
-        // Extract the access token
-        $accessToken = $tokenData['access_token'];
-        $refreshToken = $tokenData['refresh_token'];
-        // Now $accessToken contains the Google access token
-        $userAccessToken = urldecode($accessToken);
-        // Create a new instance of the Google API client
-        $client = $this->getClient();
-        // Set the access token obtained for the user
-        $client->setAccessToken($userAccessToken);
-        if ($client->isAccessTokenExpired()) {
-            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-            $client->getRefreshToken();
-            $client->setAccessToken($client->getAccessToken());
-            $user->google_access_token_json = json_encode($at);
-            $user->save();
-        }
-        $service = new Gmail($client);
-        $user = 'me'; // 'me' indicates the authenticated user
-        $client->setAccessType('offline');
-        $client->setPrompt('select_account consent');
-        // Assuming $service is an instance of Google\Service\Gmail
-        $pageToken = NULL;
-        $messages = [];
-        do {
-            $optParams = [
-                'q' => $request->searchQuery,
-                'pageToken' => $pageToken
-            ];
-            $results = $service->users_messages->listUsersMessages('me', $optParams);
-            if ($results->getNextPageToken()) {
-                $pageToken = $results->getNextPageToken();
-            } else {
-                $pageToken = NULL;
-            }
-            foreach ($results->getMessages() as $email) {
-                $message = $service->users_messages->get('me', $email->getId(), ['format' => 'metadata', 'metadataHeaders' => ['From', 'To', 'Subject', 'Date']]);
-                $headers = $message->getPayload()->getHeaders();
-                $data = [
-                    'id' => $email->getId(),
-                    'sender' => '',
-                    'subject' => '',
-                    'date' => '',
-                    'isStarred' => in_array('STARRED', $message->getLabelIds())
+        try {
+            $client = $this->getClient();
+            $user = User::find(Auth::id());
+            $this->gmailService->refreshAccessToken($user, $client);
+            $service = new Gmail($client);
+            $user = 'me'; // 'me' indicates the authenticated user
+            $client->setAccessType('offline');
+            $client->setPrompt('select_account consent');
+            // Assuming $service is an instance of Google\Service\Gmail
+            $pageToken = NULL;
+            $messages = [];
+            do {
+                $optParams = [
+                    'q' => $request->searchQuery,
+                    'pageToken' => $pageToken
                 ];
-                foreach ($headers as $header) {
-                    if ($header->getName() == 'id') {
-                        $data['id'] = $header->getValue();
-                    }
-                    if ($header->getName() == 'From') {
-                        $data['sender'] = $header->getValue();
-                    }
-                    if ($header->getName() == 'Subject') {
-                        $data['subject'] = $header->getValue();
-                    }
-                    if ($header->getName() == 'Date') {
-                        $data['date'] = $header->getValue();
-                    }
+                $results = $service->users_messages->listUsersMessages('me', $optParams);
+                if ($results->getNextPageToken()) {
+                    $pageToken = $results->getNextPageToken();
+                } else {
+                    $pageToken = NULL;
                 }
-                $messages[] = $data;
-            }
-        } while ($pageToken);
-        return ResponseHelper::success($messages, null);
+                $messages = $this->gmailService->search($results, $service);
+            } while ($pageToken);
+            return ResponseHelper::success($messages, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
     public function deleteMessages(Request $request)
     {
-        $client = $this->getClient();
-        $user = User::find(Auth::id());
-        // Access the 'google_access_token_json' column from the user model
-        $jsonData = $user->google_access_token_json;
-        // Decode the JSON data
-        $tokenData = json_decode($jsonData, true);
-        // Extract the access token
-        $accessToken = $tokenData['access_token0'];
-        $refreshToken = $tokenData['refresh_token'];
-        // Now $accessToken contains the Google access token
-        $userAccessToken = urldecode($accessToken);
-        // Create a new instance of the Google API client
-        $client = $this->getClient();
-        // Set the access token obtained for the user
-        $client->setAccessToken($userAccessToken);
-        if ($client->isAccessTokenExpired()) {
-            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-            $client->getRefreshToken();
-            $client->setAccessToken($client->getAccessToken());
-            $user->google_access_token_json = json_encode($at);
-            $user->save();
-        }
-        $service = new Gmail($client);
-        // Specify the user ID (usually 'me' for the currently authenticated user)
-        $userId = 'me';
-        // Specify the ID of the message you want to delete
-        $messageIds = $request->messageIds;
         try {
+            $client = $this->getClient();
+            $user = User::find(Auth::id());
+            $this->gmailService->refreshAccessToken($user, $client);
+            $service = new Gmail($client);
+            // Specify the user ID (usually 'me' for the currently authenticated user)
+            $userId = 'me';
+            // Specify the ID of the message you want to delete
+            $messageIds = $request->messageIds;
             // Create a new BatchDeleteMessagesRequest
             $batchDeleteRequest = new \Google_Service_Gmail_BatchDeleteMessagesRequest();
             $batchDeleteRequest->setIds($messageIds);
-            // Delete the messages
-            $service->users_messages->batchDelete($userId, $batchDeleteRequest);
-            return ResponseHelper::success(
-                'Messages deleted successfully',
-                null
-            );
+            return DB::transaction(function () use ($service, $userId, $batchDeleteRequest) {
+                // Delete the messages
+                $service->users_messages->batchDelete($userId, $batchDeleteRequest);
+                return ResponseHelper::success(
+                    'Messages deleted successfully',
+                    null
+                );
+            });
         } catch (\Exception $e) {
-            return ResponseHelper::error(
-                $e->getMessage(),
-                null,
-            );
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
     public function starMessages(Request $request)
     {
-        $client = $this->getClient();
-        $user = User::find(Auth::id());
-        // Access the 'google_access_token_json' column from the user model
-        $jsonData = $user->google_access_token_json;
-        // Decode the JSON data
-        $tokenData = json_decode($jsonData, true);
-        // Extract the access token
-        $accessToken = $tokenData['access_token'];
-        $refreshToken = $tokenData['refresh_token'];
-        // Now $accessToken contains the Google access token
-        $userAccessToken = urldecode($accessToken);
-        // Create a new instance of the Google API client
-        $client = $this->getClient();
-        // Set the access token obtained for the user
-        $client->setAccessToken($userAccessToken);
-        if ($client->isAccessTokenExpired()) {
-            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-            $client->getRefreshToken();
-            $client->setAccessToken($client->getAccessToken());
-            $user->google_access_token_json = json_encode($at);
-            $user->save();
-        }
-        $service = new Gmail($client);
-        // Specify the user ID (usually 'me' for the currently authenticated user)
-        $userId = 'me';
-        // Specify the ID of the message you want to delete
-        $messageIds = $request->messageIds;
         try {
-            foreach ($messageIds as $messageId) {
-                $mods = new Google_Service_Gmail_ModifyMessageRequest();
-                $mods->setAddLabelIds(['STARRED']);
-                $service->users_messages->modify($userId, $messageId, $mods);
-            }
-            return ResponseHelper::success(
-                'Messages starred successfully',
-                null
-            );
+            $client = $this->getClient();
+            $user = User::find(Auth::id());
+            $this->gmailService->refreshAccessToken($user, $client);
+            $service = new Gmail($client);
+            // Specify the user ID (usually 'me' for the currently authenticated user)
+            $userId = 'me';
+            // Specify the ID of the message you want to delete
+            $messageIds = $request->messageIds;
+            return DB::transaction(function () use ($messageIds, $userId, $service) {
+                foreach ($messageIds as $messageId) {
+                    $mods = new Google_Service_Gmail_ModifyMessageRequest();
+                    $mods->setAddLabelIds(['STARRED']);
+                    $service->users_messages->modify($userId, $messageId, $mods);
+                }
+                return ResponseHelper::success(
+                    'Messages starred successfully',
+                    null
+                );
+            });
         } catch (\Exception $e) {
-            return ResponseHelper::error(
-                $e->getMessage(),
-                null,
-            );
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
 }
