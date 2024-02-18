@@ -83,6 +83,7 @@ class UserController extends Controller
 
         $result = $this->userService->editUser($request, $id);
         return $result;
+       
     }
     //remove a user from a team
     public function removeFromTeam($id)
@@ -145,7 +146,7 @@ class UserController extends Controller
         $validate = $request->validated();
         $new_contact = Contact::create([
             'user_id' => $validate['user_id'],
-            'type'    => $validate['type'],
+            'type' => $validate['type'],
             'contact' => $validate['contact'],
         ]);
         return ResponseHelper::created($new_contact, 'contact added successfully');
