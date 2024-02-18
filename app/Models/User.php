@@ -29,22 +29,22 @@ class User extends Authenticatable implements JWTSubject
     }
 
     protected $fillable =
-    [
-        'first_name',
-        'middle_name',
-        'last_name',
-        'email',
-        'role',
-        'department_id',
-        'password',
-        'address',
-        'specialization',
-        'pin',
-        'provider_id',
-        'provider_name',
-        'google_access_token_json',
-        'branch_id'
-    ];
+        [
+            'first_name',
+            'middle_name',
+            'last_name',
+            'email',
+            'role',
+            'department_id',
+            'password',
+            'address',
+            'specialization',
+            'pin',
+            'provider_id',
+            'provider_name',
+            'google_access_token_json',
+            'branch_id'
+        ];
 
 
     protected $appends = [
@@ -75,10 +75,6 @@ class User extends Authenticatable implements JWTSubject
             ->getOverTime($this, $date);
         return $totalOverTimeHours;
     }
-
-
-
-
     public function getLateAttribute()
     {
         $date = request()->query('date');
@@ -86,9 +82,6 @@ class User extends Authenticatable implements JWTSubject
             ->getLate($this, $date);
         return $totalLateHours;
     }
-
-
-
     public function getRateAttribute($value) //not ready
     {
         $date = request()->query('date');
@@ -102,7 +95,6 @@ class User extends Authenticatable implements JWTSubject
         }
         return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
     }
-
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
@@ -110,10 +102,6 @@ class User extends Authenticatable implements JWTSubject
             ->getAdvance($this, $date);
         return $totalAdvance;
     }
-
-
-
-
     public function getDeductionAttribute($date)
     {
         $date = request()->query('date');
@@ -121,8 +109,6 @@ class User extends Authenticatable implements JWTSubject
             ->getDeduction($this, $date);
         return $totalDeduction;
     }
-
-
     public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');
@@ -130,8 +116,6 @@ class User extends Authenticatable implements JWTSubject
             ->getAbsence($this, $date);
         return $totalAbsence;
     }
-
-
     public function getRewardAttribute()
     {
         $date = request()->query('date');
@@ -139,8 +123,6 @@ class User extends Authenticatable implements JWTSubject
             ->getReward($this, $date);
         return $totalReward;
     }
-
-
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
@@ -148,8 +130,6 @@ class User extends Authenticatable implements JWTSubject
             ->getCheckInPercentage($this, $date);
         return $percentage;
     }
-
-
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
@@ -157,31 +137,25 @@ class User extends Authenticatable implements JWTSubject
             ->getCheckOutPercentage($this, $date);
         return $percentage;
     }
-
-
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
         if ($date) {
             $salary = UserSalary::where('user_id', $this->id)
-                ->where('date', $date);
-            $baseSalary = $salary->sum('salary');
+                ->where('date', '<=', $date)->latest()->get();
+            $baseSalary = $salary[0]->salary;
             return $baseSalary;
         } else
             return 0;
     }
-
-
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
-
     public function attendance()
     {
         return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
     }
-
     public function my_files()
     {
         return $this->hasMany(AdditionalFile::class, 'user_id', 'id');
@@ -224,7 +198,7 @@ class User extends Authenticatable implements JWTSubject
     public function penalties()
     {
         return $this->hasMany(Decision::class, 'user_id', 'id')
-        ->where('type', 'penalty');
+            ->where('type', 'penalty');
     }
 
     public function salary()
@@ -249,12 +223,12 @@ class User extends Authenticatable implements JWTSubject
     public function my_contacts()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
-        ->where('type', 'user_num')->orwhere('type', 'email');
+            ->where('type', 'user_num')->orwhere('type', 'email');
     }
     public function emergency()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
-        ->where('type', 'emergency');
+            ->where('type', 'emergency');
     }
 
 
@@ -277,14 +251,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Rate::class, 'evaluator_id');
     }
 
-    public function  absences()
+    public function absences()
     {
         return $this->hasMany(Absences::class, 'user_id');
     }
 
     public function userInfo()
     {
-        return $this->hasOne(UserInfo::class,'user_id');
+        return $this->hasOne(UserInfo::class, 'user_id');
     }
 
 
@@ -295,30 +269,30 @@ class User extends Authenticatable implements JWTSubject
 
     public function deposits()
     {
-        return $this->hasMany(Deposit::class,'user_id');
+        return $this->hasMany(Deposit::class, 'user_id');
     }
 
-    public function  notes()
+    public function notes()
     {
         return $this->hasMany(Note::class);
     }
 
-    public function  languages()
+    public function languages()
     {
         return $this->hasMany(Language::class);
     }
 
-    public function  certificates()
+    public function certificates()
     {
         return $this->hasMany(Certificate::class);
     }
 
-    public function  study_situations()
+    public function study_situations()
     {
         return $this->hasMany(StudySituation::class);
     }
 
-    public function  empOfMonths()
+    public function empOfMonths()
     {
         return $this->hasMany(EmpOfMonth::class);
     }

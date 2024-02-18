@@ -3,12 +3,16 @@
 namespace App\Services;
 
 use App\Helper\ResponseHelper;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Absences;
 use App\Models\Attendance;
+use App\Models\Career;
 use App\Models\Date;
 use App\Models\Decision;
 use App\Models\Late;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserServices
 {
@@ -28,14 +32,11 @@ class UserServices
                 }
             })
             ->count('id');
-
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
             $day = substr($date, 8, 2);
-
             $dates = Date::query();
-
             if ($day) {
                 $dates->whereDate('date', $date);
             } elseif ($month) {
@@ -44,7 +45,6 @@ class UserServices
             } else {
                 $dates->whereYear('date', $year);
             }
-
             $count = $dates->count('id');
             if ($count == 0) {
                 $percentage = 0;
@@ -60,11 +60,9 @@ class UserServices
 
     public function getCheckOutPercentage($user, $date)
     {
-
         $date = request()->query('date');
-
         $checkOut = Attendance::where('status', '1')
-            ->where('pin',  $user->pin)
+            ->where('pin', $user->pin)
             ->when($date, function ($query, $date) {
                 $year = substr($date, 0, 4);
                 $month = substr($date, 5, 2);
@@ -77,14 +75,11 @@ class UserServices
                 }
             })
             ->count('id');
-
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
             $day = substr($date, 8, 2);
-
             $dates = Date::query();
-
             if ($day) {
                 $dates->whereDate('date', $date);
             } elseif ($month) {
@@ -93,7 +88,6 @@ class UserServices
             } else {
                 $dates->whereYear('date', $year);
             }
-
             $count = $dates->count('id');
             if ($count == 0) {
                 $percentage = 0;
@@ -132,8 +126,6 @@ class UserServices
 
         return $totalAbsence;
     }
-
-
     public function getDeduction($user, $date)
     {
         $deductions = Decision::where('type', 'deduction')
@@ -146,8 +138,6 @@ class UserServices
 
         return $totalDeduction;
     }
-
-
     public function getAdvance($user, $date)
     {
         $advance = Decision::where('type', 'advanced')
@@ -160,8 +150,6 @@ class UserServices
 
         return $totalAdvance;
     }
-
-
     public function getLate($user, $date)
     {
         $lates = Late::whereNotNull('check_in')
@@ -190,11 +178,33 @@ class UserServices
         return $totalOverTimeHours;
     }
 
+    public function editUser(UpdateUserRequest $request, $id)
+    {
+        return DB::transaction(function () use ($id, $request) {
+            $specUser = User::findOrFail($id);
+            if ($specUser->role != $request->role) {
+                $addExp = Career::create([
+                    'user_id' => $id,
+                    'content' => 'worked as a ' . $specUser->role,
+                ]);
+            }
+            $specUser->update([
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name'  => $request->last_name,
+                'email'      => $request->email,
+                'password'   => Hash::make($request->password),
+                'role'    => $request->role,
+                'department_id' => $request->department_id,
+            ]);
+            return ResponseHelper::success($specUser, null, 'user info updated successfully', 200);
+        });
+        return ResponseHelper::error('Error', null);
+    }
 
 
 
 
-  
 
 
 
