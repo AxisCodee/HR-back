@@ -138,6 +138,7 @@ Route::prefix('Request')->group(function () {
         Route::post('accepteRequest/{request}', 'acceptRequest');
         Route::post('rejectRequest/{request}', 'rejectRequest');
         Route::delete('Delete/{request}', 'destroy');
+       
     });
 });
 Route::prefix('Team')->group(function () {
