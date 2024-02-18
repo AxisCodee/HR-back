@@ -83,7 +83,7 @@ class UserController extends Controller
 
         $result = $this->userService->editUser($request, $id);
         return $result;
-       
+
     }
     //remove a user from a team
     public function removeFromTeam($id)
