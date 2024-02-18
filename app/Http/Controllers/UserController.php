@@ -33,7 +33,7 @@ class UserController extends Controller
     private $teamService;
     protected $userService;
 
-    public function __construct(RoleService $roleService,TeamService $teamService,UserServices $userService)
+    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService)
     {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
@@ -81,23 +81,16 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        return DB::transaction(function () use ($id, $request) {
+        $validated = $request->validated();
+        return DB::transaction(function () use ($id, $validated) {
             $spec_user = User::findOrFail($id);
-            if ($spec_user->role != $request->role) {
+            if ($spec_user->role != $validated['role_id']) {
                 $add_exp = Career::create([
                     'user_id' => $id,
                     'content' => 'worked as a ' . $spec_user->role,
                 ]);
             }
-            $spec_user->update([
-                'first_name' => $request->first_name,
-                'middle_name' => $request->middle_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => $request->role,
-                'department_id' => $request->department_id,
-            ]);
+            $spec_user->update($validated);
             return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
         });
         return ResponseHelper::error('Error', null);
@@ -105,7 +98,7 @@ class UserController extends Controller
     //remove a user from a team
     public function removeFromTeam($id)
     {
-       $result= $this->teamService->remove_from_team($id);
+        $result = $this->teamService->remove_from_team($id);
         return $result;
     }
     //delete a specific user by his id
@@ -118,21 +111,21 @@ class UserController extends Controller
     public function getTeams(Request $request)
     {
         $branchId = $request->branch_id;
-        $result= $this->teamService->getTeams($branchId);
+        $result = $this->teamService->getTeams($branchId);
         return $result;
 
     }
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
-      $result =  $this->teamService->addMembers($request, $team);
-      return $result;
+        $result = $this->teamService->addMembers($request, $team);
+        return $result;
 
     }
 
     //add new team and add users to it
     public function storeTeams(StoreTeamRequest $request)
-     {
+    {
         $result = $this->teamService->storeTeams($request);
         return $result;
     }

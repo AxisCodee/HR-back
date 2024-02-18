@@ -29,7 +29,7 @@ class UpdateUserRequest extends FormRequest
             'middle_name' => ['string', 'min:3'],
             'email' => ['email', 'min:10'],
             'password' => ['string', 'min:4'],
-            'role_id' => ['exists:role_user,id'],
+            'role_id' => ['exists:roles,id'],
             'department_id' => ['exists:departments,id'],
         ];
     }
