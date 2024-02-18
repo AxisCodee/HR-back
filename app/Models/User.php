@@ -170,6 +170,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Contract::class, 'user_id');
     }
 
+    public function alert()
+    {
+        return $this->hasMany(UserAlert::class, 'user_id');
+    }
+
     public function department()
     {
         return $this->belongsTo('App\Models\Department');

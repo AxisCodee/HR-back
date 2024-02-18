@@ -13,6 +13,9 @@ use App\Models\User;
 use App\Models\Contact;
 use App\Models\Department;
 use App\Models\Role;
+use App\Services\RoleService;
+use App\Services\TeamService;
+use App\Services\UserServices;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
@@ -23,6 +26,20 @@ require 'tad\vendor\autoload.php';
 
 class UserController extends Controller
 {
+
+
+
+    private $roleService;
+    private $teamService;
+    protected $userService;
+
+    public function __construct(RoleService $roleService,TeamService $teamService,UserServices $userService)
+    {
+        $this->roleService = $roleService;
+        $this->teamService = $teamService;
+        $this->userService = $userService;
+
+    }
 
     //get all users info
     public function all_users(Request $request)
@@ -86,13 +103,10 @@ class UserController extends Controller
         return ResponseHelper::error('Error', null);
     }
     //remove a user from a team
-    public function remove_from_team($id)
+    public function removeFromTeam($id)
     {
-        $remove = User::query()
-            ->where('id', $id)
-            ->update(['department_id' => null]);
-
-        return ResponseHelper::success('user removed from team successfully');
+       $result= $this->teamService->remove_from_team($id);
+        return $result;
     }
     //delete a specific user by his id
     public function remove_user($user)
@@ -104,90 +118,30 @@ class UserController extends Controller
     public function getTeams(Request $request)
     {
         $branchId = $request->branch_id;
-        $department = Department::query()
-            ->with('user', 'user.userInfo')->whereHas('user', function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            })
-            ->get()
-            ->toArray();
-        return ResponseHelper::success($department);
+        $result= $this->teamService->getTeams($branchId);
+        return $result;
+
     }
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
-        return DB::transaction(function () use ($request, $team) {
-            foreach ($request->users_array as $user) {
-                $add = User::findOrFail($user);
-                $add->department_id = $team;
-                $add->save();
-            }
-            return ResponseHelper::created('users added to the team successfully');
-        });
+      $result =  $this->teamService->addMembers($request, $team);
+      return $result;
+
     }
 
     //add new team and add users to it
     public function storeTeams(StoreTeamRequest $request)
-    {
-        $validate = $request->validated();
-        return DB::transaction(function () use ($request) {
-            $existing = Department::where('name', $request->name)->first();
-
-            if ($existing) {
-                if ($request->has('team_leader')) {
-                    $oldleader = $existing->team_leader->update(['role' => 'employee']);
-                    $newleader = User::findOrFail($request->team_leader)
-                        ->update(['role' => 'team_leader', 'department_id' => $existing->id]);
-                }
-                if ($request->has('users_array')) {
-                    goto addusersloop;
-                }
-                return ResponseHelper::success('team already exists');
-            }
-
-            $existing = Department::create(['name' => $request->name, 'branch_id' => $request->branch_id]);
-            $team_leader = User::where('id', $request->team_leader)->update(['role' => 'team_leader', 'department_id' => $existing->id]);
-            if ($request->has('users_array')) {
-                goto addusersloop;
-            }
-            return ResponseHelper::success('Team created successfuly');
-
-            addusersloop:
-
-            foreach ($request->users_array as $user) {
-                $adduser = User::where('id', $user)->update(['department_id' => $existing->id]);
-            }
-            return ResponseHelper::success('Team created and members added successfuly');
-        });
+     {
+        $result = $this->teamService->storeTeams($request);
+        return $result;
     }
 
     //update an existing team name
     public function updateTeams(UpdateTeamRequest $request, $id)
     {
-        try {
-            $request->validated();
-            return DB::transaction(function () use ($request, $id) {
-                $edit = Department::with('team_leader')->findOrFail($id);
-                if ($request->name) {
-                    if ($request->name != $edit->name) {
-                        return Department::where('name', $request->name)->exists() ? ResponseHelper::error('name already exists') : $edit->update(['name' => $request->name]);
-                    }
-                }
-                if ($request->users_array) {
-                    foreach ($request->users_array as $user) {
-                        $add = User::findOrFail($user)->update(['department_id' => $id]);
-                    }
-                    if ($request->team_leader) {
-                        $oldleader = $edit->team_leader->update(['role' => 'employee']);
-                        $newleader = User::findOrFail($request->team_leader)
-                            ->update(['role' => 'team_leader', 'department_id' => $id]);
-                    }
-                    return ResponseHelper::success('Members added & Team Updated successfuly');
-                }
-            });
-            return ResponseHelper::success('Team Updated successfuly');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e);
-        }
+        $result = $this->teamService->updateTeams($request, $id);
+        return $result;
     }
     //delete an exisiting team
     public function deleteTeam($id)
@@ -233,67 +187,20 @@ class UserController extends Controller
     //get all departments and rules
     public function all_dep_rul()
     {
-        $departments = Department::query()->get()->toArray();
-        $roles = Role::query()->get()->toArray();
-        return ResponseHelper::success(
-            [
-                'Departments' => $departments,
-                'Roles' => $roles,
-            ],
-            null,
-            'departments and roles returned successfully',
-            200
-        );
+        $result = $this->roleService->allDepRul();
+        return $result;
     }
+
     //get roles hierarchy
     public function roleHierarchy()
     {
-        $admins = User::where('role', 'admin')->with('userInfo')->first();
-        $managers = User::where('role', 'project_manager')->with('userInfo')->get()->toArray();
-        $leaders = User::where('role', 'team_leader')->with('my_team')->get();
-        $teamMembers = $leaders->map(function ($leader) {
-            $leaderData = $leader->toArray();
-            unset($leaderData['my_team']);
-            return
-                [
-                    'leader' => $leaderData,
-                    'image' => $leader->userInfo ? $leader->userInfo->image : null,
-                    'Level3' => $leader->my_team->map(function ($member) {
-                        return [
-                            'member' => $member,
-                            'image' => $member->userInfo ? $member->userInfo->image : null,
-                        ];
-                    })
-                ];
-        });
-        $response = [
-            'CEO' => $admins,
-            'Level1' => $managers,
-            'level2' => $teamMembers,
-        ];
-        return ResponseHelper::success(
-
-            [$response],
-            null,
-            'Roles hierarchy returned successfully',
-            200
-        );
+        $result = $this->roleService->roleHierarchy();
+        return $result;
     }
 
     public function user_prof()
     {
-        $levels = ["Junior", "Mid", "Senior"];
-        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Desgin", "Project-Manager"];
-        $department = Department::query()->get()->toArray();
-
-        return ResponseHelper::success(
-            [
-                'levels' => $levels,
-                'specialisation' => $specialisation,
-                'departments' => $department,
-            ],
-            "Professional selects returned successfully",
-            200
-        );
+        $result = $this->roleService->userProf();
+        return $result;
     }
 }

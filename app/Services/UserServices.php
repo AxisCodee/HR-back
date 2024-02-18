@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Helper\ResponseHelper;
 use App\Models\Absences;
 use App\Models\Attendance;
 use App\Models\Date;
 use App\Models\Decision;
 use App\Models\Late;
+use App\Models\User;
 
 class UserServices
 {
@@ -49,6 +51,9 @@ class UserServices
         } else
             return 0;
     }
+
+
+
     public function getCheckOutPercentage($user, $date)
     {
         $date = request()->query('date');
@@ -89,6 +94,9 @@ class UserServices
         } else
             return 0;
     }
+
+
+
     public function getReward($user, $date)
     {
         $rewards = Decision::where('type', 'reward')
@@ -101,6 +109,8 @@ class UserServices
 
         return $totalReward;
     }
+
+
     public function getAbsence($user, $date)
     {
         $absences = Absences::where('user_id', $user->id);
@@ -149,6 +159,7 @@ class UserServices
 
         return $totalLateHours;
     }
+
     public function getOverTime($user, $date)
     {
         $overTimes = Late::whereNotNull('check_out')
@@ -162,4 +173,13 @@ class UserServices
 
         return $totalOverTimeHours;
     }
+
+
+
+
+
+
+
+
+
 }
