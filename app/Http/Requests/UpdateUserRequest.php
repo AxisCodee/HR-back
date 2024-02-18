@@ -29,16 +29,20 @@ class UpdateUserRequest extends FormRequest
             'middle_name' => ['string', 'min:3'],
             'email' => ['email', 'min:10'],
             'password' => ['string', 'min:4'],
-            'role_id' => ['integer', 'min:1'],
-            'department_id' => ['integer', 'min:1'],
+            'role_id' => ['exists:roles,id'],
+            'department_id' => ['exists:departments,id'],
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }

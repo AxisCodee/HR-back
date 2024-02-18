@@ -24,18 +24,21 @@ class RateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required',
-            'rate' => 'required|numeric|between:1,10',
-            'rate_type_id'=>'required'
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'rate' => ['required', 'numeric', 'between:1,10'],
+            'rate_type_id' => ['exists:rate_types,id'],
         ];
     }
-
-    //if there is an error with the validation display the error as a Json response.
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }

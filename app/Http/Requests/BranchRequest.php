@@ -24,16 +24,21 @@ class BranchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:branches,name',
-            'fingerprint_scanner_ip' => 'sometimes',
+            'name' => ['required', 'unique:branches,name'],
+            'fingerprint_scanner_ip' => ['sometimes'],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
+        $errors = $validator->errors();
+        $transformedErrors = [];
+        foreach ($errors->all() as $errorMessage) {
+            $transformedErrors[] = $errorMessage;
+        }
         throw new HttpResponseException(response()->json([
             'message' => 'Validation Error',
-            'errors' => $validator->errors(),
+            'errors' => $transformedErrors,
         ], 422));
     }
 }
