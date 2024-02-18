@@ -92,25 +92,28 @@ class LateController extends Controller
      * Remove the specified resource from storage.
      */
     public function acceptAlert(Request $request)
-    {
-        $late = Late::find($request->alert_id);
-        if (!$late) {
-            return ResponseHelper::error('Alert not found');
-        }
-
-        $late->update([
-            'type' => 'Unjustified'
-        ]);
-
-        $alert = UserAlert::create([
-            'user_id' => $late->user_id,
-            'late' => 1,
-            'date' => Carbon::now()->format('Y-m-d')
-        ]);
-
-        return ResponseHelper::success([], 'Alert accepted successfully');
+{
+    $late = Late::find($request->alert_id);
+    if (!$late) {
+        return ResponseHelper::error('Alert not found');
     }
 
+    $late->update([
+        'type' => 'Unjustified'
+    ]);
+
+    $alert = UserAlert::create([
+        'user_id' => $late->user_id,
+        'late' => 1,
+        'date' => Carbon::now()->format('Y-m-d')
+    ]);
+
+    $response = [
+        'user_id' => $alert->user_id
+    ];
+
+    return ResponseHelper::success($response, 'Alert accepted successfully');
+}
     public function makeDecision(Late $late)
     {
         return DB::transaction(function () use ($late) {
