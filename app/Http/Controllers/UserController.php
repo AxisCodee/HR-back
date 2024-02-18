@@ -38,7 +38,6 @@ class UserController extends Controller
         $this->roleService = $roleService;
         $this->teamService = $teamService;
         $this->userService = $userService;
-
     }
 
     //get all users info
@@ -81,19 +80,10 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        $validated = $request->validated();
-        return DB::transaction(function () use ($id, $validated) {
-            $spec_user = User::findOrFail($id);
-            if ($spec_user->role != $validated['role_id']) {
-                $add_exp = Career::create([
-                    'user_id' => $id,
-                    'content' => 'worked as a ' . $spec_user->role,
-                ]);
-            }
-            $spec_user->update($validated);
-            return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
-        });
-        return ResponseHelper::error('Error', null);
+
+        $result = $this->userService->editUser($request, $id);
+        return $result;
+
     }
     //remove a user from a team
     public function removeFromTeam($id)
@@ -113,14 +103,12 @@ class UserController extends Controller
         $branchId = $request->branch_id;
         $result = $this->teamService->getTeams($branchId);
         return $result;
-
     }
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
-        $result = $this->teamService->addMembers($request, $team);
+        $result =  $this->teamService->addMembers($request, $team);
         return $result;
-
     }
 
     //add new team and add users to it
