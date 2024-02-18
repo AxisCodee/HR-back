@@ -26,14 +26,11 @@ class UserServices
                 }
             })
             ->count('id');
-
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
             $day = substr($date, 8, 2);
-
             $dates = Date::query();
-
             if ($day) {
                 $dates->whereDate('date', $date);
             } elseif ($month) {
@@ -42,7 +39,6 @@ class UserServices
             } else {
                 $dates->whereYear('date', $year);
             }
-
             $count = $dates->count('id');
             if ($count == 0) {
                 $percentage = 0;
@@ -53,21 +49,11 @@ class UserServices
         } else
             return 0;
     }
-
-
-
-
-
-
-
-
     public function getCheckOutPercentage($user, $date)
     {
-
         $date = request()->query('date');
-
         $checkOut = Attendance::where('status', '1')
-            ->where('pin',  $user->pin)
+            ->where('pin', $user->pin)
             ->when($date, function ($query, $date) {
                 $year = substr($date, 0, 4);
                 $month = substr($date, 5, 2);
@@ -80,14 +66,11 @@ class UserServices
                 }
             })
             ->count('id');
-
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
             $day = substr($date, 8, 2);
-
             $dates = Date::query();
-
             if ($day) {
                 $dates->whereDate('date', $date);
             } elseif ($month) {
@@ -96,7 +79,6 @@ class UserServices
             } else {
                 $dates->whereYear('date', $year);
             }
-
             $count = $dates->count('id');
             if ($count == 0) {
                 $percentage = 0;
@@ -107,10 +89,6 @@ class UserServices
         } else
             return 0;
     }
-
-
-
-
     public function getReward($user, $date)
     {
         $rewards = Decision::where('type', 'reward')
@@ -123,10 +101,6 @@ class UserServices
 
         return $totalReward;
     }
-
-
-
-
     public function getAbsence($user, $date)
     {
         $absences = Absences::where('user_id', $user->id);
@@ -138,8 +112,6 @@ class UserServices
 
         return $totalAbsence;
     }
-
-
     public function getDeduction($user, $date)
     {
         $deductions = Decision::where('type', 'deduction')
@@ -152,8 +124,6 @@ class UserServices
 
         return $totalDeduction;
     }
-
-
     public function getAdvance($user, $date)
     {
         $advance = Decision::where('type', 'advanced')
@@ -166,8 +136,6 @@ class UserServices
 
         return $totalAdvance;
     }
-
-
     public function getLate($user, $date)
     {
         $lates = Late::whereNotNull('check_in')
@@ -181,9 +149,6 @@ class UserServices
 
         return $totalLateHours;
     }
-
-
-
     public function getOverTime($user, $date)
     {
         $overTimes = Late::whereNotNull('check_out')

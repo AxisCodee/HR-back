@@ -75,10 +75,10 @@ class UserController extends Controller
             $spec_user->update([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
-                'last_name'  => $request->last_name,
-                'email'      => $request->email,
-                'password'   => Hash::make($request->password),
-                'role'    => $request->role,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
                 'department_id' => $request->department_id,
             ]);
             return ResponseHelper::success($spec_user, null, 'user info updated successfully', 200);
@@ -165,11 +165,11 @@ class UserController extends Controller
     {
         try {
             $request->validated();
-           return DB::transaction(function () use ($request, $id) {
+            return DB::transaction(function () use ($request, $id) {
                 $edit = Department::with('team_leader')->findOrFail($id);
                 if ($request->name) {
                     if ($request->name != $edit->name) {
-                        return  Department::where('name', $request->name)->exists() ? ResponseHelper::error('name already exists')  : $edit->update(['name' => $request->name]) ;
+                        return Department::where('name', $request->name)->exists() ? ResponseHelper::error('name already exists') : $edit->update(['name' => $request->name]);
                     }
                 }
                 if ($request->users_array) {
@@ -211,7 +211,7 @@ class UserController extends Controller
         $validate = $request->validated();
         $new_contact = Contact::create([
             'user_id' => $validate['user_id'],
-            'type'    => $validate['type'],
+            'type' => $validate['type'],
             'contact' => $validate['contact'],
         ]);
         return ResponseHelper::created($new_contact, 'contact added successfully');
