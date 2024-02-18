@@ -104,7 +104,7 @@ class LateController extends Controller
 
     $alert = UserAlert::create([
         'user_id' => $late->user_id,
-        'late' => 1,
+        'alert' => 1,
         'date' => Carbon::now()->format('Y-m-d')
     ]);
 
