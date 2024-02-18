@@ -3,12 +3,16 @@
 namespace App\Services;
 
 use App\Helper\ResponseHelper;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Absences;
 use App\Models\Attendance;
+use App\Models\Career;
 use App\Models\Date;
 use App\Models\Decision;
 use App\Models\Late;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserServices
 {
@@ -194,7 +198,29 @@ class UserServices
 
 
 
-  
+    public function editUser(UpdateUserRequest $request, $id)
+    {
+        return DB::transaction(function () use ($id, $request) {
+            $specUser = User::findOrFail($id);
+            if ($specUser->role != $request->role) {
+                $addExp = Career::create([
+                    'user_id' => $id,
+                    'content' => 'worked as a ' . $specUser->role,
+                ]);
+            }
+            $specUser->update([
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name'  => $request->last_name,
+                'email'      => $request->email,
+                'password'   => Hash::make($request->password),
+                'role'    => $request->role,
+                'department_id' => $request->department_id,
+            ]);
+            return ResponseHelper::success($specUser, null, 'user info updated successfully', 200);
+        });
+        return ResponseHelper::error('Error', null);
+    }
 
 
 
