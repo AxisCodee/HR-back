@@ -142,11 +142,14 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         if ($date) {
             $salary = UserSalary::where('user_id', $this->id)
-                ->where('date', '<=', $date)->latest()->get();
-            $baseSalary =$salary;
+                ->where('date', '<=', $date)
+                ->orderBy('date', 'desc')
+                ->first();
+            $baseSalary = $salary ? $salary->base_salary : 0;
             return $baseSalary;
-        } else
+        } else {
             return 0;
+        }
     }
     public function getJWTIdentifier()
     {
