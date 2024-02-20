@@ -6,6 +6,7 @@ use App\Models\Late;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\StoreLateRequest;
 use App\Http\Requests\UpdateLateRequest;
+use App\Models\UserAlert;
 use App\Models\UserInfo;
 use App\Models\Decision;
 use Carbon\Carbon;
@@ -49,7 +50,7 @@ class LateController extends Controller
             $result = Late::query()
                 ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
                 ->where('type', 'normal')
-                ->with('user:id,first_name,department_id', 'user.department', 'user.alert', 'user.userInfo:id,image')
+                ->with('user:id,first_name,last_name,department_id', 'user.department', 'user.alert', 'user.userInfo:id,image')
                 ->whereHas('user', function ($query) use ($branchId) {
                     $query->where('branch_id', $branchId);
                 })
@@ -91,19 +92,28 @@ class LateController extends Controller
      * Remove the specified resource from storage.
      */
     public function acceptAlert(Request $request)
-    {
-        $late = Late::find($request->alert_id);
-        if (!$late) {
-            return ResponseHelper::error('Alert not found');
-        }
-
-        $late->update([
-            'type' => 'Unjustified'
-        ]);
-
-        return ResponseHelper::success([], 'Alert accepted successfully');
+{
+    $late = Late::find($request->alert_id);
+    if (!$late) {
+        return ResponseHelper::error('Alert not found');
     }
 
+    $late->update([
+        'type' => 'Unjustified'
+    ]);
+
+    $alert = UserAlert::create([
+        'user_id' => $late->user_id,
+        'alert' => 1,
+        'date' => Carbon::now()->format('Y-m-d')
+    ]);
+
+    $response = [
+        'user_id' => $alert->user_id
+    ];
+
+    return ResponseHelper::success($response, 'Alert accepted successfully');
+}
     public function makeDecision(Late $late)
     {
         return DB::transaction(function () use ($late) {
