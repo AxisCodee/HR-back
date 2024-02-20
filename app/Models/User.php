@@ -137,7 +137,17 @@ class User extends Authenticatable implements JWTSubject
             ->getCheckOutPercentage($this, $date);
         return $percentage;
     }
-
+    public function getBaseSalaryAttribute()
+    {
+        $date = request()->query('date');
+        if ($date) {
+            $salary = UserSalary::where('user_id', $this->id)
+                ->where('date', '<=', $date)->latest()->get();
+            $baseSalary =$salary;
+            return $baseSalary;
+        } else
+            return 0;
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();
