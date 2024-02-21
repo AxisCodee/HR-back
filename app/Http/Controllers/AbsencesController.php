@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\UpdateAbsencesRequest;
+use App\Http\Requests\StoreAbsencesRequest;
 use App\Models\Absences;
 use App\Models\User;
 use App\Models\UserInfo;
@@ -148,17 +148,22 @@ class AbsencesController extends Controller
         return ResponseHelper::success(null, 'Decision done successfully', null);
     }
 
-    public function store_absence(Request $request)
+    public function store_absence(StoreAbsencesRequest $request)
     {
-        foreach ($request->absence as $item) {
-            $new_abs = Absences::create([
-                'type' => $item['type'],
-                'user_id' => $item['user_id'],
-                'startDate' => $item['date'],
-            ]);
-            $results[] = $new_abs;
+        $request->validated();
+        try {
+            foreach ($request->absence as $item) {
+                $new_abs = Absences::create([
+                    'type' => $item['type'],
+                    'user_id' => $item['user_id'],
+                    'startDate' => $item['date'],
+                ]);
+                $results[] = $new_abs;
+            }
+            return ResponseHelper::success($results, null, 'Absence added successfully');
+        } catch (\Throwable $e) {
+            return ResponseHelper::error($e);
         }
-        return ResponseHelper::success($results, null, 'Absence added successfully');
     }
     public function storeAbsence(Request $request)
     {

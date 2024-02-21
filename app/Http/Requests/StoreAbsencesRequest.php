@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Rules\AbsenceRule;
 
 class StoreAbsencesRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreAbsencesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,9 +25,15 @@ class StoreAbsencesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'absence.*.user_id' => ['integer', 'exists:users,id'],
+            'absence.*.date' => [
+            'required',
+            'date',
+            new AbsenceRule($this->input('absence'))],
+            'absence.*.type'=>['string','in:justified,Unjustified']
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();
