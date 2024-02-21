@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Carbon\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -264,6 +265,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(UserInfo::class, 'user_id');
     }
 
+    public function isAdmin()
+    {
+        if(Auth()->user()->role == 'admin')
+        return  true;
+        else  return false;
+    }
 
     public function careers()
     {
