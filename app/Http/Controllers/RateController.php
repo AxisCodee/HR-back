@@ -109,7 +109,7 @@ class RateController extends Controller
         }])
             ->get()
             ->groupBy('date')
-            ->flatMap(function ($items, $date) {
+            ->flatMap(function ($items) {
                 $evaluatorCount = $items->countBy('evaluator_id');
                 $result = [];
                 foreach ($items as $item) {
