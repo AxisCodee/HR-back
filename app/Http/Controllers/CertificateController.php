@@ -24,7 +24,7 @@ class CertificateController extends Controller
         $validate = $request->validated();
         return DB::transaction(function () use ($validate, $id) {
             Certificate::query()
-                ->findOrFail($id) //????
+                ->findOrFail($id)
                 ->update($validate);
             return ResponseHelper::success('Certificate has been updated', null);
         });

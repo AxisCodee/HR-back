@@ -54,7 +54,7 @@ class DepositController extends Controller
     }
     public function show() //all deposits
     {
-        $result = Deposit::query()->with('user','user.userInfo:id,user_id,image')
+        $result = Deposit::query()->with('user', 'user.userInfo:id,user_id,image')
             ->get()
             ->toArray();
         return ResponseHelper::success($result, null);
@@ -62,11 +62,15 @@ class DepositController extends Controller
 
     public function destroy($id)
     {
-        return DB::transaction(function () use ($id) {
-            $deposit = Deposit::query()->find($id);
-            $deposit->delete();
-            return ResponseHelper::success('Deposit has been deleted', null);
-        });
-        return ResponseHelper::error('not deleted', null);
+        try {
+            return DB::transaction(function () use ($id) {
+                $deposit = Deposit::query()->find($id);
+                $deposit->delete();
+                return ResponseHelper::success('Deposit has been deleted', null);
+            });
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+        //return ResponseHelper::error('not deleted', null);
     }
 }

@@ -22,13 +22,16 @@ class LanguageController extends Controller
     }
     public function update(UpdateLanguageRequest $request, $id)
     {
-        $validate = $request->validated();
-        $lang = Language::query()->findOrFail($id);
-        return DB::transaction(function () use ($validate, $lang) {
-            $lang->update($validate);
-            return ResponseHelper::success('Language has been updated', null);
-        });
-        return ResponseHelper::error('error', null);
+        try {
+            $validate = $request->validated();
+            $lang = Language::query()->findOrFail($id);
+            return DB::transaction(function () use ($validate, $lang) {
+                $lang->update($validate);
+                return ResponseHelper::success('Language has been updated', null);
+            });
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function destroy($id)

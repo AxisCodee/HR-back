@@ -18,7 +18,7 @@ class PolicyController extends Controller
         if (!$policy) {
             return ResponseHelper::error('this branch doesnt have policy', null);
         }
-        return ResponseHelper::success(["policy" => $policy,  "rateTypes" => $rateTypes], null);
+        return ResponseHelper::success(["policy" => $policy, "rateTypes" => $rateTypes], null);
     }
     public function store(StorePolicyRequest $request)
     {

@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DecisionController;
 use App\Http\Controllers\DepositController;
@@ -168,6 +169,14 @@ Route::middleware('auth', 'admin')->group(function () {
         });
     });
 
+    Route::prefix('Certificate')->group(function () {
+        Route::controller(CertificateController::class)->group(function () {
+            Route::post('store', 'store');
+            Route::post('update/{id}', 'update');
+            Route::delete('destroy/{id}', 'destroy');
+        });
+    });
+
     Route::prefix('UserInfo')->group(function () {
         Route::controller(UserInfoController::class)->group(function () {
             Route::post('Add', 'store');
@@ -262,7 +271,7 @@ Route::middleware('auth', 'admin')->group(function () {
 });
 
 
-                    //All APIs for the normal user (not encapsulated)
+//All APIs for the normal user (not encapsulated)
 Route::prefix('Decision')->group(function () {
     Route::controller(DecisionController::class)->group(function () {
         Route::get('my_decisions', 'my_decisions');
