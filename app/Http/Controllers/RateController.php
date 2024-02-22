@@ -109,8 +109,9 @@ class RateController extends Controller
         }])
             ->get()
             ->groupBy('date')
-            ->map(function ($items, $date) {
+            ->flatMap(function ($items, $date) {
                 $evaluatorCount = $items->countBy('evaluator_id');
+                $result = [];
                 foreach ($items as $item) {
                     $itemData = $item->toArray();
                     $itemData['evaluator_count'] = $evaluatorCount[$item->evaluator_id];
@@ -118,8 +119,9 @@ class RateController extends Controller
                 }
                 return $result;
             })
-            ->values()->toArray();
-        return ResponseHelper::success($rates, null, 'rates', 200);
+            ->toArray();
+
+        return ResponseHelper::success($rates, null, 'rates',  200);
     }
 
     public function userRates(Request $request, $date)
