@@ -18,7 +18,7 @@ class EmpOfMonthController extends Controller
     {
         $branchId = $request->input('branch_id');
         $result = EmpOfMonth::query()
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId); })->get()->toArray();
         return ResponseHelper::success($result, null);
     }
@@ -72,7 +72,7 @@ class EmpOfMonthController extends Controller
         $branchId =  $request->branch_id;
                 $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId); })->first();
         return ResponseHelper::success($result, null);
     }
