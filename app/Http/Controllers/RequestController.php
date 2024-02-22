@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Request;
-use App\Http\Requests\StoreRequestRequest;
-use App\Http\Requests\UpdateRequestRequest;
+use App\Http\Requests\RequestRequest\StoreRequestRequest;
+use App\Http\Requests\RequestRequest\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\SendRequest;
+use App\Http\Requests\RequestRequest\SendRequest;
 use App\Models\Absences;
 use App\Models\Decision;
 use App\Models\User;
@@ -161,7 +161,7 @@ class RequestController extends Controller
     public function getComplaints(HttpRequest $request)
     {
         $branchId = $request->branch_id;
-        $result = Request::with('user','user.department','user.userInfo:id,user_id,image')
+        $result = Request::with('user', 'user.department', 'user.userInfo:id,user_id,image')
             ->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
@@ -173,7 +173,7 @@ class RequestController extends Controller
             return ResponseHelper::success($result);
         }
 
-        return ResponseHelper::success( $result,null,'complaint',200);
+        return ResponseHelper::success($result, null, 'complaint', 200);
     }
 
     public function send_request(SendRequest $request)

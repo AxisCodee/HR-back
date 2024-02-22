@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\ReportRequest;
+use App\Http\Requests\ReportRequest\StoreReportRequest;
 use App\Models\Attendance;
 use App\Models\Report;
 use App\Models\User;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class ReportController extends Controller
 {
     //store new Report
-    public function store(ReportRequest $request)
+    public function store(StoreReportRequest $request)
     {
         $validate = $request->validated();
         $new_report = Report::create([
@@ -91,9 +91,16 @@ class ReportController extends Controller
     public function report(Request $request)
     {
         $date = $request->date;
-        $result =  User::with(['notes', 'userInfo','deposits', 'department', 'penalties', 'attendance' => function ($query) use ($date) {
-            $query->whereDate('datetime', $date);
-        }])->find($request->user_id);
+        $result = User::with([
+            'notes',
+            'userInfo',
+            'deposits',
+            'department',
+            'penalties',
+            'attendance' => function ($query) use ($date) {
+                $query->whereDate('datetime', $date);
+            }
+        ])->find($request->user_id);
         return ResponseHelper::success([
             $result
         ]);

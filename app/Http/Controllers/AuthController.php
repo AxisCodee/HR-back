@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
+use App\Http\Requests\UserRequest\StoreUserRequest;
 use TADPHP\TADFactory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddUserRequest;
 use App\Models\Certificate;
 use App\Models\Language;
 use App\Models\Skills;
@@ -59,7 +59,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(AddUserRequest $request)
+    public function register(StoreUserRequest $request)
     {
         try {
             $validate = $request->validated();

@@ -7,7 +7,8 @@ use App\Models\Deposit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\UpdateDepositRequest;
+use App\Http\Requests\DepositRequest\UpdateDepositRequest;
+use App\Http\Requests\DepositRequest\StoreDepositRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +31,7 @@ class DepositController extends Controller
         return ResponseHelper::success($results, null);
     }
 
-    public function store(DepositRequest $request)
+    public function store(StoreDepositRequest $request)
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate) {

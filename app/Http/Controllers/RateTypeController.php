@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\RateTypeRequest;
+use App\Http\Requests\RateRequest\StoreRateTypeRequest;
 use App\Models\RateType;
 use Illuminate\Http\Request;
 
@@ -18,7 +18,7 @@ class RateTypeController extends Controller
         return ResponseHelper::success($types, null, 'RateType', 200);
     }
 
-    public function store(RateTypeRequest $request)
+    public function store(StoreRateTypeRequest $request)
     {
         $validated = $request->validated();
         $rateType = RateType::query()->create($validated);

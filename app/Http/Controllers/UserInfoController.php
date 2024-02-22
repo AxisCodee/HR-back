@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\UpdateUserInfoRequest;
-use App\Http\Requests\UserInfoRequest;
+use App\Http\Requests\UserInfoRequest\UpdateUserInfoRequest;
+use App\Http\Requests\UserInfoRequest\StoreUserInfoRequest;
 use App\Models\User;
 use App\Models\UserSalary;
 use App\Models\UserInfo;
@@ -16,7 +16,7 @@ use Carbon\Carbon;
 
 class UserInfoController extends Controller
 {
-    public function store(UserInfoRequest $request)
+    public function store(StoreUserInfoRequest $request)
     {
         $validate = $request->validated();
         $path = Files::saveImage($request);

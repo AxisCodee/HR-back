@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\StoreAbsencesRequest;
+use App\Http\Requests\AbsencesRequest\StoreAbsencesRequest;
 use App\Models\Absences;
 use App\Models\User;
 use App\Models\UserInfo;

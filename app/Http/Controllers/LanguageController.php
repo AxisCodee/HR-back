@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\LanguageRequest;
-use App\Http\Requests\UpdateLanguageRequest;
+use App\Http\Requests\LanguageRequest\StoreLanguageRequest;
+use App\Http\Requests\LanguageRequest\UpdateLanguageRequest;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LanguageController extends Controller
 {
-    public function store(LanguageRequest $request)
+    public function store(StoreLanguageRequest $request)
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate) {

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Models\EmpOfMonth;
-use App\Http\Requests\StoreEmpOfMonthRequest;
-use App\Http\Requests\UpdateEmpOfMonthRequest;
+use App\Http\Requests\EmpOfMonthRequest\StoreEmpOfMonthRequest;
+use App\Http\Requests\EmpOfMonthRequest\UpdateEmpOfMonthRequest;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\DB;
 

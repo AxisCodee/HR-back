@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\NoteRequest;
-use App\Http\Requests\UpdateNoteRequest;
+use App\Http\Requests\NoteRequest\StoreNoteRequest;
+use App\Http\Requests\NoteRequest\UpdateNoteRequest;
 use App\Models\Note;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +27,7 @@ class NoteController extends Controller
         }
     }
 
-    public function store(NoteRequest $request)
+    public function store(StoreNoteRequest $request)
     {
         try {
             $validate = $request->validated();
@@ -70,7 +70,7 @@ class NoteController extends Controller
 
     public function user_notes($id)
     {
-        $note = Note::where('user_id',$id)->get()->toArray();
-        return ResponseHelper::success($note,'Note returned successfully', null);
+        $note = Note::where('user_id', $id)->get()->toArray();
+        return ResponseHelper::success($note, 'Note returned successfully', null);
     }
 }

@@ -6,7 +6,7 @@ use App\Helper\ResponseHelper;
 use Illuminate\Http\Request;
 use App\Models\Decision;
 use App\Models\User;
-use App\Http\Requests\DecisionRequest;
+use App\Http\Requests\DecisionRequest\StoreDecisionRequest;
 use App\Models\Absences;
 use App\Models\Late;
 use App\Models\Rate;
@@ -21,7 +21,7 @@ class DecisionController extends Controller
     protected $userServices;
 
     //add new decision for a user
-    public function new_decision(DecisionRequest $request)
+    public function new_decision(StoreDecisionRequest $request)
     {
         $new = $request->validated();
         $created = Decision::create($new);
@@ -38,7 +38,7 @@ class DecisionController extends Controller
         }
     }
     //edit an exisiting decision
-    public function edit_decision(DecisionRequest $request, $id)
+    public function edit_decision(StoreDecisionRequest $request, $id)
     {
         try {
             $validate = $request->validated();
@@ -96,24 +96,24 @@ class DecisionController extends Controller
 
 
 
-        //     $user = User::with('my_decisions')->findOrFail($id);
-        //     $decisions = $user->my_decisions;
-        //     $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
-        //     $abs = Absences::query()->where('user_id',$id)->get()->toArray();
-        //     $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
-        //         return [$type => $decisions->where('type', $type)->values()];
-        //     })->all();
+    //     $user = User::with('my_decisions')->findOrFail($id);
+    //     $decisions = $user->my_decisions;
+    //     $types = ['reward', 'warning', 'deduction', 'alert', 'penalty'];
+    //     $abs = Absences::query()->where('user_id',$id)->get()->toArray();
+    //     $groupedDecisions = collect($types)->mapWithKeys(function ($type) use ($decisions) {
+    //         return [$type => $decisions->where('type', $type)->values()];
+    //     })->all();
 
-        //     extract($groupedDecisions);
+    //     extract($groupedDecisions);
 
-        //     return ResponseHelper::success([
-        //         'rewards'=>$reward,
-        //         'warnings'=>$warning,
-        //         'deductions'=>$deduction,
-        //         'alerts'=>$alert,
-        //         'penalty'=>$penalty,
-        //         'absences'=>$abs,
-        //         ]
-        //         , null, 'user decisions returned successfully', 200);
+    //     return ResponseHelper::success([
+    //         'rewards'=>$reward,
+    //         'warnings'=>$warning,
+    //         'deductions'=>$deduction,
+    //         'alerts'=>$alert,
+    //         'penalty'=>$penalty,
+    //         'absences'=>$abs,
+    //         ]
+    //         , null, 'user decisions returned successfully', 200);
 
 }
