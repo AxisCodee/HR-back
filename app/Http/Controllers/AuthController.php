@@ -48,8 +48,10 @@ class AuthController extends Controller
             return ResponseHelper::error('email or password are not correct', null, 'error', 401);
         }
         $user = Auth::user();
+        $userInfo = UserInfo::where('user_id', $user->id)->first();
         return ResponseHelper::success([
             'user' => $user,
+            'user_info' => $userInfo,
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -65,8 +67,8 @@ class AuthController extends Controller
 
 
             return DB::transaction(function () use ($request) {
-                $department=Department::find($request->department_id);
-                $branch_id=$department->branch_id;
+                $department = Department::find($request->department_id);
+                $branch_id = $department->branch_id;
 
                 $user = User::create([
                     'first_name' => $request->first_name,
@@ -126,7 +128,7 @@ class AuthController extends Controller
                 foreach ($educations as $education) {
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
-                        'study'  => $education['study'],
+                        'study' => $education['study'],
                         'user_id' => $user->id,
                     ]);
                 }
@@ -138,7 +140,7 @@ class AuthController extends Controller
                     ]);
                 }
 
-                foreach ($languages as  $language) {
+                foreach ($languages as $language) {
                     $language = Language::query()->create([
                         'name' => $language['languages'],
                         'rate' => $language['rate'],
@@ -238,7 +240,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return  ResponseHelper::success([
+        return ResponseHelper::success([
             'message' => 'Successfully logged out',
         ]);
     }
