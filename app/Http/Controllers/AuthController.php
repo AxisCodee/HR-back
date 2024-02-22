@@ -177,7 +177,7 @@ class AuthController extends Controller
                     ]);
                 }
 
-                if (isset($contacts['emails'])) {
+                if (isset($contacts['emails'][0])) {
                     foreach ($contacts['emails'] as $contact) {
 
                         $multi = Contact::create([

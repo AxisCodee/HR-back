@@ -26,7 +26,8 @@ class AbsencesController extends Controller
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
         }
-        $user = User::query()->where('branch_id', $branchId)->get();
+        $user = User::query()->where('branch_id', $branchId)->with('userInfo')->get();
+
         foreach ($user as $item) {
             $justified = $item->absences()
                 ->where('type', 'justified')
@@ -42,10 +43,12 @@ class AbsencesController extends Controller
                 [
                     'id' => $item->id,
                     'username' => $item->first_name,
+                    'lastname'=>$item->last_name,
                     'userDepartment' => $item->department,
                     'userUnjustified' => $Unjustified,
                     'userjustified' => $justified,
-                    'all' => $Unjustified + $justified
+                    'all' => $Unjustified + $justified,
+                    'userinfo'=>$item->userInfo
                 ];
         }
         return ResponseHelper::success($results);

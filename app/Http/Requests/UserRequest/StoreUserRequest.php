@@ -62,7 +62,7 @@ class StoreUserRequest extends FormRequest
             'secretaraits.*.delivery_date' => ['required', 'date'],
             'contacts' => ['array', 'max:2'],
             'contacts.emails' => ['nullable', 'array'],
-            'contacts.emails.*' => ['email', 'string'],
+            'contacts.emails.*' => ['nullable','email', 'string'],
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
         ];
     }
