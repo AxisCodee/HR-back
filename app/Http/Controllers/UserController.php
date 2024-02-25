@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\ContactRequest;
-use App\Http\Requests\StoreTeamRequest;
-use App\Http\Requests\UpdateTeamRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\ContactRequest\StoreContactRequest;
+use App\Http\Requests\ContactRequest\UpdateContactRequest;
+use App\Http\Requests\TeamRequest\StoreTeamRequest;
+use App\Http\Requests\TeamRequest\UpdateTeamRequest;
+use App\Http\Requests\UserRequest\UpdateUserRequest;
 use App\Models\Career;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -107,7 +108,7 @@ class UserController extends Controller
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
-        $result =  $this->teamService->addMembers($request, $team);
+        $result = $this->teamService->addMembers($request, $team);
         return $result;
     }
 
@@ -141,7 +142,7 @@ class UserController extends Controller
         return ResponseHelper::success($members);
     }
     //add new contact to a user
-    public function new_contact(ContactRequest $request)
+    public function new_contact(StoreContactRequest $request)
     {
         $validate = $request->validated();
         $new_contact = Contact::create([
@@ -152,7 +153,7 @@ class UserController extends Controller
         return ResponseHelper::created($new_contact, 'contact added successfully');
     }
     //edit contact of a user
-    public function edit_contact($id, ContactRequest $request)
+    public function edit_contact($id, UpdateContactRequest $request)
     {
         $validate = $request->validated();
         $edit = Contact::findOrFail($id);

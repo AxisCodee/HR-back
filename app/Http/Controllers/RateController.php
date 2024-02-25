@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Rate;
 use App\Models\User;
-use App\Http\Requests\StoreRateRequest;
-use App\Http\Requests\UpdateRateRequest;
+use App\Http\Requests\RateRequest\StoreRateRequest;
+use App\Http\Requests\RateRequest\UpdateRateRequest;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\RateRequest;
 use App\Models\RateType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,7 +37,7 @@ class RateController extends Controller
             return ResponseHelper::success($rate, null, 'userRate', 200);
         }
     }
-    public function setRate(RateRequest $request)
+    public function setRate(StoreRateRequest $request)
     {
         $userId = $request->user_id;
         $rateTypeId = $request->rate_type_id;

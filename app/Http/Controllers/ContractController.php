@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contract;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreContractRequest;
-use App\Http\Requests\UpdateContractRequest;
+use App\Http\Requests\ContractRequest\StoreContractRequest;
+use App\Http\Requests\ContractRequest\UpdateContractRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Traits\Files;
 use Carbon\Carbon;
@@ -17,10 +17,11 @@ class ContractController extends Controller
     public function index(Request $request)
     {
         $branchId = $request->input('branch_id');
-        $contracts = Contract::with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
+        $contracts = Contract::with('user', 'user.userInfo')->whereHas('user', function ($query) use ($branchId) {
             $query->where('branch_id', $branchId);
         })->get();
-        if ($contracts->isEmpty()) {;
+        if ($contracts->isEmpty()) {
+            ;
             return ResponseHelper::success([
                 'message' => 'there are not any contract'
             ]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CalendarRequest\StoreCalendarRequest;
 use Illuminate\Http\Request;
 use App\Models\Calendar;
 use App\Helper\ResponseHelper;
@@ -27,7 +28,7 @@ class CalendarController extends Controller
     /**
      * Create a new event.
      */
-    public function add_event(CalendarRequest $request)
+    public function add_event(StoreCalendarRequest $request)
     {
         try {
             $new = $this->CalenderService->store($request);
@@ -66,7 +67,7 @@ class CalendarController extends Controller
     /**
      * Update an existing event by id.
      */
-    public function update_event(CalendarRequest $request, $id)
+    public function update_event(StoreCalendarRequest $request, $id)
     {
         try {
             $update = $this->CalenderService->update($request, $id);

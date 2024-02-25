@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\StudySitRequest;
-use App\Http\Requests\UpdateStudySitRequest;
+use App\Http\Requests\StudySitRequest\StoreStudySitRequest;
+use App\Http\Requests\StudySitRequest\UpdateStudySitRequest;
 use App\Models\StudySituation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class StudySituationController extends Controller
 {
-    public function store(StudySitRequest $request)
+    public function store(StoreStudySitRequest $request)
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate) {

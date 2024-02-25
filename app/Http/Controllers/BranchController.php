@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BranchRequest;
+use App\Http\Requests\BranchRequest\StoreBranchRequest;
 use App\Services\BranchService;
 use Illuminate\Http\Request;
 
@@ -36,7 +36,7 @@ class BranchController extends Controller
     /**
      * Create a new branch and store it using the service.@
      */
-    public function store(BranchRequest $request)
+    public function store(StoreBranchRequest $request)
     {
         try {
             $newbranch = $this->BranchService->store($request);

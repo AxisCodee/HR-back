@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\StoreAbsencesRequest;
+use App\Http\Requests\AbsencesRequest\StoreAbsencesRequest;
 use App\Models\Absences;
 use App\Models\User;
 use App\Models\UserInfo;
@@ -56,8 +56,12 @@ class AbsencesController extends Controller
 
     public function show(User $user)
     {
-        $userAbcences = $user->absences()->get('startDate')->toArray();
-        return ResponseHelper::success($userAbcences);
+        try {
+            $userAbcences = $user->absences()->get('startDate')->toArray();
+            return ResponseHelper::success($userAbcences);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function update(Request $request)
@@ -71,7 +75,9 @@ class AbsencesController extends Controller
                         'type' => $request->type
                     ]
                 );
-            return ResponseHelper::success('updated successfully');
+            if ($result) {
+                return ResponseHelper::success('updated successfully');
+            }
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }

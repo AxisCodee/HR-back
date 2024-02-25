@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\UserRequest\UpdateUserRequest;
 use App\Models\Absences;
 use App\Models\Attendance;
 use App\Models\Career;
