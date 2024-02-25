@@ -13,22 +13,6 @@ class DepositsSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('deposits')->insert([
-            [
-                'user_id' => 1,
-                'description' => 'Received salary deposit',
-                'received_date' => '2024-02-06',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => 2,
-                'description' => 'Bonus payment',
-                'received_date' => '2024-02-01',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // Add more rows as needed...
-        ]);
+    
     }
 }

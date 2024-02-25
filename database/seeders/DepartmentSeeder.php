@@ -13,23 +13,5 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('departments')->insert
-        ([[
-            'name' => 'Back_End',
-            'branch_id'=>1
-        ],
-        [
-            'name' => 'Front_End',
-            'branch_id'=>1
-        ],
-        [
-            'name' => 'Mobile',
-            'branch_id'=>2
-        ],
-        [
-            'name' => 'UI_UX',
-            'branch_id'=>2
-        ],]
-    );
     }
 }

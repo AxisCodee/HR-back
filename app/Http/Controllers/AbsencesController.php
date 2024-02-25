@@ -200,7 +200,7 @@ class AbsencesController extends Controller
             return ResponseHelper::error('Absence not found', 404);
         }
 
-        $result->update([
+        $result->update([ 
             'type' => 'null'
         ]);
 
