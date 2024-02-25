@@ -65,11 +65,12 @@ class AuthController extends Controller
             $validate = $request->validated();
             return DB::transaction(function () use ($request) {
                 $branch_id = $request->branch_id;
-                if ($request->department_id) {
+                if ($request->has('department_id')) {
                     $department = Department::find($request->department_id);
-                    $branch_id = $department->branch_id;
+                    $department_id = $department ? $department->id : null;
+                } else {
+                    $department_id = null;
                 }
-                return $request->department_id ? $department_id = $request->department_id : null;
 
                 $user = User::create([
                     'first_name' => $request->first_name,
