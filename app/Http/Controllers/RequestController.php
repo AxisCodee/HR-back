@@ -207,4 +207,17 @@ class RequestController extends Controller
             return ResponseHelper::error($validate, null, 'error sending the request', 400);
         }
     }
+    public function deleteComplaints($request)
+    {
+        if($request->type == 'complaint')
+        {
+            $request->delete();
+            return ResponseHelper::success(null, null, 'deleted successfully');
+        }
+        else
+        {
+            return ResponseHelper::success(null, null, 'can not deleted');
+        }
+
+    }
 }
