@@ -14,6 +14,115 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-     
+
+        DB::table('users')->insert([
+        [
+            'email' => 'samy1@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy1',
+            'middle_name' => 'ahmad1',
+            'last_name' => 'mhmd1',
+            'role' => 'project_manager',
+            'department_id' => 2,
+            'specialization' => 'spa',
+            'pin' => 2,
+            'branch_id' => 1
+        ],
+        [
+            'email' => 'samy2@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy2',
+            'middle_name' => 'ahmad2',
+            'last_name' => 'mhmd2',
+            'role' => 'project_manager',
+            'department_id' => 3,
+            'specialization' => 'spa',
+            'pin' => 3,
+            'branch_id' => 2
+        ],
+        [
+            'email' => 'samy3@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy3',
+            'middle_name' => 'ahmad3',
+            'last_name' => 'mhmd3',
+            'role' => 'team_leader',
+            'department_id' => 2,
+            'specialization' => 'spa',
+            'pin' => 4,
+            'branch_id' => 2
+        ],
+        [
+            'email' => 'samy4@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy4',
+            'middle_name' => 'ahmad4',
+            'last_name' => 'mhmd4',
+            'role' => 'employee',
+            'department_id' => 2,
+            'specialization' => 'spa',
+            'pin' => 5,
+            'branch_id' => 3
+        ],
+        [
+            'email' => 'samy5@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy5',
+            'middle_name' => 'ahmad5',
+            'last_name' => 'mhmd5',
+            'role' => 'employee',
+            'department_id' => 2,
+            'specialization' => 'spa',
+            'pin' => 6,
+            'branch_id' => 3
+        ],
+        [
+            'email' => 'samy6@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy6',
+            'middle_name' => 'ahmad6',
+            'last_name' => 'mhmd6',
+            'role' => 'employee',
+            'department_id' => 2,
+            'specialization' => 'spa',
+            'pin' => 7,
+            'branch_id' => 4
+        ],
+        [
+            'email' => 'samy7@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy7',
+            'middle_name' => 'ahmad7',
+            'last_name' => 'mhmd7',
+            'role' => 'team_leader',
+            'department_id' => 3,
+            'specialization' => 'spa',
+            'pin' => 8,
+            'branch_id' => 4
+        ],
+        [
+            'email' => 'samy8@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy8',
+            'middle_name' => 'ahmad8',
+            'last_name' => 'mhmd8',
+            'role' => 'employee',
+            'department_id' => 3,
+            'specialization' => 'spa',
+            'pin' => 9,
+            'branch_id' => 4
+        ],
+        [
+            'email' => 'samy9@gmail.com',
+            'password' => Hash::make('password'),
+            'first_name' => 'samy9',
+            'middle_name' => 'ahmad9',
+            'last_name' => 'mhmd9',
+            'role' => 'employee',
+            'department_id' => 3,
+            'specialization' => 'spa',
+            'pin' => 10,
+            'branch_id' => 1
+        ],]);
     }
 }
