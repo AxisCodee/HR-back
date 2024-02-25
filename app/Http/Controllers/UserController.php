@@ -185,4 +185,11 @@ class UserController extends Controller
         $result = $this->roleService->userProf();
         return $result;
     }
+
+    public function not_admin(Request $request)
+    {
+       $branch_id =  $request->input('branch_id');
+       $notadmin =  $this->userService->except_admins($branch_id);
+        return ResponseHelper::success($notadmin,'all users that are not admin returned successfuly');
+    }
 }
