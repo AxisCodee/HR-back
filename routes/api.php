@@ -35,6 +35,8 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
+
+
 Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
 Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
 Route::get('DayAttendance/{date}', [AttendanceController::class, 'DayAttendance']);
@@ -139,7 +141,7 @@ Route::prefix('Request')->group(function () {
         Route::post('accepteRequest/{request}', 'acceptRequest');
         Route::post('rejectRequest/{request}', 'rejectRequest');
         Route::delete('Delete/{request}', 'destroy');
-       
+
     });
 });
 Route::prefix('Team')->group(function () {
@@ -276,8 +278,5 @@ Route::prefix('Late')->group(function () {
         Route::get('showLate', 'showLate');
         Route::post('rejectAlert', 'rejectAlert');
         Route::post('acceptAlert', 'acceptAlert');
-
-
-
     });
 });

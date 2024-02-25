@@ -13,11 +13,5 @@ class EmpOfMonthSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('emp_of_months')->insert(
-            [
-                'user_id' => 3,
-                'date'=>2024-2,
-            ]
-            );
     }
 }

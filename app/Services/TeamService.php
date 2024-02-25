@@ -48,15 +48,7 @@ class TeamService
         });
     }
 
-
-
-
-
-
-
-
-
-
+    
     public function updateTeams($request, $id)
     {
         try {

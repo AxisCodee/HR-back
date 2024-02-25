@@ -13,13 +13,6 @@ class CertificateSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 5; $i++) {
-            DB::table('certificates')->insert([
-                'user_id' => rand(1, 10), // Replace with actual user IDs
-                'content' => "Certificate content for entry $i",
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+    
     }
 }
