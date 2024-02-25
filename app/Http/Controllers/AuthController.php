@@ -79,7 +79,7 @@ class AuthController extends Controller
                     'email' => $request->email,
                     'role' => 'employee',
                     'specialization' => $request->specialization,
-                    'department_id' => $department,
+                    'department_id' => $department_id,
                     'password' => Hash::make($request->password),
                     'pin' => null,
                     'address' => $request->address,
