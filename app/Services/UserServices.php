@@ -13,6 +13,7 @@ use App\Models\Late;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class UserServices
 {
@@ -202,6 +203,13 @@ class UserServices
         return ResponseHelper::error('Error', null);
     }
 
+    public function except_admins($branch_id)
+    {
+
+        $all_users = User::query()->where('branch_id', $branch_id)->whereNot('role','admin')
+        ->with('department', 'userInfo:id,user_id,image')->whereNotNull('department_id')->get()->toArray();
+        return $all_users;
+    }
 
 
 
