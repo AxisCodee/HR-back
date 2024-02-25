@@ -7,7 +7,8 @@ use App\Models\Deposit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\UpdateDepositRequest;
+use App\Http\Requests\DepositRequest\UpdateDepositRequest;
+use App\Http\Requests\DepositRequest\StoreDepositRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +31,7 @@ class DepositController extends Controller
         return ResponseHelper::success($results, null);
     }
 
-    public function store(DepositRequest $request)
+    public function store(StoreDepositRequest $request)
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate) {
@@ -53,7 +54,7 @@ class DepositController extends Controller
     }
     public function show() //all deposits
     {
-        $result = Deposit::query()->with('user','user.userInfo:id,user_id,image')
+        $result = Deposit::query()->with('user', 'user.userInfo:id,user_id,image')
             ->get()
             ->toArray();
         return ResponseHelper::success($result, null);
@@ -61,11 +62,15 @@ class DepositController extends Controller
 
     public function destroy($id)
     {
-        return DB::transaction(function () use ($id) {
-            $deposit = Deposit::query()->find($id);
-            $deposit->delete();
-            return ResponseHelper::success('Deposit has been deleted', null);
-        });
-        return ResponseHelper::error('not deleted', null);
+        try {
+            return DB::transaction(function () use ($id) {
+                $deposit = Deposit::query()->find($id);
+                $deposit->delete();
+                return ResponseHelper::success('Deposit has been deleted', null);
+            });
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+        //return ResponseHelper::error('not deleted', null);
     }
 }

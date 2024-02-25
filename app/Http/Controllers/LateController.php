@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Late;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\StoreLateRequest;
-use App\Http\Requests\UpdateLateRequest;
+use App\Http\Requests\LateRequest\StoreLateRequest;
+use App\Http\Requests\LateRequest\UpdateLateRequest;
 use App\Models\UserAlert;
 use App\Models\UserInfo;
 use App\Models\Decision;
@@ -92,28 +92,28 @@ class LateController extends Controller
      * Remove the specified resource from storage.
      */
     public function acceptAlert(Request $request)
-{
-    $late = Late::find($request->alert_id);
-    if (!$late) {
-        return ResponseHelper::error('Alert not found');
+    {
+        $late = Late::find($request->alert_id);
+        if (!$late) {
+            return ResponseHelper::error('Alert not found');
+        }
+
+        $late->update([
+            'type' => 'Unjustified'
+        ]);
+
+        $alert = UserAlert::create([
+            'user_id' => $late->user_id,
+            'alert' => 1,
+            'date' => Carbon::now()->format('Y-m-d')
+        ]);
+
+        $response = [
+            'user_id' => $alert->user_id
+        ];
+
+        return ResponseHelper::success($response, 'Alert accepted successfully');
     }
-
-    $late->update([
-        'type' => 'Unjustified'
-    ]);
-
-    $alert = UserAlert::create([
-        'user_id' => $late->user_id,
-        'alert' => 1,
-        'date' => Carbon::now()->format('Y-m-d')
-    ]);
-
-    $response = [
-        'user_id' => $alert->user_id
-    ];
-
-    return ResponseHelper::success($response, 'Alert accepted successfully');
-}
     public function makeDecision(Late $late)
     {
         return DB::transaction(function () use ($late) {
@@ -127,7 +127,7 @@ class LateController extends Controller
             $salaryInHour = $salary / 208;
             $HourNum = $late->hours_num;
             $deduction = $salaryInHour * $HourNum;
-            $user=User::find($late->user_id);
+            $user = User::find($late->user_id);
             Decision::query()->updateOrCreate(
                 [
                     'user_id' => $late->user_id,
@@ -137,7 +137,7 @@ class LateController extends Controller
                     'fromSystem' => true,
                     'content' => 'Unjustified late',
                     'amount' => $deduction,
-                    'branch_d'=> $user->branch_id
+                    'branch_d' => $user->branch_id
                 ]
             );
             return ResponseHelper::success($late, 'unjustifiedLate', null);

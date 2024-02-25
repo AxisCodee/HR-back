@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\UpdateAbsencesRequest;
+use App\Http\Requests\AbsencesRequest\StoreAbsencesRequest;
 use App\Models\Absences;
 use App\Models\User;
 use App\Models\UserInfo;
@@ -26,7 +26,7 @@ class AbsencesController extends Controller
             $year = Carbon::now()->format('Y');
             $month = Carbon::now()->format('m');
         }
-        $user = User::query()->where('branch_id', $branchId)->get();
+        $user = User::query()->where('branch_id', $branchId)->with('userInfo')->get();
 
         foreach ($user as $item) {
             $justified = $item->absences()
@@ -43,10 +43,12 @@ class AbsencesController extends Controller
                 [
                     'id' => $item->id,
                     'username' => $item->first_name,
+                    'lastname'=>$item->last_name,
                     'userDepartment' => $item->department,
                     'userUnjustified' => $Unjustified,
                     'userjustified' => $justified,
-                    'all' => $Unjustified + $justified
+                    'all' => $Unjustified + $justified,
+                    'userinfo'=>$item->userInfo
                 ];
         }
         return ResponseHelper::success($results);
@@ -54,8 +56,12 @@ class AbsencesController extends Controller
 
     public function show(User $user)
     {
-        $userAbcences = $user->absences()->get('startDate')->toArray();
-        return ResponseHelper::success($userAbcences);
+        try {
+            $userAbcences = $user->absences()->get('startDate')->toArray();
+            return ResponseHelper::success($userAbcences);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function update(Request $request)
@@ -69,7 +75,9 @@ class AbsencesController extends Controller
                         'type' => $request->type
                     ]
                 );
-            return ResponseHelper::success('updated successfully');
+            if ($result) {
+                return ResponseHelper::success('updated successfully');
+            }
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
@@ -148,17 +156,22 @@ class AbsencesController extends Controller
         return ResponseHelper::success(null, 'Decision done successfully', null);
     }
 
-    public function store_absence(Request $request)
+    public function store_absence(StoreAbsencesRequest $request)
     {
-        foreach ($request->absence as $item) {
-            $new_abs = Absences::create([
-                'type' => $item['type'],
-                'user_id' => $item['user_id'],
-                'startDate' => $item['date'],
-            ]);
-            $results[] = $new_abs;
+        $request->validated();
+        try {
+            foreach ($request->absence as $item) {
+                $new_abs = Absences::create([
+                    'type' => $item['type'],
+                    'user_id' => $item['user_id'],
+                    'startDate' => $item['date'],
+                ]);
+                $results[] = $new_abs;
+            }
+            return ResponseHelper::success($results, null, 'Absence added successfully');
+        } catch (\Throwable $e) {
+            return ResponseHelper::error($e);
         }
-        return ResponseHelper::success($results, null, 'Absence added successfully');
     }
     public function storeAbsence(Request $request)
     {

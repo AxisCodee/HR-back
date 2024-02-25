@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\CertificateRequest;
-use App\Http\Requests\UpdateCertificateRequest;
+use App\Http\Requests\CertificateRequest\StoreCertificateRequest;
+use App\Http\Requests\CertificateRequest\UpdateCertificateRequest;
 use App\Models\Certificate;
 use Illuminate\Support\Facades\DB;
 
 class CertificateController extends Controller
 {
-    public function store(CertificateRequest $request)
+    public function store(StoreCertificateRequest $request)
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate) {
@@ -24,7 +24,7 @@ class CertificateController extends Controller
         $validate = $request->validated();
         return DB::transaction(function () use ($validate, $id) {
             Certificate::query()
-                ->findOrFail($id) //????
+                ->findOrFail($id)
                 ->update($validate);
             return ResponseHelper::success('Certificate has been updated', null);
         });

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Request;
-use App\Http\Requests\StoreRequestRequest;
-use App\Http\Requests\UpdateRequestRequest;
+use App\Http\Requests\RequestRequest\StoreRequestRequest;
+use App\Http\Requests\RequestRequest\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\SendRequest;
+use App\Http\Requests\RequestRequest\SendRequest;
 use App\Models\Absences;
 use App\Models\Decision;
 use App\Models\User;
@@ -107,27 +107,31 @@ class RequestController extends Controller
 
     public function acceptRequest(Request $request)
     {
-        return DB::transaction(function () use ($request) {
-            $request->update([
-                'status' => 'accepted'
-            ]);
-            // تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
-            //  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل
-            if ($request->type == 'advanced') {
-                $user = User::find($request->user_id);
-                $salary = $user->salary;
-                $result = Decision::query()->create([
-                    'user_id' => $request->user_id,
-                    'type' => 'advanced',
-                    'amount' => ($salary / 2),
-                    'dateTime' => $request->dateTime,
-                    'salary' => $salary
+        try {
+            return DB::transaction(function () use ($request) {
+                $request->update([
+                    'status' => 'accepted'
                 ]);
-            }
-            return ResponseHelper::updated([
-                'message' => 'Request accepted successfully',
-            ]);
-        });
+                // تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
+                //  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل
+                if ($request->type == 'advanced') {
+                    $user = User::find($request->user_id);
+                    $salary = $user->salary;
+                    $result = Decision::query()->create([
+                        'user_id' => $request->user_id,
+                        'type' => 'advanced',
+                        'amount' => ($salary / 2),
+                        'dateTime' => $request->dateTime,
+                        'salary' => $salary
+                    ]);
+                }
+                return ResponseHelper::updated([
+                    'message' => 'Request accepted successfully',
+                ]);
+            });
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
     public function rejectRequest($request)
     {
@@ -161,7 +165,7 @@ class RequestController extends Controller
     public function getComplaints(HttpRequest $request)
     {
         $branchId = $request->branch_id;
-        $result = Request::with('user','user.department','user.userInfo:id,user_id,image')
+        $result = Request::with('user', 'user.department', 'user.userInfo:id,user_id,image')
             ->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
@@ -173,7 +177,7 @@ class RequestController extends Controller
             return ResponseHelper::success($result);
         }
 
-        return ResponseHelper::success( $result,null,'complaint',200);
+        return ResponseHelper::success($result, null, 'complaint', 200);
     }
 
     public function send_request(SendRequest $request)

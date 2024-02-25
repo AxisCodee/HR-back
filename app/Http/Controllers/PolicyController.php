@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\PolicyRequest;
+use App\Http\Requests\PolicyRequest\StorePolicyRequest;
 use Illuminate\Http\Request;
 use App\Models\Policy;
 use App\Models\RateType;
@@ -18,9 +18,9 @@ class PolicyController extends Controller
         if (!$policy) {
             return ResponseHelper::error('this branch doesnt have policy', null);
         }
-        return ResponseHelper::success(["policy" => $policy,  "rateTypes" => $rateTypes], null);
+        return ResponseHelper::success(["policy" => $policy, "rateTypes" => $rateTypes], null);
     }
-    public function store(PolicyRequest $request)
+    public function store(StorePolicyRequest $request)
     {
         $validated = $request->validated();
         return DB::transaction(function () use ($validated) {
