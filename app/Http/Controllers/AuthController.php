@@ -69,8 +69,7 @@ class AuthController extends Controller
                     $department = Department::find($request->department_id);
                     $branch_id = $department->branch_id;
                 }
-                return $request->department_id ? $department_id = $request->department_id : null;
-
+                
                 $user = User::create([
                     'first_name' => $request->first_name,
                     'middle_name' => $request->middle_name,
@@ -78,7 +77,7 @@ class AuthController extends Controller
                     'email' => $request->email,
                     'role' => 'employee',
                     'specialization' => $request->specialization,
-                    'department_id' => $department_id,
+                    'department_id' => $department,
                     'password' => Hash::make($request->password),
                     'pin' => null,
                     'address' => $request->address,
