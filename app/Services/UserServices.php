@@ -207,7 +207,7 @@ class UserServices
     {
 
         $all_users = User::query()->where('branch_id', $branch_id)->whereNot('role','admin')
-        ->with('department', 'userInfo:id,user_id,image')->whereNotNull('department_id')->get()->toArray();
+        ->with('department', 'userInfo:id,user_id,image')->whereNull('deleted_at')->get()->toArray();
         return $all_users;
     }
 
