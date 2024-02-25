@@ -38,8 +38,6 @@ class StoreUserRequest extends FormRequest
             'military_situation' => ['required', 'string', 'in:Postponed,Exempt,Finished'],
             'social_situation' => ['required', 'string', 'in:Single,Married'],
             'specialization' => ['required', 'string'],
-            'contacts.emails.*.email' => ['email'],
-            'contacts.phonenumbers.*' => ['numeric', 'digits:10'],
             'additional_files', 'emergency_contact' => ['nullable', 'array'],
             'certificates' => ['required', 'array'],
             'experiences' => ['required', 'array'],
@@ -62,7 +60,9 @@ class StoreUserRequest extends FormRequest
             'secretaraits.*.delivery_date' => ['required', 'date'],
             'contacts' => ['array', 'max:2'],
             'contacts.emails' => ['nullable', 'array'],
-            'contacts.emails.*' => ['nullable','email', 'string'],
+            'contacts.emails.*.email' => ['nullable','email', 'string'],
+            'contacts.phonenumbers' => ['array'],
+            'contacts.phonenumbers.*.phone' => ['numeric', 'digits:10'],
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
         ];
     }

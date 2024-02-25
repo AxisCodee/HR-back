@@ -169,7 +169,6 @@ class AuthController extends Controller
                         })($file);
                     }
                 }
-
                 foreach ($experiences as $experience) {
                     $new_exp = Career::query()->create([
                         'user_id' => $user->id,
@@ -179,11 +178,10 @@ class AuthController extends Controller
 
                 if (isset($contacts['emails'][0])) {
                     foreach ($contacts['emails'] as $contact) {
-
                         $multi = Contact::create([
                             'user_id' => $user->id,
                             'type' => 'normal',
-                            'contact' => $contact,
+                            'contact' => $contact['email'],
                         ]);
                     }
                 }
@@ -193,7 +191,7 @@ class AuthController extends Controller
                         $multi = Contact::create([
                             'user_id' => $user->id,
                             'type' => 'normal',
-                            'contact' => $contact,
+                            'contact' => $contact['phone'],
                         ]);
                     }
                 }
