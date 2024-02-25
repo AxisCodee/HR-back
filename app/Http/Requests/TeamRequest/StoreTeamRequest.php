@@ -27,9 +27,9 @@ class StoreTeamRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:25'],
-            'users_array' => ['array', 'nullable'],
-            'users_array.*' => ['nullable', 'integer', 'exists:users,id'],
-            'branch_id' => ['required', 'integer', 'exists:branches,id'],
+           // 'users_array' => ['array', 'nullable'],
+            //'users_array.*' => ['nullable', 'integer', 'exists:users,id'],
+           // 'branch_id' => ['required', 'integer', 'exists:branches,id'],
             'team_leader' => [
                 Rule::requiredIf(function(){
                     return !Department::where('name', $this->input('name'))->exists();
