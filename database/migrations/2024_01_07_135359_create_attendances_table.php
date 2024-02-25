@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->integer('pin');
-            $table->date('datetime');
+            $table->string('datetime');
             $table->string('verified', 255); // Specify appropriate length
             $table->string('status', 255);   // Specify appropriate length
             $table->string('work_code');

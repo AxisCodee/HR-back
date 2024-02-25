@@ -104,29 +104,28 @@ Route::middleware('auth', 'admin')->group(function () {
         });
     });
 
-Route::prefix('Request')->group(function () {
-    Route::controller(RequestController::class)->group(function () {
-        Route::get('All', 'index');
-        Route::get('Me', 'show');
-        Route::get('Complaints', 'getComplaints');
-        Route::get('info/{id}', 'getRequest');
-        Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
-        Route::post('accepteRequest/{request}', 'acceptRequest');
-        Route::post('rejectRequest/{request}', 'rejectRequest');
-        Route::delete('Delete/{request}', 'destroy');
+    Route::prefix('Request')->group(function () {
+        Route::controller(RequestController::class)->group(function () {
+            Route::get('All', 'index');
+            Route::get('Complaints', 'getComplaints');
+            Route::get('info/{id}', 'getRequest');
+            Route::post('Update/{id}', 'update');
+            Route::post('accepteRequest/{request}', 'acceptRequest');
+            Route::post('rejectRequest/{request}', 'rejectRequest');
+            Route::delete('Delete/{request}', 'destroy');
+        });
     });
-});
-Route::prefix('Team')->group(function () {
-    Route::controller(UserController::class)->group(function () {
-        Route::get('getTeams', 'getTeams');
-        Route::post('storeTeams', 'storeTeams');
-        Route::post('AddMembers/{team}', 'Addmembers');
-        Route::post('updateTeam/{team}', 'updateTeams');
-        Route::delete('deleteTeam/{team}', 'deleteTeam');
-        Route::post('RemoveMember/{user}', 'removeFromTeam');
+
+    Route::prefix('Team')->group(function () {
+        Route::controller(UserController::class)->group(function () {
+            Route::get('getTeams', 'getTeams');
+            Route::post('storeTeams', 'storeTeams');
+            Route::post('AddMembers/{team}', 'Addmembers');
+            Route::post('updateTeam/{team}', 'updateTeams');
+            Route::delete('deleteTeam/{team}', 'deleteTeam');
+            Route::post('RemoveMember/{user}', 'removeFromTeam');
+        });
     });
-});
 
     Route::prefix('Deposit')->group(function () {
         Route::controller(DepositController::class)->group(function () {
@@ -240,22 +239,67 @@ Route::prefix('Team')->group(function () {
 
             Route::get('getRateType/{id}', 'getRateType');
 
-        Route::get('BranchTypes/{id}', 'show'); //show types for branch
-        //Route::get('ShowType/{id}', 'show');//
-        Route::post('AddType', 'store'); //
-        Route::post('UpdateType/{id}', 'update');
+            Route::get('BranchTypes/{id}', 'show'); //show types for branch
+            //Route::get('ShowType/{id}', 'show');//
+            Route::post('AddType', 'store'); //
+            Route::post('UpdateType/{id}', 'update');
+        });
+    });
+    Route::prefix('Late')->group(function () {
+        Route::controller(LateController::class)->group(function () {
+            Route::get('Lates', ' unjustifiedLate');
+            Route::post('makeDecision/{lates}', 'makeDecision');
+            Route::post('dynamicDecision', 'dynamicDecision');
+            Route::get('showLate', 'showLate');
+            Route::post('rejectAlert', 'rejectAlert');
+            Route::post('acceptAlert', 'acceptAlert');
+        });
+    });
+
+    Route::prefix('Gmail')->group(function () {
+        Route::controller(GmailController::class)->group(function () {
+            Route::get('google/login/url', 'getAuthUrl');
+            Route::post('google/auth/login', 'postLogin');
+            Route::post('google/getUserInfo', 'getUserInfo');
+            Route::post('google/mailbox', 'mail');
+            Route::post('google/sendEmail', 'sendEmail');
+            Route::post('google/search', 'search');
+            Route::post('google/getMessageById', 'getMessageById');
+            Route::post('google/deleteMessages', 'deleteMessages');
+            Route::post('google/starMessages', 'starMessages');
+        });
     });
 });
-Route::prefix('Late')->group(function () {
-    Route::controller(LateController::class)->group(function () {
-        Route::get('Lates', ' unjustifiedLate');
-        Route::post('makeDecision/{lates}', 'makeDecision');
-        Route::post('dynamicDecision', 'dynamicDecision');
-        Route::get('showLate', 'showLate');
-        Route::post('rejectAlert', 'rejectAlert');
-        Route::post('acceptAlert', 'acceptAlert');
 
 
+//All APIs for the normal user (not encapsulated)
+Route::prefix('Decision')->group(function () {
+    Route::controller(DecisionController::class)->group(function () {
+        Route::get('my_decisions', 'my_decisions');
+    });
+});
 
+Route::prefix('UserInfo')->group(function () {
+    Route::controller(UserInfoController::class)->group(function () {
+        Route::get('Show/{id}', 'show');
+    });
+});
+
+Route::prefix('Notes')->group(function () {
+    Route::controller(NoteController::class)->group(function () {
+        Route::get('All', 'index');
+    });
+});
+
+Route::prefix('Report')->group(function () {
+    Route::controller(ReportController::class)->group(function () {
+        Route::get('myReports', 'my_reports');
+    });
+});
+
+Route::prefix('Request')->group(function () {
+    Route::controller(RequestController::class)->group(function () {
+        Route::post('Add', 'store');
+        Route::get('Me', 'show');
     });
 });
