@@ -89,8 +89,9 @@ class PolicyController extends Controller
             if (!$existencePolicy) {
                 return ResponseHelper::error('Not exist!', null);
             }
-            $policy = Policy::where('branch_id', $request->branch_id)->first();
-            $policy->delete();
+            Policy::where('branch_id', $request->branch_id)->delete();
+            RateType::query()->where('branch_id', $request->branch_id)->delete();
+            return ResponseHelper::success('Deleted', null);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
