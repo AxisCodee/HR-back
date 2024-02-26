@@ -244,7 +244,9 @@ public function updateTeam($id,Request $request){
     ]);
     User::where('department_id',$id)
     ->update(['department_id'=>null]);
-
+User::where('department_id',$id)
+    ->where('role','team_leader')
+    ->update(['role'=>'employee']);
     foreach ($request->users as $userId) {
         $addUser = User::find($userId);
         if ($addUser) {
@@ -254,13 +256,11 @@ public function updateTeam($id,Request $request){
             ]);
         }
     }
-     User::where('department_id',$id)
-    ->where('role','team_leader')
-    ->update(['role'=>'employee']);
+
 
     $leader = $request->team_leader;
     $teamLeader = User::where('id', $leader)
-    ->where('role', '!=', 'team_leader')->first();
+    ->first();
 
     if (!$teamLeader) {
         return ResponseHelper::error('You cannot add a team leader to another team');
