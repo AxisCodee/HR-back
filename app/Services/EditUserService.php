@@ -60,7 +60,7 @@ public  function updateUser($user,$request)
             }
 
             $userInfo = UserInfo::where('user_id',$user->id)->first();
-      
+
            $userInfo->update([
                 'salary' => $request->salary?:$userInfo->salary,
                 'birth_date' => $request->birth_date?:$userInfo->birth_date,
@@ -113,7 +113,8 @@ public  function updateUser($user,$request)
             foreach ($languages as $language) {
                 $oldLang = Language::where('user_id',$user->id);
                 $oldLang->update(
-                    ['name' => $language['languages'],
+                    [
+                        'languages' => $language['languages'],
                     'rate' => $language['rate']
                 ]);
             }
@@ -124,7 +125,7 @@ public  function updateUser($user,$request)
             foreach ($skills as $skill) {
                 $oldSkill = Skills::where('user_id',$user->id);
                 $oldSkill->update([
-                    'name' => $skill['skills'],
+                    'skills' => $skill['skills'],
                     'rate' => $skill['rate'],
 
                 ]);
