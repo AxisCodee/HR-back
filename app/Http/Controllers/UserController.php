@@ -17,6 +17,7 @@ use App\Models\Role;
 use App\Services\RoleService;
 use App\Services\TeamService;
 use App\Services\UserServices;
+use App\Services\EditUserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
@@ -33,12 +34,14 @@ class UserController extends Controller
     private $roleService;
     private $teamService;
     protected $userService;
+    protected $EditUserService;
 
-    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService)
+    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService,EditUserService $EditUserService )
     {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
         $this->userService = $userService;
+        $this->EditUserService = $EditUserService;
     }
 
     //get all users info
@@ -234,6 +237,18 @@ class UserController extends Controller
         ]);
 
         return ResponseHelper::success('Team added successfully');
+    }
+    public function updateUser(User $user,Request $request)
+    {
+        try {
+        $result = $this->EditUserService->updateUser($user,$request);
+        return ResponseHelper::success($result,'User update successfully');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return ResponseHelper::error($e->validator->errors()->first(), 400);
+    }
+    catch (\Exception $e) {
+        return ResponseHelper::error($e->getMessage(), $e->getCode());
+    }
     }
 
 public function updateTeam($id,Request $request){
