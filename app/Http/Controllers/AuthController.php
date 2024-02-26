@@ -130,32 +130,36 @@ class AuthController extends Controller
                 $secretaraits = $request->secretaraits;
                 $emergency_contact = $request->emergency_contact;
 
+                if ($educations && count($educations) > 0) {
+
                 foreach ($educations as $education) {
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
                         'study' => $education['study'],
                         'user_id' => $user->id,
                     ]);
-                }
+                }}
+                if ($certificates && count($certificates) > 0) {
 
                 foreach ($certificates as $index => $certificate) {
                     $cerities = Certificate::query()->create([
                         'user_id' => $user->id,
                         'content' => $certificate,
                     ]);
-                }
+                }}
+                if ($languages && count($languages) > 0) {
 
                 foreach ($languages as $language) {
                     $language = Language::query()->create([
-                        'name' => $language['languages'],
+                        'languages' => $language['languages'],
                         'rate' => $language['rate'],
                         'user_id' => $user->id,
                     ]);
-                }
+                }}
 
                 foreach ($skills as $skill) {
                     $skill = Skills::query()->create([
-                        'name' => $skill['skills'],
+                        'skills' => $skill['skills'],
                         'rate' => $skill['rate'],
                         'user_id' => $user->id,
                     ]);
@@ -218,13 +222,14 @@ class AuthController extends Controller
                         }
                     }
                 }
-
-                foreach ($secretaraits as $secretarait) {
-                    $recieved = Deposit::query()->create([
-                        'user_id' => $user->id,
-                        'description' => $secretarait['object'],
-                        'recieved_date' => $secretarait['delivery_date'],
-                    ]);
+                if ($secretaraits && count($secretaraits) > 0) {
+                    foreach ($secretaraits as $secretarait) {
+                        $recieved = Deposit::query()->create([
+                            'user_id' => $user->id,
+                            'description' => $secretarait['object'],
+                            'recieved_date' => $secretarait['delivery_date'],
+                        ]);
+                    }
                 }
 
                 return ResponseHelper::success($user);
