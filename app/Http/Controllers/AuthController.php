@@ -130,20 +130,24 @@ class AuthController extends Controller
                 $secretaraits = $request->secretaraits;
                 $emergency_contact = $request->emergency_contact;
 
+                if ($educations && count($educations) > 0) {
+
                 foreach ($educations as $education) {
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
                         'study' => $education['study'],
                         'user_id' => $user->id,
                     ]);
-                }
+                }}
+                if ($certificates && count($certificates) > 0) {
 
                 foreach ($certificates as $index => $certificate) {
                     $cerities = Certificate::query()->create([
                         'user_id' => $user->id,
                         'content' => $certificate,
                     ]);
-                }
+                }}
+                if ($languages && count($languages) > 0) {
 
                 foreach ($languages as $language) {
                     $language = Language::query()->create([
@@ -151,7 +155,7 @@ class AuthController extends Controller
                         'rate' => $language['rate'],
                         'user_id' => $user->id,
                     ]);
-                }
+                }}
 
                 foreach ($skills as $skill) {
                     $skill = Skills::query()->create([
