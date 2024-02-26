@@ -56,7 +56,7 @@ class StoreUserRequest extends FormRequest
             'skills.*.rate' => ['integer'],
             'languages.*.rate' => ['integer'],
             'salary' => ['required', 'numeric'],
-            'secretaraits.*.delivery_date' => [ 'date'],
+           // 'secretaraits.*.delivery_date' => ['date'],
             'contacts' => ['array', 'max:2'],
             'contacts.emails' => ['nullable', 'array'],
             'contacts.emails.*.email' => ['nullable','email', 'string'],
