@@ -87,6 +87,7 @@ class PolicyController extends Controller
         try {
             $policy = Policy::where('branch_id', $request->branch_id)->first();
             $policy->delete();
+            return ResponseHelper::success('Deleted successfully', null);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
