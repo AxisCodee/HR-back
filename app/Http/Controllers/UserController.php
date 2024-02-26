@@ -74,7 +74,9 @@ class UserController extends Controller
                 'languages',
                 'study_situations',
                 'emergency',
-                'absences'
+                'absences',
+                'skills',
+                ''
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
