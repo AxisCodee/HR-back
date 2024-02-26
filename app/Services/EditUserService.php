@@ -41,40 +41,42 @@ public  function updateUser($user,$request)
 
 
            $result= $user->update([
-                'first_name' => $request->first_name,
-                'middle_name' => $request->middle_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'role' =>  $request->role,
-                'specialization' => $request->specialization,
+                'first_name' => $request->first_name?:$user->first_name,
+                'middle_name' => $request->middle_name?:$user->middle_name,
+                'last_name' => $request->last_name?:$user->last_name,
+                'email' => $request->email?:$user->email,
+                'role' =>  $request->role?:$user->role,
+                'specialization' => $request->specialization?:$user->specialization,
                 'department_id' => $request->department_id,
-                'password' => Hash::make($request->password),
-                'pin' => $request->pin,
-                'address' => $request->address,
-                'branch_id' => $request->branch_id,
+                'password' => Hash::make($request->password)?:$user->password,
+                'pin' => $request->pin?:$user->pin,
+                'address' => $request->address?:$user->address,
+                'branch_id' => $request->branch_id?:$user->branch_id,
             ]);
 
             $path = null;
             if ($request->image) {
                 $path = Files::saveImageProfile($request->image);
             }
-            $userInfo=UserInfo::where('user_id',$user->id);
+
+            $userInfo = UserInfo::where('user_id',$user->id)->first();
+      
            $userInfo->update([
-                'salary' => $request->salary,
-                'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
-                'nationalID' => $request->nationalID,
-                'social_situation' => $request->social_situation,
-                'level' => $request->level,
-                'military_situation' => $request->military_situation,
-                'health_status' => $request->health_status,
-                'image' => $path
+                'salary' => $request->salary?:$userInfo->salary,
+                'birth_date' => $request->birth_date?:$userInfo->birth_date,
+                'gender' => $request->gender?:$userInfo->gender,
+                'nationalID' => $request->nationalID?:$userInfo->nationalID,
+                'social_situation' => $request->social_situation?:$userInfo->social_situation,
+                'level' => $request->level?:$userInfo->level,
+                'military_situation' => $request->military_situation?:$userInfo->military_situation,
+                'health_status' => $request->health_status?:$userInfo->health_status,
+                'image' => $path?:$userInfo->image
             ]);
             $user->assignRole($request->role);
             $sal= UserSalary::where('user_id',$user->id);
             $sal->update([
                 'date' => Carbon::now()->format('Y-m'),
-                'salary' => $request->salary
+                'salary' => $request->salary?:$userInfo->salary
             ]);
 
             $educations = $request->educations;
@@ -85,7 +87,8 @@ public  function updateUser($user,$request)
             $contacts = $request->contacts;
             $secretaraits = $request->secretaraits;
             $emergency_contact = $request->emergency_contact;
-
+            if($educations)
+{
             foreach ($educations as $education) {
                 $studies = StudySituation::where('user_id',$user->id);
                 $studies->update([
@@ -93,6 +96,9 @@ public  function updateUser($user,$request)
                     'study' => $education['study'],
                 ]);
             }
+        }
+        if($certificates)
+        {
 
             foreach ($certificates as $index => $certificate) {
                 $cerities = Certificate::where('user_id',$user->id);
@@ -101,7 +107,9 @@ public  function updateUser($user,$request)
                     'content' => $certificate,
                 ]);
             }
-
+        }
+        if($languages)
+{
             foreach ($languages as $language) {
                 $oldLang = Language::where('user_id',$user->id);
                 $oldLang->update(
@@ -109,6 +117,9 @@ public  function updateUser($user,$request)
                     'rate' => $language['rate']
                 ]);
             }
+        }
+        if($skills)
+        {
 
             foreach ($skills as $skill) {
                 $oldSkill = Skills::where('user_id',$user->id);
@@ -118,6 +129,8 @@ public  function updateUser($user,$request)
 
                 ]);
             }
+        }
+
 
             if ($request->additional_files) {
                 foreach ($request->additional_files as $file) {
@@ -132,12 +145,15 @@ public  function updateUser($user,$request)
                     })($file);
                 }
             }
+            if($experiences)
+            {
             foreach ($experiences as $experience) {
                 $new_exp = Career::where('user_id',$user->id);
                 $new_exp->update([
                     'content' => $experience,
                 ]);
             }
+        }
 
             if (isset($contacts['emails'][0])) {
                 foreach ($contacts['emails'] as $contact) {
@@ -166,7 +182,7 @@ public  function updateUser($user,$request)
 
                         $contact = Contact::where('user_id',$user->id);
                         $contact->update([
-                            'type' => "emergency",
+                            'type' => 'emergency',
                             'name' => $emergency['name'],
                             'address' => $emergency['address'],
                             'phone_num' => $emergency['phonenumber'] ?? null,
@@ -177,7 +193,8 @@ public  function updateUser($user,$request)
                     }
                 }
             }
-
+if($secretaraits)
+{
             foreach ($secretaraits as $secretarait) {
                 $oldRecieved = Deposit::where('user_id',$user->id);
                 $oldRecieved->update([
@@ -185,6 +202,7 @@ public  function updateUser($user,$request)
                     'received_date' => $secretarait['delivery_date'],
                 ]);
             }
+        }
 $result='user updated successfully';
        return $result;
         });
