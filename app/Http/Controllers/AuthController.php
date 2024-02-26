@@ -224,11 +224,13 @@ class AuthController extends Controller
                 }
                 if ($secretaraits && count($secretaraits) > 0) {
                     foreach ($secretaraits as $secretarait) {
-                        $recieved = Deposit::query()->create([
-                            'user_id' => $user->id,
-                            'description' => $secretarait['object'],
-                            'recieved_date' => $secretarait['delivery_date'],
-                        ]);
+                        if (isset($secretarait['object']) && isset($secretarait['delivery_date'])) {
+                            $recieved = Deposit::query()->create([
+                                'user_id' => $user->id,
+                                'description' => $secretarait['object'],
+                                'recieved_date' => $secretarait['delivery_date'],
+                            ]);
+                        }
                     }
                 }
 
