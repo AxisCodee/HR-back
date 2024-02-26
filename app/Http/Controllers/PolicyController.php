@@ -85,9 +85,13 @@ class PolicyController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $policy = Policy::where('branch_id', $request->branch_id)->first();
-            $policy->delete();
-            return ResponseHelper::deleted('updated');
+            $existencePolicy = Policy::where('branch_id', $request->branch_id)->exists();
+            if (!$existencePolicy) {
+                return ResponseHelper::error('Not exist!', null);
+            }
+            Policy::where('branch_id', $request->branch_id)->delete();
+            RateType::query()->where('branch_id', $request->branch_id)->delete();
+            return ResponseHelper::success('Deleted', null);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
