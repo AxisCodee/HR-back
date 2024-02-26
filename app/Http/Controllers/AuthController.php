@@ -150,19 +150,23 @@ class AuthController extends Controller
                 if ($languages && count($languages) > 0) {
 
                 foreach ($languages as $language) {
+                    if (isset($languages['languages']) && isset($languages['rate'])) {
+
                     $language = Language::query()->create([
                         'languages' => $language['languages'],
                         'rate' => $language['rate'],
                         'user_id' => $user->id,
-                    ]);
+                    ]);}
                 }}
 
                 foreach ($skills as $skill) {
+                    if (isset($skills['skills']) && isset($skills['rate'])) {
+
                     $skill = Skills::query()->create([
                         'skills' => $skill['skills'],
                         'rate' => $skill['rate'],
                         'user_id' => $user->id,
-                    ]);
+                    ]);}
                 }
 
                 if ($request->additional_files) {
@@ -224,11 +228,13 @@ class AuthController extends Controller
                 }
                 if ($secretaraits && count($secretaraits) > 0) {
                     foreach ($secretaraits as $secretarait) {
-                        $recieved = Deposit::query()->create([
-                            'user_id' => $user->id,
-                            'description' => $secretarait['object'],
-                            'recieved_date' => $secretarait['delivery_date'],
-                        ]);
+                        if (isset($secretarait['object']) && isset($secretarait['delivery_date'])) {
+                            $recieved = Deposit::query()->create([
+                                'user_id' => $user->id,
+                                'description' => $secretarait['object'],
+                                'recieved_date' => $secretarait['delivery_date'],
+                            ]);
+                        }
                     }
                 }
 
