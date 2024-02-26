@@ -204,11 +204,6 @@ class UserController extends Controller
     if ($existingDepartment) {
         return ResponseHelper::error('The department already exists in the specified branch');
     }
-
-    $department = Department::create([
-        'name' => $request->name,
-        'branch_id' => $request->branch_id
-    ]);
         $department = Department::create([
             'name' => $request->name,
             'branch_id'=>$request->branch_id
@@ -239,4 +234,53 @@ class UserController extends Controller
 
         return ResponseHelper::success('Team added successfully');
     }
+
+public function updateTeam($id,Request $request){
+
+    $department=Department::query()
+    ->where('id',$id)
+    ->update([
+        'name'=>$request->name,
+    ]);
+    $oldTeamLeader = User::where('department_id',$id)
+    ->update(['department_id'=>null]);
+
+    foreach ($request->users as $userId) {
+        $addUser = User::find($userId);
+        if ($addUser) {
+            $addUser->department_id = $id;
+            $addUser->update([
+                'role' => 'employee'
+            ]);
+        }
+    }
+    $oldTeamLeader = User::where('department_id',$id)
+    ->where('role','team_leader')
+    ->update(['role'=>'employee']);
+    $leader = $request->team_leader;
+    $teamLeader = User::where('id', $leader)
+    ->where('role', '!=', 'team_leader')->first();
+
+    if (!$teamLeader) {
+        return ResponseHelper::error('You cannot add a team leader to another team');
+    }
+
+    $teamLeader->update([
+        'role' => 'team_leader',
+        'department_id' => $id
+    ]);
+
+    return ResponseHelper::success('Team added successfully');
+
+
+}
+
+
+
+
+
+
+
+
+
 }
