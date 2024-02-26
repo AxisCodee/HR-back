@@ -218,6 +218,7 @@ Route::prefix('Team')->group(function () {
             Route::get('Show', 'show');
             Route::post('Add', 'store');
             Route::post('Update', 'update');
+            Route::get('Delete', 'destroy');
         });
     });
 

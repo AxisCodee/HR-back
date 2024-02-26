@@ -82,4 +82,13 @@ class PolicyController extends Controller
         }
 
     }
+    public function destroy(Request $request)
+    {
+        try {
+            $policy = Policy::where('branch_id', $request->branch_id)->first();
+            $policy->delete();
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
 }
