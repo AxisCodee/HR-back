@@ -42,7 +42,7 @@ class StoreUserRequest extends FormRequest
             'certificates' => ['required', 'array'],
             'experiences' => ['required', 'array'],
             'educations' => ['required', 'array'],
-            'skills' => ['required', 'array'],
+           // 'skills' => ['required', 'array'],
             'languages' => ['required', 'array'],
             'secretaraits' => ['required', 'array'],
             'certificates.certificate*' => ['required', 'string'],
