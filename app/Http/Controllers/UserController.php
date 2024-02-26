@@ -266,9 +266,10 @@ public function updateTeam($id,Request $request){
     ]);
     User::where('department_id',$id)
     ->update(['department_id'=>null]);
-User::where('department_id',$id)
+    User::where('department_id',$id)
     ->where('role','team_leader')
     ->update(['role'=>'employee']);
+    if($request->users_array){
     foreach ($request->users_array as $userId) {
         $addUser = User::find($userId);
         if ($addUser) {
@@ -278,7 +279,7 @@ User::where('department_id',$id)
             ]);
         }
     }
-
+    }
 
     $leader = $request->team_leader;
     $teamLeader = User::where('id', $leader)
