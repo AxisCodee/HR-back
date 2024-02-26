@@ -23,17 +23,20 @@ use App\Models\Deposit;
 use App\Models\StudySituation;
 use App\Models\UserSalary;
 use Carbon\Carbon;
+use App\Services\EditUserService;
 use Exception;
 use Illuminate\Support\Facades\DB;
-
-
 require 'tad/vendor/autoload.php';
+
+
 
 class AuthController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
+
     }
 
     public function login(Request $request)
@@ -255,4 +258,6 @@ class AuthController extends Controller
             ]
         ]);
     }
+
 }
+

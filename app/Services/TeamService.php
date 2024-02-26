@@ -56,7 +56,7 @@ class TeamService
         });
     }
 
-    public function updateTeams($request, $id)
+    public function updateTeams($request, $id) 
     {
         try {
             $request->validated();

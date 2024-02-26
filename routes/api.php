@@ -67,6 +67,8 @@ Route::middleware('auth', 'admin')->group(function () {
             Route::get('user/{id}', 'specific_user');
             Route::get('professional', 'user_prof');
             Route::get('usersWithoutDepartment', 'usersWithoutDepartment');
+            Route::post('updateUser/{user}', 'updateUser');
+
         });
     });
 
