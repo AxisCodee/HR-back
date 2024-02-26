@@ -209,7 +209,7 @@ class UserController extends Controller
             'branch_id'=>$request->branch_id
         ]);
 
-        foreach ($request->users as $userId) {
+        foreach ($request->users_array as $userId) {
             $addUser = User::find($userId);
             if ($addUser) {
                 $addUser->department_id = $department->id;
@@ -247,7 +247,7 @@ public function updateTeam($id,Request $request){
 User::where('department_id',$id)
     ->where('role','team_leader')
     ->update(['role'=>'employee']);
-    foreach ($request->users as $userId) {
+    foreach ($request->users_array as $userId) {
         $addUser = User::find($userId);
         if ($addUser) {
             $addUser->department_id = $id;
