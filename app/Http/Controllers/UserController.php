@@ -84,7 +84,6 @@ class UserController extends Controller
 
         $result = $this->userService->editUser($request, $id);
         return $result;
-
     }
     //remove a user from a team
     public function removeFromTeam($id)
@@ -188,8 +187,56 @@ class UserController extends Controller
 
     public function not_admin(Request $request)
     {
-       $branch_id =  $request->input('branch_id');
-       $notadmin =  $this->userService->except_admins($branch_id);
-        return ResponseHelper::success($notadmin,'all users that are not admin returned successfuly');
+        $branch_id =  $request->input('branch_id');
+        $notadmin =  $this->userService->except_admins($branch_id);
+        return ResponseHelper::success($notadmin, 'all users that are not admin returned successfuly');
+    }
+
+
+
+
+    public function addTeams(StoreTeamRequest $request)
+    {
+        $existingDepartment = Department::where('name', $request->name)
+        ->where('branch_id', $request->branch_id)
+        ->first();
+
+    if ($existingDepartment) {
+        return ResponseHelper::error('The department already exists in the specified branch');
+    }
+
+    $department = Department::create([
+        'name' => $request->name,
+        'branch_id' => $request->branch_id
+    ]);
+        $department = Department::create([
+            'name' => $request->name,
+            'branch_id'=>$request->branch_id
+        ]);
+
+        foreach ($request->users as $userId) {
+            $addUser = User::find($userId);
+            if ($addUser) {
+                $addUser->department_id = $department->id;
+                $addUser->update([
+                    'role' => 'employee'
+                ]);
+            }
+        }
+
+        $leader = $request->team_leader;
+        $teamLeader = User::where('id', $leader)
+        ->where('role', '!=', 'team_leader')->first();
+
+        if (!$teamLeader) {
+            return ResponseHelper::error('You cannot add a team leader to another team');
+        }
+
+        $teamLeader->update([
+            'role' => 'team_leader',
+            'department_id' => $department->id
+        ]);
+
+        return ResponseHelper::success('Team added successfully');
     }
 }
