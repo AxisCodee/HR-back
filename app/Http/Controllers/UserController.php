@@ -77,7 +77,8 @@ class UserController extends Controller
                 'languages',
                 'study_situations',
                 'emergency',
-                'absences'
+                'absences',
+                'skills',
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
@@ -207,17 +208,12 @@ class UserController extends Controller
     if ($existingDepartment) {
         return ResponseHelper::error('The department already exists in the specified branch');
     }
-
-    $department = Department::create([
-        'name' => $request->name,
-        'branch_id' => $request->branch_id
-    ]);
         $department = Department::create([
             'name' => $request->name,
             'branch_id'=>$request->branch_id
         ]);
 
-        foreach ($request->users as $userId) {
+        foreach ($request->users_array as $userId) {
             $addUser = User::find($userId);
             if ($addUser) {
                 $addUser->department_id = $department->id;
@@ -242,6 +238,7 @@ class UserController extends Controller
 
         return ResponseHelper::success('Team added successfully');
     }
+<<<<<<< HEAD
     public function updateUser(User $user,Request $request)
     {
         try {
@@ -254,4 +251,56 @@ class UserController extends Controller
         return ResponseHelper::error($e->getMessage(), $e->getCode());
     }
     }
+=======
+
+public function updateTeam($id,Request $request){
+
+    $department=Department::query()
+    ->where('id',$id)
+    ->update([
+        'name'=>$request->name,
+    ]);
+    User::where('department_id',$id)
+    ->update(['department_id'=>null]);
+User::where('department_id',$id)
+    ->where('role','team_leader')
+    ->update(['role'=>'employee']);
+    foreach ($request->users_array as $userId) {
+        $addUser = User::find($userId);
+        if ($addUser) {
+            $addUser->department_id = $id;
+            $addUser->update([
+                'role' => 'employee'
+            ]);
+        }
+    }
+
+
+    $leader = $request->team_leader;
+    $teamLeader = User::where('id', $leader)
+    ->first();
+
+    if (!$teamLeader) {
+        return ResponseHelper::error('You cannot add a team leader to another team');
+    }
+
+    $teamLeader->update([
+        'role' => 'team_leader',
+        'department_id' => $id
+    ]);
+
+    return ResponseHelper::success('Team added successfully');
+
+
+}
+
+
+
+
+
+
+
+
+
+>>>>>>> 25ac530470bbae58fbea80a86cf2813bf27360c5
 }

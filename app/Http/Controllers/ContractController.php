@@ -22,9 +22,7 @@ class ContractController extends Controller
         })->get();
         if ($contracts->isEmpty()) {
             ;
-            return ResponseHelper::success([
-                'message' => 'there are not any contract'
-            ]);
+            return ResponseHelper::success([],null,'no contract',200);
         } else {
             foreach ($contracts as $contract) {
                 $endTime = Carbon::parse($contract['endTime']);

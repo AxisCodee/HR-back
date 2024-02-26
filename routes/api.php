@@ -122,12 +122,14 @@ Route::prefix('Request')->group(function () {
 Route::prefix('Team')->group(function () {
     Route::controller(UserController::class)->group(function () {
         Route::get('getTeams', 'getTeams');
-        Route::post('storeTeams', 'storeTeams');
+        Route::post('storeTeams', 'addTeams');
         Route::post('AddMembers/{team}', 'Addmembers');
-        Route::post('updateTeam/{team}', 'updateTeams');
+       // Route::post('updateTeam/{team}', 'updateTeams');
         Route::delete('deleteTeam/{team}', 'deleteTeam');
         Route::post('RemoveMember/{user}', 'removeFromTeam');
         Route::post('addTeams', 'addTeams');
+        Route::post('updateTeam/{id}', 'updateTeam');
+
 
 
     });
@@ -220,6 +222,7 @@ Route::prefix('Team')->group(function () {
             Route::get('Show', 'show');
             Route::post('Add', 'store');
             Route::post('Update', 'update');
+            Route::delete('Delete', 'destroy');
         });
     });
 
