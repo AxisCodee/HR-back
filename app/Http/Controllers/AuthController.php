@@ -147,7 +147,7 @@ class AuthController extends Controller
 
                 foreach ($languages as $language) {
                     $language = Language::query()->create([
-                        'name' => $language['languages'],
+                        'languages' => $language['languages'],
                         'rate' => $language['rate'],
                         'user_id' => $user->id,
                     ]);
@@ -155,7 +155,7 @@ class AuthController extends Controller
 
                 foreach ($skills as $skill) {
                     $skill = Skills::query()->create([
-                        'name' => $skill['skills'],
+                        'skills' => $skill['skills'],
                         'rate' => $skill['rate'],
                         'user_id' => $user->id,
                     ]);

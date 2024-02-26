@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('skills', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('skills');
             $table->enum('rate', ['1', '2', '3', '4', '5'])->nullable();
             $table->foreignId('user_id')
                 ->constrained('users')
