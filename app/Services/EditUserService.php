@@ -185,7 +185,7 @@ public  function updateUser($user,$request)
                     'received_date' => $secretarait['delivery_date'],
                 ]);
             }
-$result='user created successfully';
+$result='user updated successfully';
        return $result;
         });
     } catch (\Illuminate\Validation\ValidationException $e) {
