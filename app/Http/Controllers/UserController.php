@@ -238,7 +238,6 @@ class UserController extends Controller
 
         return ResponseHelper::success('Team added successfully');
     }
-<<<<<<< HEAD
     public function updateUser(User $user,Request $request)
     {
         try {
@@ -251,7 +250,6 @@ class UserController extends Controller
         return ResponseHelper::error($e->getMessage(), $e->getCode());
     }
     }
-=======
 
 public function updateTeam($id,Request $request){
 
@@ -302,5 +300,4 @@ User::where('department_id',$id)
 
 
 
->>>>>>> 25ac530470bbae58fbea80a86cf2813bf27360c5
 }
