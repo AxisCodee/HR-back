@@ -157,41 +157,42 @@ class TeamService
     public function addTeams($request)
     {
         try {
-            DB::beginTransaction();
+            DB::beginTransaction();//transaction
 
             $existingDepartment = Department::where('name', $request->name)
                 ->where('branch_id', $request->branch_id)
-                ->first();
+                ->first(); //check if department exist firstly
 
-            if ($existingDepartment) {
+            if ($existingDepartment) { //throw exception if department exist
                 throw new Exception('The department already exists in the specified branch');
             }
 
+            //else create department with name
             $department = Department::create([
                 'name' => $request->name,
                 'branch_id' => $request->branch_id
             ]);
-
+            //if request has team_leader => find it or fail
             if ($request->team_leader) {
                 $leader = $request->team_leader;
                 $teamLeader = User::where('id', $leader)
                     ->findOrFail($leader);
-
+                    //check if team_leader exist in another team to throw exception
                 if (!$teamLeader || $teamLeader->role == 'team_leader') {
                     throw new Exception('You cannot add a team leader to another team');
                 }
 
 
-
+                //else set role => team_leader and set department_id
                 $teamLeader->update([
                     'role' => 'team_leader',
                     'department_id' => $department->id
                 ]);
             }
-
+            //add array of users to team with role employee
             if ($request->users_array) {
                 foreach ($request->users_array as $userId) {
-                    $addUser = User::find($userId);
+                    $addUser = User::findOrFail($userId);
                     if ($addUser) {
                         $addUser->department_id = $department->id;
                         $addUser->update([
@@ -231,7 +232,7 @@ class TeamService
 
             User::where('department_id', $id)
                 ->where('role', 'team_leader')
-                ->update(['role' => 'employee']); // set role employee for team leader
+                ->update(['role' => 'employee']); // set role employee for team leader to reset roles for all department 
 
             if ($request->users_array) { //store many users in team as array
                 foreach ($request->users_array as $userId) {
