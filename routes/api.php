@@ -104,28 +104,32 @@ Route::middleware('auth', 'admin')->group(function () {
         });
     });
 
-    Route::prefix('Request')->group(function () {
-        Route::controller(RequestController::class)->group(function () {
-            Route::get('All', 'index');
-            Route::get('Complaints', 'getComplaints');
-            Route::get('info/{id}', 'getRequest');
-            Route::post('Update/{id}', 'update');
-            Route::post('accepteRequest/{request}', 'acceptRequest');
-            Route::post('rejectRequest/{request}', 'rejectRequest');
-            Route::delete('Delete/{request}', 'destroy');
-        });
+Route::prefix('Request')->group(function () {
+    Route::controller(RequestController::class)->group(function () {
+        Route::get('All', 'index');
+        Route::get('Me', 'show');
+        Route::get('Complaints', 'getComplaints');
+        Route::get('info/{id}', 'getRequest');
+        Route::post('Add', 'store');
+        Route::post('Update/{id}', 'update');
+        Route::post('accepteRequest/{request}', 'acceptRequest');
+        Route::post('rejectRequest/{request}', 'rejectRequest');
+        Route::delete('Delete/{request}', 'destroy');
     });
+});
+Route::prefix('Team')->group(function () {
+    Route::controller(UserController::class)->group(function () {
+        Route::get('getTeams', 'getTeams');
+        Route::post('storeTeams', 'storeTeams');
+        Route::post('AddMembers/{team}', 'Addmembers');
+        Route::post('updateTeam/{team}', 'updateTeams');
+        Route::delete('deleteTeam/{team}', 'deleteTeam');
+        Route::post('RemoveMember/{user}', 'removeFromTeam');
+        Route::post('addTeams', 'addTeams');
 
-    Route::prefix('Team')->group(function () {
-        Route::controller(UserController::class)->group(function () {
-            Route::get('getTeams', 'getTeams');
-            Route::post('storeTeams', 'storeTeams');
-            Route::post('AddMembers/{team}', 'Addmembers');
-            Route::post('updateTeam/{team}', 'updateTeams');
-            Route::delete('deleteTeam/{team}', 'deleteTeam');
-            Route::post('RemoveMember/{user}', 'removeFromTeam');
-        });
+
     });
+});
 
     Route::prefix('Deposit')->group(function () {
         Route::controller(DepositController::class)->group(function () {
