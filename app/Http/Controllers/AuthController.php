@@ -110,7 +110,7 @@ class AuthController extends Controller
                     'health_status' => $request->health_status,
                     'image' => $path
                 ]);
-                $user->assignRole($request->role);
+                $user->assignRole('employee');
 
                 $sal = UserSalary::query()->create([
                     'user_id' => $user->id,

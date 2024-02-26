@@ -125,6 +125,9 @@ Route::prefix('Team')->group(function () {
         Route::post('updateTeam/{team}', 'updateTeams');
         Route::delete('deleteTeam/{team}', 'deleteTeam');
         Route::post('RemoveMember/{user}', 'removeFromTeam');
+        Route::post('addTeams', 'addTeams');
+
+
     });
 });
 
