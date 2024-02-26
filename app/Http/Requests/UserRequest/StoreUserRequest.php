@@ -53,7 +53,6 @@ class StoreUserRequest extends FormRequest
             'languages.*.languages' => ['required', 'string'],
             'secretaraits.*.object' => ['required', 'string'],
             'level' => ['required', 'string', 'in:Senior,Junior,Mid'],
-            'department_id' => ['required', 'integer', 'exists:departments,id'],
             'skills.*.rate' => ['required', 'integer'],
             'languages.*.rate' => ['required', 'integer'],
             'salary' => ['required', 'numeric'],
