@@ -133,11 +133,13 @@ class AuthController extends Controller
                 if ($educations && count($educations) > 0) {
 
                 foreach ($educations as $education) {
+                    if (isset($education['degree']) && isset($education['study'])) {
+
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
                         'study' => $education['study'],
                         'user_id' => $user->id,
-                    ]);
+                    ]);}
                 }}
                 if ($certificates && count($certificates) > 0) {
 
