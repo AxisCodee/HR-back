@@ -234,7 +234,7 @@ class AuthController extends Controller
                 }
 
                     foreach ($secretaraits as $secretarait) {
-                        if (isset($secretarait['object']) && isset($secretarait['delivery_date'])) {
+                        if (isset($secretarait['description']) && isset($secretarait['recieved_date'])) {
                             $recieved = Deposit::query()->create([
                                 'user_id' => $user->id,
                                 'description' => $secretarait['object'],
