@@ -89,7 +89,7 @@ class ContractController extends Controller
     {
         $result = Contract::query()
             ->with('user')
-            ->where('id', $id)
+            ->where('user_id', $id)
             ->get()->toArray();
 
         return ResponseHelper::success($result, null, 'contract:', 200);
