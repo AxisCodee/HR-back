@@ -132,7 +132,7 @@ class AuthController extends Controller
 
 
                 foreach ($educations as $education) {
-                    if (isset($educations['degree']) && isset($educations['study'])) {
+                    if (isset($education['degree']) && isset($education['study'])) {
 
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
@@ -144,7 +144,7 @@ class AuthController extends Controller
 
 
                 foreach ($certificates as $index => $certificate) {
-                    if (isset($certificates['content']) ) {
+                    if (isset($certificate['content']) ) {
 
                     $cerities = Certificate::query()->create([
                         'user_id' => $user->id,
@@ -154,7 +154,7 @@ class AuthController extends Controller
 
 
                 foreach ($languages as $language) {
-                    if (isset($languages['languages']) && isset($languages['rate'])) {
+                    if (isset($language['languages']) && isset($language['rate'])) {
 
                     $language = Language::query()->create([
                         'languages' => $language['languages'],
@@ -164,7 +164,7 @@ class AuthController extends Controller
                 }
 
                 foreach ($skills as $skill) {
-                    if (isset($skills['skills']) && isset($skills['rate'])) {
+                    if (isset($skill['skills']) && isset($skill['rate'])) {
 
                     $skill = Skills::query()->create([
                         'skills' => $skill['skills'],
@@ -187,7 +187,7 @@ class AuthController extends Controller
                     }
                 }
                 foreach ($experiences as $experience) {
-                    if (isset($experiences['user_id']) || isset($experiences['content'])) {
+                    if (isset($experience['user_id']) || isset($experience['content'])) {
 
                     $new_exp = Career::query()->create([
                         'user_id' => $user->id,
@@ -234,7 +234,7 @@ class AuthController extends Controller
                 }
 
                     foreach ($secretaraits as $secretarait) {
-                        if (isset($secretaraits['object']) && isset($secretaraits['delivery_date'])) {
+                        if (isset($secretarait['object']) && isset($secretarait['delivery_date'])) {
                             $recieved = Deposit::query()->create([
                                 'user_id' => $user->id,
                                 'description' => $secretarait['object'],
