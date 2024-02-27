@@ -163,7 +163,7 @@ class AuthController extends Controller
                 }}
 
                 foreach ($skills as $skill) {
-                    if (isset($skills['skills']) && isset($skills['rate'])) {
+                    if (isset($skills['skills']) && isset($skills['rate'])&& isset($skills['user_id'])) {
 
                     $skill = Skills::query()->create([
                         'skills' => $skill['skills'],
