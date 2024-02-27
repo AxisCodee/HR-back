@@ -130,7 +130,6 @@ class AuthController extends Controller
                 $secretaraits = $request->secretaraits;
                 $emergency_contact = $request->emergency_contact;
 
-                if ($educations && count($educations) > 0) {
 
                 foreach ($educations as $education) {
                     if (isset($educations['degree']) && isset($educations['study'])) {
@@ -140,9 +139,9 @@ class AuthController extends Controller
                         'study' => $education['study'],
                         'user_id' => $user->id,
                     ]);}
-                }}
+                }
 
-                if ($certificates && count($certificates) > 0) {
+
 
                 foreach ($certificates as $index => $certificate) {
                     if (isset($certificates['content']) ) {
@@ -151,8 +150,8 @@ class AuthController extends Controller
                         'user_id' => $user->id,
                         'content' => $certificate,
                     ]);}
-                }}
-                if ($languages && count($languages) > 0) {
+                }
+
 
                 foreach ($languages as $language) {
                     if (isset($languages['languages']) && isset($languages['rate'])) {
@@ -162,7 +161,7 @@ class AuthController extends Controller
                         'rate' => $language['rate'],
                         'user_id' => $user->id,
                     ]);}
-                }}
+                }
 
                 foreach ($skills as $skill) {
                     if (isset($skills['skills']) && isset($skills['rate'])) {
@@ -233,7 +232,7 @@ class AuthController extends Controller
                         }
                     }
                 }
-                if ($secretaraits && count($secretaraits) > 0) {
+
                     foreach ($secretaraits as $secretarait) {
                         if (isset($secretaraits['object']) && isset($secretaraits['delivery_date'])) {
                             $recieved = Deposit::query()->create([
@@ -243,7 +242,7 @@ class AuthController extends Controller
                             ]);
                         }
                     }
-                }
+
 
                 return ResponseHelper::success($user);
             });
