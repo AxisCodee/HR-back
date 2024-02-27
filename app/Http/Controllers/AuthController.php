@@ -133,7 +133,7 @@ class AuthController extends Controller
                 if ($educations && count($educations) > 0) {
 
                 foreach ($educations as $education) {
-                    if (isset($education['degree']) && isset($education['study'])) {
+                    if (isset($educations['degree']) && isset($educations['study'])) {
 
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
@@ -141,11 +141,12 @@ class AuthController extends Controller
                         'user_id' => $user->id,
                     ]);}
                 }}
-                
+
                 if ($certificates && count($certificates) > 0) {
-                    if (isset($certificates['user_id']) && isset($certificates['user_id'])) {
 
                 foreach ($certificates as $index => $certificate) {
+                    if (isset($certificates['user_id']) && isset($certificates['user_id'])) {
+
                     $cerities = Certificate::query()->create([
                         'user_id' => $user->id,
                         'content' => $certificate,
@@ -154,7 +155,7 @@ class AuthController extends Controller
                 if ($languages && count($languages) > 0) {
 
                 foreach ($languages as $language) {
-                    if (isset($language['languages']) && isset($language['rate'])) {
+                    if (isset($languages['languages']) && isset($languages['rate'])) {
 
                     $language = Language::query()->create([
                         'languages' => $language['languages'],
@@ -164,7 +165,7 @@ class AuthController extends Controller
                 }}
 
                 foreach ($skills as $skill) {
-                    if (isset($skill['skills']) && isset($skill['rate'])&& isset($skill['user_id'])) {
+                    if (isset($skills['skills']) && isset($skills['rate'])&& isset($skills['user_id'])) {
 
                     $skill = Skills::query()->create([
                         'skills' => $skill['skills'],
@@ -187,7 +188,7 @@ class AuthController extends Controller
                     }
                 }
                 foreach ($experiences as $experience) {
-                    if (isset($experience['user_id']) || isset($experience['content'])) {
+                    if (isset($experiences['user_id']) || isset($experiences['content'])) {
 
                     $new_exp = Career::query()->create([
                         'user_id' => $user->id,
@@ -234,7 +235,7 @@ class AuthController extends Controller
                 }
                 if ($secretaraits && count($secretaraits) > 0) {
                     foreach ($secretaraits as $secretarait) {
-                        if (isset($secretarait['object']) && isset($secretarait['delivery_date'])) {
+                        if (isset($secretaraits['object']) && isset($secretaraits['delivery_date'])) {
                             $recieved = Deposit::query()->create([
                                 'user_id' => $user->id,
                                 'description' => $secretarait['object'],
