@@ -37,9 +37,6 @@ public  function updateUser($user,$request)
     try {
         //$validate = $request->validated();
         return DB::transaction(function () use ($request ,$user) {
-
-
-
            $result= $user->update([
                 'first_name' => $request->first_name?:$user->first_name,
                 'middle_name' => $request->middle_name?:$user->middle_name,
