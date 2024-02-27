@@ -145,7 +145,7 @@ class AuthController extends Controller
                 if ($certificates && count($certificates) > 0) {
 
                 foreach ($certificates as $index => $certificate) {
-                    if (isset($certificates['user_id']) && isset($certificates['user_id'])) {
+                    if (isset($certificates['content']) ) {
 
                     $cerities = Certificate::query()->create([
                         'user_id' => $user->id,
@@ -165,7 +165,7 @@ class AuthController extends Controller
                 }}
 
                 foreach ($skills as $skill) {
-                    if (isset($skills['skills']) && isset($skills['rate'])&& isset($skills['user_id'])) {
+                    if (isset($skills['skills']) && isset($skills['rate'])) {
 
                     $skill = Skills::query()->create([
                         'skills' => $skill['skills'],
