@@ -18,6 +18,7 @@ use App\Services\RoleService;
 use App\Services\TeamService;
 use App\Services\UserServices;
 use App\Services\EditUserService;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
@@ -34,14 +35,14 @@ class UserController extends Controller
     private $roleService;
     private $teamService;
     protected $userService;
-    protected $EditUserService;
+    protected $editUserService;
 
-    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService,EditUserService $EditUserService )
+    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService,EditUserService $editUserService )
     {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
         $this->userService = $userService;
-        $this->EditUserService = $EditUserService;
+        $this->editUserService = $editUserService;
     }
 
     //get all users info
@@ -199,55 +200,11 @@ class UserController extends Controller
 
 
 
-    public function addTeams(StoreTeamRequest $request)
-    {
-        $existingDepartment = Department::where('name', $request->name)
-            ->where('branch_id', $request->branch_id)
-            ->first();
 
-        if ($existingDepartment) {
-            return ResponseHelper::error('The department already exists in the specified branch');
-        }
-
-        $department = Department::create([
-            'name' => $request->name,
-            'branch_id' => $request->branch_id
-        ]);
-
-        if ($request->team_leader) {
-            $leader = $request->team_leader;
-            $teamLeader = User::where('id', $leader)
-                ->where('role', '!=', 'team_leader')
-                ->first();
-
-            if (!$teamLeader) {
-                return ResponseHelper::error('You cannot add a team leader to another team');
-            }
-
-            $teamLeader->update([
-                'role' => 'team_leader',
-                'department_id' => $department->id
-            ]);
-        }
-
-        if ($request->users_array) {
-            foreach ($request->users_array as $userId) {
-                $addUser = User::find($userId);
-                if ($addUser) {
-                    $addUser->department_id = $department->id;
-                    $addUser->update([
-                        'role' => 'employee'
-                    ]);
-                }
-            }
-        }
-
-        return ResponseHelper::success('Team added successfully');
-    }
     public function updateUser(User $user,Request $request)
     {
         try {
-        $result = $this->EditUserService->updateUser($user,$request);
+        $result = $this->editUserService->updateUser($user,$request);
         return ResponseHelper::success($result,'User update successfully');
     } catch (\Illuminate\Validation\ValidationException $e) {
         return ResponseHelper::error($e->validator->errors()->first(), 400);
@@ -257,49 +214,22 @@ class UserController extends Controller
     }
     }
 
-public function updateTeam($id,Request $request){
 
-    $department=Department::query()
-    ->where('id',$id)
-    ->update([
-        'name'=>$request->name,
-    ]);
-    User::where('department_id',$id)
-    ->update(['department_id'=>null]);
-    User::where('department_id',$id)
-    ->where('role','team_leader')
-    ->update(['role'=>'employee']);
-    if($request->users_array){
-    foreach ($request->users_array as $userId) {
-        $addUser = User::find($userId);
-        if ($addUser) {
-            $addUser->department_id = $id;
-            $addUser->update([
-                'role' => 'employee'
-            ]);
-        }
-    }
+
+//add team
+    public function addTeams(StoreTeamRequest $request)
+    {
+        $result = $this->teamService->addTeams($request);
+        return ResponseHelper::success($result);
     }
 
-    $leader = $request->team_leader;
-    $teamLeader = User::where('id', $leader)
-    ->first();
 
-    if (!$teamLeader) {
-        return ResponseHelper::error('You cannot add a team leader to another team');
+//update team
+    public function updateTeam($id, Request $request)
+    {
+        $result = $this->teamService->updateTeam($id, $request);
+        return ResponseHelper::success($result);
     }
-
-    $teamLeader->update([
-        'role' => 'team_leader',
-        'department_id' => $id
-    ]);
-
-    return ResponseHelper::success('Team added successfully');
-
-
-}
-
-
 
 
 

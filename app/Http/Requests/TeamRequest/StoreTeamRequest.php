@@ -27,10 +27,10 @@ class StoreTeamRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:25'],
-           // 'users_array' => ['array', 'nullable'],
-            //'users_array.*' => ['nullable', 'integer', 'exists:users,id'],
-           // 'branch_id' => ['required', 'integer', 'exists:branches,id'],
-          
+           'users_array' => ['array', 'nullable'],
+            'users_array.*' => ['nullable', 'integer', 'exists:users,id'],
+           'branch_id' => ['integer', 'exists:branches,id'],
+
         ];
     }
     protected function failedValidation(Validator $validator)

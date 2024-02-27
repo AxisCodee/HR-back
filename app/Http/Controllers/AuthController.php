@@ -130,37 +130,40 @@ class AuthController extends Controller
                 $secretaraits = $request->secretaraits;
                 $emergency_contact = $request->emergency_contact;
 
-                if ($educations && count($educations) > 0) {
 
                 foreach ($educations as $education) {
+                    if (isset($education['degree']) && isset($education['study'])) {
+
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
                         'study' => $education['study'],
                         'user_id' => $user->id,
-                    ]);
-                }}
-                if ($certificates && count($certificates) > 0) {
+                    ]);}
+                }
+
+
 
                 foreach ($certificates as $index => $certificate) {
-                    $cerities = Certificate::query()->create([
-                        'user_id' => $user->id,
-                        'content' => $certificate,
-                    ]);
-                }}
-                if ($languages && count($languages) > 0) {
+                    if (isset($certificate['content'])) {
+                        $cerities = Certificate::query()->create([
+                            'user_id' => $user->id,
+                            'content' => $certificate['content'],
+                        ]);
+                    }
+                }
 
                 foreach ($languages as $language) {
-                    if (isset($languages['languages']) && isset($languages['rate'])) {
+                    if (isset($language['languages']) && isset($language['rate'])) {
 
                     $language = Language::query()->create([
                         'languages' => $language['languages'],
                         'rate' => $language['rate'],
                         'user_id' => $user->id,
                     ]);}
-                }}
+                }
 
                 foreach ($skills as $skill) {
-                    if (isset($skills['skills']) && isset($skills['rate'])) {
+                    if (isset($skill['skills']) && isset($skill['rate'])) {
 
                     $skill = Skills::query()->create([
                         'skills' => $skill['skills'],
@@ -183,10 +186,12 @@ class AuthController extends Controller
                     }
                 }
                 foreach ($experiences as $experience) {
-                    $new_exp = Career::query()->create([
-                        'user_id' => $user->id,
-                        'content' => $experience,
-                    ]);
+                    if (isset($experience['content'])) {
+                        $new_exp = Career::query()->create([
+                            'user_id' => $user->id,
+                            'content' => $experience['content'],
+                        ]);
+                    }
                 }
 
                 if (isset($contacts['emails'][0])) {
@@ -226,17 +231,17 @@ class AuthController extends Controller
                         }
                     }
                 }
-                if ($secretaraits && count($secretaraits) > 0) {
-                    foreach ($secretaraits as $secretarait) {
-                        if (isset($secretarait['object']) && isset($secretarait['delivery_date'])) {
-                            $recieved = Deposit::query()->create([
-                                'user_id' => $user->id,
-                                'description' => $secretarait['object'],
-                                'recieved_date' => $secretarait['delivery_date'],
-                            ]);
-                        }
+
+                foreach ($secretaraits as $secretarait) {
+                    if (isset($secretarait['delivery_date']) && isset($secretarait['object'])) {
+                        $recieved = Deposit::query()->create([
+                            'user_id' => $user->id,
+                            'description' => $secretarait['object'],
+                            'recieved_date' => $secretarait['delivery_date'],
+                        ]);
                     }
                 }
+
 
                 return ResponseHelper::success($user);
             });

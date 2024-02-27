@@ -45,7 +45,7 @@ public  function updateUser($user,$request)
                 'role' =>  $request->role?:$user->role,
                 'specialization' => $request->specialization?:$user->specialization,
                 'department_id' => $request->department_id,
-                'password' => Hash::make($request->password)?:$user->password,
+                'password' => $request->password ? Hash::make($request->password) : $user->password,
                 'pin' => $request->pin?:$user->pin,
                 'address' => $request->address?:$user->address,
                 'branch_id' => $request->branch_id?:$user->branch_id,
