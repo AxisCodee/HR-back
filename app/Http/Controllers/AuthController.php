@@ -186,10 +186,12 @@ class AuthController extends Controller
                     }
                 }
                 foreach ($experiences as $experience) {
+                    if (isset($emergency['user_id']) || isset($emergency['content'])) {
+
                     $new_exp = Career::query()->create([
                         'user_id' => $user->id,
                         'content' => $experience,
-                    ]);
+                    ]);}
                 }
 
                 if (isset($contacts['emails'][0])) {
