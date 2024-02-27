@@ -142,12 +142,13 @@ class AuthController extends Controller
                     ]);}
                 }}
                 if ($certificates && count($certificates) > 0) {
+                    if (isset($certificates['user_id']) && isset($certificates['user_id'])) {
 
                 foreach ($certificates as $index => $certificate) {
                     $cerities = Certificate::query()->create([
                         'user_id' => $user->id,
                         'content' => $certificate,
-                    ]);
+                    ]);}
                 }}
                 if ($languages && count($languages) > 0) {
 
