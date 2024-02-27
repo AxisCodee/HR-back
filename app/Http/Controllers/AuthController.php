@@ -144,14 +144,13 @@ class AuthController extends Controller
 
 
                 foreach ($certificates as $index => $certificate) {
-                    if (isset($certificate['content']) ) {
-
-                    $cerities = Certificate::query()->create([
-                        'user_id' => $user->id,
-                        'certificates[0][content]' => $certificate,
-                    ]);}
+                    if (isset($certificate['content'])) {
+                        $cerities = Certificate::query()->create([
+                            'user_id' => $user->id,
+                            'content' => $certificate['content'],
+                        ]);
+                    }
                 }
-
 
                 foreach ($languages as $language) {
                     if (isset($language['languages']) && isset($language['rate'])) {
@@ -187,12 +186,12 @@ class AuthController extends Controller
                     }
                 }
                 foreach ($experiences as $experience) {
-                    if ( isset($experience['content'])) {
-
-                    $new_exp = Career::query()->create([
-                        'user_id' => $user->id,
-                        'experiences[0][content]' => $experience
-                    ]);}
+                    if (isset($experience['content'])) {
+                        $new_exp = Career::query()->create([
+                            'user_id' => $user->id,
+                            'content' => $experience['content'],
+                        ]);
+                    }
                 }
 
                 if (isset($contacts['emails'][0])) {
