@@ -61,7 +61,7 @@ class StoreUserRequest extends FormRequest
             'contacts.emails' => ['nullable', 'array'],
             'contacts.emails.*.email' => ['nullable','email', 'string'],
             'contacts.phonenumbers' => ['array'],
-            'contacts.phonenumbers.*.phone' => ['numeric', 'digits:10'],
+            'contacts.phonenumbers.*.phone_num' => ['numeric', 'digits:10'],
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
         ];
     }
