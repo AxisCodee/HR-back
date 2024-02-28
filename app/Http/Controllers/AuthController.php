@@ -209,7 +209,7 @@ class AuthController extends Controller
                         $multi = Contact::create([
                             'user_id' => $user->id,
                             'type' => 'normal',
-                            'phone_num' => $contact['phone'],
+                            'phone_num' => $contact['phone_num'],
                         ]);
                     }
                 }
