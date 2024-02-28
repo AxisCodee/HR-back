@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->integer('pin');
             $table->string('datetime');
+            $table->foreignId('branch_id')->nullable()->constrained('branches')->cascadeOnDelete();
             $table->string('verified', 255); // Specify appropriate length
             $table->string('status', 255);   // Specify appropriate length
             $table->string('work_code');
