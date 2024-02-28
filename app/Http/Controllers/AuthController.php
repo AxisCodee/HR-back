@@ -232,15 +232,19 @@ class AuthController extends Controller
                     }
                 }
 
+
+                if ($request->secretaraits) {
+
                 foreach ($secretaraits as $secretarait) {
                     if (isset($secretarait['delivery_date']) && isset($secretarait['object'])) {
-                        $recieved = Deposit::query()->create([
+                        $received = Deposit::query()->create([
                             'user_id' => $user->id,
                             'description' => $secretarait['object'],
-                            'recieved_date' => $secretarait['delivery_date'],
-                        ]);
-                    }
+                            'received_date' => $secretarait['delivery_date'],
+                        ]);}}
                 }
+
+
 
 
                 return ResponseHelper::success($user);
