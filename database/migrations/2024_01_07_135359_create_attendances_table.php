@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -21,11 +20,8 @@ return new class extends Migration
             $table->string('status', 255);   // Specify appropriate length
             $table->string('work_code');
             $table->timestamps();
-
-
         });
     }
-
 
 
     /**
