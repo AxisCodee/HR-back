@@ -12,6 +12,7 @@ use App\Models\Policy;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
 
@@ -19,6 +20,7 @@ require 'tad\vendor\autoload.php';
 
 class AttendanceController extends Controller
 {
+
     public function getAttendanceLogs()
     {
         $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
@@ -55,19 +57,22 @@ class AttendanceController extends Controller
                 $all_user_info = $tad->get_all_user_info();
                 $dt = $tad->get_date();
                 $logs = $tad->get_att_log();
-                
+
                 $xml = simplexml_load_string($logs);
                 $array = json_decode(json_encode($xml), true);
                 $logsData = $array['Row'];
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
-                    $attendance = [
-                        'pin' => $log['PIN'],
-                        'datetime' => $log['DateTime'],
-                        'verified' => $log['Verified'],
-                        'status' => $log['Status'],
-                        'work_code' => $log['WorkCode'],
-                    ];
+                    $branch = User::where('pin', intval($log['PIN']))->first();
+                    if ($branch)
+                        $attendance = [
+                            'pin' => $log['PIN'],
+                            'datetime' => $log['DateTime'],
+                            'branch_id' => $branch->branch_id,
+                            'verified' => $log['Verified'],
+                            'status' => $log['Status'],
+                            'work_code' => $log['WorkCode'],
+                        ];
                     Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
                     $date = date('Y-m-d', strtotime($log['DateTime']));
                     Date::updateOrCreate(['date' => $date]);
@@ -189,7 +194,7 @@ class AttendanceController extends Controller
 
     public function DayAttendance($date)
     {
-        $users = User::with('department','userInfo')
+        $users = User::with('department', 'userInfo')
             ->with(['attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }])

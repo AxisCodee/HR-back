@@ -34,7 +34,7 @@ class StoreUserRequest extends FormRequest
             'birth_date' => ['required', 'date', 'before:today', 'date_format:Y-m-d'],
             'nationalID' => ['required', 'numeric', 'digits:11'],
             'health_status' => ['required', 'string', 'max:250'],
-            'gender' => ['required', 'string', 'in:male,female'],
+            'gender' => ['required', 'string', 'in:Male,Female'],
             'military_situation' => ['required', 'string', 'in:Postponed,Exempt,Finished'],
             'social_situation' => ['required', 'string', 'in:Single,Married'],
             'specialization' => ['required', 'string'],

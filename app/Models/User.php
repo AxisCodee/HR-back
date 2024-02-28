@@ -309,4 +309,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Report::class, 'user_id');
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class,'branch_id');
+    }
 }
