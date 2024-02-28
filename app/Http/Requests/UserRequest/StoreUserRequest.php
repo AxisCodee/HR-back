@@ -35,7 +35,6 @@ class StoreUserRequest extends FormRequest
             'nationalID' => ['required', 'numeric', 'digits:11'],
             'health_status' => ['required', 'string', 'max:250'],
             'gender' => ['required', 'string', 'in:Male,Female'],
-            'military_situation' => ['required', 'string', 'in:Postponed,Exempt,Finished'],
             'social_situation' => ['required', 'string', 'in:Single,Married'],
             'specialization' => ['required', 'string'],
             'additional_files', 'emergency_contact' => ['nullable', 'array'],
