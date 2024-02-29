@@ -115,7 +115,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function getDeductionsAttribute( $date)
+    public function getDeductionsAttribute()
     {        $date = request()->query('date');
 
         $deductions = Decision::where('type', 'deduction')
@@ -129,7 +129,7 @@ class User extends Authenticatable implements JWTSubject
 
 
 
-    public function getRewardsAttribute( $date)
+    public function getRewardsAttribute()
     {        $date = request()->query('date');
         $rewards = Decision::where('type', 'reward')
             ->where('user_id', $this->id);
@@ -141,7 +141,7 @@ class User extends Authenticatable implements JWTSubject
         return $total;
     }
 
-    public function getAdvancesAttribute( $date)
+    public function getAdvancesAttribute()
     {        $date = request()->query('date');
         $advances = Decision::where('type', 'advance')
             ->where('user_id', $this->id);
@@ -152,9 +152,9 @@ class User extends Authenticatable implements JWTSubject
         return $total;
     }
 
-    public function getAbsencesAttribute($date)
+    public function getAbsencesAttribute()
     {        $date = request()->query('date');
-        $absences = Absences::where('user_id', $this->id);
+        $absences = Absences::where('user_id', $this->id)->where('type', 'Unjustified');
 
         $usertimeService = app(UsertimeService::class);
         $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
