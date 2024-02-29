@@ -104,7 +104,7 @@ public  function updateUser($user,$request)
                 $cerities = Certificate::where('user_id',$user->id);
                 $cerities->update([
                     'user_id' => $user->id,
-                    'content' => $certificate,
+                    'content' => $certificate['content'],
                 ]);
             }
         }
@@ -151,7 +151,7 @@ public  function updateUser($user,$request)
             foreach ($experiences as $experience) {
                 $new_exp = Career::where('user_id',$user->id);
                 $new_exp->update([
-                    'content' => $experience,
+                    'content' => $experience['content'],
                 ]);
             }
         }
