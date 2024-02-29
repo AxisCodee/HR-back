@@ -102,7 +102,7 @@ if($date){
 
         $total=$overTimes->get();
         return $total;}
-        return 0;
+        return [];
     }
 
     public function getLateAttribute()
