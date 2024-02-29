@@ -178,7 +178,7 @@ class AbsencesController extends Controller
         $new_abs = Absences::create([
             'type' => $request->type,
             'user_id' => $request->user_id,
-            'startDate' => $request->date,
+            'startDate' => $request->startDate,
         ]);
         return ResponseHelper::success($new_abs, null, 'Absence added successfully');
     }
@@ -200,7 +200,7 @@ class AbsencesController extends Controller
             return ResponseHelper::error('Absence not found', 404);
         }
 
-        $result->update([ 
+        $result->update([
             'type' => 'null'
         ]);
 
