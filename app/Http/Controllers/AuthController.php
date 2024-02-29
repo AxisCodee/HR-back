@@ -223,7 +223,7 @@ class AuthController extends Controller
                                 'type' => "emergency",
                                 'name' => $emergency['name'],
                                 'address' => $emergency['address'],
-                                'phone_num' => $emergency['phonenumber'] ?? null,
+                                'phone_num' => $emergency['phone_num'] ?? null,
                                 'email' => $emergency['email'] ?? null,
                             ]);
                         } else {
