@@ -57,7 +57,10 @@ class User extends Authenticatable implements JWTSubject
         'late',
         'CheckInPercentage',
         'CheckOutPercentage',
-        'BaseSalary'
+        'BaseSalary',
+        'deductions',
+        'rewards',
+        'advances'
     ];
     protected $hidden = [
         'password',
@@ -106,6 +109,41 @@ class User extends Authenticatable implements JWTSubject
             ->getAdvance($this, $date);
         return $totalAdvance;
     }
+
+
+    public function getDeductionsAttribute( $date)
+    {
+        $deductions = Decision::where('type', 'deduction')
+            ->where('user_id', $this->id);
+
+        $usertimeService = app(UsertimeService::class);
+        $deductions = $usertimeService->checkTimeDate($deductions, $date);
+
+        return $deductions;
+    }
+
+    public function getRewardsAttribute( $date)
+    {
+        $rewards = Decision::where('type', 'reward')
+            ->where('user_id', $this->id);
+
+        $usertimeService = app(UsertimeService::class);
+        $rewards = $usertimeService->checkTimeDate($rewards, $date);
+
+        return $rewards;
+    }
+
+    public function getAdvancesAttribute( $date)
+    {
+        $advances = Decision::where('type', 'advance')
+            ->where('user_id', $this->id);
+
+        $usertimeService = app(UsertimeService::class);
+        $advances = $usertimeService->checkTimeDate($advances, $date);
+
+        return $advances;
+    }
+
 
     public function getDeductionAttribute($date)
     {
@@ -212,10 +250,20 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function Warnings()
-    {
-        return $this->hasMany(Decision::class, 'user_id', 'id')->where('type', 'warning');
-    }
+    // public function Warnings()
+    // {
+    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','warning');
+    // }
+
+    // public function  Deductions()
+    // {
+    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','deduction');
+    // }
+
+    // public function Rewards()
+    // {
+    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','reward');
+    // }
 
     public function penalties()
     {

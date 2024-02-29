@@ -102,6 +102,9 @@ class ReportController extends Controller
             'deposits',
             'department',
             'penalties',
+            // 'Warnings',
+            // 'Deductions',
+            // 'Rewards',
             'attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }
