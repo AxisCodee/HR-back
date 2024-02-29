@@ -161,7 +161,7 @@ public  function updateUser($user,$request)
                     $multi = Contact::where('user_id',$user->id);
                     $multi->update([
                         'type' => 'normal',
-                        'contact' => $contact['email'],
+                        'email' => $contact['email'],
                     ]);
                 }
             }
@@ -171,7 +171,7 @@ public  function updateUser($user,$request)
                     $multi = Contact::where('user_id',$user->id);
                     $multi->update([
                         'type' => 'normal',
-                        'contact' => $contact['phone'],
+                        'phone_num' => $contact['phone_num'],
                     ]);
                 }
             }
@@ -186,7 +186,7 @@ public  function updateUser($user,$request)
                             'type' => 'emergency',
                             'name' => $emergency['name'],
                             'address' => $emergency['address'],
-                            'phone_num' => $emergency['phonenumber'] ?? null,
+                            'phone_num' => $emergency['phone_num'] ?? null,
                             'email' => $emergency['email'] ?? null,
                         ]);
                     } else {
