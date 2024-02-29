@@ -18,22 +18,7 @@ class BranchSeeder extends Seeder
                 'name' => 'Branch 1',
                 'fingerprint_scanner_ip' => '192.168.2.202'
             ],
-            [
-                'name' => 'Branch 2',
-                'fingerprint_scanner_ip' => '192.168.2.202'
-            ],
-            [
-                'name' => 'Branch 3',
-                'fingerprint_scanner_ip' => '192.168.2.202'
-            ],
-            [
-                'name' => 'Branch 4',
-                'fingerprint_scanner_ip' => '192.168.2.202'
-            ],
-            [
-                'name' => 'Branch 5',
-                'fingerprint_scanner_ip' => '192.168.2.202'
-            ],
+          
         ];
 
 

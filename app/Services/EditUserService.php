@@ -87,6 +87,8 @@ public  function updateUser($user,$request)
             if($educations)
 {
             foreach ($educations as $education) {
+
+
                 $studies = StudySituation::where('user_id',$user->id);
                 $studies->update([
                     'degree' => $education['degree'],
