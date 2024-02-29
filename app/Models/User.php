@@ -146,7 +146,7 @@ if($date){
         $deductions = $usertimeService->checkTimeDates($deductions, $date);
         $total=$deductions->get();
         return $total;}
-        return 0;
+        return [];
     }
 
 
@@ -162,7 +162,7 @@ if($date){
 
         $total=$rewards->get();
         return $total;}
-        return 0;
+        return [];
     }
 
     public function getAdvancesAttribute()
@@ -176,7 +176,7 @@ if($date){
         $advances = $usertimeService->checkTimeDate($advances, $date);
         $total=$advances->get();
         return $total;}
-        return 0;
+        return [];
     }
 
     public function getWarningsAttribute()
@@ -191,7 +191,7 @@ if($date){
         $total=$warning->get();
         return $total;
     }
-        return 0;
+        return [];
     }
 
     public function getAlertsAttribute()
@@ -206,7 +206,7 @@ if($date){
         $total=$alert->get();
         return $total;
     }
-        return 0;
+        return [];
     }
 
     public function getAbsencesAttribute()
@@ -219,7 +219,7 @@ if($date){
 
         $total=$absences->get();
         return $total;}
-        return 0;
+        return [];
     }
 
 
