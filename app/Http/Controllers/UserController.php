@@ -82,7 +82,7 @@ class UserController extends Controller
                 'skills',
                 'phoneNumber',
                 'emails'
-                
+
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
@@ -215,9 +215,9 @@ class UserController extends Controller
     catch (\Exception $e) {
         return ResponseHelper::error($e->getMessage(), $e->getCode());
     }
+
+
     }
-
-
 
 //add team
     public function addTeams(StoreTeamRequest $request)

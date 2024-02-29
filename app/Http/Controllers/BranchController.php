@@ -39,6 +39,7 @@ class BranchController extends Controller
     public function store(StoreBranchRequest $request)
     {
         try {
+            
             $newbranch = $this->BranchService->store($request);
             return $newbranch;
         } catch (\Illuminate\Validation\ValidationException $e) {
