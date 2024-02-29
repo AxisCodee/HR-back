@@ -50,7 +50,7 @@ class AttendanceController extends Controller
     {
         try {
             return DB::transaction(function () {
-                //store the attendence
+                //store the attendance
                 $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
                 $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
                 $tad = $tad_factory->get_instance();
@@ -64,7 +64,7 @@ class AttendanceController extends Controller
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
                     $branch = User::where('pin', intval($log['PIN']))->first();
-                    if ($branch)
+                    if ($branch){
                         $attendance = [
                             'pin' => $log['PIN'],
                             'datetime' => $log['DateTime'],
@@ -73,7 +73,7 @@ class AttendanceController extends Controller
                             'status' => $log['Status'],
                             'work_code' => $log['WorkCode'],
                         ];
-                    Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+                    Attendance::updateOrCreate(['datetime' => $log['DateTime'],'branch_id'=>$branch->branch_id], $attendance);}
                     $date = date('Y-m-d', strtotime($log['DateTime']));
                     Date::updateOrCreate(['date' => $date]);
                     // the first of check the late

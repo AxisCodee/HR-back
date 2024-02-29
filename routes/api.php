@@ -103,6 +103,8 @@ Route::middleware('auth', 'admin')->group(function () {
             Route::delete('remove/{report}', 'remove');
             Route::post('InsnOuts', 'user_checks');
             Route::post('reportByDay', 'report');
+
+            Route::post('reviewsByDate', 'reviewsByDate');
         });
     });
 
