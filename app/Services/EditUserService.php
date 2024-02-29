@@ -73,8 +73,9 @@ public  function updateUser($user,$request)
                 'image' => $path?:$userInfo->image
             ]);
             $user->assignRole($request->role);
-            $sal= UserSalary::where('user_id',$user->id);
-            $sal->update([
+            $sal= UserSalary::
+            create([
+                'user_id'=>$user->id,
                 'date' => Carbon::now()->format('Y-m'),
                 'salary' => $request->salary?:$userInfo->salary
             ]);
@@ -90,7 +91,7 @@ public  function updateUser($user,$request)
             if($educations)
 {
             foreach ($educations as $education) {
-                $studies = StudySituation::where('user_id',$user->id);
+                $studies = StudySituation::find($education['id']);
                 $studies->update([
                     'degree' => $education['degree'],
                     'study' => $education['study'],
@@ -101,20 +102,23 @@ public  function updateUser($user,$request)
         {
 
             foreach ($certificates as $index => $certificate) {
-                $cerities = Certificate::where('user_id',$user->id);
-                $cerities->update([
-                    'user_id' => $user->id,
-                    'content' => $certificate['content'],
-                ]);
-            }
-        }
+                $cert = Certificate::find($certificate['id']);
+
+                if ($cert) {
+                    $cert->update([
+                        'user_id' => $user->id,
+                        'content' => $certificate['content'],
+                    ]);
+                }
+            }}
+
         if($languages)
 {
             foreach ($languages as $language) {
-                $oldLang = Language::where('user_id',$user->id);
+                $oldLang = Language::find($language['id']);
                 $oldLang->update(
                     [
-                        'languages' => $language['languages'],
+                    'languages' => $language['languages'],
                     'rate' => $language['rate']
                 ]);
             }
@@ -123,7 +127,7 @@ public  function updateUser($user,$request)
         {
 
             foreach ($skills as $skill) {
-                $oldSkill = Skills::where('user_id',$user->id);
+                $oldSkill = Skills::find($skill['id']);
                 $oldSkill->update([
                     'skills' => $skill['skills'],
                     'rate' => $skill['rate'],
@@ -149,7 +153,7 @@ public  function updateUser($user,$request)
             if($experiences)
             {
             foreach ($experiences as $experience) {
-                $new_exp = Career::where('user_id',$user->id);
+                $new_exp = Career::find($experience['id']);
                 $new_exp->update([
                     'content' => $experience['content'],
                 ]);
@@ -158,7 +162,7 @@ public  function updateUser($user,$request)
 
             if (isset($contacts['emails'][0])) {
                 foreach ($contacts['emails'] as $contact) {
-                    $multi = Contact::where('user_id',$user->id);
+                    $multi = Contact::find($contact['id']);
                     $multi->update([
                         'type' => 'normal',
                         'email' => $contact['email'],
@@ -168,7 +172,7 @@ public  function updateUser($user,$request)
 
             if (isset($contacts['phonenumbers'])) {
                 foreach ($contacts['phonenumbers'] as $contact) {
-                    $multi = Contact::where('user_id',$user->id);
+                    $multi = Contact::find($contact['id']);
                     $multi->update([
                         'type' => 'normal',
                         'phone_num' => $contact['phone_num'],
@@ -181,7 +185,7 @@ public  function updateUser($user,$request)
                 foreach ($emergency_contact as $emergency) {
                     if (isset($emergency['phonenumber']) || isset($emergency['email'])) {
 
-                        $contact = Contact::where('user_id',$user->id);
+                        $contact = Contact::find($emergency['id']);
                         $contact->update([
                             'type' => 'emergency',
                             'name' => $emergency['name'],
@@ -197,7 +201,7 @@ public  function updateUser($user,$request)
 if($secretaraits)
 {
             foreach ($secretaraits as $secretarait) {
-                $oldRecieved = Deposit::where('user_id',$user->id);
+                $oldRecieved = Deposit::find($secretarait['id']);
                 $oldRecieved->update([
                     'description' => $secretarait['object'],
                     'received_date' => $secretarait['delivery_date'],
