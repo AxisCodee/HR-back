@@ -80,6 +80,9 @@ class UserController extends Controller
                 'emergency',
                 'absences',
                 'skills',
+                'phoneNumber',
+                'emails'
+                
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }

@@ -34,8 +34,7 @@ class StoreUserRequest extends FormRequest
             'birth_date' => ['required', 'date', 'before:today', 'date_format:Y-m-d'],
             'nationalID' => ['required', 'numeric', 'digits:11'],
             'health_status' => ['required', 'string', 'max:250'],
-            'gender' => ['required', 'string', 'in:male,female'],
-            'military_situation' => ['required', 'string', 'in:Postponed,Exempt,Finished'],
+            'gender' => ['required', 'string', 'in:Male,Female'],
             'social_situation' => ['required', 'string', 'in:Single,Married'],
             'specialization' => ['required', 'string'],
             'additional_files', 'emergency_contact' => ['nullable', 'array'],
@@ -61,7 +60,7 @@ class StoreUserRequest extends FormRequest
             'contacts.emails' => ['nullable', 'array'],
             'contacts.emails.*.email' => ['nullable','email', 'string'],
             'contacts.phonenumbers' => ['array'],
-            'contacts.phonenumbers.*.phone' => ['numeric', 'digits:10'],
+            'contacts.phonenumbers.*.phone_num' => ['numeric', 'digits:10'],
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
         ];
     }

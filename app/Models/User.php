@@ -228,6 +228,17 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Contact::class, 'user_id', 'id');
     }
+    public function phoneNumber()
+    {
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+        ->whereNotNull('phone_num');
+    }
+
+    public function emails()
+    {
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+        ->whereNotNull('email');
+    }
     public function emergency()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
@@ -308,5 +319,10 @@ class User extends Authenticatable implements JWTSubject
     public function reports()
     {
         return $this->hasMany(Report::class, 'user_id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class,'branch_id');
     }
 }
