@@ -154,13 +154,15 @@ class User extends Authenticatable implements JWTSubject
 
     public function getAbsencesAttribute()
     {        $date = request()->query('date');
+        if($date){
         $absences = Absences::where('user_id', $this->id)->where('type', 'Unjustified');
 
         $usertimeService = app(UsertimeService::class);
         $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
 
         $total=$absences->get();
-        return $total;
+        return $total;}
+        return 0;
     }
 
 
