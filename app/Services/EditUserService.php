@@ -57,7 +57,6 @@ public  function updateUser($user,$request)
             }
 
             $userInfo = UserInfo::where('user_id',$user->id)->first();
-
            $userInfo->update([
                 'salary' => $request->salary?:$userInfo->salary,
                 'birth_date' => $request->birth_date?:$userInfo->birth_date,
@@ -70,8 +69,8 @@ public  function updateUser($user,$request)
                 'image' => $path?:$userInfo->image
             ]);
             $user->assignRole($request->role);
-            $sal= UserSalary::where('user_id',$user->id);
-            $sal->update([
+            $sal= UserSalary::create([
+                'user_id'=>$user->id,
                 'date' => Carbon::now()->format('Y-m'),
                 'salary' => $request->salary?:$userInfo->salary
             ]);
@@ -85,102 +84,207 @@ public  function updateUser($user,$request)
             $secretaraits = $request->secretaraits;
             $emergency_contact = $request->emergency_contact;
             if($educations)
-{
+
             foreach ($educations as $education) {
 
-
-                $studies = StudySituation::where('user_id',$user->id);
+                $studies = StudySituation::find($education['id']);
+                if($studies){
                 $studies->update([
                     'degree' => $education['degree'],
                     'study' => $education['study'],
                 ]);
             }
-        }
-        if($certificates)
-        {
+ else
+ {
+StudySituation::create(
+                [
+                    'degree' => $education['degree'],
+                    'study' => $education['study'],
 
-            foreach ($certificates as $index => $certificate) {
-                $cerities = Certificate::where('user_id',$user->id);
-                $cerities->update([
-                    'user_id' => $user->id,
-                    'content' => $certificate['content'],
-                ]);
+                ]
+                );
+
+
             }
         }
-        if($languages)
+
+                if($certificates)
+{
+
+            foreach ($certificates as $index => $certificate) {
+                $cert = Certificate::find($certificate['id']);
+
+                if ($cert) {
+                    $cert->update([
+                        'content' => $certificate['content'],
+                    ]);
+                }
+                else
+                {
+                    Certificate::create(
+                    [
+                        'user_id' => $user->id,
+                        'content' => $certificate['content'],
+
+                    ]);
+                }
+            }}
+
+
+         if($languages)
 {
             foreach ($languages as $language) {
-                $oldLang = Language::where('user_id',$user->id);
+                $oldLang = Language::find($language['id']);
+                if($oldLang)
+                {
+
+
                 $oldLang->update(
                     [
-                        'languages' => $language['languages'],
+                    'languages' => $language['languages'],
                     'rate' => $language['rate']
                 ]);
             }
+            else
+            {
+                Language::create(
+                    [
+                        'languages' => $language['languages'],
+                        'rate' => $language['rate']
+
+                    ]
+                    );
+
         }
+    }
+}
         if($skills)
         {
 
             foreach ($skills as $skill) {
-                $oldSkill = Skills::where('user_id',$user->id);
+                $oldSkill = Skills::find($skill['id']);
+                if($oldSkill)
+                {
                 $oldSkill->update([
                     'skills' => $skill['skills'],
                     'rate' => $skill['rate'],
 
                 ]);
             }
+            else
+            {
+            Skills::create(
+        [
+                'skills' => $skill['skills'],
+                'rate' => $skill['rate'],
+        ]
+        );
+    }
         }
-
-
+    }
             if ($request->additional_files) {
                 foreach ($request->additional_files as $file) {
                     (function ($file) use ($user) {
                         $filepath = null;
                         $filepath = Files::saveFileF($file['file']);
-                        $oldAdd_file = AdditionalFile::where('user_id',$user->id);
+                        $oldAdd_file = AdditionalFile::where('id',$file['id']);
+                        if($oldAdd_file)
+                        {
                         $oldAdd_file->update([
                             'description' => $file['description'],
                             'path' => $filepath,
                         ]);
+                    }
+                    else
+                    {
+                        AdditionalFile::create(
+                            [
+                                'description' => $file['description'],
+                                'path' => $filepath,
+
+                            ]
+                            );
+
+                    }
                     })($file);
-                }
+
+            }
             }
             if($experiences)
             {
             foreach ($experiences as $experience) {
-                $new_exp = Career::where('user_id',$user->id);
+                $new_exp = Career::find($experience['id']);
+                if($new_exp)
+                {
                 $new_exp->update([
                     'content' => $experience['content'],
                 ]);
             }
+
+        else
+        {
+            Career::create(
+                [
+                    'content' => $experience['content'],
+                ]
+                );
         }
+        }
+    }
 
             if (isset($contacts['emails'][0])) {
                 foreach ($contacts['emails'] as $contact) {
-                    $multi = Contact::where('user_id',$user->id);
-                    $multi->update([
+                    $multi = Contact::find($contact['id']);
+                    if($multi)
+                    {
+                    $multi->update(
+                        [
                         'type' => 'normal',
                         'email' => $contact['email'],
                     ]);
                 }
+
+            else
+            {
+                Contact::create(
+                    [
+                        'type' => 'normal',
+                        'email' => $contact['email'],
+                    ]);
             }
+        }
+    }
 
             if (isset($contacts['phonenumbers'])) {
                 foreach ($contacts['phonenumbers'] as $contact) {
-                    $multi = Contact::where('user_id',$user->id);
+                    $multi = Contact::find($contact['id']);
+                    if($multi)
+                    {
                     $multi->update([
                         'type' => 'normal',
                         'phone_num' => $contact['phone_num'],
                     ]);
                 }
+
+            else
+            {
+                Contact::create([
+                    'type' => 'normal',
+                    'phone_num' => $contact['phone_num'],
+                ]);
+
             }
+            }
+        }
 
             if ($request->emergency_contact) {
 
                 foreach ($emergency_contact as $emergency) {
                     if (isset($emergency['phonenumber']) || isset($emergency['email'])) {
 
-                        $contact = Contact::where('user_id',$user->id);
+                        $contact = Contact::find($emergency['id']);
+                        if( $contact)
+                        {
                         $contact->update([
                             'type' => 'emergency',
                             'name' => $emergency['name'],
@@ -188,30 +292,57 @@ public  function updateUser($user,$request)
                             'phone_num' => $emergency['phone_num'] ?? null,
                             'email' => $emergency['email'] ?? null,
                         ]);
-                    } else {
-                        throw new Exception("Emergency contact must have either a phone number or an email.");
                     }
+                    else
+                    {
+                        Contact::create(      [ 'type' => 'emergency',
+                        'name' => $emergency['name'],
+                        'address' => $emergency['address'],
+                        'phone_num' => $emergency['phone_num'] ?? null,
+                        'email' => $emergency['email'] ?? null,
+                    ]);
+                }
+            }
+
+             
                 }
             }
 if($secretaraits)
 {
             foreach ($secretaraits as $secretarait) {
-                $oldRecieved = Deposit::where('user_id',$user->id);
+                $oldRecieved = Deposit::find($secretarait['id']);
+                if($oldRecieved)
+                {
                 $oldRecieved->update([
                     'description' => $secretarait['object'],
                     'received_date' => $secretarait['delivery_date'],
                 ]);
             }
+
+        else
+        {
+            Deposit::create(
+                [
+                    'description' => $secretarait['object'],
+                    'received_date' => $secretarait['delivery_date'],
+                ]);
+
+
         }
-$result='user updated successfully';
+        }
+    }
+
+        $result='user updated successfully';
        return $result;
+
         });
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        // Handle the validation exception and return an error response with the validation errors
-        $errorMessage = $e->validator->errors()->first();
-        return $errorMessage;
-    } catch (\Exception $e) {
-        // Handle other exceptions and return an error response
+    }
+ catch (\Illuminate\Validation\ValidationException $e) {
+      //  Handle the validation exception and return an error response with the validation errors
+       $errorMessage = $e->validator->errors()->first();
+       return $errorMessage;
+   } catch (\Exception $e) {
+       // Handle other exceptions and return an error response
         $exception=[
             'message'=>$e->getMessage(),
             'code'=> $e->getCode()
@@ -219,6 +350,10 @@ $result='user updated successfully';
         return $exception;
     }
 }
-
 }
+
+
+
+
+
 
