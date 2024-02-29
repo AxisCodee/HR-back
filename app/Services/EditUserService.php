@@ -91,6 +91,7 @@ public  function updateUser($user,$request)
             if($educations)
 {
             foreach ($educations as $education) {
+              
                 $studies = StudySituation::find($education['id']);
                 $studies->update([
                     'degree' => $education['degree'],
@@ -211,12 +212,12 @@ if($secretaraits)
 $result='user updated successfully';
        return $result;
         });
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        // Handle the validation exception and return an error response with the validation errors
-        $errorMessage = $e->validator->errors()->first();
-        return $errorMessage;
-    } catch (\Exception $e) {
-        // Handle other exceptions and return an error response
+   } catch (\Illuminate\Validation\ValidationException $e) {
+      //  Handle the validation exception and return an error response with the validation errors
+       $errorMessage = $e->validator->errors()->first();
+       return $errorMessage;
+   } catch (\Exception $e) {
+       // Handle other exceptions and return an error response
         $exception=[
             'message'=>$e->getMessage(),
             'code'=> $e->getCode()
@@ -224,6 +225,8 @@ $result='user updated successfully';
         return $exception;
     }
 }
-
 }
+
+
+
 
