@@ -19,9 +19,10 @@ class StoreReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => ['required','string', 'between:10,255'],
+            'content' => ['required', 'string', 'between:10,255'],
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();

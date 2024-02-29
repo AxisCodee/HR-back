@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\ReportRequest\StoreReportRequest;
 use App\Models\Attendance;
+use App\Models\Rate;
+use App\Models\RateType;
 use App\Models\Report;
 use App\Models\User;
 use Carbon\Carbon;
@@ -19,16 +21,18 @@ class ReportController extends Controller
         $validate = $request->validated();
         $new_report = Report::create([
             'user_id' => Auth::id(),
-            'content' => $request->content,
+            'content' => $validate->content,
         ]);
         return ResponseHelper::success($new_report, null, 'report created successfully', 200);
     }
+
     //remove existing report by a specific user
     public function remove($id)
     {
         $remove = Report::findorFail($id)->delete();
         return ResponseHelper::success($remove, null, 'report removed successfully', 200);
     }
+
     //get all user's reports
     public function my_reports()
     {
@@ -54,6 +58,7 @@ class ReportController extends Controller
         $today = $user->reports()->whereDate('created_at', now()->format('Y-m-d'))->get()->toArray();
         return ResponseHelper::success($today, null, 'today reports returned successfully', 200);
     }
+
     //get CHECK-INs & CHECK-OUTs of a user in a specific day
     public function user_checks(Request $request)
     {
