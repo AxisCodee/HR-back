@@ -110,4 +110,27 @@ class UsertimeService
         return $lates;
     }
 
+
+    public function checkTimeDates($lates, $date)
+{
+    if ($date) {
+        $year = substr($date, 0, 4);
+        $month = substr($date, 5, 2);
+        $day = substr($date, 8, 2);
+
+        if ($day && $month && $year) {
+            $lates->whereYear('dateTime', $year)
+                ->whereMonth('dateTime', $month)
+                ->whereDay('dateTime', $day);
+        } elseif ($month && $year) {
+            $lates->whereYear('dateTime', $year)
+                ->whereMonth('dateTime', $month);
+        } elseif ($year) {
+            $lates->whereYear('dateTime', $year);
+        }
+    }
+
+    return $lates;
+}
+
 }
