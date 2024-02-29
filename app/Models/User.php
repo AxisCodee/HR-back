@@ -76,6 +76,7 @@ class User extends Authenticatable implements JWTSubject
             ->getOverTime($this, $date);
         return $totalOverTimeHours;
     }
+
     public function getLateAttribute()
     {
         $date = request()->query('date');
@@ -83,6 +84,7 @@ class User extends Authenticatable implements JWTSubject
             ->getLate($this, $date);
         return $totalLateHours;
     }
+
     public function getRateAttribute($value) //not ready
     {
         $date = request()->query('date');
@@ -96,6 +98,7 @@ class User extends Authenticatable implements JWTSubject
         }
         return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
     }
+
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
@@ -103,6 +106,7 @@ class User extends Authenticatable implements JWTSubject
             ->getAdvance($this, $date);
         return $totalAdvance;
     }
+
     public function getDeductionAttribute($date)
     {
         $date = request()->query('date');
@@ -110,6 +114,7 @@ class User extends Authenticatable implements JWTSubject
             ->getDeduction($this, $date);
         return $totalDeduction;
     }
+
     public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');
@@ -117,6 +122,7 @@ class User extends Authenticatable implements JWTSubject
             ->getAbsence($this, $date);
         return $totalAbsence;
     }
+
     public function getRewardAttribute()
     {
         $date = request()->query('date');
@@ -124,6 +130,7 @@ class User extends Authenticatable implements JWTSubject
             ->getReward($this, $date);
         return $totalReward;
     }
+
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
@@ -131,6 +138,7 @@ class User extends Authenticatable implements JWTSubject
             ->getCheckInPercentage($this, $date);
         return $percentage;
     }
+
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
@@ -138,6 +146,7 @@ class User extends Authenticatable implements JWTSubject
             ->getCheckOutPercentage($this, $date);
         return $percentage;
     }
+
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
@@ -145,25 +154,28 @@ class User extends Authenticatable implements JWTSubject
             $salary = UserSalary::where('user_id', $this->id)
                 ->where('date', '<=', $date)
                 ->get();
-
             $baseSalary = $salary->isEmpty() ? 0 : $salary->last()->salary;
             return $baseSalary;
         } else {
             return 0;
         }
     }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
+
     public function attendance()
     {
         return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
     }
+
     public function my_files()
     {
         return $this->hasMany(AdditionalFile::class, 'user_id', 'id');
     }
+
     public function skills()
     {
         return $this->hasMany(Skills::class, 'user_id');
@@ -202,7 +214,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function Warnings()
     {
-        return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','warning');
+        return $this->hasMany(Decision::class, 'user_id', 'id')->where('type', 'warning');
     }
 
     public function penalties()
@@ -229,22 +241,23 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-
     public function my_contacts()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id');
     }
+
     public function phoneNumber()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
-        ->whereNotNull('phone_num');
+            ->whereNotNull('phone_num');
     }
 
     public function emails()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
-        ->whereNotNull('email');
+            ->whereNotNull('email');
     }
+
     public function emergency()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
@@ -283,8 +296,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function isAdmin()
     {
-        if(Auth()->user()->role == 'admin')
-        return  true;
+        if (Auth()->user()->role == 'admin')
+            return true;
         else  return false;
     }
 
@@ -322,6 +335,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(EmpOfMonth::class);
     }
+
     public function reports()
     {
         return $this->hasMany(Report::class, 'user_id');
@@ -329,6 +343,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function branch()
     {
-        return $this->belongsTo(Branch::class,'branch_id');
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }
