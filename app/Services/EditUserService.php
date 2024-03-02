@@ -34,12 +34,9 @@ class EditUserService
 public  function updateUser($user,$request)
 {
 
-    try {
-        //$validate = $request->validated();
+     try {
+         //$validate = $request->validated();
         return DB::transaction(function () use ($request ,$user) {
-
-
-
            $result= $user->update([
                 'first_name' => $request->first_name?:$user->first_name,
                 'middle_name' => $request->middle_name?:$user->middle_name,
@@ -60,26 +57,27 @@ public  function updateUser($user,$request)
             }
 
             $userInfo = UserInfo::where('user_id',$user->id)->first();
-
            $userInfo->update([
-                'salary' => $request->salary?:$userInfo->salary,
-                'birth_date' => $request->birth_date?:$userInfo->birth_date,
-                'gender' => $request->gender?:$userInfo->gender,
-                'nationalID' => $request->nationalID?:$userInfo->nationalID,
-                'social_situation' => $request->social_situation?:$userInfo->social_situation,
-                'level' => $request->level?:$userInfo->level,
-                'military_situation' => $request->military_situation?:$userInfo->military_situation,
-                'health_status' => $request->health_status?:$userInfo->health_status,
+                'salary' => $request->salary,
+                'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
+                'nationalID' => $request->nationalID,
+                'social_situation' => $request->social_situation,
+                'level' => $request->level,
+                'military_situation' => $request->military_situation,
+                'health_status' => $request->health_status,
                 'image' => $path?:$userInfo->image
             ]);
+            if($request->role)
+            {
             $user->assignRole($request->role);
-            $sal= UserSalary::
-            create([
+            }
+
+            $sal= UserSalary::create([
                 'user_id'=>$user->id,
                 'date' => Carbon::now()->format('Y-m'),
                 'salary' => $request->salary?:$userInfo->salary
             ]);
-
             $educations = $request->educations;
             $certificates = $request->certificates;
             $languages = $request->languages;
@@ -88,63 +86,74 @@ public  function updateUser($user,$request)
             $contacts = $request->contacts;
             $secretaraits = $request->secretaraits;
             $emergency_contact = $request->emergency_contact;
+
+            $studies = StudySituation::where('user_id',$user->id)->delete();
+            $cerities = Certificate::where('user_id',$user->id)->delete();
+            $language = Language::where('user_id',$user->id)->delete();
+            $skill = Skills::where('user_id',$user->id)->delete();
+            $add_file = AdditionalFile::where('user_id',$user->id)->delete();
+            $new_exp = Career::where('user_id',$user->id)->delete();
+            $multi = Contact::where('user_id',$user->id)->delete();
+            $received = Deposit::where('user_id',$user->id)->delete();
+
             if($educations)
-{
+            {
             foreach ($educations as $education) {
-              
-                $studies = StudySituation::find($education['id']);
-                $studies->update([
+                if (isset($education['degree']) && isset($education['study'])) {
+
+                $studies = StudySituation::query()->create([
                     'degree' => $education['degree'],
                     'study' => $education['study'],
-                ]);
+                    'user_id' => $user->id,
+                ]);}
             }
+
         }
         if($certificates)
         {
 
             foreach ($certificates as $index => $certificate) {
-                $cert = Certificate::find($certificate['id']);
-
-                if ($cert) {
-                    $cert->update([
+                if (isset($certificate['content'])) {
+                    $cerities = Certificate::query()->create([
                         'user_id' => $user->id,
                         'content' => $certificate['content'],
                     ]);
                 }
-            }}
-
+            }
+        }
         if($languages)
-{
+        {
+
             foreach ($languages as $language) {
-                $oldLang = Language::find($language['id']);
-                $oldLang->update(
-                    [
+                if (isset($language['languages']) && isset($language['rate'])) {
+
+                $language = Language::query()->create([
                     'languages' => $language['languages'],
-                    'rate' => $language['rate']
-                ]);
+                    'rate' => $language['rate'],
+                    'user_id' => $user->id,
+                ]);}
             }
         }
         if($skills)
         {
-
             foreach ($skills as $skill) {
-                $oldSkill = Skills::find($skill['id']);
-                $oldSkill->update([
+                if (isset($skill['skills']) && isset($skill['rate'])) {
+
+                $skill = Skills::query()->create([
                     'skills' => $skill['skills'],
                     'rate' => $skill['rate'],
-
-                ]);
+                    'user_id' => $user->id,
+                ]);}
             }
         }
-
 
             if ($request->additional_files) {
                 foreach ($request->additional_files as $file) {
                     (function ($file) use ($user) {
                         $filepath = null;
                         $filepath = Files::saveFileF($file['file']);
-                        $oldAdd_file = AdditionalFile::where('user_id',$user->id);
-                        $oldAdd_file->update([
+                        $add_file = AdditionalFile::query()->create([
+                            'user_id' => $user->id,
                             'description' => $file['description'],
                             'path' => $filepath,
                         ]);
@@ -154,17 +163,20 @@ public  function updateUser($user,$request)
             if($experiences)
             {
             foreach ($experiences as $experience) {
-                $new_exp = Career::find($experience['id']);
-                $new_exp->update([
-                    'content' => $experience['content'],
-                ]);
+                if (isset($experience['content'])) {
+                    $new_exp = Career::query()->create([
+                        'user_id' => $user->id,
+                        'content' => $experience['content'],
+                    ]);
+                }
             }
         }
 
+
             if (isset($contacts['emails'][0])) {
                 foreach ($contacts['emails'] as $contact) {
-                    $multi = Contact::find($contact['id']);
-                    $multi->update([
+                    $multi = Contact::create([
+                        'user_id' => $user->id,
                         'type' => 'normal',
                         'email' => $contact['email'],
                     ]);
@@ -173,8 +185,8 @@ public  function updateUser($user,$request)
 
             if (isset($contacts['phonenumbers'])) {
                 foreach ($contacts['phonenumbers'] as $contact) {
-                    $multi = Contact::find($contact['id']);
-                    $multi->update([
+                    $multi = Contact::create([
+                        'user_id' => $user->id,
                         'type' => 'normal',
                         'phone_num' => $contact['phone_num'],
                     ]);
@@ -185,10 +197,9 @@ public  function updateUser($user,$request)
 
                 foreach ($emergency_contact as $emergency) {
                     if (isset($emergency['phonenumber']) || isset($emergency['email'])) {
-
-                        $contact = Contact::find($emergency['id']);
-                        $contact->update([
-                            'type' => 'emergency',
+                        $contact = Contact::query()->create([
+                            'user_id' => $user->id,
+                            'type' => "emergency",
                             'name' => $emergency['name'],
                             'address' => $emergency['address'],
                             'phone_num' => $emergency['phone_num'] ?? null,
@@ -199,33 +210,43 @@ public  function updateUser($user,$request)
                     }
                 }
             }
-if($secretaraits)
-{
+
+
+            if ($request->secretaraits) {
+
             foreach ($secretaraits as $secretarait) {
-                $oldRecieved = Deposit::find($secretarait['id']);
-                $oldRecieved->update([
-                    'description' => $secretarait['object'],
-                    'received_date' => $secretarait['delivery_date'],
-                ]);
+                if (isset($secretarait['delivery_date']) && isset($secretarait['object'])) {
+                    $received = Deposit::query()->create([
+                        'user_id' => $user->id,
+                        'description' => $secretarait['object'],
+                        'received_date' => $secretarait['delivery_date'],
+                    ]);}}
             }
-        }
-$result='user updated successfully';
-       return $result;
-        });
-   } catch (\Illuminate\Validation\ValidationException $e) {
-      //  Handle the validation exception and return an error response with the validation errors
-       $errorMessage = $e->validator->errors()->first();
-       return $errorMessage;
-   } catch (\Exception $e) {
-       // Handle other exceptions and return an error response
-        $exception=[
-            'message'=>$e->getMessage(),
-            'code'=> $e->getCode()
-        ];
-        return $exception;
-    }
+            $result='updated successfully';
+
+            return $result;
+
+    //         return ResponseHelper::success('updated successfully');
+       });
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        // Handle the validation exception and return an error response with the validation errors
+        $errorMessage = $e->validator->errors()->first();
+        return ResponseHelper::error($errorMessage, null);
+    } catch (\Exception $e) {
+        // Handle other exceptions and return an error response
+        return ResponseHelper::error($e->getMessage(), $e->getCode());
+   }
 }
 }
+
+
+
+
+
+
+
+
+
 
 
 

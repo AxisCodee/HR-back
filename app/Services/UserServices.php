@@ -128,6 +128,18 @@ class UserServices
         return $totalDeduction;
     }
 
+    public function getDeductions($user, $date)
+    {
+        $deductions = Decision::where('type', 'deduction')
+            ->where('user_id', $user->id);
+
+        $usertimeService = app(UsertimeService::class);
+        $deductions = $usertimeService->checkTimeDate($deductions, $date);
+
+      //  $totalDeduction = $deductions->sum('amount');
+
+        return $deductions;
+    }
     public function getAdvance($user, $date)
     {
         $advance = Decision::where('type', 'advanced')
