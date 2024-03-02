@@ -102,6 +102,7 @@ class ReportController extends Controller
             'deposits',
             'department',
             'penalties',
+            'rates',
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',

@@ -60,7 +60,8 @@ class User extends Authenticatable implements JWTSubject
         'BaseSalary',
         'deductions',
         'rewards',
-        'advances'
+        'advances',
+        'rates'
     ];
     protected $hidden = [
         'password',
@@ -88,18 +89,13 @@ class User extends Authenticatable implements JWTSubject
         return $totalLateHours;
     }
 
-    public function getRateAttribute($value) //not ready
+    public function getRatesAttribute() //not ready
     {
         $date = request()->query('date');
         if ($date) {
-            // $lates = Late::whereNotNull('check_out')
-            // ->whereMonth('lateDate', date('m', strtotime($date)))
-            //     ->whereYear('lateDate', date('Y', strtotime($date)))
-            //     ->where('user_id', $this->id)
-            //     ->sum('hours_num');
-            // return $lates;
+            return $this->userServices->getRates($date, $this);
         }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
+        return 0;
     }
 
     public function getAdvanceAttribute()
@@ -111,7 +107,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function getDeductionsAttribute( $date)
+    public function getDeductionsAttribute($date)
     {
         $deductions = Decision::where('type', 'deduction')
             ->where('user_id', $this->id);
@@ -122,7 +118,7 @@ class User extends Authenticatable implements JWTSubject
         return $deductions;
     }
 
-    public function getRewardsAttribute( $date)
+    public function getRewardsAttribute($date)
     {
         $rewards = Decision::where('type', 'reward')
             ->where('user_id', $this->id);
@@ -133,14 +129,12 @@ class User extends Authenticatable implements JWTSubject
         return $rewards;
     }
 
-    public function getAdvancesAttribute( $date)
+    public function getAdvancesAttribute($date)
     {
         $advances = Decision::where('type', 'advance')
             ->where('user_id', $this->id);
-
         $usertimeService = app(UsertimeService::class);
         $advances = $usertimeService->checkTimeDate($advances, $date);
-
         return $advances;
     }
 
@@ -239,7 +233,7 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function roles()
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -276,7 +270,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UserSalary::class, 'user_id');
     }
 
-    public function permissions()
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Permission::class);
     }
