@@ -104,7 +104,7 @@ Route::middleware('auth', 'admin')->group(function () {
             Route::post('InsnOuts', 'user_checks');
             Route::post('reportByDay', 'report');
 
-            Route::post('reviewsByDate', 'reviewsByDate');
+            Route::post('ratesByDate', 'ratesByDate');
         });
     });
 

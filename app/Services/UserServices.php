@@ -136,10 +136,11 @@ class UserServices
         $usertimeService = app(UsertimeService::class);
         $deductions = $usertimeService->checkTimeDate($deductions, $date);
 
-      //  $totalDeduction = $deductions->sum('amount');
+        //  $totalDeduction = $deductions->sum('amount');
 
         return $deductions;
     }
+
     public function getAdvance($user, $date)
     {
         $advance = Decision::where('type', 'advanced')
@@ -200,50 +201,6 @@ class UserServices
         $all_users = User::query()->where('branch_id', $branch_id)->whereNot('role', 'admin')
             ->with('department', 'userInfo:id,user_id,image')->whereNull('deleted_at')->get()->toArray();
         return $all_users;
-    }
-
-    function checkDateFormat($date)
-    {
-        try {
-            Carbon::createFromFormat('Y', $date);
-            return 'Year';
-        } catch (\Exception $e) {
-            try {
-                Carbon::createFromFormat('Y-m', $date);
-                return 'Year and Month';
-            } catch (\Exception $e) {
-                return 'Invalid format';
-            }
-        }
-    }
-
-    public function getRates($user, $date)
-    {
-        $user_id = $user->id;
-        $branch_id = User::where('id', $user_id)->first()->branch_id;
-        $rateTypes = RateType::where('branch_id', $branch_id)->get();
-        $userRates = [];
-        $year = substr($date, 0, 4);
-        $month = substr($date, 5, 2);
-        if (!$month) {
-            foreach ($rateTypes as $rateType) {
-                $userRate = Rate::query()->where('user_id', $user_id)
-                    ->whereYear('date', $date)
-                    ->where('rate_type_id', $rateType->id)
-                    ->get();
-                $userRates[] = $userRate;
-            }
-        } else {
-            foreach ($rateTypes as $rateType) {
-                $userRate = Rate::query()->where('user_id', $user_id)
-                    ->whereYear('date', $year)
-                    ->whereMonth('date', $month)
-                    ->where('rate_type_id', $rateType->id)
-                    ->get();
-                $userRates[] = $userRate;
-            }
-        }
-        return $userRates;
     }
 
 }

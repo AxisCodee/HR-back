@@ -102,7 +102,6 @@ class ReportController extends Controller
             'deposits',
             'department',
             'penalties',
-            'rates',
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',
@@ -114,4 +113,26 @@ class ReportController extends Controller
             $result
         ]);
     }
+
+    public function ratesByDate(Request $request)
+    {
+        $user = Auth::user();
+        $date = $request->date;
+        $result = $user->userRates($date);
+        $ratesWithAverage = $result->map(function ($rates, $key) {
+            $rateSum = $rates->sum('rate');
+            $rateCount = $rates->count();
+            $averageRate = $rateSum / $rateCount;
+            return [
+                $key => $averageRate,
+            ];
+        });
+        $formattedData = [];
+        foreach ($ratesWithAverage as $rateType => $data) {
+            $formattedData[] = $data;
+        }
+        return ResponseHelper::success($formattedData);
+    }
+
+
 }
