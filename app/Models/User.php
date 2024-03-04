@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -402,17 +403,10 @@ class User extends Authenticatable implements JWTSubject
     //     return $this->getRoleNames()->first();
     // }
 
-    public function userRates($date)
+
+    public function userRates()
     {
-        return $this->hasMany(Rate::class, 'user_id')
-            ->join('rate_types', 'rates.rate_type_id', '=', 'rate_types.id')
-            ->whereRaw("SUBSTRING(date, 1, 4) = ?", [$date])
-            ->orWhere(function ($query) use ($date) {
-                $query->whereRaw("SUBSTRING(date, 1, 7) = ?", [$date])
-                    ->whereRaw("SUBSTRING(date, 1, 7) = ?", [$date]);
-            })
-            ->get(['rate_types.rate_type', 'rates.*'])
-            ->groupBy('rate_type');
+        return $this->hasMany(Rate::class, 'user_id');
     }
 
 
