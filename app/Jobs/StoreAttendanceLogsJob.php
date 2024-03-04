@@ -97,22 +97,23 @@ class StoreAttendanceLogsJob implements ShouldQueue
                             ->whereNull('check_in')
                             ->whereNull('check_out')
                             ->first();
-                        if (!$lates) {
-                            $newLateData = [
-                                'user_id' => $userId,
-                                'lateDate' => $checkInDate,
-                                'check_in' => $log['Status'] == 0 ? $checkInHour : null,
-                                'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                                'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
-                            ];
-                            if ($userId) {
-                                $newLate = Late::updateOrCreate(['lateDate' => $newLateData['lateDate']],$newLateData);
+                            if (empty($lates)) {
+                                $newLateData = [
+                                    'user_id' => $userId,
+                                    'lateDate' => $checkInDate,
+                                    'check_in' => $log['Status'] == 0 ? $checkInHour : null,
+                                    'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
+                                    'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
+                                ];
+
+                                if ($userId) {
+                                    $newLate = Late::updateOrCreate(['lateDate' => $newLateData['lateDate']], $newLateData);
+                                }
+                            } else {
+                                $lates->update([
+                                    'check_in' => $checkInHour,
+                                ]);
                             }
-                        } else {
-                            $lates->update([
-                                'check_in' => $checkInHour,
-                            ]);
-                        }
                     }
                     // $numberOfHour = $lates->hours_num;
                     // if ($hoursLate > $numberOfHour) {
