@@ -106,7 +106,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                                 'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
                             ];
                             if ($userId) {
-                                $newLate = Late::query()->updateOrCreate($newLateData);
+                                $newLate = Late::query()->updateOrCreate([$newLateData],[$checkInHour]);
                             }
                         } else {
                             $lates->update([
