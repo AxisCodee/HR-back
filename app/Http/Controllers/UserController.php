@@ -31,13 +31,12 @@ class UserController extends Controller
 {
 
 
-
     private $roleService;
     private $teamService;
     protected $userService;
     protected $editUserService;
 
-    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService,EditUserService $editUserService )
+    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService, EditUserService $editUserService)
     {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
@@ -60,6 +59,7 @@ class UserController extends Controller
             ->with('userInfo:id,user_id,image')->get()->toArray();
         return ResponseHelper::success($all_users, null, 'all users without departments', 200);
     }
+
     //get a specific user by the ID
     public function specific_user($id)
     {
@@ -86,6 +86,7 @@ class UserController extends Controller
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
+
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
@@ -93,18 +94,21 @@ class UserController extends Controller
         $result = $this->userService->editUser($request, $id);
         return $result;
     }
+
     //remove a user from a team
     public function removeFromTeam($id)
     {
         $result = $this->teamService->remove_from_team($id);
         return $result;
     }
+
     //delete a specific user by his id
     public function remove_user($user)
     {
         $remove_user = User::findOrFail($user)->delete();
         return ResponseHelper::deleted('user removed successfully');
     }
+
     //get all teams with their users
     public function getTeams(Request $request)
     {
@@ -112,6 +116,7 @@ class UserController extends Controller
         $result = $this->teamService->getTeams($branchId);
         return $result;
     }
+
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
@@ -132,6 +137,7 @@ class UserController extends Controller
         $result = $this->teamService->updateTeams($request, $id);
         return $result;
     }
+
     //delete an exisiting team
     public function deleteTeam($id)
     {
@@ -142,12 +148,14 @@ class UserController extends Controller
             return ResponseHelper::error('Team does not exist');
         }
     }
+
     //get all members of a team
     public function getMemberOfTeam(Department $department)
     {
         $members = $department->users()->get()->toArray();
         return ResponseHelper::success($members);
     }
+
     //add new contact to a user
     public function new_contact(StoreContactRequest $request)
     {
@@ -159,6 +167,7 @@ class UserController extends Controller
         ]);
         return ResponseHelper::created($new_contact, 'contact added successfully');
     }
+
     //edit contact of a user
     public function edit_contact($id, UpdateContactRequest $request)
     {
@@ -167,12 +176,14 @@ class UserController extends Controller
         $edited = $edit->update($validate);
         return ResponseHelper::updated($edit, 'contact edited successfully');
     }
+
     //delete contact of a user
     public function delete_contact($id)
     {
         $delete = Contact::findOrFail($id)->delete();
         return ResponseHelper::deleted('contact deleted successfully');
     }
+
     //get all departments and rules
     public function all_dep_rul()
     {
@@ -195,26 +206,22 @@ class UserController extends Controller
 
     public function not_admin(Request $request)
     {
-        $branch_id =  $request->input('branch_id');
-        $notadmin =  $this->userService->except_admins($branch_id);
+        $branch_id = $request->input('branch_id');
+        $notadmin = $this->userService->except_admins($branch_id);
         return ResponseHelper::success($notadmin, 'all users that are not admin returned successfuly');
     }
 
 
-
-
-
-    public function updateUser(User $user,Request $request)
+    public function updateUser(User $user, Request $request)
     {
         try {
-        $result = $this->editUserService->updateUser($user,$request);
-        return ResponseHelper::success($result,'User update successfully');
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return ResponseHelper::error($e->validator->errors()->first(), 400);
-    }
-    catch (\Exception $e) {
-        return ResponseHelper::error($e->getMessage(), $e->getCode());
-    }
+            $result = $this->editUserService->updateUser($user, $request);
+            return ResponseHelper::success($result, 'User update successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ResponseHelper::error($e->validator->errors()->first(), 400);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
 
 
     }
@@ -233,11 +240,6 @@ class UserController extends Controller
         $result = $this->teamService->updateTeam($id, $request);
         return ResponseHelper::success($result);
     }
-
-
-
-
-
 
 
 }

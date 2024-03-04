@@ -93,27 +93,45 @@ class LateController extends Controller
      */
     public function acceptAlert(Request $request)
     {
-        $late = Late::find($request->alert_id);
-        if (!$late) {
-            return ResponseHelper::error('Alert not found');
+        try {
+            DB::transaction(function () use ($request) {
+                $late = Late::find($request->alert_id);
+                if (!$late) {
+                    throw new \Exception('Alert not found');
+                }
+
+                $user_id = $late->user_id;
+                $user = User::findOrFail($user_id);
+               if ($late->type==='normal'){
+                $late->update([
+                    'type' => 'Unjustified'
+                ]);
+
+                $alert = Decision::create([
+                    'user_id' => $user_id,
+                    'branch_id' => $user->branch_id,
+                    'content' => 'alert for late',
+                    'type' => 'warning',
+                    'dateTime' => Carbon::now()->format('Y-m-d')
+                ]);
+
+                $alert = UserAlert::create([
+                    'user_id' => $late->user_id,
+                    'alert' => 1,
+                    'date' => Carbon::now()->format('Y-m-d')
+                ]);
+
+            }
+
+         
+
+            });
+        } catch (\Exception $e) {
+            return ResponseHelper::error('Error accepting alert: ' . $e->getMessage());
         }
-
-        $late->update([
-            'type' => 'Unjustified'
-        ]);
-
-        $alert = UserAlert::create([
-            'user_id' => $late->user_id,
-            'alert' => 1,
-            'date' => Carbon::now()->format('Y-m-d')
-        ]);
-
-        $response = [
-            'user_id' => $alert->user_id
-        ];
-
-        return ResponseHelper::success($response, 'Alert accepted successfully');
+return ResponseHelper::success('Alert accepted successfully');
     }
+
     public function makeDecision(Late $late)
     {
         return DB::transaction(function () use ($late) {

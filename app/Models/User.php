@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -67,9 +68,7 @@ class User extends Authenticatable implements JWTSubject
         'absences',
         'warnings',
         'overTimes',
-        'alerts'
-
-
+        'alerts',
     ];
     protected $hidden = [
         'password',
@@ -92,16 +91,17 @@ class User extends Authenticatable implements JWTSubject
     public function getOverTimesAttribute()
     {
         $date = request()->query('date');
-if($date){
-        $overTimes = Late::whereNotNull('check_out')
-            ->where('type', 'justified')
-            ->where('user_id', $this->id);
+        if ($date) {
+            $overTimes = Late::whereNotNull('check_out')
+                ->where('type', 'justified')
+                ->where('user_id', $this->id);
 
-        $usertimeService = app(UsertimeService::class);
-        $overTimes = $usertimeService->checkOvertimeDate($overTimes, $date);
+            $usertimeService = app(UsertimeService::class);
+            $overTimes = $usertimeService->checkOvertimeDate($overTimes, $date);
 
-        $total=$overTimes->get();
-        return $total;}
+            $total = $overTimes->get();
+            return $total;
+        }
         return [];
     }
 
@@ -113,19 +113,14 @@ if($date){
         return $totalLateHours;
     }
 
-    public function getRateAttribute($value) //not ready
-    {
-        $date = request()->query('date');
-        if ($date) {
-            // $lates = Late::whereNotNull('check_out')
-            // ->whereMonth('lateDate', date('m', strtotime($date)))
-            //     ->whereYear('lateDate', date('Y', strtotime($date)))
-            //     ->where('user_id', $this->id)
-            //     ->sum('hours_num');
-            // return $lates;
-        }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
-    }
+//    public function getRateAttribute()
+//    {
+//        $date = request()->query('date');
+//        if ($date) {
+//            return $this->userServices->getRates($date, $this);
+//        }
+//        return 0;
+//    }
 
     public function getAdvanceAttribute()
     {
@@ -137,91 +132,98 @@ if($date){
 
 
     public function getDeductionsAttribute()
-    {        $date = request()->query('date');
-        if($date){
-        $deductions = Decision::where('type', 'deduction')
-            ->where('user_id', $this->id);
+    {
+        $date = request()->query('date');
+        if ($date) {
+            $deductions = Decision::where('type', 'deduction')
+                ->where('user_id', $this->id);
 
-        $usertimeService = app(UsertimeService::class);
-        $deductions = $usertimeService->checkTimeDates($deductions, $date);
-        $total=$deductions->get();
-        return $total;}
+            $usertimeService = app(UsertimeService::class);
+            $deductions = $usertimeService->checkTimeDates($deductions, $date);
+            $total = $deductions->get();
+            return $total;
+        }
         return [];
     }
 
 
-
     public function getRewardsAttribute()
-    {        $date = request()->query('date');
-        if($date){
-        $rewards = Decision::where('type', 'reward')
-            ->where('user_id', $this->id);
+    {
+        $date = request()->query('date');
+        if ($date) {
+            $rewards = Decision::where('type', 'reward')
+                ->where('user_id', $this->id);
 
-        $usertimeService = app(UsertimeService::class);
-        $rewards = $usertimeService->checkTimeDate($rewards, $date);
+            $usertimeService = app(UsertimeService::class);
+            $rewards = $usertimeService->checkTimeDate($rewards, $date);
 
-        $total=$rewards->get();
-        return $total;}
+            $total = $rewards->get();
+            return $total;
+        }
         return [];
     }
 
     public function getAdvancesAttribute()
 
-    {        $date = request()->query('date');
-        if($date){
-        $advances = Decision::where('type', 'advance')
-            ->where('user_id', $this->id);
-
-        $usertimeService = app(UsertimeService::class);
-        $advances = $usertimeService->checkTimeDate($advances, $date);
-        $total=$advances->get();
-        return $total;}
+    {
+        $date = request()->query('date');
+        if ($date) {
+            $advances = Decision::where('type', 'advance')
+                ->where('user_id', $this->id);
+            $usertimeService = app(UsertimeService::class);
+            $advances = $usertimeService->checkTimeDate($advances, $date);
+            $total = $advances->get();
+            return $total;
+        }
         return [];
     }
 
     public function getWarningsAttribute()
 
-    {        $date = request()->query('date');
-        if($date){
-        $warning = Decision::where('type', 'warning')
-            ->where('user_id', $this->id);
+    {
+        $date = request()->query('date');
+        if ($date) {
+            $warning = Decision::where('type', 'warning')
+                ->where('user_id', $this->id);
 
-        $usertimeService = app(UsertimeService::class);
-        $warning = $usertimeService->checkTimeDate($warning, $date);
-        $total=$warning->get();
-        return $total;
-    }
+            $usertimeService = app(UsertimeService::class);
+            $warning = $usertimeService->checkTimeDate($warning, $date);
+            $total = $warning->get();
+            return $total;
+        }
         return [];
     }
 
     public function getAlertsAttribute()
 
-    {        $date = request()->query('date');
-        if($date){
-        $alert = Decision::where('type', 'alert')
-            ->where('user_id', $this->id);
+    {
+        $date = request()->query('date');
+        if ($date) {
+            $alert = Decision::where('type', 'alert')
+                ->where('user_id', $this->id);
 
-        $usertimeService = app(UsertimeService::class);
-        $alert = $usertimeService->checkTimeDate($alert, $date);
-        $total=$alert->get();
-        return $total;
-    }
+            $usertimeService = app(UsertimeService::class);
+            $alert = $usertimeService->checkTimeDate($alert, $date);
+            $total = $alert->get();
+            return $total;
+        }
         return [];
     }
 
     public function getAbsencesAttribute()
-    {        $date = request()->query('date');
-        if($date){
-        $absences = Absences::where('user_id', $this->id)->where('type', 'Unjustified');
+    {
+        $date = request()->query('date');
+        if ($date) {
+            $absences = Absences::where('user_id', $this->id)->where('type', 'Unjustified');
 
-        $usertimeService = app(UsertimeService::class);
-        $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
+            $usertimeService = app(UsertimeService::class);
+            $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
 
-        $total=$absences->get();
-        return $total;}
+            $total = $absences->get();
+            return $total;
+        }
         return [];
     }
-
 
 
     public function getDeductionAttribute($date)
@@ -318,7 +320,7 @@ if($date){
         return [];
     }
 
-    public function roles()
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -355,7 +357,7 @@ if($date){
         return $this->hasMany(UserSalary::class, 'user_id');
     }
 
-    public function permissions()
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Permission::class);
     }
@@ -401,10 +403,12 @@ if($date){
     //     return $this->getRoleNames()->first();
     // }
 
+
     public function userRates()
     {
         return $this->hasMany(Rate::class, 'user_id');
     }
+
 
     public function evaluatorRates()
     {

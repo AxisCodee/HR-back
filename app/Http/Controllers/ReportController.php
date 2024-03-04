@@ -113,4 +113,28 @@ class ReportController extends Controller
             $result
         ]);
     }
+
+    public function ratesByDate(Request $request)
+    {
+        $user = Auth::user();
+        $date = substr($request->date, 0, 7);
+        $result = Rate::where('user_id', $user->id)->whereRaw("SUBSTRING(date, 1, 4) = ?", [$date])
+            ->orWhere(function ($query) use ($date) {
+                $query->whereRaw("SUBSTRING(date, 1, 4) = ?", [substr($date, 0, 4)])
+                    ->whereRaw("SUBSTRING(date, 6, 2) = ?", [substr($date, 5, 2)]);
+            })
+            ->get();
+        $groupedRates = $result->groupBy('rate_type_id');
+        $ratesWithPercentage = $groupedRates->map(function ($rates, $key) {
+            $rateSum = $rates->sum('rate');
+            $totalRateCount = $rates->count();
+            $percentage = ($rateSum / $totalRateCount) * 10;
+            return [
+                'rate_type' => RateType::where('id', $key)->first()->rate_type,
+                'percentage' => $percentage,
+            ];
+        });
+        return ResponseHelper::success($ratesWithPercentage->values());
+    }
+
 }
