@@ -137,28 +137,30 @@ class UserController extends Controller
         return $result;
     }
 
-    //add new team and add users to it
-    public function storeTeams(StoreTeamRequest $request)
-    {
-        $result = $this->teamService->storeTeams($request);
-        return $result;
-    }
 
-    //update an existing team name
-    public function updateTeams(UpdateTeamRequest $request, $id)
-    {
-        $result = $this->teamService->updateTeams($request, $id);
-        return $result;
-    }
+
 
     //delete an exisiting team
     public function deleteTeam($id)
     {
         try {
-            $remove = Department::findOrFail($id)->delete();
-            return ResponseHelper::deleted('team deleted successfully');
-        } catch (\Exception $e) {
-            return ResponseHelper::error('Team does not exist');
+            DB::beginTransaction();
+
+            $department = Department::findOrFail($id);
+
+
+            User::where('department_id', $id)->update([
+                'department_id' => null
+            ]);
+
+            $department->delete();
+
+            DB::commit();
+
+            return ResponseHelper::deleted('Team deleted successfully');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return ResponseHelper::error($e->getMessage());
         }
     }
 
