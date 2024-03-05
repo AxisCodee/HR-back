@@ -142,7 +142,7 @@ class UserController extends Controller
     public function deleteTeam($id)
     {
         try {
-            $remove = Department::findOrFail($id)->delete();
+            $remove = Department::where('id',$id)->delete();
             return ResponseHelper::deleted('team deleted successfully');
         } catch (Exception $e) {
             return ResponseHelper::error('Team does not exist');
