@@ -38,6 +38,7 @@ class AbsenceService
                 'id' => $item->id,
                 'username' => $item->first_name,
                 'lastname' => $item->last_name,
+                'specialization'=>$item->specialization,
                 'userDepartment' => $item->department,
                 'userUnjustified' => $unjustified,
                 'userJustified' => $justified,
