@@ -75,7 +75,6 @@ class AuthController extends Controller
                     $department_id = null;
                 }
                 $newPin = User::query()->latest()->value('pin') + 1;
-
                 $user = User::create([
                     'first_name' => $request->first_name,
                     'middle_name' => $request->middle_name,

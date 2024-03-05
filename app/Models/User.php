@@ -195,7 +195,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function getAlertsAttribute()
-
     {
         $date = request()->query('date');
         if ($date) {
