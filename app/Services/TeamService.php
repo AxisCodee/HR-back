@@ -117,7 +117,6 @@ class TeamService
                 foreach ($request->users_array as $userId) {
                     $addUser = User::findOrFail($userId)->where('role','!=','admin');
                     if ($addUser) {
-                        $addUser->department_id = $department->id;
                         $addUser->where('id',$userId)->update([
                         'role' => 'employee',
                         'department_id'=>$request->name,
