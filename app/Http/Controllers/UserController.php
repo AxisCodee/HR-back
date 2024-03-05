@@ -124,19 +124,8 @@ class UserController extends Controller
         return $result;
     }
 
-    //add new team and add users to it
-    public function storeTeams(StoreTeamRequest $request)
-    {
-        $result = $this->teamService->storeTeams($request);
-        return $result;
-    }
+  
 
-    //update an existing team name
-    public function updateTeams(UpdateTeamRequest $request, $id)
-    {
-        $result = $this->teamService->updateTeams($request, $id);
-        return $result;
-    }
 
     //delete an exisiting team
     public function deleteTeam($id)
