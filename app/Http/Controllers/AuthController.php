@@ -26,8 +26,8 @@ use Carbon\Carbon;
 use App\Services\EditUserService;
 use Exception;
 use Illuminate\Support\Facades\DB;
-require 'tad/vendor/autoload.php';
 
+require 'tad/vendor/autoload.php';
 
 
 class AuthController extends Controller
@@ -74,6 +74,7 @@ class AuthController extends Controller
                 } else {
                     $department_id = null;
                 }
+                $newPin = User::query()->latest()->value('pin') + 1;
 
                 $user = User::create([
                     'first_name' => $request->first_name,
@@ -84,7 +85,7 @@ class AuthController extends Controller
                     'specialization' => $request->specialization,
                     'department_id' => $department_id,
                     'password' => Hash::make($request->password),
-                    'pin' => null,
+                    'pin' => $newPin,
                     'address' => $request->address,
                     'branch_id' => $branch_id,
                 ]);
@@ -134,13 +135,13 @@ class AuthController extends Controller
                 foreach ($educations as $education) {
                     if (isset($education['degree']) && isset($education['study'])) {
 
-                    $studies = StudySituation::query()->create([
-                        'degree' => $education['degree'],
-                        'study' => $education['study'],
-                        'user_id' => $user->id,
-                    ]);}
+                        $studies = StudySituation::query()->create([
+                            'degree' => $education['degree'],
+                            'study' => $education['study'],
+                            'user_id' => $user->id,
+                        ]);
+                    }
                 }
-
 
 
                 foreach ($certificates as $index => $certificate) {
@@ -155,21 +156,23 @@ class AuthController extends Controller
                 foreach ($languages as $language) {
                     if (isset($language['languages']) && isset($language['rate'])) {
 
-                    $language = Language::query()->create([
-                        'languages' => $language['languages'],
-                        'rate' => $language['rate'],
-                        'user_id' => $user->id,
-                    ]);}
+                        $language = Language::query()->create([
+                            'languages' => $language['languages'],
+                            'rate' => $language['rate'],
+                            'user_id' => $user->id,
+                        ]);
+                    }
                 }
 
                 foreach ($skills as $skill) {
                     if (isset($skill['skills']) && isset($skill['rate'])) {
 
-                    $skill = Skills::query()->create([
-                        'skills' => $skill['skills'],
-                        'rate' => $skill['rate'],
-                        'user_id' => $user->id,
-                    ]);}
+                        $skill = Skills::query()->create([
+                            'skills' => $skill['skills'],
+                            'rate' => $skill['rate'],
+                            'user_id' => $user->id,
+                        ]);
+                    }
                 }
 
                 if ($request->additional_files) {
@@ -235,16 +238,16 @@ class AuthController extends Controller
 
                 if ($request->secretaraits) {
 
-                foreach ($secretaraits as $secretarait) {
-                    if (isset($secretarait['delivery_date']) && isset($secretarait['object'])) {
-                        $received = Deposit::query()->create([
-                            'user_id' => $user->id,
-                            'description' => $secretarait['object'],
-                            'received_date' => $secretarait['delivery_date'],
-                        ]);}}
+                    foreach ($secretaraits as $secretarait) {
+                        if (isset($secretarait['delivery_date']) && isset($secretarait['object'])) {
+                            $received = Deposit::query()->create([
+                                'user_id' => $user->id,
+                                'description' => $secretarait['object'],
+                                'received_date' => $secretarait['delivery_date'],
+                            ]);
+                        }
+                    }
                 }
-
-
 
 
                 return ResponseHelper::success($user);
