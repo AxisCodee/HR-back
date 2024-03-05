@@ -124,18 +124,30 @@ class UserController extends Controller
         return $result;
     }
 
-  
+
 
 
     //delete an exisiting team
     public function deleteTeam($id)
     {
         try {
+            DB::beginTransaction();
 
-            $remove = Department::where('id',$id)->delete();
-            return ResponseHelper::deleted('team deleted successfully');
+            $department = Department::findOrFail($id);
+
+
+            User::where('department_id', $id)->update([
+                'department_id' => null
+            ]);
+
+            $department->delete();
+
+            DB::commit();
+
+            return ResponseHelper::deleted('Team deleted successfully');
         } catch (Exception $e) {
-            return ResponseHelper::error('team does not exist');
+            DB::rollBack();
+            return ResponseHelper::error($e->getMessage());
         }
     }
 
