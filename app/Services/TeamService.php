@@ -119,7 +119,7 @@ class TeamService
                     if ($addUser) {
                         $addUser->where('id',$userId)->update([
                         'role' => 'employee',
-                        'department_id'=>$request->name,
+                        'department_id'=> $department->id,
                         ]);
                     }
                 }
