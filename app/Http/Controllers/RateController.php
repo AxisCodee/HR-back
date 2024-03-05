@@ -128,7 +128,7 @@ class RateController extends Controller
         try {
             $result = RateType::with(['rate' => function ($query) use ($date) {
                 $query->whereDate('date', $date);
-            }, 'rate.users'])->get()->toArray();
+            }, 'rate.user'])->get()->toArray();
             return ResponseHelper::success($result, null, 'userRates', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
@@ -151,4 +151,5 @@ class RateController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
+
 }
