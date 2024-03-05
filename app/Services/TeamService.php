@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class TeamService
 {
-   
+
 
 
     public function remove_from_team($id)
@@ -118,8 +118,9 @@ class TeamService
                     $addUser = User::findOrFail($userId)->where('role','!=','admin');
                     if ($addUser) {
                         $addUser->department_id = $department->id;
-                        $addUser->update([
-                            'role' => 'employee'
+                        $addUser->where('id',$userId)->update([
+                        'role' => 'employee',
+                        'department_id'=>$request->name,
                         ]);
                     }
                 }
