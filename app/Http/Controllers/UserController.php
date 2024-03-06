@@ -52,8 +52,8 @@ class UserController extends Controller
         $all_users = User::query()->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
             ->whereNull('deleted_at')->get()->toArray();
-        $now = Carbon::now();
-        $startTime =  Carbon::parse('09:30:00');
+        $now = Carbon::now()->format('H:i:s');
+        $startTime =  Carbon::parse('09:00:00');
         foreach ($all_users as $index => &$user) {
             $status = Attendance::where('pin', $user['pin'])->get()
                 ->whereBetween('datetime',[$startTime , $now])
