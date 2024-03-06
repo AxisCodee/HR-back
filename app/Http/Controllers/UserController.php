@@ -54,7 +54,8 @@ class UserController extends Controller
             ->whereNull('deleted_at')->get()->toArray();
         $now = Carbon::now()->format('H:i:s');
         $startTime =  Carbon::parse('09:00:00');
-        dd($now);
+       // dd($now);
+        dd($startTime);
         foreach ($all_users as $index => &$user) {
             $status = Attendance::where('pin', $user['pin'])->get()
                 ->whereBetween('datetime',[$startTime , $now])
