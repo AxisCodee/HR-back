@@ -131,8 +131,10 @@ class UserController extends Controller
 
     //delete a specific user by his id
     public function remove_user($user)
-    {
-        $remove_user = User::findOrFail($user)->delete();
+    {   $remove_user = User::findOrFail($user);
+        $before = $remove_user->department_id;
+        $remove_user->delete();
+        $remove_user->update(['department_id',$before]);
         return ResponseHelper::deleted('user removed successfully');
     }
 
