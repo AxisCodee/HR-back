@@ -68,7 +68,7 @@ class UserController extends Controller
         $user['status'] = 0;
     }
 }
-        }
+        
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
