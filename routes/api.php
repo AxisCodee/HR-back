@@ -300,6 +300,11 @@ Route::prefix('Notes')->group(function () {
         Route::get('All', 'index');
     });
 });
+Route::prefix('User')->group(function () {
+    Route::controller(UserController::class)->group(function () {
+    Route::get('allUser', 'all_users');
+    });
+    });
 
 Route::prefix('Report')->group(function () {
     Route::controller(ReportController::class)->group(function () {
