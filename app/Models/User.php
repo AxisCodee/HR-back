@@ -69,6 +69,7 @@ class User extends Authenticatable implements JWTSubject
         'warnings',
         'overTimes',
         'alerts',
+        'status'
     ];
     protected $hidden = [
         'password',
@@ -277,6 +278,17 @@ class User extends Authenticatable implements JWTSubject
         } else {
             return 0;
         }
+    }
+
+    public function getStatusAttribute()
+    {
+        $datetime = Carbon::now();
+        $status = Attendance::query()
+            ->where('user_id', $this->id)
+            ->whereDate('datetime', $datetime)
+            ->latest()
+            ->value('status');
+        return $status;
     }
 
     public function getJWTIdentifier()
