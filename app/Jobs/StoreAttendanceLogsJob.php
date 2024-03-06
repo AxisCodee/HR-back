@@ -100,7 +100,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
 
 
                         $newLateData = [
-                            'user_id' => $userId,
+                            'user_id' => $userId->pin,
                             'lateDate' => $checkInDate,
                             'check_in' => $log['Status'] == 0 ? $checkInHour : null,
                             'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
