@@ -59,10 +59,10 @@ class UserController extends Controller
         $startTime = Carbon::parse('09:00:00')->format('H:i:s');
 
     foreach ($all_users as $index => &$user) {
-    $attendance = Attendance::where('pin', $user['pin'])->get();
+    $attendance = Attendance::where('pin', $user['pin'])->latest();
     if ($attendance) {
         $dateTime = Carbon::parse($attendance->datetime)->format('H:i:s');
-        dd(     $dateTime);
+       // dd(     $dateTime);
         $status = ($dateTime >= $startTime && $dateTime <= $now) ? 1 : 0;
         $user['status'] = $status;
     } else {
