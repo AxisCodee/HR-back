@@ -115,6 +115,7 @@ Route::prefix('Request')->group(function () {
         Route::get('Complaints', 'getComplaints');
         Route::get('info/{id}', 'getRequest');
         Route::post('Add', 'store');
+        Route::post('Add', 'store');
         Route::post('Update/{id}', 'update');
         Route::post('accepteRequest/{request}', 'acceptRequest');
         Route::post('rejectRequest/{request}', 'rejectRequest');

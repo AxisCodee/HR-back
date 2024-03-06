@@ -42,6 +42,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
             return DB::transaction(function () {
                 //store the attendance
                 $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
+              
                 $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
                 $tad = $tad_factory->get_instance();
                 $all_user_info = $tad->get_all_user_info();

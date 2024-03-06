@@ -173,6 +173,7 @@ class RequestController extends Controller
             ->get()
             ->toArray();
 
+            
         if (empty($result)) {
             return ResponseHelper::success($result);
         }
