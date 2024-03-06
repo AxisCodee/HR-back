@@ -74,7 +74,7 @@ class UserController extends Controller
                     $user['status'] = 0;
                 }
             } else {
-                $user['status'] = 0;
+                $user['status'] = 1;
             }
         }
 
