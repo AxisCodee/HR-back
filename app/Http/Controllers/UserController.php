@@ -70,14 +70,13 @@ class UserController extends Controller
             } else {
                 $user['status'] = 0;
             }
-        }
+            return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
 
-        // Rest of the code...
-    }
-}
+        }}
 
-        return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
-    }
+
+
+
 
 
     public function usersWithoutDepartment(Request $request) //return users without departments
