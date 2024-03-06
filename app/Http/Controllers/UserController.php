@@ -55,14 +55,19 @@ class UserController extends Controller
         $now = Carbon::now()->format('H:i:s');
         $startTime =  Carbon::parse('09:00:00')->format('H:i:s');
 
-        foreach ($all_users as $index => &$user) {
-          // $user= Attendance::where('pin', $user['pin']);
-          carbon::parse('datetime')->format('H:i:s');
-            $status = Attendance::where('pin', $user['pin'])->get()
-                ->whereBetween('datetime',[$startTime , $now])
-                ->value('status');
-            $user['status'] = $status;
+        $now = Carbon::now()->format('H:i:s');
+        $startTime = Carbon::parse('09:00:00')->format('H:i:s');
 
+    foreach ($all_users as $index => &$user) {
+    $attendance = Attendance::where('pin', $user['pin'])->first();
+    if ($attendance) {
+        $dateTime = Carbon::parse($attendance->datetime)->format('H:i:s');
+        $status = ($dateTime >= $startTime && $dateTime <= $now) ? 1 : 0;
+        $user['status'] = $status;
+    } else {
+        $user['status'] = 0;
+    }
+}
         }
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
