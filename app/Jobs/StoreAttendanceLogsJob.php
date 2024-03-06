@@ -90,7 +90,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                         $diffOverTime = $parsedHourOut->diff($companyEndTime);
                         $hoursOverTime = $diffOverTime->format('%H.%I');
                         $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
-                        $userId = User::query()->where('pin', ($log['PIN']))->value('pin');
+                        $userId = User::query()->where('pin', ($log['PIN']));
                         $lates = Late::query()
                             ->where('user_id', $userId)
                             ->whereDate('lateDate', '=', $checkInDate)
@@ -99,7 +99,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                             ->first();
                             if (empty($lates)) {
                                 $newLateData = [
-                                    'user_id' => $userId,
+                                    'user_id' => $userId->pin,
                                     'lateDate' => $checkInDate,
                                     'check_in' => $log['Status'] == 0 ? $checkInHour : null,
                                     'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
