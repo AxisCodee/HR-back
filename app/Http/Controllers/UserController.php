@@ -68,7 +68,7 @@ class UserController extends Controller
                 )->whereDate('datetime', $dateNow)->first();
                 if ($attendance1) {
                     $dateTime = Carbon::parse($attendance1->datetime);
-                    $status = ($dateTime >= $startTime && $dateTime <= $now) ? 1 : 0;
+                    $status = ($dateTime >= $startTime && $dateTime <= $now) ;
                     $user['status'] = $status;
                 } else {
                     $user['status'] = 0;
