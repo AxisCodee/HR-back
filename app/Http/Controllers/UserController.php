@@ -62,13 +62,14 @@ class UserController extends Controller
     $attendance = Attendance::where('pin', $user['pin'])->first();
     if ($attendance) {
         $dateTime = Carbon::parse($attendance->datetime)->format('H:i:s');
+        dd(     $dateTime);
         $status = ($dateTime >= $startTime && $dateTime <= $now) ? 1 : 0;
         $user['status'] = $status;
     } else {
         $user['status'] = 0;
     }
 }
-        
+
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
