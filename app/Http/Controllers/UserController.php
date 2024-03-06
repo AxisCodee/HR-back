@@ -59,6 +59,7 @@ class UserController extends Controller
                 ->whereBetween('datetime',[$startTime , $now])
                 ->value('status');
             $user['status'] = $status;
+            
         }
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
