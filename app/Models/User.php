@@ -284,7 +284,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $datetime = Carbon::now();
         $status = Attendance::query()
-            ->where('user_id', $this->id)
+            ->where('pin', $this->pin)
             ->whereDate('datetime', $datetime)
             ->latest()
             ->value('status');
