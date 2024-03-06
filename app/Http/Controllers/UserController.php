@@ -49,29 +49,42 @@ class UserController extends Controller
     //get all users info
     public function all_users(Request $request)
     {
-        $all_users = User::query()->where('branch_id', $request->branch_id)
+        $all_users = User::query()
+            ->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
-            ->whereNull('deleted_at')->get()->toArray();
-        $now = Carbon::now();
-        $startTime =  Carbon::parse('09:00:00');
-        foreach ($all_users as $user) {
-            $status = Attendance::query()
-                ->where('pin', $user['pin'])->get();
-                // ->whereBetween('datetime',[$startTime , $now])
-                // ->value('status');
-                dd($status);
-            $user['status'] = $status;
-        }
+            ->whereNull('deleted_at')
+            ->get()
+            ->toArray();
+        // $now = Carbon::now();
+        // $startTime =  Carbon::parse('2024-06-03 09:00:00');
+        // $dateNow = Carbon::now()->format('Y-m-d');
+
+        // foreach ($all_users as $index => &$user) {
+        //     $attendance = Attendance::where('pin', $user['pin'])->first();
+        //     if ($attendance) {
+        //         $attendanceDate = $attendance->datetime;
+        //         $dateT = Carbon::parse($attendanceDate)->format('Y-m-d');
+        //         $attendance1 = Attendance::where('pin', $user['pin']
+        //         )->whereDate('datetime', $dateNow)->first();
+        //         if ($attendance1) {
+        //             $dateTime = Carbon::parse($attendance1->datetime);
+        //             $status = ($dateTime >= $startTime && $dateTime <= $now);
+        //             $user['status'] = $status;
+        //         } }}
+
+
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
 
-    public function usersWithoutDepartment(Request $request) //return users without departments
+    public function resignedusers(Request $request) //return users without departments
     {
         $all_users = User::query()->where('branch_id', $request->branch_id)
-            ->where('department_id', null)
-            ->with('userInfo:id,user_id,image')->get()->toArray();
-        return ResponseHelper::success($all_users, null, 'all users without departments', 200);
+            ->onlyTrashed()
+            ->with('userInfo:id,user_id,image')
+            ->get()
+            ->toArray();
+        return ResponseHelper::success($all_users, null, 'all resigned users', 200);
     }
 
     //get a specific user by the ID
@@ -238,11 +251,9 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
-
-
     }
 
-//add team
+    //add team
     public function addTeams(StoreTeamRequest $request)
     {
         $result = $this->teamService->addTeams($request);
@@ -250,12 +261,10 @@ class UserController extends Controller
     }
 
 
-//update team
+    //update team
     public function updateTeam($id, Request $request)
     {
         $result = $this->teamService->updateTeam($id, $request);
         return ResponseHelper::success($result);
     }
-
-
 }
