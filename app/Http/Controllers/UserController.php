@@ -77,12 +77,14 @@ class UserController extends Controller
     }
 
 
-    public function usersWithoutDepartment(Request $request) //return users without departments
+    public function resignedusers(Request $request) //return users without departments
     {
         $all_users = User::query()->where('branch_id', $request->branch_id)
-            ->where('department_id', null)
-            ->with('userInfo:id,user_id,image')->get()->toArray();
-        return ResponseHelper::success($all_users, null, 'all users without departments', 200);
+            ->onlyTrashed()
+            ->with('userInfo:id,user_id,image')
+            ->get()
+            ->toArray();
+        return ResponseHelper::success($all_users, null, 'all resigned users', 200);
     }
 
     //get a specific user by the ID
@@ -249,11 +251,9 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
-
-
     }
 
-//add team
+    //add team
     public function addTeams(StoreTeamRequest $request)
     {
         $result = $this->teamService->addTeams($request);
@@ -261,12 +261,10 @@ class UserController extends Controller
     }
 
 
-//update team
+    //update team
     public function updateTeam($id, Request $request)
     {
         $result = $this->teamService->updateTeam($id, $request);
         return ResponseHelper::success($result);
     }
-
-
 }
