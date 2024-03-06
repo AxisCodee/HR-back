@@ -165,7 +165,7 @@ class RequestController extends Controller
     public function getComplaints(HttpRequest $request)
     {
         $branchId = $request->branch_id;
-        $result = Request::with('user', 'user.department', 'user.userInfo:id,user_id,image', function ($query) use ($branchId) {
+        $result = Request::with('user.department', 'user.userInfo:id,user_id,image')->with('user',  function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
             ->where('type', 'complaint')
