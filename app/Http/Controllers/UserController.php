@@ -52,16 +52,14 @@ class UserController extends Controller
         $all_users = User::query()->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
             ->whereNull('deleted_at')->get()->toArray();
-        $now = Carbon::now()->format('H:i:s');
-        $startTime =  Carbon::parse('09:00:00')->format('H:i:s');
+        $now = Carbon::now();
+        $startTime =  Carbon::parse('2024-06-03 09:00:00');
 
-        $now = Carbon::now()->format('H:i:s');
-        $startTime = Carbon::parse('09:00:00')->format('H:i:s');
 
     foreach ($all_users as $index => &$user) {
     $attendance = Attendance::where('pin', $user['pin'])->first();
     if ($attendance) {
-        $dateTime = Carbon::parse($attendance->datetime)->format('H:i:s');
+        $dateTime = Carbon::parse($attendance->datetime);
        // dd(     $dateTime);
         $status = ($dateTime >= $startTime && $dateTime <= $now) ? 1 : 0;
         $user['status'] = $status;
