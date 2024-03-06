@@ -55,8 +55,7 @@ class UserController extends Controller
         $now = Carbon::now();
         $startTime =  Carbon::parse('09:00:00');
         foreach ($all_users as $user) {
-            $status = Attendance::query()
-                ->where('pin', $user['pin'])->get();
+            $status = Attendance::where('pin', $user['pin'])->get();
                 // ->whereBetween('datetime',[$startTime , $now])
                 // ->value('status');
                 dd($status);
