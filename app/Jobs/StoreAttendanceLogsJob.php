@@ -90,34 +90,34 @@ class StoreAttendanceLogsJob implements ShouldQueue
                         $diffOverTime = $parsedHourOut->diff($companyEndTime);
                         $hoursOverTime = $diffOverTime->format('%H.%I');
                         $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
-                        foreach ($logs as $log) {
-                            $userId = User::query()->where('pin', $log['PIN'])->first();
+                        $userId = User::query()->where('pin', ($log['PIN']));
+                        $lates = Late::query()
+                        ->where('user_id', $userId)
+                        ->whereDate('lateDate', '=', $checkInDate)
+                        ->whereNull('check_in')
+                        ->whereNull('check_out')
+                        ->first();
 
-                            $lates = Late::query()
-                                ->where('user_id', $userId->id)
-                                ->whereDate('lateDate', '=', $checkInDate)
-                                ->whereNull('check_in')
-                                ->whereNull('check_out')
-                                ->first();
+                    if (empty($lates)) {
+                        $newLateData = [
+                            'user_id' => $userId,
+                            'lateDate' => $checkInDate,
+                            'check_in' => $log['Status'] == 0 ? $checkInHour : null,
+                            'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
+                            'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
+                        ];
 
-                            if (empty($lates)) {
-                                $newLateData = [
-                                    'user_id' => $userId->id,
-                                    'lateDate' => $checkInDate,
-                                    'check_in' => $log['Status'] == 0 ? $checkInHour : null,
-                                    'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                                    'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
-                                ];
-
-                             
-                                    $newLate = Late::create($newLateData);
-
-                            } else {
+                        if ($userId) {
+                            $newLate = Late::updateOrCreate([
+                                'lateDate' => $newLateData['lateDate']],
+                                $newLateData
+                            );
+                        }
+                    } else {
                                 $lates->update([
                                     'check_in' => $checkInHour,
                                 ]);
                             }
-                        }
                     }
                     // $numberOfHour = $lates->hours_num;
                     // if ($hoursLate > $numberOfHour) {
