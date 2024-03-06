@@ -71,12 +71,9 @@ class UserController extends Controller
                     $status = ($dateTime >= $startTime && $dateTime <= $now) ;
                     $user['status'] = $status;
                 } else {
-                    $user['status'] = 0;
-                }
-            } else {
-                $user['status'] = 1;
-            }
-        }
+                    $user['status'] = 1;
+                }}}
+
 
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
