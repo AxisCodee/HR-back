@@ -98,7 +98,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                         ->whereNull('check_out')
                         ->first();
 
-                    if (!empty($lates)) {
+                    if (empty($lates)) {
                         $newLateData = [
                             'user_id' => $userId->pin,
                             'lateDate' => $checkInDate,
