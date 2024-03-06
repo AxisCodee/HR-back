@@ -49,34 +49,28 @@ class UserController extends Controller
     //get all users info
     public function all_users(Request $request)
     {
-        $all_users = User::query()
-            ->where('branch_id', $request->branch_id)
+        $all_users = User::query()->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
-            ->whereNull('deleted_at')
-            ->get()
-            ->toArray();
+            ->whereNull('deleted_at')->get()->toArray();
         $now = Carbon::now();
         $startTime =  Carbon::parse('2024-06-03 09:00:00');
         $dateNow = Carbon::now()->format('Y-m-d');
 
-        foreach ($all_users as $index => &$user) {
-            $attendance = Attendance::where('pin', $user['pin'])
-                ->whereDate('datetime', $dateNow)
-                ->first();
-            if ($attendance) {
-                $dateTime = Carbon::parse($attendance->datetime);
-                $status = ($dateTime >= $startTime && $dateTime <= $now) ? 1 : 0;
-                $user['status'] = $status;
-            } else {
-                $user['status'] = 0;
-            }
-            return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
 
-        }}
+    foreach ($all_users as $index => &$user) {
+    $attendance = Attendance::where('pin', $user['pin'])
+    ->where(carbon::parse('datetime')
+    ->format('Y-m-d'), $dateNow)->first();
+    if ($attendance) {
+        $dateTime = Carbon::parse($attendance->datetime);
+       // dd(     $dateTime);
+        $status = ($dateTime >= $startTime && $dateTime <= $now) ? 1 : 0;
+        $user['status'] = $status;
+    }
+}
 
-
-
-
+        return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
+    }
 
 
     public function usersWithoutDepartment(Request $request) //return users without departments
