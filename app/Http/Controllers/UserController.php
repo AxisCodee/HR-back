@@ -53,13 +53,13 @@ class UserController extends Controller
             ->with('department', 'userInfo:id,user_id,image')
             ->whereNull('deleted_at')->get()->toArray();
         $now = Carbon::now();
-        $startTime =  Carbon::parse('09:00:00');
+        $startTime =  Carbon::parse('09:30:00');
         foreach ($all_users as $index => &$user) {
             $status = Attendance::where('pin', $user['pin'])->get()
                 ->whereBetween('datetime',[$startTime , $now])
                 ->value('status');
             $user['status'] = $status;
-            
+
         }
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
