@@ -26,7 +26,7 @@ class RequestController extends Controller
             ->with('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
-            ->with('user.department:id,name')
+            ->with('user.department:id,name','user.userInfo')
             ->get()
             ->toArray();
         if (empty($results)) {
