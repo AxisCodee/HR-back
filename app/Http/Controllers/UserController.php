@@ -53,7 +53,7 @@ class UserController extends Controller
             ->with('department', 'userInfo:id,user_id,image')
             ->whereNull('deleted_at')->get()->toArray();
         $now = Carbon::now()->format('H:i:s');
-        $startTime =  Carbon::parse('09:00:00');
+        $startTime =  Carbon::parse('09:00:00')->format('H:i:s');
        // dd($now);
         dd($startTime);
         foreach ($all_users as $index => &$user) {
