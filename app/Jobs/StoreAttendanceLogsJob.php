@@ -107,7 +107,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                                 ];
 
                                 if ($userId) {
-                                    $newLate = Late::updateOrCreate(['lateDate' => $newLateData['lateDate']], $newLateData);
+                                    $newLate = Late::updateOrCreate(['lateDate' => $newLateData['lateDate']],$newLateData);
                                 }
                             } else {
                                 $lates->update([
