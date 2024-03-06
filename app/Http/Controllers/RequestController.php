@@ -23,7 +23,7 @@ class RequestController extends Controller
     {
         $branchId = request('branch_id');
         $results = Request::query()
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
             ->with('user.department:id,name')

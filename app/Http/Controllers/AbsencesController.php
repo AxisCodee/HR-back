@@ -8,50 +8,23 @@ use App\Models\Absences;
 use App\Models\User;
 use App\Models\UserInfo;
 use App\Models\Decision;
+use App\Services\AbsenceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AbsencesController extends Controller
 {
+    protected $absenceService;
+
+    public function __construct(AbsenceService $absenceService)
+    {
+        $this->absenceService = $absenceService;
+    }
+
     public function index(Request $request)
     {
-        $branchId = $request->input('branch_id');
-        if ($request->has('date')) {
-            $dateInput = request()->input('date');
-            $year = substr($dateInput, 0, 4);
-
-            $month = substr($dateInput, 5, 2);
-        } else {
-            $year = Carbon::now()->format('Y');
-            $month = Carbon::now()->format('m');
-        }
-        $user = User::query()->where('branch_id', $branchId)->with('userInfo')->get();
-
-        foreach ($user as $item) {
-            $justified = $item->absences()
-                ->where('type', 'justified')
-                ->whereYear('startDate', $year)
-                ->whereMonth('startDate', $month)->count();
-
-            $Unjustified = $item->absences()
-                ->where('type', 'Unjustified')
-                ->whereYear('startDate', $year)
-                ->whereMonth('startDate', $month)
-                ->count();
-            $results[] = $result =
-                [
-                    'id' => $item->id,
-                    'username' => $item->first_name,
-                    'lastname'=>$item->last_name,
-                    'userDepartment' => $item->department,
-                    'userUnjustified' => $Unjustified,
-                    'userjustified' => $justified,
-                    'all' => $Unjustified + $justified,
-                    'userinfo'=>$item->userInfo
-                ];
-        }
-        return ResponseHelper::success($results);
+        return $this->absenceService->index($request);
     }
 
     public function show(User $user)

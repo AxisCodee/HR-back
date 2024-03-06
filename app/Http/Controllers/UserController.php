@@ -8,7 +8,9 @@ use App\Http\Requests\ContactRequest\UpdateContactRequest;
 use App\Http\Requests\TeamRequest\StoreTeamRequest;
 use App\Http\Requests\TeamRequest\UpdateTeamRequest;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
+use App\Models\Attendance;
 use App\Models\Career;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Contact;
@@ -48,9 +50,20 @@ class UserController extends Controller
     public function all_users(Request $request)
     {
         $all_users = User::query()->where('branch_id', $request->branch_id)
-            ->with('department', 'userInfo:id,user_id,image')->whereNull('deleted_at')->get()->toArray();
+            ->with('department', 'userInfo:id,user_id,image')
+            ->whereNull('deleted_at')->get()->toArray();
+        $now = Carbon::now();
+        $startTime = Carbon::now()->hour(9)->minute(0)->second(0);
+        foreach ($all_users as $index => &$user) {
+            $status = Attendance::query()
+                ->where('pin', $user['pin'])
+                ->whereRaw("STR_TO_DATE(datetime, '%Y-%m-%d %H:%i:%s') BETWEEN ? AND ?", [$startTime, $now])
+                ->value('status');
+            $user['status'] = $status;
+        }
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
+
 
     public function usersWithoutDepartment(Request $request) //return users without departments
     {
@@ -124,28 +137,30 @@ class UserController extends Controller
         return $result;
     }
 
-    //add new team and add users to it
-    public function storeTeams(StoreTeamRequest $request)
-    {
-        $result = $this->teamService->storeTeams($request);
-        return $result;
-    }
 
-    //update an existing team name
-    public function updateTeams(UpdateTeamRequest $request, $id)
-    {
-        $result = $this->teamService->updateTeams($request, $id);
-        return $result;
-    }
+
 
     //delete an exisiting team
     public function deleteTeam($id)
     {
         try {
-            $remove = Department::findOrFail($id)->delete();
-            return ResponseHelper::deleted('team deleted successfully');
-        } catch (\Exception $e) {
-            return ResponseHelper::error('Team does not exist');
+            DB::beginTransaction();
+
+            $department = Department::findOrFail($id);
+
+
+            User::where('department_id', $id)->update([
+                'department_id' => null
+            ]);
+
+            $department->delete();
+
+            DB::commit();
+
+            return ResponseHelper::deleted('Team deleted successfully');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return ResponseHelper::error($e->getMessage());
         }
     }
 
