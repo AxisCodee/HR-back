@@ -40,7 +40,6 @@ Route::middleware('auth', 'admin')->group(function () {
 
     Route::controller(AttendanceController::class)->group(function () {
         Route::get('getAttendanceLogs', [AttendanceController::class, 'getAttendanceLogs']);
-        Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
         Route::get('showAttendanceLogs', [AttendanceController::class, 'showAttendanceLogs']);
         Route::get('showPercent', [AttendanceController::class, 'employees_percent']);
         Route::get('DayAttendance/{date}', [AttendanceController::class, 'DayAttendance']);
@@ -317,3 +316,4 @@ Route::prefix('Request')->group(function () {
 });
 
 
+Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);

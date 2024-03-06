@@ -50,7 +50,7 @@ class LateController extends Controller
             $result = Late::query()
                 ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
                 ->where('type', 'normal')
-                ->with('user:id,first_name,last_name,department_id', 'user.department', 'user.alert', 'user.userInfo:id,image')
+                ->with('user:id,first_name,last_name,department_id,specialization', 'user.department', 'user.alert', 'user.userInfo:id,image')
                 ->whereHas('user', function ($query) use ($branchId) {
                     $query->where('branch_id', $branchId);
                 })
@@ -123,7 +123,7 @@ class LateController extends Controller
 
             }
 
-         
+
 
             });
         } catch (\Exception $e) {
