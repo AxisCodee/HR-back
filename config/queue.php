@@ -40,9 +40,7 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
-            'options' => [
-                'maxSize' => 100, // قم بتعيين الحد الأقصى للصف هنا
-            ],
+
         ],
 
         'beanstalkd' => [
