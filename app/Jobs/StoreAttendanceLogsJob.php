@@ -18,11 +18,13 @@ use App\Models\Late;
 use App\Models\Policy;
 use App\Models\Absences;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use TADPHP\TADFactory;
 require 'tad\vendor\autoload.php';
 
 class StoreAttendanceLogsJob implements ShouldQueue
 {
+   public $expirationTime = 10;
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
@@ -53,8 +55,11 @@ class StoreAttendanceLogsJob implements ShouldQueue
                 $logsData = $array['Row'];
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
-                    $branch = User::where('pin', intval($log['PIN']))->first();
-                    if ($branch){
+                    $branch = Cache::remember('branch_' . $log['PIN'], $this->expirationTime, function () use ($log) {
+                        return User::where('pin', intval($log['PIN']))->first();
+                    });
+
+                    if ($branch) {
                         $attendance = [
                             'pin' => $log['PIN'],
                             'datetime' => $log['DateTime'],
@@ -63,9 +68,12 @@ class StoreAttendanceLogsJob implements ShouldQueue
                             'status' => $log['Status'],
                             'work_code' => $log['WorkCode'],
                         ];
-                    Attendance::updateOrCreate(['datetime' => $log['DateTime'],'branch_id'=>$branch->branch_id], $attendance);}
+
+                        Attendance::updateOrCreate(['datetime' => $log['DateTime'], 'branch_id' => $branch->branch_id], $attendance);
+                    }
+
                     $date = date('Y-m-d', strtotime($log['DateTime']));
-                    Date::updateOrCreate(['date' => $date]);
+
                     // the first of check the late
                     $checkInDate = substr($log['DateTime'], 0, 10);
                     $checkInHour = substr($log['DateTime'], 11, 15);
