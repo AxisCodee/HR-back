@@ -185,7 +185,7 @@ class AttendanceController extends Controller
         //     return ResponseHelper::error($e->getMessage(), $e->getCode());
         // }
 
-        $branch_id = $request->branch_id ;
+        $branch_id = $request->branch_id;
        dispatch(new StoreAttendanceLogsJob($branch_id));
     }
 
