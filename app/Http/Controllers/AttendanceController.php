@@ -184,7 +184,7 @@ class AttendanceController extends Controller
         //     return ResponseHelper::error($e->getMessage(), $e->getCode());
         // }
 
-        dispatch(new StoreAttendanceLogsJob());
+       dispatch(new StoreAttendanceLogsJob());
     }
 
     public function showAttendanceLogs()
