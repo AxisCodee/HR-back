@@ -55,9 +55,12 @@ class StoreAttendanceLogsJob implements ShouldQueue
                 $logsData = $array['Row'];
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
-                    $branch = Cache::remember('branch_' . $log['PIN'], $this->expirationTime, function () use ($log) {
-                        return User::where('pin', intval($log['PIN']))->first();
-                    });
+                    $branch = Cache::get('branch_' . $log['PIN']);
+
+                    if (!$branch) {
+                        $branch = User::where('pin', intval($log['PIN']))->first();
+                        Cache::put('branch_' . $log['PIN'], $branch, $this->expirationTime);
+                    }
 
                     if ($branch) {
                         $attendance = [
@@ -73,6 +76,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                     }
 
                     $date = date('Y-m-d', strtotime($log['DateTime']));
+                
 
                     // the first of check the late
                     $checkInDate = substr($log['DateTime'], 0, 10);
