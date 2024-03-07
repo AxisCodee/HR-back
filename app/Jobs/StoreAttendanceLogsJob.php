@@ -19,6 +19,7 @@ use App\Models\Policy;
 use App\Models\Absences;
 use Carbon\Carbon;
 use TADPHP\TADFactory;
+
 require 'tad\vendor\autoload.php';
 
 class StoreAttendanceLogsJob implements ShouldQueue
@@ -28,9 +29,11 @@ class StoreAttendanceLogsJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public $branch_id;
+
+    public function __construct($branch_id)
     {
-        //
+        $this->branch_id = $branch_id;
     }
 
     /**
@@ -41,8 +44,8 @@ class StoreAttendanceLogsJob implements ShouldQueue
         try {
             return DB::transaction(function () {
                 //store the attendance
-                $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
-                $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
+                $branch = Branch::findOrFail($this->branch_id); //it should be received (static temporary)
+                $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
                 $tad = $tad_factory->get_instance();
                 $all_user_info = $tad->get_all_user_info();
                 $dt = $tad->get_date();
@@ -54,7 +57,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
                     $branch = User::where('pin', intval($log['PIN']))->first();
-                    if ($branch){
+                    if ($branch) {
                         $attendance = [
                             'pin' => $log['PIN'],
                             'datetime' => $log['DateTime'],
@@ -63,7 +66,8 @@ class StoreAttendanceLogsJob implements ShouldQueue
                             'status' => $log['Status'],
                             'work_code' => $log['WorkCode'],
                         ];
-                    Attendance::updateOrCreate(['datetime' => $log['DateTime'],'branch_id'=>$branch->branch_id], $attendance);}
+                        Attendance::updateOrCreate(['datetime' => $log['DateTime'], 'branch_id' => $branch->branch_id], $attendance);
+                    }
                     $date = date('Y-m-d', strtotime($log['DateTime']));
                     Date::updateOrCreate(['date' => $date]);
                     // the first of check the late
@@ -72,7 +76,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                     $checkOutHour = substr($log['DateTime'], 11, 15);
                     $parsedHour = Carbon::parse($checkInHour);
                     $parsedHourOut = Carbon::parse($checkOutHour);
-                    $policy = Policy::query()->where('branch_id', $branche->id)->first();
+                    $policy = Policy::query()->where('branch_id', $branch->id)->first();
                     $companyStartTime = $policy->work_time['start_time'];
                     $companyEndTime = $policy->work_time['end_time'];
                     // check if the persone late
@@ -110,19 +114,18 @@ class StoreAttendanceLogsJob implements ShouldQueue
                         if ($userId) {
                             $newLate = Late::updateOrCreate(
 
-  ['lateDate' => $newLateData['lateDate']],
+                                ['lateDate' => $newLateData['lateDate']],
 
-                               [ $newLateData ]
-
+                                [$newLateData]
 
 
                             );
                         }
-                    // } else {
-                    //             $lates->update([
-                    //                 'check_in' => $checkInHour,
-                    //             ]);
-                    //         }
+                        // } else {
+                        //             $lates->update([
+                        //                 'check_in' => $checkInHour,
+                        //             ]);
+                        //         }
                     }
                     // $numberOfHour = $lates->hours_num;
                     // if ($hoursLate > $numberOfHour) {

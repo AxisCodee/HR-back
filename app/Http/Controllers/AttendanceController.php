@@ -13,6 +13,7 @@ use App\Models\Policy;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
@@ -47,7 +48,7 @@ class AttendanceController extends Controller
         );
     }
 
-    public function storeAttendanceLogs()
+    public function storeAttendanceLogs(Request $request)
     {
         // try {
         //     return DB::transaction(function () {
@@ -184,7 +185,8 @@ class AttendanceController extends Controller
         //     return ResponseHelper::error($e->getMessage(), $e->getCode());
         // }
 
-        dispatch(new StoreAttendanceLogsJob());
+        $branch_id = $request->branch_id ;
+        dispatch(new StoreAttendanceLogsJob($branch_id));
     }
 
     public function showAttendanceLogs()
