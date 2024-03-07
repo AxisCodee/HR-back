@@ -40,6 +40,7 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
+
         ],
 
         'beanstalkd' => [
@@ -70,6 +71,8 @@ return [
             'block_for' => null,
             'after_commit' => false,
         ],
+
+
 
     ],
 

@@ -186,7 +186,7 @@ class AttendanceController extends Controller
         // }
 
         $branch_id = $request->branch_id ;
-        dispatch(new StoreAttendanceLogsJob($branch_id));
+       dispatch(new StoreAttendanceLogsJob($branch_id));
     }
 
     public function showAttendanceLogs()
