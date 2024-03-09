@@ -18,7 +18,7 @@ class DepositController extends Controller
 
     public function index(Request $request) //all users with department and deposits
     {
-        $branchId = $request->input('branch_id');
+        $branchId = $request->branch_id;
         $user = User::where('branch_id', $branchId);
         $results = $user
             ->with('department')
