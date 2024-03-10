@@ -25,6 +25,7 @@ class StoreUserInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => ['required', 'exists:users,id'],
             'image' => ['required', 'mimes:jpg,bmp,png'],
             'birth_date' => ['required', 'date'],
             'gender' => ['required', Rule::in(['Male', 'Female'])],
@@ -33,9 +34,10 @@ class StoreUserInfoRequest extends FormRequest
             'military_situation' => ['required', Rule::in(['Postponed', 'Exempt', 'Finished'])],
             'health_status' => ['required', 'string'],
             'salary' => ['required', 'integer'],
-            'level' => ['required', Rule::in(['in:Senior,Mid,Junior'])],
+            'level' => ['required', Rule::in(['Senior', 'Mid', 'Junior'])],
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();

@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\ResponseHelper;
 use App\Http\Requests\NoteRequest\StoreNoteRequest;
 use App\Http\Requests\NoteRequest\UpdateNoteRequest;
-use App\Models\Note;
 use App\Services\NoteService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class NoteController extends Controller
 {
@@ -41,7 +37,7 @@ class NoteController extends Controller
       return $this->noteService->destroy($id);
     }
 
-    public function user_notes($id)
+    public function user_notes($id)//Get all user's notes
     {
        return $this->noteService->getUserNotes($id);
     }
