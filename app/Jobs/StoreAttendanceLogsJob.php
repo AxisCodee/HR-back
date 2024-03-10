@@ -19,6 +19,7 @@ use App\Models\Policy;
 use App\Models\Absences;
 use Carbon\Carbon;
 use TADPHP\TADFactory;
+
 require 'tad\vendor\autoload.php';
 
 class StoreAttendanceLogsJob implements ShouldQueue
@@ -28,9 +29,11 @@ class StoreAttendanceLogsJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public $branch_id;
+
+    public function __construct($branch_id)
     {
-        //
+        $this->branch_id = $branch_id;
     }
 
     /**
@@ -41,8 +44,11 @@ class StoreAttendanceLogsJob implements ShouldQueue
         try {
             return DB::transaction(function () {
                 //store the attendance
+                $branch = Branch::findOrFail($this->branch_id); //it should be received (static temporary)
+                dd($this->branch_id);
+                $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
                 $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
-              
+
                 $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
                 $tad = $tad_factory->get_instance();
                 $all_user_info = $tad->get_all_user_info();
@@ -55,7 +61,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
                     $branch = User::where('pin', intval($log['PIN']))->first();
-                    if ($branch){
+                    if ($branch) {
                         $attendance = [
                             'pin' => $log['PIN'],
                             'datetime' => $log['DateTime'],
@@ -64,7 +70,8 @@ class StoreAttendanceLogsJob implements ShouldQueue
                             'status' => $log['Status'],
                             'work_code' => $log['WorkCode'],
                         ];
-                    Attendance::updateOrCreate(['datetime' => $log['DateTime'],'branch_id'=>$branch->branch_id], $attendance);}
+                        Attendance::updateOrCreate(['datetime' => $log['DateTime'], 'branch_id' => $branch->branch_id], $attendance);
+                    }
                     $date = date('Y-m-d', strtotime($log['DateTime']));
                     Date::updateOrCreate(['date' => $date]);
                     // the first of check the late
@@ -73,7 +80,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                     $checkOutHour = substr($log['DateTime'], 11, 15);
                     $parsedHour = Carbon::parse($checkInHour);
                     $parsedHourOut = Carbon::parse($checkOutHour);
-                    $policy = Policy::query()->where('branch_id', $branche->id)->first();
+                    $policy = Policy::query()->where('branch_id', $branch->id)->first();
                     $companyStartTime = $policy->work_time['start_time'];
                     $companyEndTime = $policy->work_time['end_time'];
                     // check if the persone late
@@ -91,39 +98,29 @@ class StoreAttendanceLogsJob implements ShouldQueue
                         $diffOverTime = $parsedHourOut->diff($companyEndTime);
                         $hoursOverTime = $diffOverTime->format('%H.%I');
                         $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
-                        $userId = User::query()->where('pin', ($log['PIN']));
-                        // $lates = Late::query()
-                        // ->where('user_id', $userId)
-                        // ->whereDate('lateDate', '=', $checkInDate)
-                        // ->whereNull('check_in')
-                        // ->whereNull('check_out')
-                        // ->first();
-
-
-                        $newLateData = [
-                            'user_id' => $userId->pin,
-                            'lateDate' => $checkInDate,
-                            'check_in' => $log['Status'] == 0 ? $checkInHour : null,
-                            'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                            'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
-                        ];
-
-                        if ($userId) {
-                            $newLate = Late::updateOrCreate(
-
-  ['lateDate' => $newLateData['lateDate']],
-
-                               [ $newLateData ]
-
-
-
-                            );
+                        $userId = User::query()->where('pin', ($log['PIN']))->value('id');
+                        $lates = Late::query()
+                            ->where('user_id', $userId)
+                            ->whereDate('lateDate', '=', $checkInDate)
+                            ->whereNull('check_in')
+                            ->whereNull('check_out')
+                            ->first();
+                        if (!$lates) {
+                            $newLateData = [
+                                'user_id' => $userId,
+                                'lateDate' => $checkInDate,
+                                'check_in' => $log['Status'] == 0 ? $checkInHour : null,
+                                'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
+                                'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
+                            ];
+                            if ($userId) {
+                                $newLate = Late::query()->create($newLateData);
+                            }
+                        } else {
+                            $lates->update([
+                                'check_in' => $checkInHour,
+                            ]);
                         }
-                    // } else {
-                    //             $lates->update([
-                    //                 'check_in' => $checkInHour,
-                    //             ]);
-                    //         }
                     }
                     // $numberOfHour = $lates->hours_num;
                     // if ($hoursLate > $numberOfHour) {
@@ -183,5 +180,5 @@ class StoreAttendanceLogsJob implements ShouldQueue
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
-    }
-}
+
+}}
