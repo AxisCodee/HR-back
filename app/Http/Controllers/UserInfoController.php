@@ -27,6 +27,7 @@ class UserInfoController extends Controller
         });
         return ResponseHelper::error('error', null);
     }
+
     public function update(UpdateUserInfoRequest $request, $id)
     {
         $validate = $request->validated();
@@ -42,6 +43,7 @@ class UserInfoController extends Controller
         });
         return ResponseHelper::error('error', null);
     }
+
     public function show($id)
     {
         $userId = Auth::id() ?? $id;
