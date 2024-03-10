@@ -123,7 +123,8 @@ class ContractController extends Controller
      */
     public function archivedContracts()
     {
-        $contracts = Contract::query()->where('endTime', '<=', Carbon::now())->get();
+        $contracts = Contract::query()->where('endTime', '<=', Carbon::now())
+            ->get()->toArray();
         return ResponseHelper::success($contracts);
     }
 }
