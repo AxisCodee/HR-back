@@ -53,7 +53,9 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::post('Add', 'store');
                 Route::get('Show/{id}', 'show');
                 Route::get('All', 'index');
+                Route::get('Archived', 'archivedContracts');
                 Route::delete('Delete/{contract}', 'destroy');
+                Route::post('Update/{contract}', 'update');
             });
         });
 
