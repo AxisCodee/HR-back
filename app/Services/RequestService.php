@@ -38,7 +38,6 @@ class RequestService
     {
         try {
             DB::beginTransaction();
-
             $requests = Request::query()
                 ->create([
                     'user_id' => Auth::id(),
@@ -48,16 +47,12 @@ class RequestService
                     'description' => $request->description,
                     'status' => 'waiting'
                 ]);
-
             DB::commit();
-
             return ResponseHelper::created($requests, 'Request created successfully');
         } catch (\Exception $e) {
             DB::rollback();
-
             return ResponseHelper::error('Failed to create request.', null);
         }
-
     }
 
 
@@ -67,11 +62,9 @@ class RequestService
             ->where('user_id', Auth::user()->id)
             ->get()
             ->toArray();
-
         if (empty($result)) {
             return ResponseHelper::success($result, 'Request not exist');
         }
-
         return ResponseHelper::success($result, 'My requests:');
     }
 
@@ -103,11 +96,10 @@ class RequestService
                 'type' => $request->type,
                 'description' => $request->description
             ]);
-
         if ($request) {
             return ResponseHelper::updated('Request updated successfully');
         } else {
-            return ResponseHelper::success('You cannot update this request');
+            return ResponseHelper::error('You cannot update this request');
         }
     }
 
