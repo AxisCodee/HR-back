@@ -2,23 +2,24 @@
 
 namespace App\Jobs;
 
+use Carbon\Carbon;
+use App\Models\Date;
+use App\Models\Late;
+use App\Models\User;
+use App\Models\Branch;
+use App\Models\Policy;
+use TADPHP\TADFactory;
+use App\Models\Absences;
+use App\Models\Decision;
+use App\Models\Attendance;
+use Illuminate\Bus\Queueable;
 use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use App\Models\Branch;
-use App\Models\Attendance;
-use App\Models\Date;
-use App\Models\User;
-use App\Models\Late;
-use App\Models\Policy;
-use App\Models\Absences;
-use Carbon\Carbon;
-use TADPHP\TADFactory;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 require 'tad\vendor\autoload.php';
 
 class StoreAttendanceLogsJob implements ShouldQueue
@@ -146,17 +147,36 @@ class StoreAttendanceLogsJob implements ShouldQueue
                         if (!empty($usersWithoutAttendance)) {
                             //create the absence
                             foreach ($usersWithoutAttendance as $user) {
+                                $userPolicy=Policy::query()->where('branch_id', $user->branche_id)->first();
                                 $absence = DB::table('absences')
                                     ->where('user_id', $user->id)
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
-
                                 if (!$absence) {
-                                    Absences::updateOrCreate([
-                                        'user_id' => $user->id,
-                                        'startDate' => $date,
-
-                                    ]);
+                                    if ($policy->deduction_status == true) {
+                                        Absences::where('bra')->updateOrCreate([
+                                            'user_id' => $user->id,
+                                            'startDate' => $date,
+                                            'type' => 'Unjustified'
+                                        ]);
+                                    } else {
+                                       Absences::updateOrCreate([
+                                            'user_id' => $user->id,
+                                            'startDate' => $date,
+                                            'type' => 'null'
+                                        ]);
+                                        Decision::query()->updateOrCreate(
+                                            [
+                                                'user_id' =>  $user->id,
+                                                'type' => 'alert',
+                                                'salary' => $user->userInfo->salary,
+                                                'dateTime' => $date,
+                                                'fromSystem' => true,
+                                                'content' => 'Unjustified absence',
+                                                'amount' => null,
+                                                'branch_id' => $user->branch_id
+                                            ]);
+                                    }
                                 }
                             }
                         }
@@ -164,7 +184,6 @@ class StoreAttendanceLogsJob implements ShouldQueue
                 }
                 return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
             });
-            return ResponseHelper::error('error', null);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Illuminate\Database\QueryException $e) {

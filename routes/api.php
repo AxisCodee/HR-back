@@ -52,6 +52,7 @@ Route::middleware('auth', 'admin')->group(function () {
             Route::get('Show/{id}', 'show');
             Route::get('All', 'index');
             Route::delete('Delete/{contract}', 'destroy');
+            Route::post('Update/{contract}','update');
         });
     });
 

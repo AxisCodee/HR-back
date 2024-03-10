@@ -18,25 +18,37 @@ class RateController extends Controller
 {
     protected $rateService;
 
+    /**
+     * Define the constructor to use the service.
+     * @param RateService
+     * @return none
+     */
     public function __construct(RateService $rateService)
     {
         $this->rateService = $rateService;
     }
+
     /**
-     * Display a listing of the resource.
+     * Get the rates of a user.
+     * [RateService => UserRates]
+     * @param RateService
+     * @return none
      */
     public function index(User $user)
     {
-        // $userRate= $user->evaluatorRates()->get();
-        $rate = $user->userRates()->get(['rate', 'evaluator_role'])
-            ->toArray();
-        if (!$rate) {
-            return ResponseHelper::success(null, null, 'there are not any Rate', 200);
-        } else {
-
-            return ResponseHelper::success($rate, null, 'userRate', 200);
+        try {
+            return  $this->rateService->UserRates($user);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
         }
     }
+
+    /**
+     * Rate a user with a rate type.
+     * [RateService => setRate]
+     * @param StoreRateRequest
+     * @return none
+     */
     public function setRate(StoreRateRequest $request)
     {
         $userId = $request->user_id;
@@ -53,103 +65,111 @@ class RateController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Rate $rate)
-    {
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update a user's rate.
+     * [RateService => UpdateRate]
+     * @param UpdateRateRequest
+     * @param Rate
+     * @return none
      */
     public function update(UpdateRateRequest $request, Rate $rate)
     {
-        $user = User::find(Auth::id());
-        $result = $rate->update(
-            [
-                'user_id' => $request->user_id,
-                'rate' => $request->rate,
-                'type' => $request->type,
-                'evaluator_id' => $user->id,
-                'evaluator_role' => $user->role
-            ]
-        );
-        return ResponseHelper::success($result, null, 'your rate updated successfully', 200);
+        try {
+            return  $this->rateService->UpdateRate($request, $rate);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update a user's rate.
+     * [RateService => Delete]
+     * @param Rate
+     * @return none
      */
     public function destroy(Rate $rate)
     {
-        $rate->delete();
-        return ResponseHelper::success(null, null, 'deleted successfully');
+        try {
+            return $this->rateService->Delete($rate);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
+        }
     }
+
+    /**
+     * Show the rate of the authenticated user.
+     * [RateService => MyRate]
+     * @param User
+     * @return none
+     */
     public function showMyRate(User $user)
     {
-        $user = User::find(Auth::id());
-        $userRate = $user->userRates()->get(['rate', 'evaluator_role'])->toArray();
-        if (!$userRate) {
-            return ResponseHelper::success(null, null, 'there are not any Rate', 200);
-        } else {
+        try {
+            return  $this->rateService->MyRate($user);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
         }
-        return ResponseHelper::success($userRate, null, 'yourRate', 200);
     }
 
+    /**
+     * Get rates of a user.
+     * [RateService => getRate]
+     * @param Request
+     * @param User
+     * @return none
+     */
     public function getRate(Request $request, $id)
     {
-        return $this->rateService->getRate($request, $id);
+        try {
+            return $this->rateService->getRate($request, $id);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
+        }
     }
 
+    /**
+     * Get rates of all users.
+     * [RateService => allRates]
+     * @param Request
+     * @return none
+     */
     public function allRates(Request $request)
     {
-        $rates = Rate::with(['rateType' => function ($query) use ($request) {
-            $query->where('branch_id', $request->branch_id);
-        }])
-            ->get()
-            ->groupBy('date')
-            ->flatMap(function ($items) {
-                $evaluatorCount = $items->countBy('evaluator_id');
-                $result = [];
-                foreach ($items as $item) {
-                    $itemData = $item->toArray();
-                    $itemData['evaluator_count'] = $evaluatorCount[$item->evaluator_id];
-                    $result[] = $itemData;
-                }
-                return $result;
-            })
-            ->toArray();
-
-        return ResponseHelper::success($rates, null, 'rates',  200);
+        try {
+            return $this->rateService->allRates($request);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), 422);
+        }
     }
 
+    /**
+     * Get rates of a user in a date.
+     * [RateService => DateRate]
+     * @param Request
+     * @param $date
+     * @return none
+     */
     public function userRates(Request $request, $date)
     {
         try {
-            $result = RateType::with(['rate' => function ($query) use ($date) {
-                $query->whereDate('date', $date);
-            }, 'rate.user'])->get()->toArray();
-            return ResponseHelper::success($result, null, 'userRates', 200);
+            return $this->rateService->DateRate($request, $date);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
+
+    /**
+     * Get rate type of a user in a date.
+     * [RateService => UserRateType]
+     * @param Request
+     * @param $date
+     * @return none
+     */
     public function userRate(Request $request, $date)
     {
         try {
-            $result = RateType::with(['rate' => function ($query) use ($date) {
-                $query->whereDate('date', $date);
-            }, 'rate.users'])
-                ->whereHas('rate.users', function ($query) use ($request) {
-                    $query->where('id', $request->user_id);
-                })
-                ->get()
-                ->toArray();
-
-            return ResponseHelper::success($result, null, 'userRates', 200);
+            return $this->rateService->UserRateType($request, $date);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
-
 }
