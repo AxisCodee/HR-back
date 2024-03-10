@@ -54,9 +54,9 @@ class ReportServices
                 $query->whereDate('datetime', $date);
             }
         ])->get()->toArray();
-        return ResponseHelper::success([
+        return ResponseHelper::success(
             $result
-        ]);
+        );
     }
 
     public function DailyReports($request)
