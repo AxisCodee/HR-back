@@ -55,24 +55,6 @@ class UserController extends Controller
             ->whereNull('deleted_at')
             ->get()
             ->toArray();
-        // $now = Carbon::now();
-        // $startTime =  Carbon::parse('2024-06-03 09:00:00');
-        // $dateNow = Carbon::now()->format('Y-m-d');
-
-        // foreach ($all_users as $index => &$user) {
-        //     $attendance = Attendance::where('pin', $user['pin'])->first();
-        //     if ($attendance) {
-        //         $attendanceDate = $attendance->datetime;
-        //         $dateT = Carbon::parse($attendanceDate)->format('Y-m-d');
-        //         $attendance1 = Attendance::where('pin', $user['pin']
-        //         )->whereDate('datetime', $dateNow)->first();
-        //         if ($attendance1) {
-        //             $dateTime = Carbon::parse($attendance1->datetime);
-        //             $status = ($dateTime >= $startTime && $dateTime <= $now);
-        //             $user['status'] = $status;
-        //         } }}
-
-
         return ResponseHelper::success($all_users, null, 'all users info returned successfully', 200);
     }
 
@@ -131,10 +113,11 @@ class UserController extends Controller
 
     //delete a specific user by his id
     public function remove_user($user)
-    {   $remove_user = User::findOrFail($user);
+    {
+        $remove_user = User::findOrFail($user);
         $before = $remove_user->department_id;
         $remove_user->delete();
-        $remove_user->update(['department_id',$before]);
+        $remove_user->update(['department_id', $before]);
         return ResponseHelper::deleted('user removed successfully');
     }
 
@@ -152,8 +135,6 @@ class UserController extends Controller
         $result = $this->teamService->addMembers($request, $team);
         return $result;
     }
-
-
 
 
     //delete an exisiting team
