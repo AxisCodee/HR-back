@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('verified', 255); // Specify appropriate length
             $table->string('status', 255);   // Specify appropriate length
             $table->string('work_code');
+            $table->index(['pin', 'datetime']);
             $table->timestamps();
         });
     }

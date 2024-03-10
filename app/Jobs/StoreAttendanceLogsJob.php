@@ -2,24 +2,24 @@
 
 namespace App\Jobs;
 
-use Carbon\Carbon;
-use App\Models\Date;
-use App\Models\Late;
-use App\Models\User;
-use App\Models\Branch;
-use App\Models\Policy;
-use TADPHP\TADFactory;
-use App\Models\Absences;
-use App\Models\Decision;
-use App\Models\Attendance;
-use Illuminate\Bus\Queueable;
 use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use App\Models\Branch;
+use App\Models\Attendance;
+use App\Models\Date;
+use App\Models\User;
+use App\Models\Late;
+use App\Models\Policy;
+use App\Models\Absences;
+use Carbon\Carbon;
+use TADPHP\TADFactory;
+
 require 'tad\vendor\autoload.php';
 
 class StoreAttendanceLogsJob implements ShouldQueue
@@ -29,9 +29,11 @@ class StoreAttendanceLogsJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public $branch_id;
+
+    public function __construct($branch_id)
     {
-        //
+        $this->branch_id = $branch_id;
     }
 
     /**
@@ -42,8 +44,9 @@ class StoreAttendanceLogsJob implements ShouldQueue
         try {
             return DB::transaction(function () {
                 //store the attendance
-                $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
-                $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
+                $branch = Branch::findOrFail($this->branch_id); //it should be received (static temporary)
+                dd($this->branch_id);
+                $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
                 $tad = $tad_factory->get_instance();
                 $all_user_info = $tad->get_all_user_info();
                 $dt = $tad->get_date();
@@ -55,7 +58,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
                     $branch = User::where('pin', intval($log['PIN']))->first();
-                    if ($branch){
+                    if ($branch) {
                         $attendance = [
                             'pin' => $log['PIN'],
                             'datetime' => $log['DateTime'],
@@ -64,7 +67,8 @@ class StoreAttendanceLogsJob implements ShouldQueue
                             'status' => $log['Status'],
                             'work_code' => $log['WorkCode'],
                         ];
-                    Attendance::updateOrCreate(['datetime' => $log['DateTime'],'branch_id'=>$branch->branch_id], $attendance);}
+                        Attendance::updateOrCreate(['datetime' => $log['DateTime'], 'branch_id' => $branch->branch_id], $attendance);
+                    }
                     $date = date('Y-m-d', strtotime($log['DateTime']));
                     Date::updateOrCreate(['date' => $date]);
                     // the first of check the late
@@ -73,7 +77,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                     $checkOutHour = substr($log['DateTime'], 11, 15);
                     $parsedHour = Carbon::parse($checkInHour);
                     $parsedHourOut = Carbon::parse($checkOutHour);
-                    $policy = Policy::query()->where('branch_id', $branche->id)->first();
+                    $policy = Policy::query()->where('branch_id', $branch->id)->first();
                     $companyStartTime = $policy->work_time['start_time'];
                     $companyEndTime = $policy->work_time['end_time'];
                     // check if the persone late
@@ -147,36 +151,17 @@ class StoreAttendanceLogsJob implements ShouldQueue
                         if (!empty($usersWithoutAttendance)) {
                             //create the absence
                             foreach ($usersWithoutAttendance as $user) {
-                                $userPolicy=Policy::query()->where('branch_id', $user->branche_id)->first();
                                 $absence = DB::table('absences')
                                     ->where('user_id', $user->id)
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
+
                                 if (!$absence) {
-                                    if ($policy->deduction_status == true) {
-                                        Absences::where('bra')->updateOrCreate([
-                                            'user_id' => $user->id,
-                                            'startDate' => $date,
-                                            'type' => 'Unjustified'
-                                        ]);
-                                    } else {
-                                       Absences::updateOrCreate([
-                                            'user_id' => $user->id,
-                                            'startDate' => $date,
-                                            'type' => 'null'
-                                        ]);
-                                        Decision::query()->updateOrCreate(
-                                            [
-                                                'user_id' =>  $user->id,
-                                                'type' => 'alert',
-                                                'salary' => $user->userInfo->salary,
-                                                'dateTime' => $date,
-                                                'fromSystem' => true,
-                                                'content' => 'Unjustified absence',
-                                                'amount' => null,
-                                                'branch_id' => $user->branch_id
-                                            ]);
-                                    }
+                                    Absences::updateOrCreate([
+                                        'user_id' => $user->id,
+                                        'startDate' => $date,
+
+                                    ]);
                                 }
                             }
                         }
@@ -184,6 +169,7 @@ class StoreAttendanceLogsJob implements ShouldQueue
                 }
                 return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
             });
+            return ResponseHelper::error('error', null);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Illuminate\Database\QueryException $e) {
