@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DepositRequest;
 use App\Models\Deposit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,8 +9,6 @@ use App\Helper\ResponseHelper;
 use App\Http\Requests\DepositRequest\UpdateDepositRequest;
 use App\Http\Requests\DepositRequest\StoreDepositRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-
 
 class DepositController extends Controller
 {
@@ -38,7 +35,6 @@ class DepositController extends Controller
             $deposit = Deposit::query()->create($validate);
             return ResponseHelper::success($deposit, null);
         });
-        return ResponseHelper::error('error', null);
     }
 
     public function update(UpdateDepositRequest $request, $id)
@@ -50,8 +46,8 @@ class DepositController extends Controller
                 ->update($validate);
             return ResponseHelper::success('Deposit has been updated', null);
         });
-        return ResponseHelper::error('error', null);
     }
+
     public function show() //all deposits
     {
         $result = Deposit::query()->with('user', 'user.userInfo:id,user_id,image')
@@ -62,15 +58,10 @@ class DepositController extends Controller
 
     public function destroy($id)
     {
-        try {
-            return DB::transaction(function () use ($id) {
-                $deposit = Deposit::query()->find($id);
-                $deposit->delete();
-                return ResponseHelper::success('Deposit has been deleted', null);
-            });
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
-        //return ResponseHelper::error('not deleted', null);
+        return DB::transaction(function () use ($id) {
+            $deposit = Deposit::query()->find($id);
+            $deposit->delete();
+            return ResponseHelper::success('Deposit has been deleted', null);
+        });
     }
 }

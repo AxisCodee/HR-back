@@ -20,9 +20,8 @@ class ContractController extends Controller
         $contracts = Contract::with('user', 'user.userInfo')->whereHas('user', function ($query) use ($branchId) {
             $query->where('branch_id', $branchId);
         })->get();
-        if ($contracts->isEmpty()) {
-            ;
-            return ResponseHelper::success([],null,'no contract',200);
+        if ($contracts->isEmpty()) {;
+            return ResponseHelper::success([], null, 'no contract', 200);
         } else {
             foreach ($contracts as $contract) {
                 $endTime = Carbon::parse($contract['endTime']);
@@ -99,7 +98,13 @@ class ContractController extends Controller
      */
     public function update(UpdateContractRequest $request, Contract $contract)
     {
-        //
+        try {
+            $validate = $request->validated();
+            $contract->update($validate);
+            return ResponseHelper::success($contract, null, 'contract updated successfully', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
     }
 
     /**

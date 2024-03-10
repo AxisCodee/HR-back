@@ -7,15 +7,9 @@ use App\Http\Requests\RequestRequest\StoreRequestRequest;
 use App\Http\Requests\RequestRequest\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\RequestRequest\SendRequest;
-use App\Models\Absences;
-use App\Models\Decision;
-use App\Models\User;
 use App\Services\RequestService;
-use Carbon\Carbon;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-
 
 class RequestController extends Controller
 {
@@ -31,7 +25,6 @@ class RequestController extends Controller
     {
         return $this->requestService->index();
     }
-
 
     public function store(StoreRequestRequest $request)
     {
@@ -59,14 +52,16 @@ class RequestController extends Controller
         return $this->requestService->destroy($request);
     }
 
-    public function acceptRequest( $request)
+    public function acceptRequest(Request $request)
     {
         return $this->requestService->acceptRequest($request);
     }
+
     public function rejectRequest($request)
     {
         return $this->requestService->rejectRequest($request);
     }
+
     public function addComplaint(Request $request)
     {
         $complaint = Request::query()->create(
@@ -82,9 +77,9 @@ class RequestController extends Controller
     public function getComplaints(HttpRequest $request)
     {
         $branchId = $request->branch_id;
-        $result = Request::with('user.department', 'user.userInfo:id,user_id,image')->with('user',  function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            })
+        $result = Request::with('user.department', 'user.userInfo:id,user_id,image')->with('user', function ($query) use ($branchId) {
+            $query->where('branch_id', $branchId);
+        })
             ->where('type', 'complaint')
             ->get()
             ->toArray();
@@ -101,15 +96,13 @@ class RequestController extends Controller
     {
         return $this->requestService->sendRequest($request);
     }
+
     public function deleteComplaints($request)
     {
-        if($request->type == 'complaint')
-        {
+        if ($request->type == 'complaint') {
             $request->delete();
             return ResponseHelper::success(null, null, 'deleted successfully');
-        }
-        else
-        {
+        } else {
             return ResponseHelper::success(null, null, 'can not deleted');
         }
 
