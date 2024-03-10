@@ -1,0 +1,3899 @@
+{
+	"info": {
+		"_postman_id": "a105e251-625b-4ce2-8aa0-2b3a5584beb6",
+		"name": "Hr_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31807626"
+	},
+	"item": [
+		{
+			"name": "AuthOperation",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "first_name",
+									"value": "samy",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "mhmd",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "samy156@gmail.commvs",
+									"type": "text"
+								},
+								{
+									"key": "pin",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "department_id",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/register",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"register"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "mhmd",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "123456789",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "40",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Rejester",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "first_name",
+											"value": "samy",
+											"type": "text"
+										},
+										{
+											"key": "last_name",
+											"value": "mhmd",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "samy16@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "pin",
+											"value": "40",
+											"type": "text"
+										},
+										{
+											"key": "role_id",
+											"value": "4",
+											"type": "text"
+										},
+										{
+											"key": "department_id",
+											"value": "2",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/register",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"register"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "mhmd",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "123456789",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "40",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 08 Jan 2024 09:25:01 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"success\",\n    \"data\": {\n        \"message\": \"User created successfully\",\n        \"user\": {\n            \"first_name\": \"samy\",\n            \"last_name\": \"mhmd\",\n            \"email\": \"samy16@gmail.com\",\n            \"role_id\": \"4\",\n            \"department_id\": \"2\",\n            \"updated_at\": \"2024-01-08T09:25:01.000000Z\",\n            \"created_at\": \"2024-01-08T09:25:01.000000Z\",\n            \"id\": 7\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "samy156@gmail.commv",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/login",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"login"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "mhmd",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "123456789",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "40",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "password",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "samy16@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/login",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"login"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "mhmd",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "123456789",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "40",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "",
+											"value": "2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 08 Jan 2024 09:26:44 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"success\",\n    \"data\": {\n        \"user\": {\n            \"id\": 7,\n            \"last_name\": \"mhmd\",\n            \"first_name\": \"samy\",\n            \"email\": \"samy16@gmail.com\",\n            \"department_id\": 2,\n            \"role_id\": 4,\n            \"email_verified_at\": null,\n            \"created_at\": \"2024-01-08T09:25:01.000000Z\",\n            \"updated_at\": \"2024-01-08T09:25:01.000000Z\"\n        },\n        \"authorization\": {\n            \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0NzA2MDA0LCJleHAiOjE3MDQ3MDk2MDQsIm5iZiI6MTcwNDcwNjAwNCwianRpIjoieGE0Tnp4S3ZhZ1ljSHFhNSIsInN1YiI6IjciLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.s4pbwZoBHUfoiLp3fbLeTQnJpQZm1yPXyrc3C9VgxgE\",\n            \"type\": \"bearer\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "LogOut",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0NzA2MDA0LCJleHAiOjE3MDQ3MDk2MDQsIm5iZiI6MTcwNDcwNjAwNCwianRpIjoieGE0Tnp4S3ZhZ1ljSHFhNSIsInN1YiI6IjciLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.s4pbwZoBHUfoiLp3fbLeTQnJpQZm1yPXyrc3C9VgxgE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://192.168.2.138:800/api/logout",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "LogOut",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/logout",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 08 Jan 2024 09:30:12 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"success\",\n    \"data\": {\n        \"message\": \"Successfully logged out\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Contracts",
+			"item": [
+				{
+					"name": "addContract",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjEzODo4MDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0MzYwNTc0LCJleHAiOjE3MDQzNjQxNzQsIm5iZiI6MTcwNDM2MDU3NCwianRpIjoiVjd1OHZPYkFUaUFzREdwZCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.BnIW5N1kftUzVXwK6mxjXJGBeOK8jnBKfL8ng02JVBU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "path",
+									"type": "file",
+									"src": "/C:/Users/ASUS/Desktop/New folder/gym1front.jpg"
+								},
+								{
+									"key": "startTime",
+									"value": "2001-12-3",
+									"type": "text"
+								},
+								{
+									"key": "endTime",
+									"value": "2001-12-3",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/contract/Add",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"contract",
+								"Add"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "path",
+											"type": "file",
+											"src": "/C:/Users/ASUS/Pictures/Screenshots/Screenshot 2024-01-03 103632.png"
+										},
+										{
+											"key": "startTime",
+											"value": "2001-12-3",
+											"type": "text"
+										},
+										{
+											"key": "endTime",
+											"value": "2001-12-3",
+											"type": "text"
+										},
+										{
+											"key": "user_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/contract/Add",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"contract",
+										"Add"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 09 Jan 2024 11:52:16 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"success\",\n    \"data\": {\n        \"message\": \"Contract created successfully\",\n        \"user\": {\n            \"path\": \"Filepath/1704801136.png\",\n            \"startTime\": \"2001-12-3\",\n            \"endTime\": \"2001-12-3\",\n            \"user_id\": \"1\",\n            \"updated_at\": \"2024-01-09T11:52:16.000000Z\",\n            \"created_at\": \"2024-01-09T11:52:16.000000Z\",\n            \"id\": 1\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "showContract",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjEzODo4MDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0ODc2Njc1LCJleHAiOjE3MDQ4ODAyNzUsIm5iZiI6MTcwNDg3NjY3NSwianRpIjoiOUtXazU5N1hYMExIMjEwcSIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.oyyP8nZTQ9esCNByg6t5xkklhCo5817uPGMRbxq9BWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://192.168.2.138:800/api/contract/Show/3",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"contract",
+								"Show",
+								"3"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "showContract",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/contract/Show/1",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"contract",
+										"Show",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 09 Jan 2024 12:23:27 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"success\",\n    \"data\": {\n        \"message\": \"your contract\",\n        \"user\": [\n            {\n                \"id\": 1,\n                \"path\": \"Filepath/1704801136.png\",\n                \"startTime\": \"2001-12-03\",\n                \"endTime\": \"2001-12-03\",\n                \"user_id\": 1,\n                \"created_at\": \"2024-01-09T11:52:16.000000Z\",\n                \"updated_at\": \"2024-01-09T11:52:16.000000Z\",\n                \"user\": {\n                    \"id\": 1,\n                    \"last_name\": \"mhmd\",\n                    \"first_name\": \"samy\",\n                    \"email\": \"samy156@gmail.com\",\n                    \"role\": \"admin\",\n                    \"department_id\": 2,\n                    \"email_verified_at\": null,\n                    \"pin\": 6,\n                    \"created_at\": null,\n                    \"updated_at\": null\n                }\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "AllContract",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjEzODo4MDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0ODc2Njc1LCJleHAiOjE3MDQ4ODAyNzUsIm5iZiI6MTcwNDg3NjY3NSwianRpIjoiOUtXazU5N1hYMExIMjEwcSIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.oyyP8nZTQ9esCNByg6t5xkklhCo5817uPGMRbxq9BWw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/contract/All",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"contract",
+								"All"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/contract/All",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"contract",
+										"All"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 09 Jan 2024 12:31:48 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "56"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"success\",\n    \"data\": {\n        \"message\": \"all Contract\",\n        \"user\": [\n            {\n                \"id\": 1,\n                \"path\": \"Filepath/1704801136.png\",\n                \"startTime\": \"2001-12-03\",\n                \"endTime\": \"2001-12-03\",\n                \"user_id\": 1,\n                \"created_at\": \"2024-01-09T11:52:16.000000Z\",\n                \"updated_at\": \"2024-01-09T11:52:16.000000Z\",\n                \"user\": {\n                    \"id\": 1,\n                    \"last_name\": \"mhmd\",\n                    \"first_name\": \"samy\",\n                    \"email\": \"samy156@gmail.com\",\n                    \"role\": \"admin\",\n                    \"department_id\": 2,\n                    \"email_verified_at\": null,\n                    \"pin\": 6,\n                    \"created_at\": null,\n                    \"updated_at\": null\n                }\n            },\n            {\n                \"id\": 2,\n                \"path\": \"Filepath/1704803504.png\",\n                \"startTime\": \"2001-12-03\",\n                \"endTime\": \"2001-12-03\",\n                \"user_id\": 2,\n                \"created_at\": \"2024-01-09T12:31:44.000000Z\",\n                \"updated_at\": \"2024-01-09T12:31:44.000000Z\",\n                \"user\": {\n                    \"id\": 2,\n                    \"last_name\": \"mhmd\",\n                    \"first_name\": \"samy\",\n                    \"email\": \"samy156@gmail.commv\",\n                    \"role\": \"admin\",\n                    \"department_id\": 2,\n                    \"email_verified_at\": null,\n                    \"pin\": 6,\n                    \"created_at\": \"2024-01-09T12:31:04.000000Z\",\n                    \"updated_at\": \"2024-01-09T12:31:04.000000Z\"\n                }\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "deleteContract",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/contract/Delete/2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"contract",
+								"Delete",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Attendence",
+			"item": [
+				{
+					"name": "showAttendanceLogs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "request_data",
+									"value": " \"RealTime\": {\n\t\t          \"OperationID\": \"123123123\",\n\t\t          \"PunchLog\": {\n\t\t               \"Type\": \"CheckOut\",\n\t\t               \"Temperature\": \"36.8\",\n\t\t               \"FaceMask\": false,\n\t\t               \"InputType\": \"Fingerprint\",\n\t\t               \"UserId\": \"2\",\n\t\t               \"LogTime\": \"2020-09-17 07:48:22 GMT +0530\"\n\t\t          },\n\t\t          \"AuthToken\": \"COJJ7eiiPBGUfmIQPvh2PJWWDLX7OuKs\",\n\t\t          \"Time\": \"2020-09-17 04:19:03 GMT +0000\"\n\t\t     }",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/showAttendanceLogs",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"showAttendanceLogs"
+							]
+						},
+						"description": "Gets information about the authenticated user."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 12345678,\n        \"username\": \"taylor-lee\",\n        \"email\": \"taylor.lee@example.com\",\n        \"fullName\": \"Taylor Lee\",\n        \"avatar\": \"https://example.com/user/r5u9qpvmujfjf6lbqmga.jpg\",\n        \"isPublic\": true\n    },\n    \"operations\": [\n        {\n            \"name\": \"mock_usage\",\n            \"limit\": 1000000,\n            \"usage\": 110276,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"monitor_request_runs\",\n            \"limit\": 10000000,\n            \"usage\": 1141750,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"api_usage\",\n            \"limit\": 1000000,\n            \"usage\": 16240,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"custom_domains\",\n            \"limit\": 25,\n            \"usage\": 25,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"serverless_requests\",\n            \"limit\": 10000,\n            \"usage\": 0,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"integrations\",\n            \"limit\": 5000,\n            \"usage\": 1018,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"cloud_agent_requests\",\n            \"limit\": 1000000,\n            \"usage\": 1615,\n            \"overage\": 0\n        }\n    ]\n}"
+						},
+						{
+							"name": "Rate Limit Exceeded",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Too Many Requests",
+							"code": 429,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"rateLimited\",\n    \"message\": \"Rate limit exceeded. Please retry after 1669048687\"\n}"
+						},
+						{
+							"name": "Get authenticated user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 14 Dec 2023 13:39:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "120"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "x-srv-trace",
+									"value": "v=1;t=82326c393990d8f6"
+								},
+								{
+									"key": "x-srv-span",
+									"value": "v=1;s=c405b71c8246c8e2"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "400"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "399"
+								},
+								{
+									"key": "X-RateLimit-Reset",
+									"value": "1702561235"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"78-WpLmxRlFkKKPPDh/y4B5Gn3NuSs\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": {\n        \"name\": \"AuthenticationError\",\n        \"message\": \"Invalid API Key. Every request requires a valid API Key to be sent.\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "showPercent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "request_data",
+									"value": " \"RealTime\": {\n\t\t          \"OperationID\": \"123123123\",\n\t\t          \"PunchLog\": {\n\t\t               \"Type\": \"CheckOut\",\n\t\t               \"Temperature\": \"36.8\",\n\t\t               \"FaceMask\": false,\n\t\t               \"InputType\": \"Fingerprint\",\n\t\t               \"UserId\": \"2\",\n\t\t               \"LogTime\": \"2020-09-17 07:48:22 GMT +0530\"\n\t\t          },\n\t\t          \"AuthToken\": \"COJJ7eiiPBGUfmIQPvh2PJWWDLX7OuKs\",\n\t\t          \"Time\": \"2020-09-17 04:19:03 GMT +0000\"\n\t\t     }",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/showPercent",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"showPercent"
+							]
+						},
+						"description": "Gets information about the authenticated user."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 12345678,\n        \"username\": \"taylor-lee\",\n        \"email\": \"taylor.lee@example.com\",\n        \"fullName\": \"Taylor Lee\",\n        \"avatar\": \"https://example.com/user/r5u9qpvmujfjf6lbqmga.jpg\",\n        \"isPublic\": true\n    },\n    \"operations\": [\n        {\n            \"name\": \"mock_usage\",\n            \"limit\": 1000000,\n            \"usage\": 110276,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"monitor_request_runs\",\n            \"limit\": 10000000,\n            \"usage\": 1141750,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"api_usage\",\n            \"limit\": 1000000,\n            \"usage\": 16240,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"custom_domains\",\n            \"limit\": 25,\n            \"usage\": 25,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"serverless_requests\",\n            \"limit\": 10000,\n            \"usage\": 0,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"integrations\",\n            \"limit\": 5000,\n            \"usage\": 1018,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"cloud_agent_requests\",\n            \"limit\": 1000000,\n            \"usage\": 1615,\n            \"overage\": 0\n        }\n    ]\n}"
+						},
+						{
+							"name": "Rate Limit Exceeded",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Too Many Requests",
+							"code": 429,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"rateLimited\",\n    \"message\": \"Rate limit exceeded. Please retry after 1669048687\"\n}"
+						},
+						{
+							"name": "Get authenticated user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 14 Dec 2023 13:39:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "120"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "x-srv-trace",
+									"value": "v=1;t=82326c393990d8f6"
+								},
+								{
+									"key": "x-srv-span",
+									"value": "v=1;s=c405b71c8246c8e2"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "400"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "399"
+								},
+								{
+									"key": "X-RateLimit-Reset",
+									"value": "1702561235"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"78-WpLmxRlFkKKPPDh/y4B5Gn3NuSs\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": {\n        \"name\": \"AuthenticationError\",\n        \"message\": \"Invalid API Key. Every request requires a valid API Key to be sent.\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Repots",
+			"item": [
+				{
+					"name": "addReport",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjEzODo4MDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0ODgwMzE2LCJleHAiOjE3MDQ4ODM5MTYsIm5iZiI6MTcwNDg4MDMxNiwianRpIjoiQ2c2RXV1R1k5d2JhcUJNaiIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.RiVY5Hnyg-C6euBZBeDI6moTanZgRSAzPFwJzi-ddLg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "aaasssssssssssssssssssssssssssss",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/Report/Add",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"Report",
+								"Add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "myReports",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjEzODo4MDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0ODgwMzE2LCJleHAiOjE3MDQ4ODM5MTYsIm5iZiI6MTcwNDg4MDMxNiwianRpIjoiQ2c2RXV1R1k5d2JhcUJNaiIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.RiVY5Hnyg-C6euBZBeDI6moTanZgRSAzPFwJzi-ddLg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "aaasssssssssssssssssssssssssssss",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/Report/myReports",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"Report",
+								"myReports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dailyReports",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjEzODo4MDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0ODgwMzE2LCJleHAiOjE3MDQ4ODM5MTYsIm5iZiI6MTcwNDg4MDMxNiwianRpIjoiQ2c2RXV1R1k5d2JhcUJNaiIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.RiVY5Hnyg-C6euBZBeDI6moTanZgRSAzPFwJzi-ddLg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "aaasssssssssssssssssssssssssssss",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/Report/daily",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"Report",
+								"daily"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTkyLjE2OC4yLjEzODo4MDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA0ODgwMzE2LCJleHAiOjE3MDQ4ODM5MTYsIm5iZiI6MTcwNDg4MDMxNiwianRpIjoiQ2c2RXV1R1k5d2JhcUJNaiIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.RiVY5Hnyg-C6euBZBeDI6moTanZgRSAzPFwJzi-ddLg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "aaasssssssssssssssssssssssssssss",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/Report/remove/3",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"Report",
+								"remove",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "getAllEmployee",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://192.168.2.138:800/api/Users/allUser",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"Users",
+								"allUser"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Gmail",
+			"item": [
+				{
+					"name": "Login url",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjI0MjU2LCJleHAiOjE3MDUyMjc4NTYsIm5iZiI6MTcwNTIyNDI1NiwianRpIjoiQWhtN0h6d0FLNUpTeE9YdCIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.shMghbSdsMXLZpKOdegYGXbpIy077dLbarVYAZJNQ6k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/login/url",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"login",
+								"url"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login url",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/google/login/url",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"google",
+										"login",
+										"url"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 12 Jan 2024 20:08:42 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "\"https://accounts.google.com/o/oauth2/v2/auth?response_type=code&access_type=offline&client_id=2471971905-1n0fdoqssh0d54n2bjs2qjmoh4unmq35.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fglobal.consent.azure-apim.net%2Fredirect&state&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.readonly%20https%3A%2F%2Fmail.google.com%2F&approval_prompt=force&include_granted_scopes=true\""
+						}
+					]
+				},
+				{
+					"name": "Get Access Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjE5ODc0LCJleHAiOjE3MDUyMjM0NzQsIm5iZiI6MTcwNTIxOTg3NCwianRpIjoiTkN5Y0tkTFFGMGhjelU3cyIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.zhX9aOX-4QjZ3Mj88aKU7M3DK97zFg9IaZXHclNU3y8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "auth_code",
+								"value": "Bearer 4/0AfJohXk7kIYt-6HKydKnxkAw4HV-H_OnvYnnY8HOvhsPVB6XX3Awf6ntFbMt-NhOnSnc0g",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "auth_code",
+									"value": "4/0AfJohXk_zJy9DpsiEr-rgu8k7MvanvQ2eIk8atHnOo7r-eE_NLtQn6uHt6jmcZFZ55kXGQ",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/auth/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Access Token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "auth_code",
+										"value": "Bearer 4/0AfJohXk7kIYt-6HKydKnxkAw4HV-H_OnvYnnY8HOvhsPVB6XX3Awf6ntFbMt-NhOnSnc0g",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "auth_code",
+											"value": "4%2F0AfJohXlW0xeyukBx0dWvBve4ao6yGiYwiPmZPEBFALSCbOAbuJPXC5bfqvRRs5yQNlIFAQ",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/google/auth/login",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"google",
+										"auth",
+										"login"
+									],
+									"query": [
+										{
+											"key": "auth_code",
+											"value": "4/0AfJohXk7kIYt-6HKydKnxkAw4HV-H_OnvYnnY8HOvhsPVB6XX3Awf6ntFbMt-NhOnSnc0g",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 12 Jan 2024 20:50:58 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"ya29.a0AfB_byCVOk5jM_NvJ7D5-5GkVTRRpAltUO65wQ2b4U44q3u8P8swc5-TUEyYh3afXqamZf6qA0Xa6CqQ8gDlGYQyMplpDPHgNl11qH3pM6V7c-LEA8DgSLgTRlg6M5nTtTeDJDGuWzLNAor85lHQQj-9xkyOki3gkNEaCgYKAb4SARESFQHGX2MiJfNTaR_OZ5HzcCn7h1pbcA0170\"\n}"
+						}
+					]
+				},
+				{
+					"name": "User info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjI3NjE2LCJleHAiOjE3MDUyMzEyMTYsIm5iZiI6MTcwNTIyNzYxNiwianRpIjoieXJrd1g4M2dWM0NGT3lmbiIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.IFLdSpw5o99ZSM2cyx068ahuLECVO5VAw82I8A7VSiU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/getUserInfo",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"getUserInfo"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "user info",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/google/getUserInfo",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"google",
+										"getUserInfo"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 12 Jan 2024 20:11:54 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"email\": \"thalesmwork942@gmail.com\",\n    \"familyName\": null,\n    \"gender\": null,\n    \"givenName\": \"ThalesMwork\",\n    \"hd\": null,\n    \"id\": \"103412873995196212255\",\n    \"link\": null,\n    \"locale\": \"en\",\n    \"name\": \"ThalesMwork\",\n    \"picture\": \"https://lh3.googleusercontent.com/a/ACg8ocLfEdB_ZiEnbGsVGXhZX8WjEu6y_ppj2zL9l7zg42TO=s96-c\",\n    \"verifiedEmail\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "Mailbox",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjI4OTI2LCJleHAiOjE3MDUyMzI1MjYsIm5iZiI6MTcwNTIyODkyNiwianRpIjoiSEd0SWlBQTVVeUUxczV4ZCIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.nshYAY5VTTn3OHApCd512csvmqjlNLmJd16UMjOgLRk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "boxType",
+									"value": "INBOX",
+									"type": "text"
+								},
+								{
+									"key": "boxType",
+									"value": "SENT",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "boxType",
+									"value": "DRAFT",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "boxType",
+									"value": "STARRED",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "boxType",
+									"value": "SPAM",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "boxType",
+									"value": "TRASH",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/mailbox",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"mailbox"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Inbox 1",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/google/mailbox",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"google",
+										"mailbox"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 12 Jan 2024 20:39:53 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    [\n        {\n            \"id\": \"18cff4cf1b2280a0\",\n            \"sender\": \"Team DigitalOcean <team@info.digitalocean.com>\",\n            \"subject\": \"[Learn to swim] Part 4 of 5: Website development\",\n            \"date\": \"Fri, 12 Jan 2024 14:11:21 -0600 (CST)\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cfed0f551f4835\",\n            \"sender\": \"Thales Mustafa <thales.98mustafa@gmail.com>\",\n            \"subject\": \"Testing subject\",\n            \"date\": \"Fri, 12 Jan 2024 20:55:43 +0300\",\n            \"isStarred\": true\n        },\n        {\n            \"id\": \"18cfe9fed51a7f2a\",\n            \"sender\": \"Google <no-reply@accounts.google.com>\",\n            \"subject\": \"Security alert\",\n            \"date\": \"Fri, 12 Jan 2024 17:02:22 GMT\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cfdfe4424ff5f7\",\n            \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n            \"subject\": \"All-in-one image manager, editor and viewer - Photo Commander 17\",\n            \"date\": \"Fri, 12 Jan 2024 14:05:48 +0000\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cfdf4636b4ad85\",\n            \"sender\": \"Medium <hello@medium.com>\",\n            \"subject\": \"The Edition: What advice would you give your younger self?\",\n            \"date\": \"Fri, 12 Jan 2024 13:54:20 +0000 (UTC)\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cfbf84e176249a\",\n            \"sender\": \"Medium Daily Digest <noreply@medium.com>\",\n            \"subject\": \"Make $1,000 to $3,000 Every Day with a Simple Google Technique (Online Money-Making Method) | Muhammad Arslan Tunio in ILLUMINATION\",\n            \"date\": \"Fri, 12 Jan 2024 04:40:00 +0000 (UTC)\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cfa268f0c98d39\",\n            \"sender\": \"Team DigitalOcean <team@info.digitalocean.com>\",\n            \"subject\": \"[Learn to swim] Part 3 of 5: Machine learning\",\n            \"date\": \"Thu, 11 Jan 2024 14:11:19 -0600 (CST)\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cf9a794341ec2b\",\n            \"sender\": \"API OAuth Dev Verification <api-oauth-dev-verification-reply+09063u5as4vp11d@google.com>\",\n            \"subject\": \"OAuth Verification Request\",\n            \"date\": \"Thu, 11 Jan 2024 09:52:38 -0800\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cf99911522f57b\",\n            \"sender\": \"Google <no-reply@accounts.google.com>\",\n            \"subject\": \"Security alert\",\n            \"date\": \"Thu, 11 Jan 2024 17:36:46 GMT\",\n            \"isStarred\": false\n        },\n        {\n            \"id\": \"18cf97b0cf9b0980\",\n            \"sender\": \"Windscribe <noreply@windscribe.com>\",\n            \"subject\": \"Are you enjoying free version of Windscribe?\",\n            \"date\": \"Thu, 11 Jan 2024 12:03:46 -0500 (EST)\",\n            \"isStarred\": false\n        }\n    ]\n]"
+						},
+						{
+							"name": "Inbox",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "boxType",
+											"value": "SPAM",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/google/mailbox",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"google",
+										"mailbox"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 10:36:15 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    \"The Folder is empty.\"\n]"
+						}
+					]
+				},
+				{
+					"name": "Read message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjI3NjE2LCJleHAiOjE3MDUyMzEyMTYsIm5iZiI6MTcwNTIyNzYxNiwianRpIjoieXJrd1g4M2dWM0NGT3lmbiIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.IFLdSpw5o99ZSM2cyx068ahuLECVO5VAw82I8A7VSiU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "messageId",
+									"value": "18cfdf4636b4ad85",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/getMessageById",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"getMessageById"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Read message",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/google/getMessageById/18cfed0f551f4835",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"google",
+										"getMessageById",
+										"18cfed0f551f4835"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 12 Jan 2024 20:09:17 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "56"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"emails\": [\n        {\n            \"id\": \"18cfed0f551f4835\",\n            \"from\": {\n                \"email\": \"thales.98mustafa@gmail.com\",\n                \"name\": \"Thales Mustafa \",\n                \"avatar\": \"https://www.gravatar.com/avatar/c4474a586bea2d7392dfdfd266eb3d8e\"\n            },\n            \"to\": [\n                {\n                    \"name\": \"me\",\n                    \"email\": \"thalesmwork942@gmail.com\"\n                }\n            ],\n            \"subject\": \"Testing subject\",\n            \"cc\": [],\n            \"bcc\": [],\n            \"message\": {\n                \"text/plain\": \"VGhpcyBpcyB0ZXN0aW5nIGVtYWlsLg0KRGQNCg==\",\n                \"text/html\": \"PGRpdiBkaXI9ImF1dG8iPlRoaXMgaXMgdGVzdGluZyBlbWFpbC7CoDxkaXYgZGlyPSJhdXRvIj5EZDwvZGl2PjwvZGl2Pg0K\"\n            },\n            \"attachments\": [\n                {\n                    \"filename\": \"New Doc 12-03-2023 19.30.pdf\",\n                    \"thumbnail\": \"\",\n                    \"url\": \"https://www.googleapis.com/gmail/v1/users/me/messages/18cfed0f551f4835/attachments/ANGjdJ8J3H9GHTNQwQsBOBoBNBsZCgdDM0aztbCb_S7wRZ-5D8AUBzktiOPLyYX97F3kMlDyFAW6kBDfZDzZd_JVP1_5zQh_fG0ewRiEADMPFwvbf4bGIXTkou5Vk46DmeWdz1rE2N_VoEOtfwe4UFlE7hC2uR9JUOJsj3wtMP1BGwPNj6nvfBI6kNy3p99047Y1bwPyRZIdtMadbz_WjyUxu3PhIuZrPFK_EMEoHixvVNfg-Q3dmBR_AHVxKRgBaACdR21w0r96x2z1Xy-e4nUaP8VdMCQMDYaX7QybZ5RX3rEmrpvOpvfHpsuP4XBAeGQ_5hB9n0KtGwMG3j5F1rpSvii2i1r4fhQrJtRd5oX_IEwAeuOGCAoCb9alnR5Q87chMHkUrS4_yE-AuDt0\",\n                    \"size\": 154464\n                }\n            ],\n            \"isStarred\": true,\n            \"labels\": {\n                \"isPROMOTIONS\": false,\n                \"isPERSONAL\": true,\n                \"isSOCIAL\": false\n            },\n            \"time\": \"Fri, 12 Jan 2024 20:55:43 +0300\",\n            \"replies\": [\n                {\n                    \"id\": \"18cfee21538d8539\",\n                    \"snippet\": \"the test is received successfully&gt;&gt;&gt;&gt; On Fri, Jan 12, 2024 at 8:55 PM Thales Mustafa &lt;thales.98mustafa@gmail.com&gt; wrote: This is testing email. Dd\"\n                }\n            ],\n            \"folder\": \"inbox\",\n            \"isRead\": true\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjE5ODc0LCJleHAiOjE3MDUyMjM0NzQsIm5iZiI6MTcwNTIxOTg3NCwianRpIjoiTkN5Y0tkTFFGMGhjelU3cyIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.zhX9aOX-4QjZ3Mj88aKU7M3DK97zFg9IaZXHclNU3y8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "messageIds[0]",
+									"value": "18d0644fe73270b3",
+									"type": "text"
+								},
+								{
+									"key": "messageIds[1]",
+									"value": "18d0296dbae7f5c1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/deleteMessages",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"deleteMessages"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete messages",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "messageIds[0]",
+											"value": "18d029889f4634ed",
+											"type": "text"
+										},
+										{
+											"key": "messageIds[1]",
+											"value": "18d0296dbae7f5c1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/Gmail/google/deleteMessages",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"Gmail",
+										"google",
+										"deleteMessages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 20:11:07 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 20:11:07 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.4"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    \"Messages deleted successfully\"\n]"
+						}
+					]
+				},
+				{
+					"name": "Star messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjE5ODc0LCJleHAiOjE3MDUyMjM0NzQsIm5iZiI6MTcwNTIxOTg3NCwianRpIjoiTkN5Y0tkTFFGMGhjelU3cyIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.zhX9aOX-4QjZ3Mj88aKU7M3DK97zFg9IaZXHclNU3y8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "messageIds[0]",
+									"value": "18d0473512821474",
+									"type": "text"
+								},
+								{
+									"key": "messageIds[1]",
+									"value": "18d011ea471f7c5e",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/starMessages",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"starMessages"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Star messages",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "messageIds[0]",
+											"value": "18d0473512821474",
+											"type": "text"
+										},
+										{
+											"key": "messageIds[1]",
+											"value": "18d011ea471f7c5e",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/Gmail/google/starMessages",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"Gmail",
+										"google",
+										"starMessages"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 20:19:32 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 20:19:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.4"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    \"Messages starred successfully\"\n]"
+						}
+					]
+				},
+				{
+					"name": "Send email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzA1MjI3NjE2LCJleHAiOjE3MDUyMzEyMTYsIm5iZiI6MTcwNTIyNzYxNiwianRpIjoieXJrd1g4M2dWM0NGT3lmbiIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.IFLdSpw5o99ZSM2cyx068ahuLECVO5VAw82I8A7VSiU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "subject",
+									"value": "TEST FROM MY DEVICE",
+									"type": "text"
+								},
+								{
+									"key": "recieverEmail",
+									"value": "thales.98mustafa@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Content !",
+									"type": "text"
+								},
+								{
+									"key": "attachment",
+									"type": "file",
+									"src": "/D:/Downloads/Documents/national-visa-antrag-deutsch-english-data.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/sendEmail",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"sendEmail"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Send email",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "subject",
+											"value": "teettetete",
+											"type": "text"
+										},
+										{
+											"key": "recieverEmail",
+											"value": "thales.98mustafa@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "content",
+											"value": "Content !",
+											"type": "text"
+										},
+										{
+											"key": "attachment",
+											"type": "file",
+											"src": "/C:/Users/Thale/Downloads/text.txt"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/google/sendEmail",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"google",
+										"sendEmail"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.12"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 09:52:18 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "59"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "\"Message sent successfully\""
+						}
+					]
+				},
+				{
+					"name": "Search",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "searchQuery",
+									"value": "Ashampoo",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/Gmail/google/search",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"Gmail",
+								"google",
+								"search"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Search",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "searchQuery",
+											"value": "Ashampoo",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/Gmail/google/search",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"Gmail",
+										"google",
+										"search"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "127.0.0.1:8000"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 14:12:58 GMT"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 13 Jan 2024 14:12:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.2.4"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "60"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "58"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"18d023c80b998f3d\",\n        \"sender\": \"ThalesMwork <thalesmwork942@gmail.com>\",\n        \"subject\": \"teettetete\",\n        \"date\": \"Sat, 13 Jan 2024 01:52:15 -0800\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18d022f41e8d4f04\",\n        \"sender\": \"ThalesMwork <thalesmwork942@gmail.com>\",\n        \"subject\": \"gigity\",\n        \"date\": \"Sat, 13 Jan 2024 01:37:47 -0800\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cfdfe4424ff5f7\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"All-in-one image manager, editor and viewer - Photo Commander 17\",\n        \"date\": \"Fri, 12 Jan 2024 14:05:48 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cf8d71d45bbd94\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"The best software for cloning hard disks or partitions\",\n        \"date\": \"Thu, 11 Jan 2024 14:04:56 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cf3b173fc997d7\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"75% discount - 3 great tools to take control of Windows®\",\n        \"date\": \"Wed, 10 Jan 2024 14:05:41 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cee89bbb180e0e\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"HDR #10 professional - Leaps and bounds ahead of traditional camera techniques!\",\n        \"date\": \"Tue, 09 Jan 2024 14:04:12 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18ce963ca6e65286\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Music software with eight comprehensive modules - Ashampoo Music Studio 10\",\n        \"date\": \"Mon, 08 Jan 2024 14:04:40 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cdf171cbdacabf\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Four Top Tools for the price of one - Welcome 2024 Bundle\",\n        \"date\": \"Sat, 06 Jan 2024 14:04:43 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cd9f2301880a6e\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"O&O Defrag 27 Pro - Optimize Hard Disks And SSDs\",\n        \"date\": \"Fri, 05 Jan 2024 14:06:16 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cd4cb074cd2d3c\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Two Top Tools for the price of one - Run your office like a pro!\",\n        \"date\": \"Thu, 04 Jan 2024 14:05:24 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18ccfa4ea4bb6ced\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"SHARPEN #5 — Exceptional image sharpness with artificial intelligence\",\n        \"date\": \"Wed, 03 Jan 2024 14:05:40 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18ccc05fb16bc677\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Four bestsellers, one price - Welcome 2024 Bundle\",\n        \"date\": \"Tue, 02 Jan 2024 21:13:12 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cc556f561ba26e\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Only a few hours left - Save up to 85%\",\n        \"date\": \"Mon, 01 Jan 2024 14:04:19 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cbfc22a6b43d1d\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Only a few hours left: Our review of the year, 2024 preview and a great donation sale\",\n        \"date\": \"Sun, 31 Dec 2023 12:03:42 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cba65b9681e4e9\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Our review of the year, 2024 preview and a great donation sale\",\n        \"date\": \"Sat, 30 Dec 2023 11:04:37 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cb5e55604a0457\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Audials One 2024 - Find, stream and record music, series and movies in high quality\",\n        \"date\": \"Fri, 29 Dec 2023 14:05:55 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cb0be8329db36f\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Best Tool to Simplify Your PC Disk Management - Ease\\u00adUS Partition Master Pro\",\n        \"date\": \"Thu, 28 Dec 2023 14:05:23 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18cab986b19e906d\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Start into the new year with Ashampoo software at great prices\",\n        \"date\": \"Wed, 27 Dec 2023 14:05:41 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18ca6717eaa063d0\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"WebSite X5 evo - How to Create A Website in 5 Simple Steps\",\n        \"date\": \"Tue, 26 Dec 2023 14:05:05 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18ca149ffdc921ee\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Creates, manages and stores your passwords with maximum encryption - Sticky Password Premium\",\n        \"date\": \"Mon, 25 Dec 2023 14:03:50 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18c9c23d1c60fcf8\",\n        \"sender\": \"Ashampoo Blog <info@news.ashampoo.com>\",\n        \"subject\": \"Merry Christmas 2023 from the Ashampoo Blog team!\",\n        \"date\": \"Sun, 24 Dec 2023 14:04:02 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18c96fda37376f2b\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Create amazing portraits in just a few minutes - Anthropics PortraitPro 23\",\n        \"date\": \"Sat, 23 Dec 2023 14:04:13 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18c91d969cbdc427\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Save up to 85% - Spectacular discounts on Ashampoo software\",\n        \"date\": \"Fri, 22 Dec 2023 14:06:33 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18c7b70e6c1059e7\",\n        \"sender\": \"Ashampoo News <info@news.ashampoo.com>\",\n        \"subject\": \"Welcome to Ashampoo!\",\n        \"date\": \"Mon, 18 Dec 2023 05:40:45 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18c767e8249ea9c2\",\n        \"sender\": \"Ashampoo Account-Team <account@ashampoo.com>\",\n        \"subject\": \"Access data for your free MyAshampoo account\",\n        \"date\": \"Sun, 17 Dec 2023 06:37:31 +0000\",\n        \"isStarred\": false\n    },\n    {\n        \"id\": \"18c767e2f5141f5e\",\n        \"sender\": \"Ashampoo Account-Team <account@ashampoo.com>\",\n        \"subject\": \"Confirmation link for your email address\",\n        \"date\": \"Sun, 17 Dec 2023 06:37:09 +0000\",\n        \"isStarred\": false\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Teams",
+			"item": [
+				{
+					"name": "getTeams",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "request_data",
+									"value": " \"RealTime\": {\n\t\t          \"OperationID\": \"123123123\",\n\t\t          \"PunchLog\": {\n\t\t               \"Type\": \"CheckOut\",\n\t\t               \"Temperature\": \"36.8\",\n\t\t               \"FaceMask\": false,\n\t\t               \"InputType\": \"Fingerprint\",\n\t\t               \"UserId\": \"2\",\n\t\t               \"LogTime\": \"2020-09-17 07:48:22 GMT +0530\"\n\t\t          },\n\t\t          \"AuthToken\": \"COJJ7eiiPBGUfmIQPvh2PJWWDLX7OuKs\",\n\t\t          \"Time\": \"2020-09-17 04:19:03 GMT +0000\"\n\t\t     }",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/showPercent",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"showPercent"
+							]
+						},
+						"description": "Gets information about the authenticated user."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 12345678,\n        \"username\": \"taylor-lee\",\n        \"email\": \"taylor.lee@example.com\",\n        \"fullName\": \"Taylor Lee\",\n        \"avatar\": \"https://example.com/user/r5u9qpvmujfjf6lbqmga.jpg\",\n        \"isPublic\": true\n    },\n    \"operations\": [\n        {\n            \"name\": \"mock_usage\",\n            \"limit\": 1000000,\n            \"usage\": 110276,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"monitor_request_runs\",\n            \"limit\": 10000000,\n            \"usage\": 1141750,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"api_usage\",\n            \"limit\": 1000000,\n            \"usage\": 16240,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"custom_domains\",\n            \"limit\": 25,\n            \"usage\": 25,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"serverless_requests\",\n            \"limit\": 10000,\n            \"usage\": 0,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"integrations\",\n            \"limit\": 5000,\n            \"usage\": 1018,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"cloud_agent_requests\",\n            \"limit\": 1000000,\n            \"usage\": 1615,\n            \"overage\": 0\n        }\n    ]\n}"
+						},
+						{
+							"name": "Rate Limit Exceeded",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Too Many Requests",
+							"code": 429,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"rateLimited\",\n    \"message\": \"Rate limit exceeded. Please retry after 1669048687\"\n}"
+						},
+						{
+							"name": "Get authenticated user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 14 Dec 2023 13:39:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "120"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "x-srv-trace",
+									"value": "v=1;t=82326c393990d8f6"
+								},
+								{
+									"key": "x-srv-span",
+									"value": "v=1;s=c405b71c8246c8e2"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "400"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "399"
+								},
+								{
+									"key": "X-RateLimit-Reset",
+									"value": "1702561235"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"78-WpLmxRlFkKKPPDh/y4B5Gn3NuSs\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": {\n        \"name\": \"AuthenticationError\",\n        \"message\": \"Invalid API Key. Every request requires a valid API Key to be sent.\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "storeTeams",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "request_data",
+									"value": " \"RealTime\": {\n\t\t          \"OperationID\": \"123123123\",\n\t\t          \"PunchLog\": {\n\t\t               \"Type\": \"CheckOut\",\n\t\t               \"Temperature\": \"36.8\",\n\t\t               \"FaceMask\": false,\n\t\t               \"InputType\": \"Fingerprint\",\n\t\t               \"UserId\": \"2\",\n\t\t               \"LogTime\": \"2020-09-17 07:48:22 GMT +0530\"\n\t\t          },\n\t\t          \"AuthToken\": \"COJJ7eiiPBGUfmIQPvh2PJWWDLX7OuKs\",\n\t\t          \"Time\": \"2020-09-17 04:19:03 GMT +0000\"\n\t\t     }",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://192.168.2.138:800/api/showPercent",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"2",
+								"138"
+							],
+							"port": "800",
+							"path": [
+								"api",
+								"showPercent"
+							]
+						},
+						"description": "Gets information about the authenticated user."
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"name": "Content-Type",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 12345678,\n        \"username\": \"taylor-lee\",\n        \"email\": \"taylor.lee@example.com\",\n        \"fullName\": \"Taylor Lee\",\n        \"avatar\": \"https://example.com/user/r5u9qpvmujfjf6lbqmga.jpg\",\n        \"isPublic\": true\n    },\n    \"operations\": [\n        {\n            \"name\": \"mock_usage\",\n            \"limit\": 1000000,\n            \"usage\": 110276,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"monitor_request_runs\",\n            \"limit\": 10000000,\n            \"usage\": 1141750,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"api_usage\",\n            \"limit\": 1000000,\n            \"usage\": 16240,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"custom_domains\",\n            \"limit\": 25,\n            \"usage\": 25,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"serverless_requests\",\n            \"limit\": 10000,\n            \"usage\": 0,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"integrations\",\n            \"limit\": 5000,\n            \"usage\": 1018,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"cloud_agent_requests\",\n            \"limit\": 1000000,\n            \"usage\": 1615,\n            \"overage\": 0\n        }\n    ]\n}"
+						},
+						{
+							"name": "Rate Limit Exceeded",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Too Many Requests",
+							"code": 429,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": {
+										"content": "",
+										"type": "text/plain"
+									}
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"rateLimited\",\n    \"message\": \"Rate limit exceeded. Please retry after 1669048687\"\n}"
+						},
+						{
+							"name": "Get authenticated user",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://api.getpostman.com/me",
+									"protocol": "https",
+									"host": [
+										"api",
+										"getpostman",
+										"com"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Thu, 14 Dec 2023 13:39:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "120"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "x-srv-trace",
+									"value": "v=1;t=82326c393990d8f6"
+								},
+								{
+									"key": "x-srv-span",
+									"value": "v=1;s=c405b71c8246c8e2"
+								},
+								{
+									"key": "X-RateLimit-Limit",
+									"value": "400"
+								},
+								{
+									"key": "X-RateLimit-Remaining",
+									"value": "399"
+								},
+								{
+									"key": "X-RateLimit-Reset",
+									"value": "1702561235"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"78-WpLmxRlFkKKPPDh/y4B5Gn3NuSs\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": {\n        \"name\": \"AuthenticationError\",\n        \"message\": \"Invalid API Key. Every request requires a valid API Key to be sent.\"\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "getAttendanceLogs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request_data",
+							"value": " \"RealTime\": {\n\t\t          \"OperationID\": \"123123123\",\n\t\t          \"PunchLog\": {\n\t\t               \"Type\": \"CheckOut\",\n\t\t               \"Temperature\": \"36.8\",\n\t\t               \"FaceMask\": false,\n\t\t               \"InputType\": \"Fingerprint\",\n\t\t               \"UserId\": \"2\",\n\t\t               \"LogTime\": \"2020-09-17 07:48:22 GMT +0530\"\n\t\t          },\n\t\t          \"AuthToken\": \"COJJ7eiiPBGUfmIQPvh2PJWWDLX7OuKs\",\n\t\t          \"Time\": \"2020-09-17 04:19:03 GMT +0000\"\n\t\t     }",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://192.168.2.138:800/api/getAttendanceLogs",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"2",
+						"138"
+					],
+					"port": "800",
+					"path": [
+						"api",
+						"getAttendanceLogs"
+					]
+				},
+				"description": "Gets information about the authenticated user."
+			},
+			"response": [
+				{
+					"name": "Successful Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.getpostman.com/me",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": {
+								"content": "",
+								"type": "text/plain"
+							}
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"user\": {\n        \"id\": 12345678,\n        \"username\": \"taylor-lee\",\n        \"email\": \"taylor.lee@example.com\",\n        \"fullName\": \"Taylor Lee\",\n        \"avatar\": \"https://example.com/user/r5u9qpvmujfjf6lbqmga.jpg\",\n        \"isPublic\": true\n    },\n    \"operations\": [\n        {\n            \"name\": \"mock_usage\",\n            \"limit\": 1000000,\n            \"usage\": 110276,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"monitor_request_runs\",\n            \"limit\": 10000000,\n            \"usage\": 1141750,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"api_usage\",\n            \"limit\": 1000000,\n            \"usage\": 16240,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"custom_domains\",\n            \"limit\": 25,\n            \"usage\": 25,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"serverless_requests\",\n            \"limit\": 10000,\n            \"usage\": 0,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"integrations\",\n            \"limit\": 5000,\n            \"usage\": 1018,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"cloud_agent_requests\",\n            \"limit\": 1000000,\n            \"usage\": 1615,\n            \"overage\": 0\n        }\n    ]\n}"
+				},
+				{
+					"name": "Rate Limit Exceeded",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.getpostman.com/me",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"status": "Too Many Requests",
+					"code": 429,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": {
+								"content": "",
+								"type": "text/plain"
+							}
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"rateLimited\",\n    \"message\": \"Rate limit exceeded. Please retry after 1669048687\"\n}"
+				},
+				{
+					"name": "Get authenticated user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.getpostman.com/me",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 14 Dec 2023 13:39:35 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "120"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "x-srv-trace",
+							"value": "v=1;t=82326c393990d8f6"
+						},
+						{
+							"key": "x-srv-span",
+							"value": "v=1;s=c405b71c8246c8e2"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "400"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "399"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1702561235"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"78-WpLmxRlFkKKPPDh/y4B5Gn3NuSs\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": {\n        \"name\": \"AuthenticationError\",\n        \"message\": \"Invalid API Key. Every request requires a valid API Key to be sent.\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "storeAttendanceLogs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request_data",
+							"value": " \"RealTime\": {\n\t\t          \"OperationID\": \"123123123\",\n\t\t          \"PunchLog\": {\n\t\t               \"Type\": \"CheckOut\",\n\t\t               \"Temperature\": \"36.8\",\n\t\t               \"FaceMask\": false,\n\t\t               \"InputType\": \"Fingerprint\",\n\t\t               \"UserId\": \"2\",\n\t\t               \"LogTime\": \"2020-09-17 07:48:22 GMT +0530\"\n\t\t          },\n\t\t          \"AuthToken\": \"COJJ7eiiPBGUfmIQPvh2PJWWDLX7OuKs\",\n\t\t          \"Time\": \"2020-09-17 04:19:03 GMT +0000\"\n\t\t     }",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://192.168.2.138:800/api/storeAttendanceLogs",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"2",
+						"138"
+					],
+					"port": "800",
+					"path": [
+						"api",
+						"storeAttendanceLogs"
+					]
+				},
+				"description": "Gets information about the authenticated user."
+			},
+			"response": [
+				{
+					"name": "Successful Response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.getpostman.com/me",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": {
+								"content": "",
+								"type": "text/plain"
+							}
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"user\": {\n        \"id\": 12345678,\n        \"username\": \"taylor-lee\",\n        \"email\": \"taylor.lee@example.com\",\n        \"fullName\": \"Taylor Lee\",\n        \"avatar\": \"https://example.com/user/r5u9qpvmujfjf6lbqmga.jpg\",\n        \"isPublic\": true\n    },\n    \"operations\": [\n        {\n            \"name\": \"mock_usage\",\n            \"limit\": 1000000,\n            \"usage\": 110276,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"monitor_request_runs\",\n            \"limit\": 10000000,\n            \"usage\": 1141750,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"api_usage\",\n            \"limit\": 1000000,\n            \"usage\": 16240,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"custom_domains\",\n            \"limit\": 25,\n            \"usage\": 25,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"serverless_requests\",\n            \"limit\": 10000,\n            \"usage\": 0,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"integrations\",\n            \"limit\": 5000,\n            \"usage\": 1018,\n            \"overage\": 0\n        },\n        {\n            \"name\": \"cloud_agent_requests\",\n            \"limit\": 1000000,\n            \"usage\": 1615,\n            \"overage\": 0\n        }\n    ]\n}"
+				},
+				{
+					"name": "Rate Limit Exceeded",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.getpostman.com/me",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"status": "Too Many Requests",
+					"code": 429,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": {
+								"content": "",
+								"type": "text/plain"
+							}
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"rateLimited\",\n    \"message\": \"Rate limit exceeded. Please retry after 1669048687\"\n}"
+				},
+				{
+					"name": "Get authenticated user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.getpostman.com/me",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"me"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Thu, 14 Dec 2023 13:39:35 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "120"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "x-srv-trace",
+							"value": "v=1;t=82326c393990d8f6"
+						},
+						{
+							"key": "x-srv-span",
+							"value": "v=1;s=c405b71c8246c8e2"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "400"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "399"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1702561235"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"78-WpLmxRlFkKKPPDh/y4B5Gn3NuSs\""
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": {\n        \"name\": \"AuthenticationError\",\n        \"message\": \"Invalid API Key. Every request requires a valid API Key to be sent.\"\n    }\n}"
+				}
+			]
+		}
+	]
+}
