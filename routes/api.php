@@ -48,15 +48,16 @@ Route::middleware('exceptionHandler')->group(function () {
             Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
         });
 
-    Route::prefix('contract')->group(function () {
-        Route::controller(ContractController::class)->group(function () {
-            Route::post('Add', 'store');
-            Route::get('Show/{id}', 'show');
-            Route::get('All', 'index');
-            Route::delete('Delete/{contract}', 'destroy');
-            Route::post('Update/{contract}','update');
+        Route::prefix('contract')->group(function () {
+            Route::controller(ContractController::class)->group(function () {
+                Route::post('Add', 'store');
+                Route::get('Show/{id}', 'show');
+                Route::get('All', 'index');
+                Route::get('Archived', 'archivedContracts');
+                Route::delete('Delete/{contract}', 'destroy');
+                Route::post('Update/{contract}', 'update');
+            });
         });
-    });
 
         Route::prefix('Users')->group(function () {
             Route::controller(UserController::class)->group(function () {

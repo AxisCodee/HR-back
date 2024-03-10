@@ -20,7 +20,8 @@ class ContractController extends Controller
         $contracts = Contract::with('user', 'user.userInfo')->whereHas('user', function ($query) use ($branchId) {
             $query->where('branch_id', $branchId);
         })->get();
-        if ($contracts->isEmpty()) {;
+        if ($contracts->isEmpty()) {
+            ;
             return ResponseHelper::success([], null, 'no contract', 200);
         } else {
             foreach ($contracts as $contract) {
@@ -93,6 +94,7 @@ class ContractController extends Controller
 
         return ResponseHelper::success($result, null, 'contract:', 200);
     }
+
     /**
      * Update the specified resource in storage.
      */
@@ -114,5 +116,14 @@ class ContractController extends Controller
     {
         $contract->delete();
         return ResponseHelper::success('contract deleted successfully');
+    }
+
+    /**
+     * Get All Archived contracts.
+     */
+    public function archivedContracts()
+    {
+        $contracts = Contract::query()->where('endTime', '<=', Carbon::now())->get();
+        return ResponseHelper::success($contracts);
     }
 }
