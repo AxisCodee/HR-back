@@ -33,7 +33,9 @@ class UserServices
                     return $query->whereYear('datetime', $year);
                 }
             })
-            ->count('id');
+            ->selectRaw('COUNT(DISTINCT CONCAT(`pin`, DATE(`datetime`))) as check_ins')
+            ->value('check_ins');
+          // dd( $checkIns);
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
