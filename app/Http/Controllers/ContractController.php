@@ -98,22 +98,25 @@ class ContractController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateContractRequest $request, Contract $contract)
+    public function update(UpdateContractRequest $request,$contract)
     {
         try {
+$contractId=Contract::findOrFail($contract);
 
-            if (Carbon::parse($contract->endTime) <= Carbon::now()) {
+if ($contract){
+            if (Carbon::parse($contractId->endTime) <= Carbon::now()) {
                 return ResponseHelper::error('The Contract must be Valid');
             }
             $validate = $request->validated();
             $path = Files::saveFile($request);
-
-            $contract->update([
-                'startTime'=>$request->startTime ?:$contract->startTime,
-                'endTime'=>$request->endTime ?:$contract->path,
+            $contractId->update([
+                'startTime'=>$request->startTime ?:$contractId->startTime,
+                'endTime'=>$request->endTime ?:$contractId->path,
                 'path'=>$path
             ]);
-            return ResponseHelper::success($contract, null, 'contract updated successfully', 200);
+            return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
+        }
+
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
         }
