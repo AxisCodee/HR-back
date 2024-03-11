@@ -60,7 +60,7 @@ class AbsencesController extends Controller
     {
         $today = Carbon::now();
         if ($today->eq($request->date)) {
-            $this->cuurentAbsence();
+
         } else {
             $dateInput = request()->input('date');
             $day = substr($dateInput, 8, 2);
@@ -70,17 +70,30 @@ class AbsencesController extends Controller
             return ResponseHelper::success($result);
         }
     }
-    public function cuurentAbsence()
+    public function cuurentAbsence(Request $request)
     {
-        $usersWithoutAttendance = DB::table('users')
-            ->leftJoin('attendances', function ($join) {
-                $join->on('users.pin', '=', 'attendances.pin')
-                    ->whereDate('attendances.datetime', '=', Carbon::now()->format('y,m,d'));
+        $all_users = User::query()->where('branch_id', $request->branch_id)
+        ->with('department', 'userInfo:id,user_id,image')
+        ->whereNull('deleted_at')->get()->toArray();
+    $usersWithoutAttendance = DB::table('users')
+                            ->leftJoin('attendances', function ($join)  {
+                                $join->on('users.pin', '=', 'attendances.pin')
+                                    ->whereRaw('DATE(attendances.datetime) = ?', Carbon::now()->format('Y-m-d H:i:s'));
+                            })
+                            ->whereNull('attendances.pin')
+                            ->select('users.*')
+                            ->get()->toArray();
+
+            $usersWithStatus = collect( $all_users)
+            ->map(function ($user) use ($usersWithoutAttendance) {
+                return array_merge($user, [
+                    'status' => in_array($user['id'], array_column($usersWithoutAttendance, 'id')) ? 'null' : '1',
+                ]);
             })
-            ->whereNull('attendances.pin')
-            ->select('users.*')
-            ->get();
-        return ResponseHelper::success($usersWithoutAttendance, 'yaaaaaa', null);
+            ->values()
+            ->all();
+
+        return ResponseHelper::success($usersWithStatus, 'yaaaaaa', null);
     }
 
     // to make desicion to absence employee

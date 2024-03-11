@@ -26,7 +26,7 @@ class UpdateContractRequest extends FormRequest
         return [
             'startTime' => ['sometimes','date'],
             'endTime' => ['sometimes','date','after_or_equal:'.$this->startTime],
-            'path' => ['sometimes','file']
+            'path' => ['required','file']
         ];
     }
     protected function failedValidation(Validator $validator)
