@@ -48,20 +48,22 @@ Route::middleware('exceptionHandler')->group(function () {
             Route::get('showAttendanceUser/{user}', [AttendanceController::class, 'showAttendanceUser']);
         });
 
-    Route::prefix('contract')->group(function () {
-        Route::controller(ContractController::class)->group(function () {
-            Route::post('Add', 'store');
-            Route::get('Show/{id}', 'show');
-            Route::get('All', 'index');
-            Route::delete('Delete/{contract}', 'destroy');
-            Route::post('Update/{contract}','update');
+        Route::prefix('contract')->group(function () {
+            Route::controller(ContractController::class)->group(function () {
+                Route::post('Add', 'store');
+                Route::get('Show/{id}', 'show');
+                Route::get('All', 'index');
+                Route::get('Archived', 'archivedContracts');
+                Route::delete('Delete/{contract}', 'destroy');
+                Route::post('Update/{contract}', 'update');
+            });
         });
-    });
 
         Route::prefix('Users')->group(function () {
             Route::controller(UserController::class)->group(function () {
                 Route::get('exceptAdmin', 'not_admin');
                 Route::get('allUser', 'all_users');
+                Route::get('allAndTrashUser', 'allAndTrashUser');
                 Route::delete('removeUser/{user}', 'remove_user');
                 Route::post('EditUser/{user}', 'edit_user');
                 Route::get('Deps&Roles', 'all_dep_rul');
