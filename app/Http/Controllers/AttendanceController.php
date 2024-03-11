@@ -7,6 +7,7 @@ use App\Jobs\StoreAttendanceLogsJob;
 use App\Models\Absences;
 use App\Models\Attendance;
 use App\Models\Branch;
+use App\Models\Contract;
 use App\Models\Date;
 use App\Models\Decision;
 use App\Models\Late;
@@ -87,10 +88,8 @@ class AttendanceController extends Controller
                     $parsedHour = Carbon::parse($checkInHour);
                     $parsedHourOut = Carbon::parse($checkOutHour);
                     $policy = Policy::query()->where('branch_id', $branch->id)->first();
-                    //dd($policy->work_time['start_time']);
                     $companyStartTime = $policy->work_time['start_time'];
                     $companyEndTime = $policy->work_time['end_time'];
-                    //dd(1);
                     // check if the person late
                     if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
                         ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
@@ -167,27 +166,31 @@ class AttendanceController extends Controller
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
                                 if (!$absence) {//unjustified absence
-                                    if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
-                                        Absences::updateOrCreate([
-                                            'user_id' => $user->id,
-                                            'startDate' => $date,
-                                            'type' => 'Unjustified'
-                                        ]);
-                                        Decision::query()->updateOrCreate([
-                                            'user_id' => $user->id,
-                                            'branch_id' => $user->branch_id,
-                                            'type' => 'deduction',
-                                            'content' => 'deduction due the Unjustified absence',
-                                            'dateTime' => $date,
-                                        ]);
-                                    } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
-                                        Absences::updateOrCreate([
-                                            'user_id' => $user->id,
-                                            'startDate' => $date,
-                                            'type' => 'null'
-                                        ]);
+                                    $userContractStart = Contract::query()->where('user_id', $user->id)->first()->startTime;
+                                    $contractST = Carbon::parse($userContractStart);
+                                    $uDate = Carbon::parse($date);
+                                    if ($contractST->lt($uDate)) {
+                                        if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
+                                            Absences::updateOrCreate([
+                                                'user_id' => $user->id,
+                                                'startDate' => $date,
+                                                'type' => 'Unjustified'
+                                            ]);
+                                            Decision::query()->updateOrCreate([
+                                                'user_id' => $user->id,
+                                                'branch_id' => $user->branch_id,
+                                                'type' => 'deduction',
+                                                'content' => 'deduction due the Unjustified absence',
+                                                'dateTime' => $date,
+                                            ]);
+                                        } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
+                                            Absences::updateOrCreate([
+                                                'user_id' => $user->id,
+                                                'startDate' => $date,
+                                                'type' => 'null'
+                                            ]);
+                                        }
                                     }
-
                                 }
                             }
                         }

@@ -113,7 +113,7 @@ class AbsencesController extends Controller
         return ResponseHelper::error('error', null);
     }
 
-    //to get all users who don not take vacation and absence
+    //to get all users who do not take vacation and absence
     public function unjustifiedAbsence()
     {
         $absence = Absences::query()->where('type', 'null')->where('status', 'waiting')->get();
