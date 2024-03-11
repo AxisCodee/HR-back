@@ -18,18 +18,30 @@ class RequestService
     public function index()
     {
         $branchId = HttpRequest::input('branch_id');
-        $results = Request::query()
+        $date = HttpRequest::input('date');
+        $query = Request::query()
             ->with('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
-            ->with('user.department:id,name', 'user.userInfo')
-            ->get()
-            ->toArray();
-
+            ->with('user.department:id,name', 'user.userInfo');
+        if (!empty($date)) {
+            $query->where(function ($query) use ($date) {
+                if (strlen($date) == 4) {
+                    $query->where('date', 'like', $date . '%');
+                }
+                if (strlen($date) == 7) {
+                    $query->orWhere('date', 'like', substr($date, 0, 7) . '%');
+                }
+                if (strlen($date) == 10) {
+                    $query->orWhere('date', 'like', substr($date, 0, 10) . '%');
+                }
+            });
+        }
+        //$results = $result->get()->toArray();
+        $results = $query->get()->toArray();
         if (empty($results)) {
             return ResponseHelper::success($results, null, 'No requests found for the user', 200);
         }
-
         return ResponseHelper::success($results, null, 'All requests', 200);
     }
 
@@ -69,20 +81,30 @@ class RequestService
     }
 
 
-    public function getRequest($request)
+    public function getRequest($request, $date)
     {
         $result = Request::query()
             ->where('id', $request)
             ->with('user:id,first_name,last_name')
-            ->with('user.department:id,name')
-            ->get()
-            ->toArray();
-
-        if (empty($result)) {
-            return ResponseHelper::success($result, null, 'No requests found for the user', 200);
+            ->with('user.department:id,name');
+        if (!empty($date)) {
+            $result->where(function ($query) use ($date) {
+                if (strlen($date) == 4) {
+                    $query->where('date', 'like', $date . '%');
+                }
+                if (strlen($date) == 7) {
+                    $query->orWhere('date', 'like', substr($date, 0, 7) . '%');
+                }
+                if (strlen($date) == 10) {
+                    $query->orWhere('date', 'like', substr($date, 0, 10) . '%');
+                }
+            });
         }
-
-        return ResponseHelper::success($result, 'My requests:');
+        $results = $result->get()->toArray();
+        if (empty($results)) {
+            return ResponseHelper::success($results, null, 'No requests found for the user', 200);
+        }
+        return ResponseHelper::success($results, 'My requests:');
     }
 
 
