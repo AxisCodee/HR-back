@@ -101,11 +101,18 @@ class ContractController extends Controller
     public function update(UpdateContractRequest $request, Contract $contract)
     {
         try {
+
             if (Carbon::parse($contract->endTime) <= Carbon::now()) {
                 return ResponseHelper::error('The Contract must be Valid');
             }
             $validate = $request->validated();
-            $contract->update($validate);
+            $path = Files::saveFile($request);
+
+            $contract->update([
+                'startTime'=>$request->startTime ?:$contract->startTime,
+                'endTime'=>$request->endTime ?:$contract->path,
+                'path'=>$path
+            ]);
             return ResponseHelper::success($contract, null, 'contract updated successfully', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
