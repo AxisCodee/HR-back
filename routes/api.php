@@ -63,6 +63,7 @@ Route::middleware('exceptionHandler')->group(function () {
             Route::controller(UserController::class)->group(function () {
                 Route::get('exceptAdmin', 'not_admin');
                 Route::get('allUser', 'all_users');
+                Route::get('allAndTrashUser', 'allAndTrashUser');
                 Route::delete('removeUser/{user}', 'remove_user');
                 Route::post('EditUser/{user}', 'edit_user');
                 Route::get('Deps&Roles', 'all_dep_rul');
