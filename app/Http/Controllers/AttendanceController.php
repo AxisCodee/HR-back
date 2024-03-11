@@ -53,17 +53,10 @@ class AttendanceController extends Controller
     public function storeAttendanceLogs(Request $request)
     {
         try {
-<<<<<<< HEAD
-            return DB::transaction(function () {
-                //store the attendance
-                $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
-                $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
-=======
             return DB::transaction(function () use ($request) {
                 //store the attendance
                 $branch = Branch::findOrFail($request->branch_id);
                 $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
->>>>>>> 2dd7aeaf28f6d8a645a35a606f169c3b627d5c4f
                 $tad = $tad_factory->get_instance();
                 $all_user_info = $tad->get_all_user_info();
                 $dt = $tad->get_date();
@@ -74,31 +67,18 @@ class AttendanceController extends Controller
                 $logsData = $array['Row'];
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
-<<<<<<< HEAD
-                    $branch = User::where('pin', intval($log['PIN']))->first();
-                    if ($branch){
-                        $attendance = [
-                            'pin' => $log['PIN'],
-                            'datetime' => $log['DateTime'],
-                            'branch_id' => $branch->branch_id,
-=======
                     $userLog = User::where('pin', intval($log['PIN']))->first();
                     if ($userLog) {
                         $attendance = [
                             'pin' => $log['PIN'],
                             'datetime' => $log['DateTime'],
                             'branch_id' => $userLog->branch_id,
->>>>>>> 2dd7aeaf28f6d8a645a35a606f169c3b627d5c4f
                             'verified' => $log['Verified'],
                             'status' => $log['Status'],
                             'work_code' => $log['WorkCode'],
                         ];
-<<<<<<< HEAD
-                    Attendance::updateOrCreate(['datetime' => $log['DateTime'],'branch_id'=>$branch->branch_id], $attendance);}
-=======
                         Attendance::updateOrCreate(['datetime' => $log['DateTime'], 'branch_id' => $userLog->branch_id], $attendance);
                     }
->>>>>>> 2dd7aeaf28f6d8a645a35a606f169c3b627d5c4f
                     $date = date('Y-m-d', strtotime($log['DateTime']));
                     Date::updateOrCreate(['date' => $date]);
                     // the first of check the late
@@ -107,19 +87,12 @@ class AttendanceController extends Controller
                     $checkOutHour = substr($log['DateTime'], 11, 15);
                     $parsedHour = Carbon::parse($checkInHour);
                     $parsedHourOut = Carbon::parse($checkOutHour);
-<<<<<<< HEAD
-                    $policy = Policy::query()->where('branch_id', $branche->id)->first();
-                    $companyStartTime = $policy->work_time['start_time'];
-                    $companyEndTime = $policy->work_time['end_time'];
-                    // check if the persone late
-=======
                     $policy = Policy::query()->where('branch_id', $branch->id)->first();
                     //dd($policy->work_time['start_time']);
                     $companyStartTime = $policy->work_time['start_time'];
                     $companyEndTime = $policy->work_time['end_time'];
                     //dd(1);
                     // check if the person late
->>>>>>> 2dd7aeaf28f6d8a645a35a606f169c3b627d5c4f
                     if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
                         ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
                     ) {
@@ -186,11 +159,7 @@ class AttendanceController extends Controller
                             ->whereNull('attendances.pin')
                             ->select('users.*')
                             ->get();
-<<<<<<< HEAD
-                        // check if there ate an absence , to dont do the operation on null
-=======
                         // check if there ate an absence , to don't do the operation on null
->>>>>>> 2dd7aeaf28f6d8a645a35a606f169c3b627d5c4f
                         if (!empty($usersWithoutAttendance)) {
                             //create the absence
                             foreach ($usersWithoutAttendance as $user) {
@@ -198,32 +167,6 @@ class AttendanceController extends Controller
                                     ->where('user_id', $user->id)
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
-<<<<<<< HEAD
-
-                                if (!$absence) {
-                                    Absences::updateOrCreate([
-                                        'user_id' => $user->id,
-                                        'startDate' => $date,
-
-                                    ]);
-                                }
-                            }
-                        }
-                    }
-                }
-                return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
-            });
-            return ResponseHelper::error('error', null);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return ResponseHelper::error($e->validator->errors()->first(), 400);
-        } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error('QueryException', 400);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
-
-     //   dispatch(new StoreAttendanceLogsJob());
-=======
                                 if (!$absence) {//unjustified absence
                                     if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
                                         Absences::updateOrCreate([
@@ -263,7 +206,6 @@ class AttendanceController extends Controller
 
 //        $branch_id = $request->branch_id;
 //       dispatch(new StoreAttendanceLogsJob($branch_id));
->>>>>>> 2dd7aeaf28f6d8a645a35a606f169c3b627d5c4f
     }
 
     public function showAttendanceLogs()

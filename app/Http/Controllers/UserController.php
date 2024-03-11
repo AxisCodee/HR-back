@@ -251,8 +251,5 @@ class UserController extends Controller
         $result = $this->teamService->updateTeam($id, $request);
         return ResponseHelper::success($result);
     }
-    public function deleteReport(User $user)
-    {
-        $result= $this-> userService->deleteReport($user);
-    }
+ 
 }

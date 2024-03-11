@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('title')->nullable();
+            $table->string('path')->nullable();
             $table->text('description');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->date('received_date')->default(now());

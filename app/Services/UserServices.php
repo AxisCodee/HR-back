@@ -21,7 +21,7 @@ class UserServices
 {
     public function getCheckInPercentage($user, $date)
     {
-        
+
         $checkIns = Attendance::where('status', '0')
             ->where('pin', $user->pin)
             ->when($date, function ($query, $date) {
@@ -205,5 +205,6 @@ class UserServices
             ->with('department', 'userInfo:id,user_id,image')->whereNull('deleted_at')->get()->toArray();
         return $all_users;
     }
+
 
 }

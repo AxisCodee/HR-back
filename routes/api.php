@@ -287,122 +287,7 @@ Route::middleware('exceptionHandler')->group(function () {
 //All APIs for the normal user (not encapsulated)
     Route::prefix('Decision')->group(function () {
         Route::controller(DecisionController::class)->group(function () {
-<<<<<<< HEAD
-            Route::post('Add', 'new_decision');
-            Route::delete('remove/{decision}', 'remove_decision');
-            Route::post('edit/{decision}', 'edit_decision');
-            Route::get('all', 'all_decisions');
-            Route::get('getUserDecisions', 'getUserDecisions');
-            Route::get('getUserAbsence', 'getUserAbsence');
-        });
-    });
-
-    Route::prefix('Calendar')->group(function () {
-        Route::controller(CalendarController::class)->group(function () {
-            Route::post('Add', 'add_event');
-            Route::delete('Remove/{event}', 'cancel_event');
-            Route::get('All', 'all_events');
-            Route::post('Edit/{event}', 'update_event');
-            Route::get('EventsByDay', 'day_events');
-            Route::get('EventsByWeek', 'week_events');
-            Route::get('EventsByMonth', 'month_events');
-            Route::get('/EventDate/{date}', 'getEvenetsByDay');
-        });
-    });
-
-    Route::prefix('Report')->group(function () {
-        Route::controller(ReportController::class)->group(function () {
-            Route::get('daily', 'daily_reports');
-            Route::get('All', 'all_reports');
-            Route::delete('remove/{report}', 'remove');
-            Route::post('InsnOuts', 'user_checks');
-            Route::post('reportByDay', 'report');
-
-            Route::post('ratesByDate', 'ratesByDate');
-        });
-    });
-
-Route::prefix('Request')->group(function () {
-    Route::controller(RequestController::class)->group(function () {
-        Route::get('All', 'index');
-        Route::get('Me', 'show');
-        Route::get('Complaints', 'getComplaints');
-        Route::get('info/{id}', 'getRequest');
-        Route::post('Add', 'store');
-        Route::post('Add', 'store');
-        Route::post('Update/{id}', 'update');
-        Route::post('accepteRequest/{request}', 'acceptRequest');
-        Route::post('rejectRequest/{request}', 'rejectRequest');
-        Route::delete('Delete/{request}', 'destroy');
-    });
-});
-Route::prefix('Team')->group(function () {
-    Route::controller(UserController::class)->group(function () {
-        Route::get('getTeams', 'getTeams');
-        Route::post('storeTeams', 'addTeams');
-        Route::post('AddMembers/{team}', 'Addmembers');
-       // Route::post('updateTeam/{team}', 'updateTeams');
-        Route::delete('deleteTeam/{team}', 'deleteTeam');
-        Route::post('RemoveMember/{user}', 'removeFromTeam');
-        Route::post('addTeams', 'addTeams');
-        Route::post('updateTeam/{id}', 'updateTeam');
-
-
-
-    });
-});
-
-    Route::prefix('Deposit')->group(function () {
-        Route::controller(DepositController::class)->group(function () {
-            Route::get('All', 'index');
-            Route::post('Add', 'store');
-            Route::post('Update/{id}', 'update');
-            Route::get('Show', 'show');
-            Route::delete('Delete/{id}', 'destroy');
-        });
-    });
-
-    Route::prefix('Career')->group(function () {
-        Route::controller(CareerController::class)->group(function () {
-            Route::post('Add', 'store');
-            Route::post('Update/{id}', 'update');
-            Route::delete('Delete/{id}', 'destroy');
-        });
-    });
-
-    Route::prefix('StudySituations')->group(function () {
-        Route::controller(StudySituationController::class)->group(function () {
-            Route::post('Add', 'store');
-            Route::post('Update/{id}', 'update');
-            Route::delete('Delete/{id}', 'destroy');
-        });
-    });
-
-    Route::prefix('Language')->group(function () {
-        Route::controller(LanguageController::class)->group(function () {
-            Route::post('Add', 'store');
-            Route::post('Update/{id}', 'update');
-            Route::delete('Delete/{id}', 'destroy');
-        });
-    });
-
-    Route::prefix('Notes')->group(function () {
-        Route::controller(NoteController::class)->group(function () {
-            Route::post('Add', 'store');
-            Route::post('Update/{id}', 'update');
-            Route::delete('Delete/{id}', 'destroy');
-            Route::get('userNote/{id}', 'user_notes');
-        });
-    });
-
-    Route::prefix('Certificate')->group(function () {
-        Route::controller(CertificateController::class)->group(function () {
-            Route::post('store', 'store');
-            Route::post('update/{id}', 'update');
-            Route::delete('destroy/{id}', 'destroy');
-=======
             Route::get('my_decisions', 'my_decisions');
->>>>>>> 7b7527961e52ee30578f6298d22670f72e8a675e
         });
     });
 
@@ -415,18 +300,6 @@ Route::prefix('Team')->group(function () {
     Route::prefix('Notes')->group(function () {
         Route::controller(NoteController::class)->group(function () {
             Route::get('All', 'index');
-<<<<<<< HEAD
-            Route::get('Show/{user}', 'show');
-            Route::post('update', 'update');
-            Route::get('Uabsences', 'unjustifiedAbsence');
-            Route::post('DynamicDecision/{absences}', 'DynamicDecision');
-            Route::post('AddAbsence', 'store_absence');
-            Route::get('getAbsences/{user}', 'getAbsences');
-            Route::get('currentAbsence', 'cuurentAbsence');
-            Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
-            Route::post('store_one_absence', 'storeAbsence'); //store one absence
-=======
->>>>>>> 7b7527961e52ee30578f6298d22670f72e8a675e
         });
     });
 
