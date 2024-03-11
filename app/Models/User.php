@@ -129,7 +129,7 @@ class User extends Authenticatable implements JWTSubject
 
 public function getIsTrashAttribute()
 {
-    return $this->deleted_at === null ? false : true;
+    return $this->deleted_at === null ? true : false;
 }
     public function getAdvanceAttribute()
     {
