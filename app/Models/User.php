@@ -70,7 +70,8 @@ class User extends Authenticatable implements JWTSubject
         'overTimes',
         'alerts',
         'status',
-        'level'
+        'level',
+        'isTrash'
     ];
     protected $hidden = [
         'password',
@@ -124,6 +125,12 @@ class User extends Authenticatable implements JWTSubject
 //        return 0;
 //    }
 
+
+
+public function getIsTrashAttribute()
+{
+    return $this->deleted_at === null ? false : true;
+}
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');

@@ -8,6 +8,7 @@ use App\Http\Requests\RequestRequest\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\RequestRequest\SendRequest;
 use App\Services\RequestService;
+use Carbon\Carbon;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -69,6 +70,7 @@ class RequestController extends Controller
             [
                 'user_id' => Auth::id(),
                 'type' => 'complaint',
+                'date' => Carbon::now()->format('Y-m-d'),
                 'description' => $request->description
             ]
         );
