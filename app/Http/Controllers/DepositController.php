@@ -14,6 +14,7 @@ use App\Services\DepositServices;
 class DepositController extends Controller
 {
     protected $DepositServices;
+
     public function __construct(DepositServices $DepositServices)
     {
         $this->DepositServices = $DepositServices;
@@ -23,26 +24,23 @@ class DepositController extends Controller
     public function index(Request $request) //all users with department and deposits
     {
         $result = $this->DepositServices->index($request);
-            return ResponseHelper::success($result, null);
+        return ResponseHelper::success($result, null);
 
     }
 
     public function store(StoreDepositRequest $request)
     {
-
-
-         return DB::transaction(function () use ($request) {
-
+        return DB::transaction(function () use ($request) {
             $result = $this->DepositServices->store($request);
             return ResponseHelper::success($result, null);
-         });
+        });
     }
 
     public function update(UpdateDepositRequest $request, $id)
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate, $id) {
-            $result = $this->DepositServices->update($validate,$id);
+            $result = $this->DepositServices->update($validate, $id);
             return ResponseHelper::success($result, null);
         });
     }
