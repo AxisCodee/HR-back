@@ -166,6 +166,14 @@ class UserController extends Controller
         return $result;
     }
 
+
+    public function showTeams(Request $request)
+    {
+        $branchId = $request->branch_id;
+        $result = $this->teamService->showTeams($branchId);
+        return $result;
+    }
+
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
@@ -283,9 +291,9 @@ class UserController extends Controller
 
 
     //update team
-    public function updateTeam($id, Request $request)
+    public function updateTeam(Department $department, Request $request)
     {
-        $result = $this->teamService->updateTeam($id, $request);
+        $result = $this->teamService->updateTeam($department, $request);
         return ResponseHelper::success($result);
     }
 
