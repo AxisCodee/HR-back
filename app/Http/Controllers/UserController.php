@@ -166,6 +166,14 @@ class UserController extends Controller
         return $result;
     }
 
+
+    public function showTeams(Request $request)
+    {
+        $branchId = $request->branch_id;
+        $result = $this->teamService->showTeams($branchId);
+        return $result;
+    }
+
     //add members to a team
     public function Addmembers(Request $request, $team)
     {
