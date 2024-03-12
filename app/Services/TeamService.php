@@ -65,6 +65,18 @@ class TeamService
 
 
 
+    public function showTeams($branchId)
+    {
+        $departments = Department::query()->where('branch_id', $branchId)
+            ->get()
+            ->toArray();
+
+        return ResponseHelper::success($departments);
+    }
+
+
+
+
 
 
 

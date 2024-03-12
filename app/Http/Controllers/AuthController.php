@@ -105,6 +105,7 @@ class AuthController extends Controller
                     'user_id' => $user->id,
                     'salary' => $request->salary,
                     'birth_date' => $request->birth_date,
+                    'start_date' => $request->start_date,
                     'gender' => $request->gender,
                     'nationalID' => $request->nationalID,
                     'social_situation' => $request->social_situation,
@@ -236,13 +237,13 @@ class AuthController extends Controller
 
 
                 if ($request->secretaraits) {
-
-                    foreach ($secretaraits as $secretarait) {
-                        if (isset($secretarait['delivery_date']) && isset($secretarait['object'])) {
+                    foreach ($secretaraits as $secretary) {
+                        if (isset($secretary['delivery_date']) && isset($secretary['object'])) {
                             $received = Deposit::query()->create([
                                 'user_id' => $user->id,
-                                'description' => $secretarait['object'],
-                                'received_date' => $secretarait['delivery_date'],
+                                'title' => $secretary['title'],
+                                'description' => $secretary['object'],
+                                'received_date' => $secretary['delivery_date'],
                             ]);
                         }
                     }

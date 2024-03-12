@@ -88,11 +88,11 @@ class UserController extends Controller
 
             $all_users = User::query()
                 ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image');
+                ->with('userInfo:id,user_id,image','department');
 
             $trashed_users = User::onlyTrashed()
                 ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image');
+                ->with('userInfo:id,user_id,image','department');
 
             $users = $all_users->union($trashed_users)->get()->toArray();
 
@@ -163,6 +163,14 @@ class UserController extends Controller
     {
         $branchId = $request->branch_id;
         $result = $this->teamService->getTeams($branchId);
+        return $result;
+    }
+
+
+    public function showTeams(Request $request)
+    {
+        $branchId = $request->branch_id;
+        $result = $this->teamService->showTeams($branchId);
         return $result;
     }
 
