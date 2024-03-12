@@ -13,12 +13,14 @@ use App\Models\Decision;
 use App\Models\Late;
 use App\Models\Policy;
 use App\Models\User;
+use App\Models\UserInfo;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
+
 require 'tad\vendor\autoload.php';
 
 require 'tad\vendor\autoload.php';
@@ -167,10 +169,14 @@ class AttendanceController extends Controller
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
                                 if (!$absence) {//unjustified absence
-                                    $userContractStart = Contract::query()->where('user_id', $user->id)->first()->startTime;
-                                    $contractST = Carbon::parse($userContractStart);
+                                    $userStartDate = UserInfo::query()->where('user_id', $user->id)
+                                        ->first();
+                                    //dd($userStartDate);
+
+                                    $startDate = Carbon::parse($userStartDate->start_date);
+                                    //dd($startDate);
                                     $uDate = Carbon::parse($date);
-                                    if ($contractST->lt($uDate)) {
+                                    if ($startDate->lt($uDate)) {
                                         if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
                                             Absences::updateOrCreate([
                                                 'user_id' => $user->id,
