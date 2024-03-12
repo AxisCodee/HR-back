@@ -71,7 +71,8 @@ class User extends Authenticatable implements JWTSubject
         'alerts',
         'status',
         'level',
-        'isTrash'
+        'isTrash',
+        'dismissed'
     ];
     protected $hidden = [
         'password',
@@ -126,11 +127,11 @@ class User extends Authenticatable implements JWTSubject
 //    }
 
 
+    public function getIsTrashAttribute()
+    {
+        return $this->deleted_at === null ? false : true;
+    }
 
-public function getIsTrashAttribute()
-{
-    return $this->deleted_at === null ? false : true;
-}
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
@@ -296,6 +297,18 @@ public function getIsTrashAttribute()
             ->latest()
             ->value('status');
         return $status;
+    }
+
+    public function getDismissedAttribute()
+    {
+        $userPolicy = Policy::query()->where('branch_id', $this->branch_id)->first();
+        $userAlerts = Decision::query()->where('user_id', $this->id)
+            ->where('type', 'alert')
+            ->get()->count();
+        if ($userPolicy->warnings['warnings_to_dismissal'] - 1 <= $userAlerts) {
+            return true;
+        }
+        return false;
     }
 
     public function getLevelAttribute()

@@ -171,10 +171,7 @@ class AttendanceController extends Controller
                                 if (!$absence) {//unjustified absence
                                     $userStartDate = UserInfo::query()->where('user_id', $user->id)
                                         ->first();
-                                    //dd($userStartDate);
-
                                     $startDate = Carbon::parse($userStartDate->start_date);
-                                    //dd($startDate);
                                     $uDate = Carbon::parse($date);
                                     if ($startDate->lt($uDate)) {
                                         if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction

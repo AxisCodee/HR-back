@@ -21,10 +21,6 @@ class LateController extends Controller
      */
 
 
-
-
-
-
     public function index()
     {
         //
@@ -69,7 +65,6 @@ class LateController extends Controller
     }
 
 
-
     /**
      * Update the specified resource in storage.
      */
@@ -102,34 +97,33 @@ class LateController extends Controller
 
                 $user_id = $late->user_id;
                 $user = User::findOrFail($user_id);
-               if ($late->type==='normal'){
-                $late->update([
-                    'type' => 'Unjustified'
-                ]);
+                if ($late->type === 'normal') {
+                    $late->update([
+                        'type' => 'Unjustified'
+                    ]);
 
-                $alert = Decision::create([
-                    'user_id' => $user_id,
-                    'branch_id' => $user->branch_id,
-                    'content' => 'alert for late',
-                    'type' => 'warning',
-                    'dateTime' => Carbon::now()->format('Y-m-d')
-                ]);
+                    $alert = Decision::create([
+                        'user_id' => $user_id,
+                        'branch_id' => $user->branch_id,
+                        'content' => 'alert for late',
+                        'type' => 'warning',
+                        'dateTime' => Carbon::now()->format('Y-m-d')
+                    ]);
 
-                $alert = UserAlert::create([
-                    'user_id' => $late->user_id,
-                    'alert' => 1,
-                    'date' => Carbon::now()->format('Y-m-d')
-                ]);
+                    $alert = UserAlert::create([
+                        'user_id' => $late->user_id,
+                        'alert' => 1,
+                        'date' => Carbon::now()->format('Y-m-d')
+                    ]);
 
-            }
-
+                }
 
 
             });
         } catch (\Exception $e) {
             return ResponseHelper::error('Error accepting alert: ' . $e->getMessage());
         }
-return ResponseHelper::success('Alert accepted successfully');
+        return ResponseHelper::success('Alert accepted successfully');
     }
 
     public function makeDecision(Late $late)
@@ -164,12 +158,12 @@ return ResponseHelper::success('Alert accepted successfully');
     }
 
 
-
     public function unjustifiedLate()
     {
         $lates = Late::query()->where('type', 'normal')->where('status', 'waiting')->get();
         return ResponseHelper::success($lates, 'unjustifiedLate', null);
     }
+
     public function dynamicDecision()
     {
         $lates = Late::query()->where('type', 'null')->where('status', 'waiting')->get();
