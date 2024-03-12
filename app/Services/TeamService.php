@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helper\ResponseHelper;
 use App\Models\Career;
 use App\Models\Department;
+use App\Models\DepartmentParent;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -93,8 +94,20 @@ class TeamService
             //else create department with name
             $department = Department::create([
                 'name' => $request->name,
-                'branch_id' => $request->branch_id
+                'branch_id' => $request->branch_id,
+
             ]);
+            if($request->parent_id)
+            {
+
+            DepartmentParent::query()->create(
+              [
+                    'parent_id'=>$request->parent_id,
+                    'department_id'=> $department->id
+                ]
+
+              );
+            }
             //if request has team_leader => find it or fail
             if ($request->team_leader) {
                 $leader = $request->team_leader;
@@ -124,8 +137,10 @@ class TeamService
                     }
                 }
             }
+             DB::commit();
 
-            DB::commit();
+
+
             return 'Team added successfully';
         } catch (Exception $e) {
             DB::rollback();
@@ -139,23 +154,35 @@ class TeamService
 
 
 //update team
-    public function updateTeam($id, $request)
+    public function updateTeam($department, $request)
     {
         DB::beginTransaction(); //transaction
 
         try {
-            $department = Department::query()
-                ->where('id', $id)
+            $updateDepartment = Department::query()
+                ->where('id', $department->id)
                 ->update([
                     'name' => $request->name,
                 ]);
-                //update department (team)
 
-            User::where('department_id', $id)
+                //update department (team)
+                if($request->parent_id)
+                {
+
+                   $DepartmentParent= DepartmentParent::query()->where('department_id',$department->id)
+                    ->update(
+                        [
+                            'parent_id'=>$request->parent_id
+                        ]
+                        );
+                }
+
+
+            User::where('department_id', $department->id)
                 ->update(['department_id' => null]);
                  //set department_id null for all user
 
-            User::where('department_id', $id)
+            User::where('department_id', $department->id)
                 ->where('role', 'team_leader')
                 ->update(['role' => 'employee']);
                  // set role employee for team leader to reset roles for all department
@@ -166,25 +193,25 @@ class TeamService
                     if ($addUser) {
                         $addUser->where('id',$userId)->update([
                             'role' => 'employee',
-                            'department_id'=>$id
+                            'department_id'=>$department->id
 
                         ]); // store users as employees
                     }
                 }
             }
 
-            $leader = $request->team_leader;
-            $teamLeader = User::where('id', $leader)->where('role','!=','admin')
-                ->first(); // team leader
+            // $leader = $request->team_leader;
+            // $teamLeader = User::where('id', $leader)->where('role','!=','admin')
+            //     ->first(); // team leader
 
-            if (!$teamLeader) { //exception if the team leader is exist in another team
-                throw new Exception('You cannot add a team leader to another team');
-            }
+            // if (!$teamLeader) { //exception if the team leader is exist in another team
+            //     throw new Exception('You cannot add a team leader to another team');
+            // }
             //set team leader
-            $teamLeader->update([
-                'role' => 'team_leader',
-                'department_id' => $id
-            ]);
+            // $teamLeader->update([
+            //     'role' => 'team_leader',
+            //     'department_id' => $department->id
+            // ]);
 
             DB::commit();//commit
             return 'Team added successfully';

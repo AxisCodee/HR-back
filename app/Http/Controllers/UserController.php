@@ -283,10 +283,10 @@ class UserController extends Controller
 
 
     //update team
-    public function updateTeam($id, Request $request)
+    public function updateTeam(Department $department, Request $request)
     {
-        $result = $this->teamService->updateTeam($id, $request);
+        $result = $this->teamService->updateTeam($department, $request);
         return ResponseHelper::success($result);
     }
- 
+
 }

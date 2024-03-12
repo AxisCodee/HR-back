@@ -20,6 +20,16 @@ class Department extends Model
     {
         return $this->hasOne(User::class)->where('role','team_leader');
     }
+    public function parent()
+    {
+        return $this->hasMany(DepartmentParent::class ,'department_id');
+    }
+    public function department()
+    {
+        return $this->hasMany(DepartmentParent::class ,'parent_id');
+
+    }
+
 
     protected $hidden=['created_at','updated_at'];
 }
