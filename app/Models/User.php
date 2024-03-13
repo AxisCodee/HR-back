@@ -310,6 +310,19 @@ class User extends Authenticatable implements JWTSubject
         return false;
     }
 
+    public function getCompensationAttribute()
+    {
+        $date = Carbon::now();
+        $lates = $this->userServices
+            ->getLate($this, $date);
+
+
+
+        $totalLateHours = $this->userServices
+            ->getLate($this, $date);
+        return $totalLateHours;
+    }
+
     public function getLevelAttribute()
     {
         return $this->userInfo()->value('level');
