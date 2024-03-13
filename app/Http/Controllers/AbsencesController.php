@@ -151,5 +151,17 @@ class AbsencesController extends Controller
         $result = $this->absenceService->deleteAbsence($absence);
         return ResponseHelper::success(null, null, $result);
     }
+
+
+    public function getUserAbsence(Request $request)
+    {
+        $result = AbsenceService::user_absence($request);
+        if ($result) {
+            return ResponseHelper::success($result, null);
+        } else {
+            return ResponseHelper::error('No results found', 404);
+        }
+
+    }
 }
 

@@ -107,7 +107,7 @@ class UserServices
         $rewards = Decision::where('type', 'reward')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $rewards = $usertimeService->checkTimeDate($rewards, $date);
+        $rewards = $usertimeService->filterDate($rewards, $date,'dateTime');
         $totalReward = $rewards->sum('amount');
         return $totalReward;
     }
@@ -116,7 +116,7 @@ class UserServices
     {
         $absences = Absences::where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
+        $absences = $usertimeService->filterDate($absences, $date , 'startDate');
         $totalAbsence = $absences->count('id');
         return $totalAbsence;
     }
@@ -126,7 +126,7 @@ class UserServices
         $deductions = Decision::where('type', 'deduction')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $deductions = $usertimeService->checkTimeDate($deductions, $date);
+        $deductions = $usertimeService->filterDate($deductions, $date,'dateTime');
         $totalDeduction = $deductions->sum('amount');
         return $totalDeduction;
     }
@@ -137,7 +137,7 @@ class UserServices
             ->where('user_id', $user->id);
 
         $usertimeService = app(UserTimeService::class);
-        $deductions = $usertimeService->checkTimeDate($deductions, $date);
+        $deductions = $usertimeService->filterDate($deductions, $date,'dateTime');
 
         //  $totalDeduction = $deductions->sum('amount');
 
@@ -149,7 +149,7 @@ class UserServices
         $advance = Decision::where('type', 'advanced')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $advance = $usertimeService->checkTimeDate($advance, $date);
+        $advance = $usertimeService->filterDate($advance, $date,'dateTime');
         $totalAdvance = $advance->sum('amount');
         return $totalAdvance;
     }
@@ -160,7 +160,7 @@ class UserServices
             ->where('type', 'Unjustified')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $lates = $usertimeService->checkAttendencrDate($lates, $date);
+        $lates = $usertimeService->filterDate($lates, $date,'lateDate');
         $totalLateHours = $lates->sum('hours_num');
         return $totalLateHours;
     }
@@ -171,7 +171,7 @@ class UserServices
             ->where('type', 'justified')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $overTimes = $usertimeService->checkAttendencrDate($overTimes, $date);
+        $overTimes = $usertimeService->filterDate($overTimes, $date,'lateDate');
         $totalOverTimeHours = $overTimes->sum('hours_num');
         return $totalOverTimeHours;
     }
@@ -195,8 +195,10 @@ class UserServices
                 'department_id' => $request->department_id,
             ]);
             return ResponseHelper::success($specUser, null, 'user info updated successfully', 200);
-        });
-        return ResponseHelper::error('Error', null);
+
+         });
+
+
     }
 
     public function except_admins($branch_id)

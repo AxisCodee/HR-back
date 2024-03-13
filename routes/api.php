@@ -83,7 +83,6 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::post('edit/{decision}', 'edit_decision');
                 Route::get('all', 'all_decisions');
                 Route::get('getUserDecisions', 'getUserDecisions');
-                Route::get('getUserAbsence', 'getUserAbsence');
             });
         });
 
@@ -211,6 +210,8 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::get('getAbsences/{user}', 'getAbsences');
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
                 Route::post('store_one_absence', 'storeAbsence'); //store one absence
+                Route::get('getUserAbsence', 'getUserAbsence');
+
             });
         });
 

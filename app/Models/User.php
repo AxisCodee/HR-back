@@ -84,13 +84,123 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+
+
+     /* **********GO TO USER SERVICE**********
+     *
+        [userServises :
+         late,
+        overtime,
+        absence,
+        advance,
+        reward,
+        deduction,
+        warning,
+        checkinpercentage,
+        checkoutpercentage,
+
+        ]
+     *
+     */
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
+        if ($date) {
         $totalOverTimeHours = $this->userServices
             ->getOverTime($this, $date);
-        return $totalOverTimeHours;
+        return $totalOverTimeHours;}
+        return 0;
     }
+
+
+    public function getLateAttribute()
+    {
+        $date = request()->query('date');
+        if($date){
+        $totalLateHours = $this->userServices
+            ->getLate($this, $date);
+        return $totalLateHours;}
+        return 0;
+    }
+
+
+    public function getAdvanceAttribute()
+    {
+        $date = request()->query('date');
+        if ($date) {
+        $totalAdvance = $this->userServices
+            ->getAdvance($this, $date);
+        return $totalAdvance;}
+        return 0;
+    }
+
+    public function getDeductionAttribute($date)
+    {
+        $date = request()->query('date');
+        if ($date) {
+        $totalDeduction = $this->userServices
+            ->getDeduction($this, $date);
+        return $totalDeduction;}
+        return 0;
+    }
+
+
+    public function getAbsenceAttribute($date)
+    {
+        if ($date) {
+        $date = request()->query('date');
+        $totalAbsence = $this->userServices
+            ->getAbsence($this, $date);
+        return $totalAbsence;}
+        return 0;
+    }
+
+    public function getRewardAttribute()
+    {
+        $date = request()->query('date');
+        if ($date) {
+        $totalReward = $this->userServices
+            ->getReward($this, $date);
+        return $totalReward;}
+        return 0;
+    }
+
+    public function getCheckInPercentageAttribute()
+    {
+        $date = request()->query('date');
+        if ($date) {
+        $percentage = $this->userServices
+            ->getCheckInPercentage($this, $date);
+        return $percentage;}
+        return 0;
+    }
+
+    public function getCheckOutPercentageAttribute()
+    {
+        $date = request()->query('date');
+        if ($date) {
+        $percentage = $this->userServices
+            ->getCheckOutPercentage($this, $date);
+        return $percentage;}
+        return 0;
+    }
+
+    /***
+     *
+     *   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER SERVICE **********
+     */
+
+
+
+
+
+
+
+
+
+
+
 
     public function getOverTimesAttribute()
     {
@@ -101,7 +211,7 @@ class User extends Authenticatable implements JWTSubject
                 ->where('user_id', $this->id);
 
             $usertimeService = app(UserTimeService::class);
-            $overTimes = $usertimeService->checkOvertimeDate($overTimes, $date);
+            $overTimes = $usertimeService->filterDate($overTimes, $date,'lateDate');
 
             $total = $overTimes->get();
             return $total;
@@ -109,36 +219,13 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function getLateAttribute()
-    {
-        $date = request()->query('date');
-        $totalLateHours = $this->userServices
-            ->getLate($this, $date);
-        return $totalLateHours;
-    }
-
-//    public function getRateAttribute()
-//    {
-//        $date = request()->query('date');
-//        if ($date) {
-//            return $this->userServices->getRates($date, $this);
-//        }
-//        return 0;
-//    }
 
 
-    public function getIsTrashAttribute()
-    {
-        return $this->deleted_at === null ? false : true;
-    }
 
-    public function getAdvanceAttribute()
-    {
-        $date = request()->query('date');
-        $totalAdvance = $this->userServices
-            ->getAdvance($this, $date);
-        return $totalAdvance;
-    }
+
+
+
+
 
 
     public function getDeductionsAttribute()
@@ -148,7 +235,7 @@ class User extends Authenticatable implements JWTSubject
             $deductions = Decision::where('type', 'deduction')
                 ->where('user_id', $this->id);
             $usertimeService = app(UserTimeService::class);
-            $deductions = $usertimeService->checkTimeDates($deductions, $date);
+            $deductions = $usertimeService->filterDate($deductions, $date,'dateTime');
             $total = $deductions->get();
             return $total;
         }
@@ -164,7 +251,7 @@ class User extends Authenticatable implements JWTSubject
                 ->where('user_id', $this->id);
 
             $usertimeService = app(UserTimeService::class);
-            $rewards = $usertimeService->checkTimeDate($rewards, $date);
+            $rewards = $usertimeService->filterDate($rewards, $date,'dateTime');
 
             $total = $rewards->get();
             return $total;
@@ -180,7 +267,7 @@ class User extends Authenticatable implements JWTSubject
             $advances = Decision::where('type', 'advance')
                 ->where('user_id', $this->id);
             $usertimeService = app(UserTimeService::class);
-            $advances = $usertimeService->checkTimeDate($advances, $date);
+            $advances = $usertimeService->filterDate($advances, $date,'dateTime');
             $total = $advances->get();
             return $total;
         }
@@ -195,13 +282,12 @@ class User extends Authenticatable implements JWTSubject
                 ->where('user_id', $this->id);
 
             $usertimeService = app(UserTimeService::class);
-            $warning = $usertimeService->checkTimeDate($warning, $date);
+            $warning = $usertimeService->filterDate($warning, $date, 'dateTime');
             $total = $warning->get();
             return $total;
         }
         return [];
     }
-
     public function getAlertsAttribute()
     {
         $date = request()->query('date');
@@ -210,7 +296,7 @@ class User extends Authenticatable implements JWTSubject
                 ->where('user_id', $this->id);
 
             $usertimeService = app(UserTimeService::class);
-            $alert = $usertimeService->checkTimeDate($alert, $date);
+            $alert = $usertimeService->filterDate($alert, $date,'dateTime');
             $total = $alert->get();
             return $total;
         }
@@ -224,7 +310,7 @@ class User extends Authenticatable implements JWTSubject
             $absences = Absences::where('user_id', $this->id)->where('type', 'Unjustified');
 
             $usertimeService = app(UserTimeService::class);
-            $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
+            $absences = $usertimeService->filterDate($absences, $date,'startDate');
 
             $total = $absences->get();
             return $total;
@@ -233,45 +319,9 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function getDeductionAttribute($date)
-    {
-        $date = request()->query('date');
-        $totalDeduction = $this->userServices
-            ->getDeduction($this, $date);
-        return $totalDeduction;
-    }
 
-    public function getAbsenceAttribute($date)
-    {
-        $date = request()->query('date');
-        $totalAbsence = $this->userServices
-            ->getAbsence($this, $date);
-        return $totalAbsence;
-    }
 
-    public function getRewardAttribute()
-    {
-        $date = request()->query('date');
-        $totalReward = $this->userServices
-            ->getReward($this, $date);
-        return $totalReward;
-    }
 
-    public function getCheckInPercentageAttribute()
-    {
-        $date = request()->query('date');
-        $percentage = $this->userServices
-            ->getCheckInPercentage($this, $date);
-        return $percentage;
-    }
-
-    public function getCheckOutPercentageAttribute()
-    {
-        $date = request()->query('date');
-        $percentage = $this->userServices
-            ->getCheckOutPercentage($this, $date);
-        return $percentage;
-    }
 
     public function getBaseSalaryAttribute()
     {
@@ -302,13 +352,14 @@ class User extends Authenticatable implements JWTSubject
     public function getDismissedAttribute()
     {
         $userPolicy = Policy::query()->where('branch_id', $this->branch_id)->first();
-        $userAlerts = UserAlert::query()->where('user_id', $this->id)
-            ->get()->sum('alert');
-        if ($userPolicy->warnings['warnings_to_dismissal'] - 1 <= $userAlerts) {
+        $userAlerts = UserAlert::query()->where('user_id', $this->id)->sum('alert');
+
+        if ($userPolicy && $userPolicy->warnings['warnings_to_dismissal'] - 1 <= $userAlerts) {
             return true;
         }
         return false;
     }
+
 
     public function getCompensationAttribute()
     {
@@ -322,6 +373,12 @@ class User extends Authenticatable implements JWTSubject
             ->getLate($this, $date);
         return $totalLateHours;
     }
+
+    public function getIsTrashAttribute()
+    {
+        return $this->deleted_at === null ? false : true;
+    }
+
 
     public function getLevelAttribute()
     {

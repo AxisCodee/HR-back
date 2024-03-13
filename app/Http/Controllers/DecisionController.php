@@ -80,16 +80,7 @@ class DecisionController extends Controller
 
     }
 
-    public function getUserAbsence(Request $request)
-    {
-        $result = DecisionService::user_absence($request);
-        if ($result) {
-            return ResponseHelper::success($result, null);
-        } else {
-            return ResponseHelper::error('No results found', 404);
-        }
-
-    }
+   
 
 
 
