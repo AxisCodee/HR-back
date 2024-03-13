@@ -210,8 +210,6 @@ public  function updateUser($user,$request)
                     }
                 }
             }
-
-
             if ($request->secretaraits) {
 
             foreach ($secretaraits as $secretarait) {
@@ -220,7 +218,9 @@ public  function updateUser($user,$request)
                         'user_id' => $user->id,
                         'description' => $secretarait['object'],
                         'received_date' => $secretarait['delivery_date'],
-                    ]);}}
+                    ]);
+                }
+            }
             }
             $result='updated successfully';
 

@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class UserAlert extends Model
 {
 
-    protected $guarded=[];
+    protected $guarded = [];
     use HasFactory;
 }

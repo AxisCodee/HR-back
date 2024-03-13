@@ -53,10 +53,8 @@ class ReportServices
             'attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }
-        ])->get();
-        return ResponseHelper::success([
-            $result
-        ]);
+        ])->get()->toArray();
+        return ResponseHelper::success($result);
     }
 
     public function DailyReports($request)

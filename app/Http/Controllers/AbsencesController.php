@@ -30,8 +30,9 @@ class AbsencesController extends Controller
     public function show(User $user)
     {
         try {
-            $userAbcences = $user->absences()->get('startDate')->toArray();
-            return ResponseHelper::success($userAbcences);
+            $result= $this->absenceService->show($user);
+            return ResponseHelper::success($result, null, 'Absence');
+
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
@@ -40,107 +41,94 @@ class AbsencesController extends Controller
     public function update(Request $request)
     {
         try {
-            $result = Absences::query()
-                ->where('id', $request->id)
-                ->update(
-                    [
-                        'startDate' => $request->startDate,
-                        'type' => $request->type
-                    ]
-                );
-            if ($result) {
-                return ResponseHelper::success('updated successfully');
-            }
+        $result= $this->absenceService->update($request);
+        return ResponseHelper::success($result, null, 'Absence updated successfully');
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
 
     public function getDailyAbsence(Request $request, $branch)
-    {
-        $today = Carbon::now();
-        if ($today->eq($request->date)) {
-            $this->cuurentAbsence();
-        } else {
-            $dateInput = request()->input('date');
-            $day = substr($dateInput, 8, 2);
-            $user = User::query()->where('branch_id', $branch)->get();
-            $result = $user->with('absences')
-                ->whereDay('startDate', $day)->get();
-            return ResponseHelper::success($result);
-        }
+    { $result=$this->absenceService->getDailyAbsence($request,$branch);
+        return ResponseHelper::success($result, null, 'daily absence');
     }
-    public function cuurentAbsence()
-    {
-        $usersWithoutAttendance = DB::table('users')
-            ->leftJoin('attendances', function ($join) {
-                $join->on('users.pin', '=', 'attendances.pin')
-                    ->whereDate('attendances.datetime', '=', Carbon::now()->format('y,m,d'));
-            })
-            ->whereNull('attendances.pin')
-            ->select('users.*')
-            ->get();
-        return ResponseHelper::success($usersWithoutAttendance, 'yaaaaaa', null);
-    }
+    // public function cuurentAbsence(Request $request)
+    // {
+    //     $all_users = User::query()->where('branch_id', $request->branch_id)
+    //     ->with('department', 'userInfo:id,user_id,image')
+    //     ->whereNull('deleted_at')->get()->toArray();
+    // $usersWithoutAttendance = DB::table('users')
+    //                         ->leftJoin('attendances', function ($join)  {
+    //                             $join->on('users.pin', '=', 'attendances.pin')
+    //                                 ->whereRaw('DATE(attendances.datetime) = ?', Carbon::now()->format('Y-m-d H:i:s'));
+    //                         })
+    //                         ->whereNull('attendances.pin')
+    //                         ->select('users.*')
+    //                         ->get()->toArray();
+
+    //         $usersWithStatus = collect( $all_users)
+    //         ->map(function ($user) use ($usersWithoutAttendance) {
+    //             return array_merge($user, [
+    //                 'status' => in_array($user['id'], array_column($usersWithoutAttendance, 'id')) ? 'null' : '1',
+    //             ]);
+    //         })
+    //         ->values()
+    //         ->all();
+
+    //     return ResponseHelper::success($usersWithStatus, 'yaaaaaa', null);
+    // }
 
     // to make desicion to absence employee
-    public function makeDecision(Absences $Absence)
-    {
-        return DB::transaction(function () use ($Absence) {
-            $Absence->update(
-                [
-                    'type' => 'unjustified'
-                ]
-            );
-            $salary = UserInfo::query()->where('user_id', $Absence->user_id)->value('salary');
-            $salaryInHour = $salary / 208;
-            $deduction = $salaryInHour * 8;
-            $user = User::find($Absence->user_id);
-            Decision::query()->updateOrCreate(
-                [
-                    'user_id' => $Absence->user_id,
-                    'type' => 'deduction',
-                    'salary' => $salary,
-                    'dateTime' => Carbon::now(),
-                    'fromSystem' => true,
-                    'content' => 'Unjustified absence',
-                    'amount' => $deduction,
-                    'branch_id' => $user->branch_id
-                ]
-            );
-            return ResponseHelper::success(null, 'Decision made successfully', null);
-        });
-        return ResponseHelper::error('error', null);
-    }
+    // public function makeDecision(Absences $Absence)
+    // {
+    //     return DB::transaction(function () use ($Absence) {
+    //         $Absence->update(
+    //             [
+    //                 'type' => 'unjustified'
+    //             ]
+    //         );
+    //         $salary = UserInfo::query()->where('user_id', $Absence->user_id)->value('salary');
+    //         $salaryInHour = $salary / 208;
+    //         $deduction = $salaryInHour * 8;
+    //         $user = User::find($Absence->user_id);
+    //         Decision::query()->updateOrCreate(
+    //             [
+    //                 'user_id' => $Absence->user_id,
+    //                 'type' => 'deduction',
+    //                 'salary' => $salary,
+    //                 'dateTime' => Carbon::now(),
+    //                 'fromSystem' => true,
+    //                 'content' => 'Unjustified absence',
+    //                 'amount' => $deduction,
+    //                 'branch_id' => $user->branch_id
+    //             ]
+    //         );
+    //         return ResponseHelper::success(null, 'Decision made successfully', null);
+    //     });
+    //     return ResponseHelper::error('error', null);
+    // }
 
-    //to get all users who don not take vacation and absence
+    //to get all users who do not take vacation and absence
     public function unjustifiedAbsence()
     {
-        $absence = Absences::query()->where('type', 'null')->where('status', 'waiting')->get();
-        return ResponseHelper::success($absence, 'unjustifiedAbsence', null);
+        $absence= $this->absenceService->unjustifiedAbsence();
+        ResponseHelper::success($absence, 'unjustifiedAbsence', null);
     }
     // if the admin want to make a decision dynamic
-    public function dynamicDecision()
-    {
-        $absences = Absences::query()->where('type', 'null')->where('status', 'waiting')->get();
-        foreach ($absences as $absence) {
-            $this->makeDecision($absence->id);
-        }
-        return ResponseHelper::success(null, 'Decision done successfully', null);
-    }
+    // public function dynamicDecision()
+    // {
+    //     $absences = Absences::query()->where('type', 'null')->where('status', 'waiting')->get();
+    //     foreach ($absences as $absence) {
+    //         $this->makeDecision($absence->id);
+    //     }
+    //     return ResponseHelper::success(null, 'Decision done successfully', null);
+    // }
 
     public function store_absence(StoreAbsencesRequest $request)
     {
+        try{
         $request->validated();
-        try {
-            foreach ($request->absence as $item) {
-                $new_abs = Absences::create([
-                    'type' => $item['type'],
-                    'user_id' => $item['user_id'],
-                    'startDate' => $item['date'],
-                ]);
-                $results[] = $new_abs;
-            }
+       $results=$this->absenceService->store_absence($request);
             return ResponseHelper::success($results, null, 'Absence added successfully');
         } catch (\Throwable $e) {
             return ResponseHelper::error($e);
@@ -148,35 +136,23 @@ class AbsencesController extends Controller
     }
     public function storeAbsence(Request $request)
     {
-        $new_abs = Absences::create([
-            'type' => $request->type,
-            'user_id' => $request->user_id,
-            'startDate' => $request->startDate,
-        ]);
-        return ResponseHelper::success($new_abs, null, 'Absence added successfully');
+        try{
+         //   $request->validated();
+        $result= $this->absenceService->storeAbsence($request);
+
+        return ResponseHelper::success($result, null, 'Absence added successfully');
+    } catch (\Throwable $e) {
+         return ResponseHelper::error($e);
+     }
     }
     public function getAbsences($user)
     {
-        $absences = Absences::where('user_id', $user)->get();
-        $groupedAbsences = $absences->groupBy('type')->toArray();
-        return ResponseHelper::success([
-            'justified' => $groupedAbsences['justified'] ?? [],
-            'unjustified' => $groupedAbsences['Unjustified'] ?? [],
-        ], null, 'Absences returned successfully');
+        return $this->absenceService->getAbsences($user);
     }
-
     public function deleteAbsence($absence)
     {
-        $result = Absences::find($absence);
-
-        if (!$result) {
-            return ResponseHelper::error('Absence not found', 404);
-        }
-
-        $result->update([
-            'type' => 'null'
-        ]);
-
-        return ResponseHelper::success([], null, 'Absence deleted successfully', 200);
-    }
+     $result=$this->absenceService->deleteAbsence($absence);
+    return ResponseHelper::success(null, null,  $result);
 }
+}
+

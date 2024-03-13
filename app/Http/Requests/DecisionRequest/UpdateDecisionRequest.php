@@ -1,38 +1,25 @@
 <?php
 
-namespace App\Http\Requests\DepositRequest;
+namespace App\Http\Requests\DecisionRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-
-class StoreDepositRequest extends FormRequest
+class UpdateDecisionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'title' => ['required'],
-            'description' => ['required', 'string'],
-            'user_id' => ['required', 'exists:users,id'],
-            'received_date' => ['required', 'date']
-
+            'user_id' => ['integer', 'exists:users,id'],
+            'type' => ['string','in:reward,warning,deduction,alert,penalty'],
+            'content' => ['string'],
+            'amount' =>['nullable','integer'],
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();

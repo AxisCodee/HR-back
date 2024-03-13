@@ -2,32 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\ResponseHelper;
-use Illuminate\Http\Request;
 use App\Models\Decision;
-use App\Models\User;
-use App\Http\Requests\DecisionRequest\StoreDecisionRequest;
-use App\Models\Absences;
-use App\Models\Late;
-use App\Models\Rate;
-use App\Models\UserInfo;
-use App\Services\UserServices;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Helper\ResponseHelper;
 use App\Services\DecisionService;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\DecisionRequest\StoreDecisionRequest;
+use App\Http\Requests\DecisionRequest\UpdateDecisionRequest;
 
 class DecisionController extends Controller
 {
-    protected $userServices;
-
-    //add new decision for a user
+    /**
+     * Add new decision for a user.
+     * [DecisionService => none]
+     * @param StoreDecisionRequest
+     * @return ResponseHelper
+     */
     public function new_decision(StoreDecisionRequest $request)
     {
         $new = $request->validated();
         $created = Decision::create($new);
         return ResponseHelper::created($created, 'decision created successfully');
     }
-    //delete an exisiting decision
+
+    /**
+     * Delete an existing decision.
+     * [DecisionService => none]
+     * @param Decision
+     * @return ResponseHelper
+     */
     public function remove_decision($id)
     {
         try {
@@ -37,8 +40,15 @@ class DecisionController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
-    //edit an exisiting decision
-    public function edit_decision(StoreDecisionRequest $request, $id)
+
+    /**
+     * Edit an existing decision.
+     * [DecisionService => none]
+     * @param UpdateDecisionRequest
+     * @param Decision
+     * @return ResponseHelper
+     */
+    public function edit_decision(UpdateDecisionRequest $request, $id)
     {
         try {
             $validate = $request->validated();
@@ -49,7 +59,13 @@ class DecisionController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
-    //get all decisions for all users
+
+    /**
+     * Get all decisions for all users.
+     * [DecisionService => none]
+     * @param Request
+     * @return ResponseHelper
+     */
     public function all_decisions(Request $request)
     {
         $branchId = $request->input('branch_id');
@@ -60,7 +76,13 @@ class DecisionController extends Controller
             ->get()->toArray();
         return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
     }
-    //get decisions for the current user
+
+    /**
+     * Get decisions for the authenticated user.
+     * [DecisionService => none]
+     * @param none
+     * @return ResponseHelper
+     */
     public function my_decisions()
     {
         $mine = Decision::query()
@@ -69,6 +91,12 @@ class DecisionController extends Controller
         return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
 
+    /**
+     * Get decisions for a specific user.
+     * [DecisionService => user_decisions]
+     * @param Request
+     * @return ResponseHelper
+     */
     public function getUserDecisions(Request $request)
     {
         $result = DecisionService::user_decisions($request);
@@ -77,9 +105,14 @@ class DecisionController extends Controller
         } else {
             return ResponseHelper::error('No results found', 404);
         }
-
     }
 
+    /**
+     * Get absence times for a specific user.
+     * [DecisionService => user_absence]
+     * @param Request
+     * @return ResponseHelper
+     */
     public function getUserAbsence(Request $request)
     {
         $result = DecisionService::user_absence($request);
@@ -88,13 +121,7 @@ class DecisionController extends Controller
         } else {
             return ResponseHelper::error('No results found', 404);
         }
-
     }
-
-
-
-
-
 
     //     $user = User::with('my_decisions')->findOrFail($id);
     //     $decisions = $user->my_decisions;

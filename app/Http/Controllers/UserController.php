@@ -9,6 +9,7 @@ use App\Http\Requests\TeamRequest\StoreTeamRequest;
 use App\Http\Requests\TeamRequest\UpdateTeamRequest;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
 use App\Models\Attendance;
+use App\Models\Branch;
 use App\Models\Career;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
 use TADPHP\TADFactory;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Exists;
 
 require 'tad\vendor\autoload.php';
 
@@ -68,6 +70,41 @@ class UserController extends Controller
             ->toArray();
         return ResponseHelper::success($all_users, null, 'all resigned users', 200);
     }
+
+    public function allAndTrashUser(Request $request)
+    {
+        try {
+            $branch_id = $request->branch_id;
+            $branch=Branch::findOrFail($branch_id);
+
+
+            if (!$branch) {
+                throw new \Exception('Branch Not Found');
+            }
+
+            if (!$branch_id) {
+                throw new \Exception('Missing branch_id', 400);
+            }
+
+            $all_users = User::query()
+                ->where('branch_id', $branch_id)
+                ->with('userInfo:id,user_id,image','department');
+
+            $trashed_users = User::onlyTrashed()
+                ->where('branch_id', $branch_id)
+                ->with('userInfo:id,user_id,image','department');
+
+            $users = $all_users->union($trashed_users)->get()->toArray();
+
+            return ResponseHelper::success($users, null, 'All users (including trashed)', 200);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+
+
+
+
 
     //get a specific user by the ID
     public function specific_user($id)
@@ -126,6 +163,14 @@ class UserController extends Controller
     {
         $branchId = $request->branch_id;
         $result = $this->teamService->getTeams($branchId);
+        return $result;
+    }
+
+
+    public function showTeams(Request $request)
+    {
+        $branchId = $request->branch_id;
+        $result = $this->teamService->showTeams($branchId);
         return $result;
     }
 
@@ -230,6 +275,7 @@ class UserController extends Controller
             $result = $this->editUserService->updateUser($user, $request);
             return ResponseHelper::success($result, 'User update successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
+
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
@@ -245,9 +291,10 @@ class UserController extends Controller
 
 
     //update team
-    public function updateTeam($id, Request $request)
+    public function updateTeam(Department $department, Request $request)
     {
-        $result = $this->teamService->updateTeam($id, $request);
+        $result = $this->teamService->updateTeam($department, $request);
         return ResponseHelper::success($result);
     }
+
 }

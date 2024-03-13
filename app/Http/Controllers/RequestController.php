@@ -8,6 +8,7 @@ use App\Http\Requests\RequestRequest\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\RequestRequest\SendRequest;
 use App\Services\RequestService;
+use Carbon\Carbon;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,9 +37,10 @@ class RequestController extends Controller
         return $this->requestService->show();
     }
 
-    public function getRequest($request)
+    public function getRequest($request, HttpRequest $hRequest)
     {
-        return $this->requestService->getRequest($request);
+        $date = $hRequest->date;
+        return $this->requestService->getRequest($request, $date);
     }
 
 
@@ -68,6 +70,7 @@ class RequestController extends Controller
             [
                 'user_id' => Auth::id(),
                 'type' => 'complaint',
+                'date' => Carbon::now()->format('Y-m-d'),
                 'description' => $request->description
             ]
         );
@@ -77,18 +80,30 @@ class RequestController extends Controller
     public function getComplaints(HttpRequest $request)
     {
         $branchId = $request->branch_id;
-        $result = Request::with('user.department', 'user.userInfo:id,user_id,image')->with('user', function ($query) use ($branchId) {
-            $query->where('branch_id', $branchId);
-        })
-            ->where('type', 'complaint')
-            ->get()
-            ->toArray();
-
-        if (empty($result)) {
-            return ResponseHelper::success($result);
+        $date = $request->date;
+        $result = Request::with('user.department', 'user.userInfo:id,user_id,image')
+            ->with('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })
+            ->where('type', 'complaint');
+        if (!empty($date)) {
+            $result->where(function ($query) use ($date) {
+                if (strlen($date) == 4) {
+                    $query->where('date', 'like', $date . '%');
+                }
+                if (strlen($date) == 7) {
+                    $query->orWhere('date', 'like', substr($date, 0, 7) . '%');
+                }
+                if (strlen($date) == 10) {
+                    $query->orWhere('date', 'like', substr($date, 0, 10) . '%');
+                }
+            });
         }
-
-        return ResponseHelper::success($result, null, 'complaint', 200);
+        $results = $result->get()->toArray();
+        if (empty($results)) {
+            return ResponseHelper::success($results);
+        }
+        return ResponseHelper::success($results, null, 'complaint', 200);
     }
 
     public function sendRequest(SendRequest $request)

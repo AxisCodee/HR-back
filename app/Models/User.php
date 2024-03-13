@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
-use App\Services\UsertimeService;
+use App\Services\UserTimeService;
 use App\Services\UserServices;
 
 class User extends Authenticatable implements JWTSubject
@@ -70,7 +70,9 @@ class User extends Authenticatable implements JWTSubject
         'overTimes',
         'alerts',
         'status',
-        'level'
+        'level',
+        'isTrash',
+        'dismissed'
     ];
     protected $hidden = [
         'password',
@@ -98,7 +100,7 @@ class User extends Authenticatable implements JWTSubject
                 ->where('type', 'justified')
                 ->where('user_id', $this->id);
 
-            $usertimeService = app(UsertimeService::class);
+            $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->checkOvertimeDate($overTimes, $date);
 
             $total = $overTimes->get();
@@ -124,6 +126,12 @@ class User extends Authenticatable implements JWTSubject
 //        return 0;
 //    }
 
+
+    public function getIsTrashAttribute()
+    {
+        return $this->deleted_at === null ? false : true;
+    }
+
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
@@ -139,8 +147,7 @@ class User extends Authenticatable implements JWTSubject
         if ($date) {
             $deductions = Decision::where('type', 'deduction')
                 ->where('user_id', $this->id);
-
-            $usertimeService = app(UsertimeService::class);
+            $usertimeService = app(UserTimeService::class);
             $deductions = $usertimeService->checkTimeDates($deductions, $date);
             $total = $deductions->get();
             return $total;
@@ -156,7 +163,7 @@ class User extends Authenticatable implements JWTSubject
             $rewards = Decision::where('type', 'reward')
                 ->where('user_id', $this->id);
 
-            $usertimeService = app(UsertimeService::class);
+            $usertimeService = app(UserTimeService::class);
             $rewards = $usertimeService->checkTimeDate($rewards, $date);
 
             $total = $rewards->get();
@@ -172,7 +179,7 @@ class User extends Authenticatable implements JWTSubject
         if ($date) {
             $advances = Decision::where('type', 'advance')
                 ->where('user_id', $this->id);
-            $usertimeService = app(UsertimeService::class);
+            $usertimeService = app(UserTimeService::class);
             $advances = $usertimeService->checkTimeDate($advances, $date);
             $total = $advances->get();
             return $total;
@@ -187,7 +194,7 @@ class User extends Authenticatable implements JWTSubject
             $warning = Decision::where('type', 'warning')
                 ->where('user_id', $this->id);
 
-            $usertimeService = app(UsertimeService::class);
+            $usertimeService = app(UserTimeService::class);
             $warning = $usertimeService->checkTimeDate($warning, $date);
             $total = $warning->get();
             return $total;
@@ -202,7 +209,7 @@ class User extends Authenticatable implements JWTSubject
             $alert = Decision::where('type', 'alert')
                 ->where('user_id', $this->id);
 
-            $usertimeService = app(UsertimeService::class);
+            $usertimeService = app(UserTimeService::class);
             $alert = $usertimeService->checkTimeDate($alert, $date);
             $total = $alert->get();
             return $total;
@@ -216,7 +223,7 @@ class User extends Authenticatable implements JWTSubject
         if ($date) {
             $absences = Absences::where('user_id', $this->id)->where('type', 'Unjustified');
 
-            $usertimeService = app(UsertimeService::class);
+            $usertimeService = app(UserTimeService::class);
             $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
 
             $total = $absences->get();
@@ -290,6 +297,18 @@ class User extends Authenticatable implements JWTSubject
             ->latest()
             ->value('status');
         return $status;
+    }
+
+    public function getDismissedAttribute()
+    {
+        $userPolicy = Policy::query()->where('branch_id', $this->branch_id)->first();
+        $userAlerts = Decision::query()->where('user_id', $this->id)
+            ->where('type', 'alert')
+            ->get()->count();
+        if ($userPolicy->warnings['warnings_to_dismissal'] - 1 <= $userAlerts) {
+            return true;
+        }
+        return false;
     }
 
     public function getLevelAttribute()

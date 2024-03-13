@@ -13,6 +13,7 @@ class UserInfo extends Model
         'user_id',
         'image',
         'birth_date',
+        'start_date',
         'gender',
         'nationalID',
         'social_situation',

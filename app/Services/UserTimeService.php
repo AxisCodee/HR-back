@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Date;
 use App\Models\Late;
 
-class UsertimeService
+class UserTimeService
 {
     public function checkOvertimeDate($lates, $date)
     {
@@ -46,7 +46,6 @@ class UsertimeService
 
         return $lates;
     }
-
 
 
     public function checkDate($lates, $date)
@@ -106,31 +105,30 @@ class UsertimeService
                 $lates->whereYear('date', $year);
             }
         }
-
         return $lates;
     }
 
 
     public function checkTimeDates($lates, $date)
-{
-    if ($date) {
-        $year = substr($date, 0, 4);
-        $month = substr($date, 5, 2);
-        $day = substr($date, 8, 2);
+    {
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
 
-        if ($day && $month && $year) {
-            $lates->whereYear('dateTime', $year)
-                ->whereMonth('dateTime', $month)
-                ->whereDay('dateTime', $day);
-        } elseif ($month && $year) {
-            $lates->whereYear('dateTime', $year)
-                ->whereMonth('dateTime', $month);
-        } elseif ($year) {
-            $lates->whereYear('dateTime', $year);
+            if ($day && $month && $year) {
+                $lates->whereYear('dateTime', $year)
+                    ->whereMonth('dateTime', $month)
+                    ->whereDay('dateTime', $day);
+            } elseif ($month && $year) {
+                $lates->whereYear('dateTime', $year)
+                    ->whereMonth('dateTime', $month);
+            } elseif ($year) {
+                $lates->whereYear('dateTime', $year);
+            }
         }
-    }
 
-    return $lates;
-}
+        return $lates;
+    }
 
 }
