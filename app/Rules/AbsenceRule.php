@@ -21,10 +21,10 @@ class AbsenceRule implements ValidationRule
             ->where('user_id', $this->absences[0]['user_id'])
             ->where('startDate', $this->absences[0]['date'])
             ->exists();
-
         if ($exists) {
            $fail('Absence already exists for this user');
         }
+
     }
 }
 
