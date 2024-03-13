@@ -160,7 +160,7 @@ class UserServices
             ->where('type', 'Unjustified')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $lates = $usertimeService->checkOvertimeDate($lates, $date);
+        $lates = $usertimeService->checkAttendencrDate($lates, $date);
         $totalLateHours = $lates->sum('hours_num');
         return $totalLateHours;
     }
@@ -171,7 +171,7 @@ class UserServices
             ->where('type', 'justified')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
-        $overTimes = $usertimeService->checkOvertimeDate($overTimes, $date);
+        $overTimes = $usertimeService->checkAttendencrDate($overTimes, $date);
         $totalOverTimeHours = $overTimes->sum('hours_num');
         return $totalOverTimeHours;
     }

@@ -7,7 +7,7 @@ use App\Models\Late;
 
 class UserTimeService
 {
-    public function checkOvertimeDate($lates, $date)
+    public function checkAttendencrDate($lates, $date)
     {
         if ($date) {
             $year = substr($date, 0, 4);

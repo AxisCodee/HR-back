@@ -291,6 +291,8 @@ Route::middleware('exceptionHandler')->group(function () {
         Route::controller(DecisionController::class)->group(function () {
             Route::get('my_decisions', 'my_decisions');
         });
+
+
     });
 
     Route::prefix('UserInfo')->group(function () {
