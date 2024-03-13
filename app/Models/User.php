@@ -302,9 +302,8 @@ class User extends Authenticatable implements JWTSubject
     public function getDismissedAttribute()
     {
         $userPolicy = Policy::query()->where('branch_id', $this->branch_id)->first();
-        $userAlerts = Decision::query()->where('user_id', $this->id)
-            ->where('type', 'alert')
-            ->get()->count();
+        $userAlerts = UserAlert::query()->where('user_id', $this->id)
+            ->get()->sum('alert');
         if ($userPolicy->warnings['warnings_to_dismissal'] - 1 <= $userAlerts) {
             return true;
         }
