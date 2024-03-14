@@ -2,20 +2,21 @@
 
 namespace App\Services;
 
-use App\Helper\ResponseHelper;
-use App\Http\Requests\UserRequest\UpdateUserRequest;
-use App\Models\Absences;
-use App\Models\Attendance;
-use App\Models\Career;
+use Carbon\Carbon;
 use App\Models\Date;
-use App\Models\Decision;
 use App\Models\Late;
 use App\Models\Rate;
-use App\Models\RateType;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Career;
+use App\Models\Absences;
+use App\Models\Decision;
+use App\Models\RateType;
+use App\Models\Attendance;
+use App\Models\UserSalary;
+use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UserRequest\UpdateUserRequest;
 
 class UserServices
 {
@@ -208,5 +209,13 @@ class UserServices
         return $all_users;
     }
 
-
+    public function UpdateSalary($request,$user)
+    {
+        $user->update(['salary'=>$request->salary]);
+        $newsalary = UserSalary::create([
+            'date'=>now()->format('Y-m'),
+            'salary'=> $request->salary,
+            'user_id'=>$user->id,
+        ]);
+    }
 }

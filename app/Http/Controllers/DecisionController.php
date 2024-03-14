@@ -2,73 +2,91 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\ResponseHelper;
-use Illuminate\Http\Request;
 use App\Models\Decision;
-use App\Models\User;
-use App\Http\Requests\DecisionRequest\StoreDecisionRequest;
-use App\Models\Absences;
-use App\Models\Late;
-use App\Models\Rate;
-use App\Models\UserInfo;
-use App\Services\UserServices;
-use GuzzleHttp\Psr7\Response;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Helper\ResponseHelper;
 use App\Services\DecisionService;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\DecisionRequest\StoreDecisionRequest;
+use App\Http\Requests\DecisionRequest\UpdateDecisionRequest;
 
 class DecisionController extends Controller
 {
-    protected $userServices;
+    protected $decisionService;
 
-    //add new decision for a user
+    public function __construct(DecisionService $decisionService)
+    {
+        $this->$decisionService = $decisionService;
+    }
+
+    /**
+     * Add new decision for a user.
+     * [DecisionService => StoreDecision]
+     * @param StoreDecisionRequest
+     * @return DecisionService
+     */
     public function new_decision(StoreDecisionRequest $request)
     {
-        $new = $request->validated();
-        $created = Decision::create($new);
-        return ResponseHelper::created($created, 'decision created successfully');
+        try {
+            return $this->decisionService->StoreDecision($request);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+
     }
-    //delete an exisiting decision
+
+    /**
+     * Delete an existing decision.
+     * [DecisionService => RemoveDecision]
+     * @param Decision
+     * @return DecisionService
+     */
     public function remove_decision($id)
     {
         try {
-            $removed = Decision::findOrFail($id)->delete();
-            return ResponseHelper::success('Decision deleted successfully');
+            return $this->decisionService->RemoveDecision($id);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
-    }
-    //edit an exisiting decision
-    public function edit_decision(StoreDecisionRequest $request, $id)
-    {
-        try {
-            $validate = $request->validated();
-            $edited = Decision::where('id', $id)->firstOrFail();
-            $edited->update($validate);
-            return ResponseHelper::updated($edited, 'Decision updated successfully');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
-    }
-    //get all decisions for all users
-    public function all_decisions(Request $request)
-    {
-        $branchId = $request->input('branch_id');
-        $all = Decision::query()
-            ->with('user_decision')->whereHas('user_decision', function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            })
-            ->get()->toArray();
-        return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
-    }
-    //get decisions for the current user
-    public function my_decisions()
-    {
-        $mine = Decision::query()
-            ->where('user_id', Auth::id())
-            ->get()->toArray();
-        return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
     }
 
+    /**
+     * Edit an existing decision.
+     * [DecisionService => UpdateDecision]
+     * @param UpdateDecisionRequest
+     * @param Decision
+     * @return decisionService
+     */
+    public function edit_decision(UpdateDecisionRequest $request, $id)
+    {
+        try {
+            return $this->decisionService->UpdateDecision($request,$id);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Get all decisions for all users.
+     * [DecisionService => AllDecisions]
+     * @param Request
+     * @return decisionService
+     */
+    public function all_decisions(Request $request)
+    {
+        try {
+            return $this->decisionService->AllDecisions($request);
+        } catch (\Exception $e) {
+        return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Get decisions for a specific user.
+     * [DecisionService => user_decisions]
+     * @param Request
+     * @return ResponseHelper
+     */
     public function getUserDecisions(Request $request)
     {
         $result = DecisionService::user_decisions($request);
@@ -77,15 +95,24 @@ class DecisionController extends Controller
         } else {
             return ResponseHelper::error('No results found', 404);
         }
-
     }
 
-   
 
-
-
-
-
+    /**
+     * Get absence times for a specific user.
+     * [DecisionService => user_absence]
+     * @param Request
+     * @return ResponseHelper
+     */
+    // public function getUserAbsence(Request $request)
+    // {
+    //     $result = DecisionService::user_absence($request);
+    //     if ($result) {
+    //         return ResponseHelper::success($result, null);
+    //     } else {
+    //         return ResponseHelper::error('No results found', 404);
+    //     }
+    // }
 
     //     $user = User::with('my_decisions')->findOrFail($id);
     //     $decisions = $user->my_decisions;
