@@ -207,7 +207,7 @@ class AttendanceController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error('QueryException', 400);
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
