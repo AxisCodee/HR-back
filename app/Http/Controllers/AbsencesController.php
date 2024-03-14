@@ -104,6 +104,8 @@ class AbsencesController extends Controller
     // }
 
     //to get all users who do not take vacation and absence
+
+    //without return
     public function unjustifiedAbsence()
     {
         $absence = $this->absenceService->unjustifiedAbsence();

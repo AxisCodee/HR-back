@@ -14,7 +14,6 @@ class TeamService
 {
 
 
-
     public function remove_from_team($id)
     {
         try {
@@ -64,7 +63,6 @@ class TeamService
     }
 
 
-
     public function showTeams($branchId)
     {
         $departments = Department::query()->where('branch_id', $branchId)
@@ -73,17 +71,6 @@ class TeamService
 
         return ResponseHelper::success($departments);
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 //add team
@@ -96,7 +83,7 @@ class TeamService
             $existingDepartment = Department::where('name', $request->name)
                 ->where('branch_id', $request->branch_id)
                 ->first();
-                 //check if department exist firstly
+            //check if department exist firstly
 
             if ($existingDepartment) {
                 //throw exception if department exist
@@ -109,23 +96,22 @@ class TeamService
                 'branch_id' => $request->branch_id,
 
             ]);
-            if($request->parent_id)
-            {
+            if ($request->parent_id) {
 
-            DepartmentParent::query()->create(
-              [
-                    'parent_id'=>$request->parent_id,
-                    'department_id'=> $department->id
-                ]
+                DepartmentParent::query()->create(
+                    [
+                        'parent_id' => $request->parent_id,
+                        'department_id' => $department->id
+                    ]
 
-              );
+                );
             }
             //if request has team_leader => find it or fail
             if ($request->team_leader) {
                 $leader = $request->team_leader;
-                $teamLeader = User::where('role','!=','admin')
+                $teamLeader = User::where('role', '!=', 'admin')
                     ->findOrFail($leader);
-                    //check if team_leader exist in another team to throw exception
+                //check if team_leader exist in another team to throw exception
                 if (!$teamLeader || $teamLeader->role == 'team_leader') {
                     throw new Exception('You cannot add a team leader to another team');
                 }
@@ -140,17 +126,16 @@ class TeamService
             //add array of users to team with role employee
             if ($request->users_array) {
                 foreach ($request->users_array as $userId) {
-                    $addUser = User::findOrFail($userId)->where('role','!=','admin');
+                    $addUser = User::findOrFail($userId)->where('role', '!=', 'admin');
                     if ($addUser) {
-                        $addUser->where('id',$userId)->update([
-                        'role' => 'employee',
-                        'department_id'=> $department->id,
+                        $addUser->where('id', $userId)->update([
+                            'role' => 'employee',
+                            'department_id' => $department->id,
                         ]);
                     }
                 }
             }
-             DB::commit();
-
+            DB::commit();
 
 
             return 'Team added successfully';
@@ -159,10 +144,6 @@ class TeamService
             return $e->getMessage();
         }
     }
-
-
-
-
 
 
 //update team
@@ -177,35 +158,34 @@ class TeamService
                     'name' => $request->name,
                 ]);
 
-                //update department (team)
-                if($request->parent_id)
-                {
+            //update department (team)
+            if ($request->parent_id) {
 
-                   $DepartmentParent= DepartmentParent::query()->where('department_id',$department->id)
+                $DepartmentParent = DepartmentParent::query()->where('department_id', $department->id)
                     ->update(
                         [
-                            'parent_id'=>$request->parent_id
+                            'parent_id' => $request->parent_id
                         ]
-                        );
-                }
+                    );
+            }
 
 
             User::where('department_id', $department->id)
                 ->update(['department_id' => null]);
-                 //set department_id null for all user
+            //set department_id null for all user
 
             User::where('department_id', $department->id)
                 ->where('role', 'team_leader')
                 ->update(['role' => 'employee']);
-                 // set role employee for team leader to reset roles for all department
+            // set role employee for team leader to reset roles for all department
 
             if ($request->users_array) { //store many users in team as array
                 foreach ($request->users_array as $userId) {
-                    $addUser = User::findOrFail($userId)->where('role','!=','admin');
+                    $addUser = User::findOrFail($userId)->where('role', '!=', 'admin');
                     if ($addUser) {
-                        $addUser->where('id',$userId)->update([
+                        $addUser->where('id', $userId)->update([
                             'role' => 'employee',
-                            'department_id'=>$department->id
+                            'department_id' => $department->id
 
                         ]); // store users as employees
                     }
