@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['sick', 'justified', 'Unjustified']);
-            $table->boolean('isPaid');
+            $table->boolean('isPaid')->default(false);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('startDate')->nullable(true);
             $table->string('endDate')->nullable(true);

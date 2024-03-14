@@ -53,7 +53,7 @@ class UserController extends Controller
     {
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
-            ->with('department', 'userInfo:id,user_id,image')
+            ->with('department', 'userInfo:id,user_id,image')->with('getjustifiedAbsences')
             ->whereNull('deleted_at')
             ->get()
             ->toArray();

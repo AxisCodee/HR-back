@@ -531,6 +531,52 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Absences::class, 'user_id');
     }
 
+
+
+
+
+    public function filterDate($result, $date, $fieldName)
+    {
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
+
+            if ($day) {
+                $result->whereDate($fieldName, $date);
+            } elseif ($month) {
+                $result->whereYear($fieldName, $year)
+                    ->whereMonth($fieldName, $month);
+            } else {
+                $result->whereYear($fieldName, $year);
+            }
+        }
+
+        return $result;
+    }
+
+
+    public function justifiedAbsences()
+    {
+        return $this->hasMany(Absences::class, 'user_id')->where('type','justified');
+    }
+
+    public function getjustifiedAbsences()
+    {
+        $date = request()->query('date');
+        return $this->filterDate($this->justifiedAbsences,$date,'startDate');
+    }
+
+    public function unJustifiedAbsences()
+    {
+        return $this->hasMany(Absences::class, 'user_id')->where('type','Unjustified');
+    }
+
+    public function sickAbsences()
+    {
+        return $this->hasMany(Absences::class, 'user_id')->where('type','sick');
+    }
+
     public function userInfo()
     {
         return $this->hasOne(UserInfo::class, 'user_id');
