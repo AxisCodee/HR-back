@@ -72,7 +72,8 @@ class User extends Authenticatable implements JWTSubject
         'status',
         'level',
         'isTrash',
-        'dismissed'
+        'dismissed',
+        //'TotalAbsenceHours'
     ];
     protected $hidden = [
         'password',
@@ -342,6 +343,24 @@ class User extends Authenticatable implements JWTSubject
             return 0;
         }
     }
+
+    // public function getTotalAbsenceHoursAttribute()
+    // {
+    //     $latehours = Late::where('user_id',$this->id)->count('hours_num');
+
+    //     $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
+
+    //     $worktime = Carbon::parse($branchpolicy->work_time['start_time'])->
+    //     diffInHours(Carbon::parse($branchpolicy->work_time['end_time']), false);
+
+    //     $absence = Absences::where('user_id',$this->id)
+    //                         ->whereNot('isPaid',1)
+    //                         ->whereNot('type','justified')
+    //     ->count();
+
+    //     return $worktime;
+    //     //$absencehours = Absences::where('user_id',$this->id);
+    // }
 
     public function getStatusAttribute()
     {

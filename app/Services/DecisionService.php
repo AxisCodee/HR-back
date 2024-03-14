@@ -41,13 +41,6 @@ class DecisionService
         return $result;
     }
 
-<<<<<<< HEAD
-
-
-
-
-   
-=======
     public static function user_absence(Request $request)
     {
         $userId = $request->user_id;
@@ -78,7 +71,6 @@ class DecisionService
 
         return $result;
     }
->>>>>>> 9e99c65a69ae39976ee98bfb6bbf493589a39653
 
     public function StoreDecision($request)
     {
