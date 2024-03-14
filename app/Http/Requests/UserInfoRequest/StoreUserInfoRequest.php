@@ -26,7 +26,7 @@ class StoreUserInfoRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'exists:users,id'],
-            'image' => ['required', 'mimes:jpg,bmp,png'],
+            'image' => [ 'mimes:jpg,bmp,png'],
             'birth_date' => ['required', 'date'],
             'start_date' => ['required', 'date'],
             'gender' => ['required', Rule::in(['Male', 'Female'])],

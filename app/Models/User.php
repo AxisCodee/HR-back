@@ -277,11 +277,17 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         if ($date) {
-            $salary = UserSalary::where('user_id', $this->id)
-                ->where('date', '<=', $date)
-                ->get();
-            $baseSalary = $salary->isEmpty() ? 0 : $salary->last()->salary;
-            return $baseSalary;
+            $incomingDate = Carbon::parse($date);
+            $today = Carbon::today();
+            if ($incomingDate->lte($today)) {
+                $salary = UserSalary::where('user_id', $this->id)
+                    ->where('date', '<=', $date)
+                    ->sum('salary');
+                //$baseSalary = $salary->isEmpty() ? 0 : $salary->last()->salary;
+                return $salary;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }

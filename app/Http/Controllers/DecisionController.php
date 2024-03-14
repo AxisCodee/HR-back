@@ -12,30 +12,39 @@ use App\Http\Requests\DecisionRequest\UpdateDecisionRequest;
 
 class DecisionController extends Controller
 {
+    protected $decisionService;
+
+    public function __construct(DecisionService $decisionService)
+    {
+        $this->$decisionService = $decisionService;
+    }
+
     /**
      * Add new decision for a user.
-     * [DecisionService => none]
+     * [DecisionService => StoreDecision]
      * @param StoreDecisionRequest
-     * @return ResponseHelper
+     * @return DecisionService
      */
     public function new_decision(StoreDecisionRequest $request)
     {
-        $new = $request->validated();
-        $created = Decision::create($new);
-        return ResponseHelper::created($created, 'decision created successfully');
+        try {
+            return $this->decisionService->StoreDecision($request);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+
     }
 
     /**
      * Delete an existing decision.
-     * [DecisionService => none]
+     * [DecisionService => RemoveDecision]
      * @param Decision
-     * @return ResponseHelper
+     * @return DecisionService
      */
     public function remove_decision($id)
     {
         try {
-            $removed = Decision::findOrFail($id)->delete();
-            return ResponseHelper::success('Decision deleted successfully');
+            return $this->decisionService->RemoveDecision($id);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
@@ -43,18 +52,15 @@ class DecisionController extends Controller
 
     /**
      * Edit an existing decision.
-     * [DecisionService => none]
+     * [DecisionService => UpdateDecision]
      * @param UpdateDecisionRequest
      * @param Decision
-     * @return ResponseHelper
+     * @return decisionService
      */
     public function edit_decision(UpdateDecisionRequest $request, $id)
     {
         try {
-            $validate = $request->validated();
-            $edited = Decision::where('id', $id)->firstOrFail();
-            $edited->update($validate);
-            return ResponseHelper::updated($edited, 'Decision updated successfully');
+            return $this->decisionService->UpdateDecision($request,$id);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
@@ -62,33 +68,17 @@ class DecisionController extends Controller
 
     /**
      * Get all decisions for all users.
-     * [DecisionService => none]
+     * [DecisionService => AllDecisions]
      * @param Request
-     * @return ResponseHelper
+     * @return decisionService
      */
     public function all_decisions(Request $request)
     {
-        $branchId = $request->input('branch_id');
-        $all = Decision::query()
-            ->with('user_decision')->whereHas('user_decision', function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            })
-            ->get()->toArray();
-        return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
-    }
-
-    /**
-     * Get decisions for the authenticated user.
-     * [DecisionService => none]
-     * @param none
-     * @return ResponseHelper
-     */
-    public function my_decisions()
-    {
-        $mine = Decision::query()
-            ->where('user_id', Auth::id())
-            ->get()->toArray();
-        return ResponseHelper::success($mine, null, 'user decisions returned successfully', 200);
+        try {
+            return $this->decisionService->AllDecisions($request);
+        } catch (\Exception $e) {
+        return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
     }
 
     /**

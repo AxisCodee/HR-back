@@ -57,27 +57,44 @@ public  function updateUser($user,$request)
             }
 
             $userInfo = UserInfo::where('user_id',$user->id)->first();
+
+            if($request->salary && $userInfo->salary != $request->salary)
+            {
+                $lastSalaryUpdate = $user->salary()->latest('date')->first();
+
+                $lastSalaryDate = $lastSalaryUpdate ? $lastSalaryUpdate->date : null;
+                $monthsToCreate = $lastSalaryDate ? Carbon::parse($lastSalaryDate)
+                ->diffInMonths(Carbon::now()->format('Y-m')) : 0;
+
+                for ($i = 0; $i < $monthsToCreate-1; $i++) {
+                    $date = Carbon::now()->subMonths($i + 1)->startOfMonth()->format('Y-m');
+                    $user->salary()->create([
+                        'date' => $date,
+                        'salary' => $lastSalaryUpdate ? $lastSalaryUpdate->salary : 0,
+                    ]);
+                }
+                $user->salary()->create([
+                    'user_id'=>$user->id,
+                    'date' => Carbon::now()->startOfMonth()->format('Y-m'),
+                    'salary' => $request->salary,
+                ]);
+            }
+
            $userInfo->update([
-                'salary' => $request->salary,
-                'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
-                'nationalID' => $request->nationalID,
-                'social_situation' => $request->social_situation,
-                'level' => $request->level,
-                'military_situation' => $request->military_situation,
-                'health_status' => $request->health_status,
-                'image' => $path?:$userInfo->image
+                'salary' => $request->salary?:$userInfo->salary,
+                'birth_date' => $request->birth_date?:$userInfo->birth_date,
+                'gender' => $request->gender?:$userInfo->gender,
+                'nationalID' => $request->nationalID?:$userInfo->nationalID,
+                'social_situation' => $request->social_situation?:$userInfo->social_situation,
+                'level' => $request->level?:$userInfo->level,
+                'military_situation' => $request->military_situation?:$userInfo->military_situation,
+                'health_status' => $request->health_status?:$userInfo->health_status,
+                'image' => $path?:$userInfo->image?:$userInfo->image,
             ]);
             if($request->role)
             {
             $user->assignRole($request->role);
             }
-
-            $sal= UserSalary::create([
-                'user_id'=>$user->id,
-                'date' => Carbon::now()->format('Y-m'),
-                'salary' => $request->salary?:$userInfo->salary
-            ]);
             $educations = $request->educations;
             $certificates = $request->certificates;
             $languages = $request->languages;
@@ -238,16 +255,3 @@ public  function updateUser($user,$request)
    }
 }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

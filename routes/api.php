@@ -72,7 +72,6 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::get('professional', 'user_prof');
                 Route::get('resignedusers', 'resignedusers');
                 Route::post('updateUser/{user}', 'updateUser');
-
             });
         });
 
