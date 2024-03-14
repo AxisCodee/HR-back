@@ -41,6 +41,11 @@ class DecisionService
         return $result;
     }
 
+
+
+
+
+
     public static function user_absence(Request $request)
     {
         $userId = $request->user_id;

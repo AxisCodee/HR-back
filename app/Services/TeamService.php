@@ -232,4 +232,34 @@ class TeamService
             return $e->getMessage();
         }
     }
+
+    public function getTree()
+    {
+        $childs = Department::with('user')->with('child.department.user')->get();
+
+        $tree=[];
+
+        foreach($childs as $department)
+        {
+            $tree[] = $this->buildTree($department);
+        }
+        return $tree;
+    }
+
+    public function buildTree($department)
+    {
+        $tree = $department->toArray();
+        $childDepartments = $department->child;
+
+        if($childDepartments){
+            $tree['child'] = [];
+
+            foreach($childDepartments as $childDepartment)
+            {
+                $tree['child'][] = $this->buildTree($childDepartment);
+            }
+        }
+
+        return $tree;
+    }
 }

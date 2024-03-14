@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
 
-require 'tad\vendor\autoload.php';
 
 require 'tad\vendor\autoload.php';
 

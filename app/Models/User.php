@@ -73,7 +73,7 @@ class User extends Authenticatable implements JWTSubject
         'level',
         'isTrash',
         'dismissed',
-        //'TotalAbsenceHours'
+        'TotalAbsenceHours'
     ];
     protected $hidden = [
         'password',
@@ -344,23 +344,28 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    // public function getTotalAbsenceHoursAttribute()
-    // {
-    //     $latehours = Late::where('user_id',$this->id)->count('hours_num');
+    public function getTotalAbsenceHoursAttribute()
+    {
+        $latehours = Late::where('user_id',$this->id)->count('hours_num');
 
-    //     $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
+        $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
 
-    //     $worktime = Carbon::parse($branchpolicy->work_time['start_time'])->
-    //     diffInHours(Carbon::parse($branchpolicy->work_time['end_time']), false);
+        $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
+        $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
+        $worktime = $startTime->diffInMinutes($endTime, false);
 
-    //     $absence = Absences::where('user_id',$this->id)
-    //                         ->whereNot('isPaid',1)
-    //                         ->whereNot('type','justified')
-    //     ->count();
+       //  $worktime = $worktime%60;
 
-    //     return $worktime;
-    //     //$absencehours = Absences::where('user_id',$this->id);
-    // }
+        $absence = Absences::where('user_id',$this->id)
+                            ->whereNot('isPaid',1)
+                            ->whereNot('type','justified')
+                            ->count();
+
+        $absencehours = $absence * $worktime;
+        $totalhours = $absencehours + $latehours;
+        return $worktime;
+        //$absencehours = Absences::where('user_id',$this->id);
+    }
 
     public function getStatusAttribute()
     {
@@ -548,6 +553,52 @@ class User extends Authenticatable implements JWTSubject
     public function absences()
     {
         return $this->hasMany(Absences::class, 'user_id');
+    }
+
+
+
+
+
+    public function filterDate($result, $date, $fieldName)
+    {
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
+
+            if ($day) {
+                $result->whereDate($fieldName, $date);
+            } elseif ($month) {
+                $result->whereYear($fieldName, $year)
+                    ->whereMonth($fieldName, $month);
+            } else {
+                $result->whereYear($fieldName, $year);
+            }
+        }
+
+        return $result;
+    }
+
+
+    public function justifiedAbsences()
+    {
+        return $this->hasMany(Absences::class, 'user_id')->where('type','justified');
+    }
+
+    public function getjustifiedAbsences()
+    {
+        $date = request()->query('date');
+        return $this->filterDate($this->justifiedAbsences,$date,'startDate');
+    }
+
+    public function unJustifiedAbsences()
+    {
+        return $this->hasMany(Absences::class, 'user_id')->where('type','Unjustified');
+    }
+
+    public function sickAbsences()
+    {
+        return $this->hasMany(Absences::class, 'user_id')->where('type','sick');
     }
 
     public function userInfo()
