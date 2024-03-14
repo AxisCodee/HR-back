@@ -30,7 +30,7 @@ class User extends Authenticatable implements JWTSubject
     {
         parent::__construct($attributes);
         $this->userServices = new UserServices();
-
+        $this->usertimeService = new UserTimeService();
     }
 
     protected $fillable =
@@ -190,6 +190,48 @@ class User extends Authenticatable implements JWTSubject
      *   ^^^^^^^^^^^^^^^^^^^^^^^^^^
      **********USER SERVICE **********
      */
+
+
+
+
+  /***
+     *
+     * 
+     **********USER ABSENCE RELATIONSHIP **********
+     */
+
+     public function justifiedAbsences()
+     {
+       $date = request()->query('date');
+       $result = $this->hasMany(Absences::class, 'user_id')
+       ->where('type','justified');
+       return      $this->usertimeService->filterDate($result,$date,'startDate');
+         }
+
+
+     public function unJustifiedAbsences()
+     {
+         $date = request()->query('date');
+         $result = $this->hasMany(Absences::class, 'user_id')
+         ->where('type','UnJustified');
+          return      $this->usertimeService->filterDate($result,$date,'startDate');
+            }
+
+     public function sickAbsences()
+     {
+         $date = request()->query('date');
+         $result = $this->hasMany(Absences::class, 'user_id')
+         ->where('type','sick');
+         return      $this->usertimeService->filterDate($result,$date,'startDate');
+        }
+
+
+  /***
+     *
+     *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER ABSENCE RELATIONSHIP **********
+     */
+
 
 
 
@@ -535,47 +577,10 @@ class User extends Authenticatable implements JWTSubject
 
 
 
-    public function filterDate($result, $date, $fieldName)
-    {
-        if ($date) {
-            $year = substr($date, 0, 4);
-            $month = substr($date, 5, 2);
-            $day = substr($date, 8, 2);
-
-            if ($day) {
-                $result->whereDate($fieldName, $date);
-            } elseif ($month) {
-                $result->whereYear($fieldName, $year)
-                    ->whereMonth($fieldName, $month);
-            } else {
-                $result->whereYear($fieldName, $year);
-            }
-        }
-
-        return $result;
-    }
 
 
-    public function justifiedAbsences()
-    {
-        return $this->hasMany(Absences::class, 'user_id')->where('type','justified');
-    }
 
-    public function getjustifiedAbsences()
-    {
-        $date = request()->query('date');
-        return $this->filterDate($this->justifiedAbsences,$date,'startDate');
-    }
 
-    public function unJustifiedAbsences()
-    {
-        return $this->hasMany(Absences::class, 'user_id')->where('type','Unjustified');
-    }
-
-    public function sickAbsences()
-    {
-        return $this->hasMany(Absences::class, 'user_id')->where('type','sick');
-    }
 
     public function userInfo()
     {
