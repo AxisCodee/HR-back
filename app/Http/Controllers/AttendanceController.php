@@ -170,29 +170,32 @@ class AttendanceController extends Controller
                                     ->first();
                                 if (!$absence) {//unjustified absence
                                     $userStartDate = UserInfo::query()->where('user_id', $user->id)
-                                        ->first();
-                                    $startDate = Carbon::parse($userStartDate->start_date);
-                                    $uDate = Carbon::parse($date);
-                                    if ($startDate->lt($uDate)) {
-                                        if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
-                                            Absences::updateOrCreate([
-                                                'user_id' => $user->id,
-                                                'startDate' => $date,
-                                                'type' => 'Unjustified'
-                                            ]);
-                                            Decision::query()->updateOrCreate([
-                                                'user_id' => $user->id,
-                                                'branch_id' => $user->branch_id,
-                                                'type' => 'deduction',
-                                                'content' => 'deduction due the Unjustified absence',
-                                                'dateTime' => $date,
-                                            ]);
-                                        } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
-                                            Absences::updateOrCreate([
-                                                'user_id' => $user->id,
-                                                'startDate' => $date,
-                                                'type' => 'null'
-                                            ]);
+                                        ->exists();
+                                    if ($userStartDate) {
+                                        $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
+                                        $startDate = Carbon::parse($userStartDate->start_date);
+                                        $uDate = Carbon::parse($date);
+                                        if ($startDate->lt($uDate)) {
+                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
+                                                Absences::updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'startDate' => $date,
+                                                    'type' => 'Unjustified'
+                                                ]);
+                                                Decision::query()->updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'branch_id' => $user->branch_id,
+                                                    'type' => 'deduction',
+                                                    'content' => 'deduction due the Unjustified absence',
+                                                    'dateTime' => $date,
+                                                ]);
+                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
+                                                Absences::updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'startDate' => $date,
+                                                    'type' => 'null'
+                                                ]);
+                                            }
                                         }
                                     }
                                 }

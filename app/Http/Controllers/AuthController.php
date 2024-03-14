@@ -87,6 +87,7 @@ class AuthController extends Controller
                     'pin' => $newPin,
                     'address' => $request->address,
                     'branch_id' => $branch_id,
+                    'permission'=>$request->permission
                 ]);
                 $user->update(['pin' => $user->id]);
 
