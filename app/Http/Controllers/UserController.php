@@ -274,7 +274,7 @@ class UserController extends Controller
     {
         try {
             $result = $this->editUserService->updateUser($user, $request);
-            return ResponseHelper::success($result, 'User update successfully');
+            return $result;
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             return ResponseHelper::error($e->validator->errors()->first(), 400);
