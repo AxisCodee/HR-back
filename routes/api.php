@@ -72,6 +72,8 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::get('professional', 'user_prof');
                 Route::get('resignedusers', 'resignedusers');
                 Route::post('updateUser/{user}', 'updateUser');
+                Route::post('AbsenceTypes','GetAbsenceTypes');
+
             });
         });
 
@@ -209,7 +211,6 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
                 Route::post('store_one_absence', 'storeAbsence'); //store one absence
                 Route::get('getUserAbsence', 'getUserAbsence');
-
             });
         });
 

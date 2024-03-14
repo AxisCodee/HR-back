@@ -197,7 +197,7 @@ class User extends Authenticatable implements JWTSubject
 
   /***
      *
-     * 
+     *
      **********USER ABSENCE RELATIONSHIP **********
      */
 

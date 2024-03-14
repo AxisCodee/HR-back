@@ -306,4 +306,13 @@ class UserController extends Controller
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         }
     }
+
+    public function GetAbsenceTypes(Request $request)
+    {
+        try{
+            return $this->userService->AllAbsenceTypes($request);
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            return ResponseHelper::error($e->validator->errors()->first(), 400);
+        }
+    }
 }

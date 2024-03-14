@@ -218,4 +218,13 @@ class UserServices
             'user_id'=>$user->id,
         ]);
     }
+
+    public function AllAbsenceTypes($request)
+    {
+       $userAbsence = User::query()
+       ->with('justifiedAbsences','unJustifiedAbsences','sickAbsences')
+       ->get()
+       ->toArray();
+        return $userAbsence;
+    }
 }
