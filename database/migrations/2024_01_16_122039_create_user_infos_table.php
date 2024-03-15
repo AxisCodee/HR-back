@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('image')->nullable();
             $table->date('birth_date');
+            $table->date('start_date');
             $table->enum('gender', ['Male', 'Female']);
             $table->bigInteger('nationalID');
             $table->enum('social_situation', ['Single', 'Married']);

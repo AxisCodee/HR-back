@@ -2,29 +2,32 @@
 
 namespace App\Services;
 
-use App\Helper\ResponseHelper;
-use App\Http\Requests\UserRequest\UpdateUserRequest;
-use App\Models\Absences;
-use App\Models\Attendance;
-use App\Models\Career;
+use Carbon\Carbon;
 use App\Models\Date;
-use App\Models\Decision;
 use App\Models\Late;
+use App\Models\Rate;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Career;
+use App\Models\Absences;
+use App\Models\Decision;
+use App\Models\RateType;
+use App\Models\Attendance;
+use App\Models\UserSalary;
+use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UserRequest\UpdateUserRequest;
 
 class UserServices
 {
     public function getCheckInPercentage($user, $date)
     {
+
         $checkIns = Attendance::where('status', '0')
             ->where('pin', $user->pin)
             ->when($date, function ($query, $date) {
                 $year = substr($date, 0, 4);
                 $month = substr($date, 5, 2);
-
                 if ($month) {
                     return $query->whereYear('datetime', $year)
                         ->whereMonth('datetime', $month);
@@ -32,7 +35,8 @@ class UserServices
                     return $query->whereYear('datetime', $year);
                 }
             })
-            ->count('id');
+            ->selectRaw('COUNT(DISTINCT CONCAT(pin, DATE(datetime))) as check_ins')
+            ->value('check_ins');
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
@@ -57,8 +61,6 @@ class UserServices
             return 0;
     }
 
-
-
     public function getCheckOutPercentage($user, $date)
     {
         $date = request()->query('date');
@@ -67,7 +69,6 @@ class UserServices
             ->when($date, function ($query, $date) {
                 $year = substr($date, 0, 4);
                 $month = substr($date, 5, 2);
-
                 if ($month) {
                     return $query->whereYear('datetime', $year)
                         ->whereMonth('datetime', $month);
@@ -75,7 +76,8 @@ class UserServices
                     return $query->whereYear('datetime', $year);
                 }
             })
-            ->count('id');
+            ->selectRaw('COUNT(DISTINCT CONCAT(pin, DATE(datetime))) as check_outs')
+            ->value('check_outs');
         if ($date) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
@@ -101,67 +103,66 @@ class UserServices
     }
 
 
-
     public function getReward($user, $date)
     {
         $rewards = Decision::where('type', 'reward')
             ->where('user_id', $user->id);
-
-        $usertimeService = app(UsertimeService::class);
-        $rewards = $usertimeService->checkTimeDate($rewards, $date);
-
+        $usertimeService = app(UserTimeService::class);
+        $rewards = $usertimeService->filterDate($rewards, $date, 'dateTime');
         $totalReward = $rewards->sum('amount');
-
         return $totalReward;
     }
-
 
     public function getAbsence($user, $date)
     {
         $absences = Absences::where('user_id', $user->id);
-
-        $usertimeService = app(UsertimeService::class);
-        $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
-
+        $usertimeService = app(UserTimeService::class);
+        $absences = $usertimeService->filterDate($absences, $date, 'startDate');
         $totalAbsence = $absences->count('id');
-
         return $totalAbsence;
     }
+
     public function getDeduction($user, $date)
     {
         $deductions = Decision::where('type', 'deduction')
             ->where('user_id', $user->id);
-
-        $usertimeService = app(UsertimeService::class);
-        $deductions = $usertimeService->checkTimeDate($deductions, $date);
-
+        $usertimeService = app(UserTimeService::class);
+        $deductions = $usertimeService->filterDate($deductions, $date, 'dateTime');
         $totalDeduction = $deductions->sum('amount');
-
         return $totalDeduction;
     }
+
+    public function getDeductions($user, $date)
+    {
+        $deductions = Decision::where('type', 'deduction')
+            ->where('user_id', $user->id);
+
+        $usertimeService = app(UserTimeService::class);
+        $deductions = $usertimeService->filterDate($deductions, $date, 'dateTime');
+
+        //  $totalDeduction = $deductions->sum('amount');
+
+        return $deductions;
+    }
+
     public function getAdvance($user, $date)
     {
         $advance = Decision::where('type', 'advanced')
             ->where('user_id', $user->id);
-
-        $usertimeService = app(UsertimeService::class);
-        $advance = $usertimeService->checkTimeDate($advance, $date);
-
+        $usertimeService = app(UserTimeService::class);
+        $advance = $usertimeService->filterDate($advance, $date, 'dateTime');
         $totalAdvance = $advance->sum('amount');
-
         return $totalAdvance;
     }
+
     public function getLate($user, $date)
     {
         $lates = Late::whereNotNull('check_in')
             ->where('type', 'Unjustified')
             ->where('user_id', $user->id);
-
-        $usertimeService = app(UsertimeService::class);
-        $lates = $usertimeService->checkOvertimeDate($lates, $date);
-
+        $usertimeService = app(UserTimeService::class);
+        $lates = $usertimeService->filterDate($lates, $date, 'lateDate');
         $totalLateHours = $lates->sum('hours_num');
-
         return $totalLateHours;
     }
 
@@ -170,12 +171,9 @@ class UserServices
         $overTimes = Late::whereNotNull('check_out')
             ->where('type', 'justified')
             ->where('user_id', $user->id);
-
-        $usertimeService = app(UsertimeService::class);
-        $overTimes = $usertimeService->checkOvertimeDate($overTimes, $date);
-
+        $usertimeService = app(UserTimeService::class);
+        $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
         $totalOverTimeHours = $overTimes->sum('hours_num');
-
         return $totalOverTimeHours;
     }
 
@@ -192,28 +190,137 @@ class UserServices
             $specUser->update([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
-                'last_name'  => $request->last_name,
-                'email'      => $request->email,
-                'password'   => Hash::make($request->password),
-                'role'    => $request->role,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'role' => $request->role,
                 'department_id' => $request->department_id,
             ]);
             return ResponseHelper::success($specUser, null, 'user info updated successfully', 200);
+
         });
-        return ResponseHelper::error('Error', null);
+
+
     }
 
     public function except_admins($branch_id)
     {
-
-        $all_users = User::query()->where('branch_id', $branch_id)->whereNot('role','admin')
-        ->with('department', 'userInfo:id,user_id,image')->whereNull('deleted_at')->get()->toArray();
+        $all_users = User::query()->where('branch_id', $branch_id)->whereNot('role', 'admin')
+            ->with('department', 'userInfo:id,user_id,image')->whereNull('deleted_at')->get()->toArray();
         return $all_users;
     }
 
+    public function UpdateSalary($request, $user)
+    {
+        $user->update(['salary' => $request->salary]);
+        $newsalary = UserSalary::create([
+            'date' => now()->format('Y-m'),
+            'salary' => $request->salary,
+            'user_id' => $user->id,
+        ]);
+    }
 
+    /***
+     *
+     *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER Arrays **********
+     */
+    public function overTimes($user, $date)
+    {
+        if ($date) {
+            $overTimes = Late::whereNotNull('check_out')
+                ->where('type', 'justified')
+                ->where('user_id', $user->id);
+            $usertimeService = app(UserTimeService::class);
+            $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
+            $total = $overTimes->get();
+            return $total;
+        }
+        return [];
+    }
 
+    public function deductions($user, $date)
+    {
+        if ($date) {
+            $deductions = Decision::where('type', 'deduction')
+                ->where('user_id', $user->id);
+            $usertimeService = app(UserTimeService::class);
+            $deductions = $usertimeService->filterDate($deductions, $date, 'dateTime');
+            $total = $deductions->get();
+            return $total;
+        }
+        return [];
+    }
 
+    public function rewards($user, $date)
+    {
+        if ($date) {
+            $rewards = Decision::where('type', 'reward')
+                ->where('user_id', $user->id);
+            $usertimeService = app(UserTimeService::class);
+            $rewards = $usertimeService->filterDate($rewards, $date, 'dateTime');
+            $total = $rewards->get();
+            return $total;
+        }
+        return [];
+    }
 
+    public function advances($user, $date)
+    {
+        if ($date) {
+            $advances = Decision::where('type', 'advance')
+                ->where('user_id', $user->id);
+            $usertimeService = app(UserTimeService::class);
+            $advances = $usertimeService->filterDate($advances, $date, 'dateTime');
+            $total = $advances->get();
+            return $total;
+        }
+        return [];
+    }
 
+    public function warnings($user, $date)
+    {
+        if ($date) {
+            $warning = Decision::where('type', 'warning')
+                ->where('user_id', $user->id);
+            $usertimeService = app(UserTimeService::class);
+            $warning = $usertimeService->filterDate($warning, $date, 'dateTime');
+            $total = $warning->get();
+            return $total;
+        }
+        return [];
+    }
+
+    public function alerts($user, $date)
+    {
+        if ($date) {
+            $alert = Decision::where('type', 'alert')
+                ->where('user_id', $user->id);
+            $usertimeService = app(UserTimeService::class);
+            $alert = $usertimeService->filterDate($alert, $date, 'dateTime');
+            $total = $alert->get();
+            return $total;
+        }
+        return [];
+    }
+
+    public function absences($user, $date)
+    {
+        if ($date) {
+            $absences = Absences::where('user_id', $user->id)->where('type', 'Unjustified');
+            $usertimeService = app(UserTimeService::class);
+            $absences = $usertimeService->filterDate($absences, $date, 'startDate');
+            $total = $absences->get();
+            return $total;
+        }
+        return [];
+    }
+
+    public function AllAbsenceTypes($request)
+    {
+       $userAbsence = User::query()
+       ->with('justifiedAbsences','unJustifiedAbsences','sickAbsences')
+       ->get()
+       ->toArray();
+        return $userAbsence;
+    }
 }

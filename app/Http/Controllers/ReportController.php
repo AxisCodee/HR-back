@@ -2,107 +2,151 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\ResponseHelper;
-use App\Http\Requests\ReportRequest\StoreReportRequest;
-use App\Models\Attendance;
 use App\Models\Report;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Helper\ResponseHelper;
+use App\Services\ReportServices;
+use App\Http\Requests\ReportRequest\StoreReportRequest;
 
 class ReportController extends Controller
 {
-    //store new Report
-    public function store(StoreReportRequest $request)
+    protected $ReportServices;
+
+    /**
+     * Define the constructor to use the service.
+     * @param ReportServices
+     * @return none
+     */
+    public function __construct(ReportServices $ReportServices)
     {
-        $validate = $request->validated();
-        $new_report = Report::create([
-            'user_id' => Auth::id(),
-            'content' => $request->content,
-        ]);
-        return ResponseHelper::success($new_report, null, 'report created successfully', 200);
-    }
-    //remove existing report by a specific user
-    public function remove($id)
-    {
-        $remove = Report::findorFail($id)->delete();
-        return ResponseHelper::success($remove, null, 'report removed successfully', 200);
-    }
-    //get all user's reports
-    public function my_reports()
-    {
-        $all = Report::query()->where('user_id', Auth::id())->get()->toArray();
-        return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
+        $this->ReportServices = $ReportServices;
     }
 
-    //get all reports
-
-    public function all_reports(Request $request)
+    /**
+     * Validate request & Store the new report.
+     * [ReportServices => StoreReport]
+     * @param StoreReportRequest
+     * @return ResponseHelper
+     */
+    public function store(StoreReportRequest $request) //TODO delete method or not
     {
-        $branchId = $request->input('branch_id');
-        $user = User::where('branch_id', $branchId);
-        $all = $user->reports()->get()->toArray();
-        return ResponseHelper::success($all, null, 'all user reports returned successfully', 200);
+        try {
+            $newreport = $this->ReportServices->StoreReport($request);
+            return  $newreport;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
     }
 
-    //get all reports of today
-    public function daily_reports(Request $request)
+    /**
+     * Remove existing report by a specific user.
+     * [ReportServices => RemoveReport]
+     * @param Report
+     * @return ResponseHelper
+     */
+    public function remove($id) //TODO delete method or not
     {
-        $branchId = $request->input('branch_id');
-        $user = User::where('branch_id', $branchId);
-        $today = $user->reports()->whereDate('created_at', now()->format('Y-m-d'))->get()->toArray();
-        return ResponseHelper::success($today, null, 'today reports returned successfully', 200);
+        try {
+            $remove = $this->ReportServices->RemoveReport($id);
+            return $remove;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
     }
-    //get CHECK-INs & CHECK-OUTs of a user in a specific day
+
+    /**
+     * Get reports of the authenticated user.
+     * [ReportServices => MyReports]
+     * @param none
+     * @return ResponseHelper
+     */
+    public function my_reports() //TODO delete method or not
+    {
+        try {
+            $reports = $this->ReportServices->MyReports();
+            return $reports;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
+    }
+
+    /**
+     * Get all reports of all users in a specific branch.
+     * [ReportServices => AllReports]
+     * @param Request
+     * @return ResponseHelper
+     */
+    public function all_reports(Request $request) //TODO delete method or not
+    {
+        try {
+            $allreports =  $this->ReportServices->AllReports($request);
+            return $allreports;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
+    }
+
+    /**
+     * Get all reports of all users in a specific branch at the current day.
+     * [ReportServices => DailyReports]
+     * @param Request
+     * @return ResponseHelper
+     */
+    public function daily_reports(Request $request) //TODO delete method or not
+    {
+        try {
+            $todayreports = $this->ReportServices->DailyReports($request);
+            return $todayreports;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
+    }
+
+    /**
+     * Get CHECK-INs & CHECK-OUTs of a user in a specific day.
+     * [ReportServices => UserChecks]
+     * @param Request
+     * @return ResponseHelper
+     */
     public function user_checks(Request $request)
     {
-        $work_time_start = Carbon::parse('09:00:00');
-        $work_time_end = Carbon::parse('17:00:00');
-        $date_time = Carbon::parse($request->date);
-        $checks = Attendance::where('pin', $request->user_id)
-            ->whereDate('datetime', $date_time->format('Y-m-d'))->get();
-        foreach ($checks as $check) {
-            if ($check->status == 0) {
-                $enter = Carbon::parse($check->datetime)->format('H:i:s');
-                $lateness_in_mins = $work_time_start->diffInMinutes($enter);
-                $lateness_in_mins = $lateness_in_mins % 60;
-                $lateness_in_hrs = $work_time_start->diffInHours($enter);
-            } elseif ($check->status == 1) {
-                $out = Carbon::parse($check->datetime)->format('H:i:s');
-                $overtime_in_mins = $work_time_end->diffInMinutes($out);
-                $overtime_in_mins = $overtime_in_mins % 60;
-                $overtime_in_hrs = $work_time_end->diffInHours($out);
-            }
+        try {
+            $checks = $this->ReportServices->UserChecks($request);
+            return $checks;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
         }
-        return ResponseHelper::success(
-            [
-                'late_in_mins' => $lateness_in_mins,
-                'late_in_hrs' => $lateness_in_hrs,
-                'over_in_mins' => $overtime_in_mins,
-                'over_in_hrs' => $overtime_in_hrs,
-            ],
-            null,
-            'user check insNouts returned successfully',
-            200
-        );
     }
 
+    /**
+     * Get the report of a user in a specific date.
+     * [ReportServices => Report]
+     * @param Request
+     * @return ResponseHelper
+     */
     public function report(Request $request)
     {
-        $date = $request->date;
-        $result = User::with([
-            'notes',
-            'userInfo',
-            'deposits',
-            'department',
-            'penalties',
-            'attendance' => function ($query) use ($date) {
-                $query->whereDate('datetime', $date);
-            }
-        ])->find($request->user_id);
-        return ResponseHelper::success([
-            $result
-        ]);
+        try {
+            $report =  $this->ReportServices->Report($request);
+            return $report;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
+    }
+
+    /**
+     * Get the rates of a user in a given date.
+     * [ReportServices => RatesByDate]
+     * @param Request
+     * @return ResponseHelper
+     */
+    public function ratesByDate(Request $request)
+    {
+        try {
+            $rates = $this->ReportServices->RatesByDate($request);
+            return $rates;
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e, null, 'error', 403);
+        }
     }
 }

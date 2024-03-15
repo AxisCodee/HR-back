@@ -25,11 +25,14 @@ class StoreDepositRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'title' => ['required'],
             'description' => ['required', 'string'],
             'user_id' => ['required', 'exists:users,id'],
-            'received_date' => ['required', 'date'],
+            'received_date' => ['required', 'date']
+
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();

@@ -21,10 +21,6 @@ class LateController extends Controller
      */
 
 
-
-
-
-
     public function index()
     {
         //
@@ -50,7 +46,7 @@ class LateController extends Controller
             $result = Late::query()
                 ->whereRaw("DATE_FORMAT(lateDate, '%Y-%m') = ?", [$currentMonthYear])
                 ->where('type', 'normal')
-                ->with('user:id,first_name,last_name,department_id', 'user.department', 'user.alert', 'user.userInfo:id,image')
+                ->with('user:id,first_name,last_name,department_id,specialization', 'user.department', 'user.alert', 'user.userInfo:id,image')
                 ->whereHas('user', function ($query) use ($branchId) {
                     $query->where('branch_id', $branchId);
                 })
@@ -67,7 +63,6 @@ class LateController extends Controller
     {
         //
     }
-
 
 
     /**
@@ -93,27 +88,44 @@ class LateController extends Controller
      */
     public function acceptAlert(Request $request)
     {
-        $late = Late::find($request->alert_id);
-        if (!$late) {
-            return ResponseHelper::error('Alert not found');
+        try {
+            DB::transaction(function () use ($request) {
+                $late = Late::find($request->alert_id);
+                if (!$late) {
+                    throw new \Exception('Alert not found');
+                }
+
+                $user_id = $late->user_id;
+                $user = User::findOrFail($user_id);
+                if ($late->type === 'normal') {
+                    $late->update([
+                        'type' => 'Unjustified'
+                    ]);
+
+                    $alert = Decision::create([
+                        'user_id' => $user_id,
+                        'branch_id' => $user->branch_id,
+                        'content' => 'alert for late',
+                        'type' => 'warning',
+                        'dateTime' => Carbon::now()->format('Y-m-d')
+                    ]);
+
+                    $alert = UserAlert::create([
+                        'user_id' => $late->user_id,
+                        'alert' => 1,
+                        'date' => Carbon::now()->format('Y-m-d')
+                    ]);
+
+                }
+
+
+            });
+        } catch (\Exception $e) {
+            return ResponseHelper::error('Error accepting alert: ' . $e->getMessage());
         }
-
-        $late->update([
-            'type' => 'Unjustified'
-        ]);
-
-        $alert = UserAlert::create([
-            'user_id' => $late->user_id,
-            'alert' => 1,
-            'date' => Carbon::now()->format('Y-m-d')
-        ]);
-
-        $response = [
-            'user_id' => $alert->user_id
-        ];
-
-        return ResponseHelper::success($response, 'Alert accepted successfully');
+        return ResponseHelper::success('Alert accepted successfully');
     }
+
     public function makeDecision(Late $late)
     {
         return DB::transaction(function () use ($late) {
@@ -146,12 +158,12 @@ class LateController extends Controller
     }
 
 
-
     public function unjustifiedLate()
     {
         $lates = Late::query()->where('type', 'normal')->where('status', 'waiting')->get();
         return ResponseHelper::success($lates, 'unjustifiedLate', null);
     }
+
     public function dynamicDecision()
     {
         $lates = Late::query()->where('type', 'null')->where('status', 'waiting')->get();

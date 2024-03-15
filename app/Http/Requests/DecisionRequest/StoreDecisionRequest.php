@@ -20,7 +20,7 @@ class StoreDecisionRequest extends FormRequest
         return [
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'type' => ['required', 'string','in:reward,warning,deduction,alert,penalty'],
-            'content' => ['required','string', 'between:10,255'],
+            'content' => ['string'],
             'amount' =>['nullable','integer'],
             'dateTime'=>['required'],
             'branch_id'=>['required'],

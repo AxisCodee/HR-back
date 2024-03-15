@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Helper\ResponseHelper;
+use App\Models\Decision;
 use Illuminate\Http\Request;
+use App\Helper\ResponseHelper;
 
 class DecisionService
 {
@@ -44,6 +45,7 @@ class DecisionService
 
 
 
+
     public static function user_absence(Request $request)
     {
         $userId = $request->user_id;
@@ -75,6 +77,35 @@ class DecisionService
         return $result;
     }
 
+    public function StoreDecision($request)
+    {
+        $new = $request->validated();
+        $created = Decision::create($new);
+        return ResponseHelper::created($created, 'decision created successfully');
+    }
 
+    public function RemoveDecision($id)
+    {
+        $removed = Decision::findOrFail($id)->delete();
+        return ResponseHelper::success('Decision deleted successfully');
+    }
 
+    public function UpdateDecision($request,$id)
+    {
+        $validate = $request->validated();
+            $edited = Decision::where('id', $id)->firstOrFail();
+            $edited->update($validate);
+            return ResponseHelper::updated($edited, 'Decision updated successfully');
+    }
+
+    public function AllDecisions($request)
+    {
+        $branchId = $request->input('branch_id');
+        $all = Decision::query()
+            ->with('user_decision')->whereHas('user_decision', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })
+            ->get()->toArray();
+        return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
+    }
 }

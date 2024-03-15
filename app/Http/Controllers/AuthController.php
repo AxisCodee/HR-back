@@ -23,17 +23,20 @@ use App\Models\Deposit;
 use App\Models\StudySituation;
 use App\Models\UserSalary;
 use Carbon\Carbon;
+use App\Services\EditUserService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-
 require 'tad/vendor/autoload.php';
+
 
 class AuthController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
+
     }
 
     public function login(Request $request)
@@ -71,7 +74,7 @@ class AuthController extends Controller
                 } else {
                     $department_id = null;
                 }
-
+                $newPin = User::query()->latest()->value('pin') + 1;
                 $user = User::create([
                     'first_name' => $request->first_name,
                     'middle_name' => $request->middle_name,
@@ -81,9 +84,10 @@ class AuthController extends Controller
                     'specialization' => $request->specialization,
                     'department_id' => $department_id,
                     'password' => Hash::make($request->password),
-                    'pin' => null,
+                    'pin' => $newPin,
                     'address' => $request->address,
                     'branch_id' => $branch_id,
+                    'permission'=>$request->permission
                 ]);
                 $user->update(['pin' => $user->id]);
 
@@ -102,6 +106,7 @@ class AuthController extends Controller
                     'user_id' => $user->id,
                     'salary' => $request->salary,
                     'birth_date' => $request->birth_date,
+                    'start_date' => $request->start_date,
                     'gender' => $request->gender,
                     'nationalID' => $request->nationalID,
                     'social_situation' => $request->social_situation,
@@ -127,35 +132,48 @@ class AuthController extends Controller
                 $secretaraits = $request->secretaraits;
                 $emergency_contact = $request->emergency_contact;
 
+
                 foreach ($educations as $education) {
-                    $studies = StudySituation::query()->create([
-                        'degree' => $education['degree'],
-                        'study' => $education['study'],
-                        'user_id' => $user->id,
-                    ]);
+                    if (isset($education['degree']) && isset($education['study'])) {
+
+                        $studies = StudySituation::query()->create([
+                            'degree' => $education['degree'],
+                            'study' => $education['study'],
+                            'user_id' => $user->id,
+                        ]);
+                    }
                 }
 
+
                 foreach ($certificates as $index => $certificate) {
-                    $cerities = Certificate::query()->create([
-                        'user_id' => $user->id,
-                        'content' => $certificate,
-                    ]);
+                    if (isset($certificate['content'])) {
+                        $cerities = Certificate::query()->create([
+                            'user_id' => $user->id,
+                            'content' => $certificate['content'],
+                        ]);
+                    }
                 }
 
                 foreach ($languages as $language) {
-                    $language = Language::query()->create([
-                        'name' => $language['languages'],
-                        'rate' => $language['rate'],
-                        'user_id' => $user->id,
-                    ]);
+                    if (isset($language['languages']) && isset($language['rate'])) {
+
+                        $language = Language::query()->create([
+                            'languages' => $language['languages'],
+                            'rate' => $language['rate'],
+                            'user_id' => $user->id,
+                        ]);
+                    }
                 }
 
                 foreach ($skills as $skill) {
-                    $skill = Skills::query()->create([
-                        'name' => $skill['skills'],
-                        'rate' => $skill['rate'],
-                        'user_id' => $user->id,
-                    ]);
+                    if (isset($skill['skills']) && isset($skill['rate'])) {
+
+                        $skill = Skills::query()->create([
+                            'skills' => $skill['skills'],
+                            'rate' => $skill['rate'],
+                            'user_id' => $user->id,
+                        ]);
+                    }
                 }
 
                 if ($request->additional_files) {
@@ -172,10 +190,12 @@ class AuthController extends Controller
                     }
                 }
                 foreach ($experiences as $experience) {
-                    $new_exp = Career::query()->create([
-                        'user_id' => $user->id,
-                        'content' => $experience,
-                    ]);
+                    if (isset($experience['content'])) {
+                        $new_exp = Career::query()->create([
+                            'user_id' => $user->id,
+                            'content' => $experience['content'],
+                        ]);
+                    }
                 }
 
                 if (isset($contacts['emails'][0])) {
@@ -183,7 +203,7 @@ class AuthController extends Controller
                         $multi = Contact::create([
                             'user_id' => $user->id,
                             'type' => 'normal',
-                            'contact' => $contact['email'],
+                            'email' => $contact['email'],
                         ]);
                     }
                 }
@@ -193,7 +213,7 @@ class AuthController extends Controller
                         $multi = Contact::create([
                             'user_id' => $user->id,
                             'type' => 'normal',
-                            'contact' => $contact['phone'],
+                            'phone_num' => $contact['phone_num'],
                         ]);
                     }
                 }
@@ -207,7 +227,7 @@ class AuthController extends Controller
                                 'type' => "emergency",
                                 'name' => $emergency['name'],
                                 'address' => $emergency['address'],
-                                'phone_num' => $emergency['phonenumber'] ?? null,
+                                'phone_num' => $emergency['phone_num'] ?? null,
                                 'email' => $emergency['email'] ?? null,
                             ]);
                         } else {
@@ -216,13 +236,20 @@ class AuthController extends Controller
                     }
                 }
 
-                foreach ($secretaraits as $secretarait) {
-                    $recieved = Deposit::query()->create([
-                        'user_id' => $user->id,
-                        'description' => $secretarait['object'],
-                        'recieved_date' => $secretarait['delivery_date'],
-                    ]);
+
+                if ($request->secretaraits) {
+                    foreach ($secretaraits as $secretary) {
+                        if (isset($secretary['delivery_date']) && isset($secretary['object'])) {
+                            $received = Deposit::query()->create([
+                                'user_id' => $user->id,
+                                'title' => $secretary['title'],
+                                'description' => $secretary['object'],
+                                'received_date' => $secretary['delivery_date'],
+                            ]);
+                        }
+                    }
                 }
+
 
                 return ResponseHelper::success($user);
             });
@@ -255,4 +282,6 @@ class AuthController extends Controller
             ]
         ]);
     }
+
 }
+

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Absences extends Model
 {
@@ -11,6 +12,7 @@ class Absences extends Model
 
     protected $fillable = [
         'type',
+        'isPaid',
         'user_id',
         'startDate',
         'endDate',
@@ -19,9 +21,10 @@ class Absences extends Model
         'hours_num',
         'dayNumber'
     ];
-    public function users()
+
+    public function users(): BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 

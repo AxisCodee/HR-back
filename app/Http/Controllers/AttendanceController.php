@@ -3,22 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
+use App\Jobs\StoreAttendanceLogsJob;
 use App\Models\Absences;
 use App\Models\Attendance;
 use App\Models\Branch;
+use App\Models\Contract;
 use App\Models\Date;
+use App\Models\Decision;
 use App\Models\Late;
 use App\Models\Policy;
 use App\Models\User;
+use App\Models\UserInfo;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
+
 
 require 'tad\vendor\autoload.php';
 
 class AttendanceController extends Controller
 {
+
     public function getAttendanceLogs()
     {
         $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
@@ -44,30 +52,35 @@ class AttendanceController extends Controller
         );
     }
 
-    public function storeAttendanceLogs()
+    public function storeAttendanceLogs(Request $request)
     {
         try {
-            return DB::transaction(function () {
-                //store the attendence
-                $branche = Branch::findOrFail(1); //it should be recieved (static temporary)
-                $tad_factory = new TADFactory(['ip' => $branche->fingerprint_scanner_ip]);
+            return DB::transaction(function () use ($request) {
+                //store the attendance
+                $branch = Branch::findOrFail($request->branch_id);
+                $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
                 $tad = $tad_factory->get_instance();
                 $all_user_info = $tad->get_all_user_info();
                 $dt = $tad->get_date();
                 $logs = $tad->get_att_log();
+
                 $xml = simplexml_load_string($logs);
                 $array = json_decode(json_encode($xml), true);
                 $logsData = $array['Row'];
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
-                    $attendance = [
-                        'pin' => $log['PIN'],
-                        'datetime' => $log['DateTime'],
-                        'verified' => $log['Verified'],
-                        'status' => $log['Status'],
-                        'work_code' => $log['WorkCode'],
-                    ];
-                    Attendance::updateOrCreate(['datetime' => $log['DateTime']], $attendance);
+                    $userLog = User::where('pin', intval($log['PIN']))->first();
+                    if ($userLog) {
+                        $attendance = [
+                            'pin' => $log['PIN'],
+                            'datetime' => $log['DateTime'],
+                            'branch_id' => $userLog->branch_id,
+                            'verified' => $log['Verified'],
+                            'status' => $log['Status'],
+                            'work_code' => $log['WorkCode'],
+                        ];
+                        Attendance::updateOrCreate(['datetime' => $log['DateTime'], 'branch_id' => $userLog->branch_id], $attendance);
+                    }
                     $date = date('Y-m-d', strtotime($log['DateTime']));
                     Date::updateOrCreate(['date' => $date]);
                     // the first of check the late
@@ -76,10 +89,10 @@ class AttendanceController extends Controller
                     $checkOutHour = substr($log['DateTime'], 11, 15);
                     $parsedHour = Carbon::parse($checkInHour);
                     $parsedHourOut = Carbon::parse($checkOutHour);
-                    $policy = Policy::query()->where('branch_id', $branche->id)->first();
+                    $policy = Policy::query()->where('branch_id', $branch->id)->first();
                     $companyStartTime = $policy->work_time['start_time'];
                     $companyEndTime = $policy->work_time['end_time'];
-                    // check if the persone late
+                    // check if the person late
                     if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
                         ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
                     ) {
@@ -146,7 +159,7 @@ class AttendanceController extends Controller
                             ->whereNull('attendances.pin')
                             ->select('users.*')
                             ->get();
-                        // check if there ate an absence , to dont do the operation on null
+                        // check if there ate an absence , to don't do the operation on null
                         if (!empty($usersWithoutAttendance)) {
                             //create the absence
                             foreach ($usersWithoutAttendance as $user) {
@@ -154,28 +167,53 @@ class AttendanceController extends Controller
                                     ->where('user_id', $user->id)
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
-
-                                if (!$absence) {
-                                    Absences::updateOrCreate([
-                                        'user_id' => $user->id,
-                                        'startDate' => $date,
-
-                                    ]);
+                                if (!$absence) {//unjustified absence
+                                    $userStartDate = UserInfo::query()->where('user_id', $user->id)
+                                        ->exists();
+                                    if ($userStartDate) {
+                                        $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
+                                        $startDate = Carbon::parse($userStartDate->start_date);
+                                        $uDate = Carbon::parse($date);
+                                        if ($startDate->lt($uDate)) {
+                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
+                                                Absences::updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'startDate' => $date,
+                                                    'type' => 'Unjustified'
+                                                ]);
+                                                Decision::query()->updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'branch_id' => $user->branch_id,
+                                                    'type' => 'deduction',
+                                                    'content' => 'deduction due the Unjustified absence',
+                                                    'dateTime' => $date,
+                                                ]);
+                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
+                                                Absences::updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'startDate' => $date,
+                                                    'type' => 'null'
+                                                ]);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                return ResponseHelper::success([], null, 'attendaces logs stored successfully', 200);
+                return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
             });
-            return ResponseHelper::error('error', null);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error('QueryException', 400);
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
+
+//        $branch_id = $request->branch_id;
+//       dispatch(new StoreAttendanceLogsJob($branch_id));
     }
 
     public function showAttendanceLogs()
@@ -188,7 +226,7 @@ class AttendanceController extends Controller
 
     public function DayAttendance($date)
     {
-        $users = User::with('department','userInfo')
+        $users = User::with('department', 'userInfo')
             ->with(['attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }])

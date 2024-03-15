@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
-use App\Services\UsertimeService;
+use App\Services\UserTimeService;
 use App\Services\UserServices;
 
 class User extends Authenticatable implements JWTSubject
@@ -22,11 +23,14 @@ class User extends Authenticatable implements JWTSubject
     use HasRoles, SoftDeletes;
 
     protected $userServices;
+    protected $usertimeService;
+
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->userServices = new UserServices();
+        $this->usertimeService = new UserTimeService();
     }
 
     protected $fillable =
@@ -57,7 +61,19 @@ class User extends Authenticatable implements JWTSubject
         'late',
         'CheckInPercentage',
         'CheckOutPercentage',
-        'BaseSalary'
+        'BaseSalary',
+        'deductions',
+        'rewards',
+        'advances',
+        'absences',
+        'warnings',
+        'overTimes',
+        'alerts',
+        'status',
+        'level',
+        'isTrash',
+        'dismissed',
+        'TotalAbsenceHours'
     ];
     protected $hidden = [
         'password',
@@ -69,101 +85,314 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+
+    /* **********GO TO USER SERVICE**********
+    *
+       [userServises :
+        late,
+       overtime,
+       absence,
+       advance,
+       reward,
+       deduction,
+       warning,
+       checkinpercentage,
+       checkoutpercentage,
+
+       ]
+    *
+    */
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
-        $totalOverTimeHours = $this->userServices
-            ->getOverTime($this, $date);
-        return $totalOverTimeHours;
+        if ($date) {
+            $totalOverTimeHours = $this->userServices
+                ->getOverTime($this, $date);
+            return $totalOverTimeHours;
+        }
+        return 0;
     }
+
+
     public function getLateAttribute()
     {
         $date = request()->query('date');
-        $totalLateHours = $this->userServices
-            ->getLate($this, $date);
-        return $totalLateHours;
-    }
-    public function getRateAttribute($value) //not ready
-    {
-        $date = request()->query('date');
         if ($date) {
-            // $lates = Late::whereNotNull('check_out')
-            // ->whereMonth('lateDate', date('m', strtotime($date)))
-            //     ->whereYear('lateDate', date('Y', strtotime($date)))
-            //     ->where('user_id', $this->id)
-            //     ->sum('hours_num');
-            // return $lates;
+            $totalLateHours = $this->userServices
+                ->getLate($this, $date);
+            return $totalLateHours;
         }
-        return 0; // إرجاع القيمة صفر في حالة عدم إرسال التاريخ
+        return 0;
     }
+
+
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
-        $totalAdvance = $this->userServices
-            ->getAdvance($this, $date);
-        return $totalAdvance;
+        if ($date) {
+            $totalAdvance = $this->userServices
+                ->getAdvance($this, $date);
+            return $totalAdvance;
+        }
+        return 0;
     }
+
     public function getDeductionAttribute($date)
     {
         $date = request()->query('date');
-        $totalDeduction = $this->userServices
-            ->getDeduction($this, $date);
-        return $totalDeduction;
+        if ($date) {
+            $totalDeduction = $this->userServices
+                ->getDeduction($this, $date);
+            return $totalDeduction;
+        }
+        return 0;
     }
+
+
     public function getAbsenceAttribute($date)
     {
-        $date = request()->query('date');
-        $totalAbsence = $this->userServices
-            ->getAbsence($this, $date);
-        return $totalAbsence;
+        if ($date) {
+            $date = request()->query('date');
+            $totalAbsence = $this->userServices
+                ->getAbsence($this, $date);
+            return $totalAbsence;
+        }
+        return 0;
     }
+
     public function getRewardAttribute()
     {
         $date = request()->query('date');
-        $totalReward = $this->userServices
-            ->getReward($this, $date);
-        return $totalReward;
+        if ($date) {
+            $totalReward = $this->userServices
+                ->getReward($this, $date);
+            return $totalReward;
+        }
+        return 0;
     }
+
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
-        $percentage = $this->userServices
-            ->getCheckInPercentage($this, $date);
-        return $percentage;
+        if ($date) {
+            $percentage = $this->userServices
+                ->getCheckInPercentage($this, $date);
+            return $percentage;
+        }
+        return 0;
     }
+
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
-        $percentage = $this->userServices
-            ->getCheckOutPercentage($this, $date);
-        return $percentage;
+        if ($date) {
+            $percentage = $this->userServices
+                ->getCheckOutPercentage($this, $date);
+            return $percentage;
+        }
+        return 0;
     }
+
+    /***
+     *
+     *   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER SERVICE **********
+     */
+
+
+    /***
+     *
+     *
+     *
+     *
+     *
+     **********USER ABSENCE RELATIONSHIP **********
+     */
+
+    public function justifiedAbsences()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'justified');
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+
+    public function unJustifiedAbsences()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'UnJustified');
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function sickAbsences()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'sick');
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+
+    /***
+     *
+     *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER ABSENCE RELATIONSHIP **********
+     */
+
+
+    public function getOverTimesAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->overTimes($this, $date);
+    }
+
+
+
+
+
+
+    public function getDeductionsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->deductions($this, $date);
+    }
+
+
+    public function getRewardsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->rewards($this, $date);
+    }
+
+    public function getAdvancesAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->advances($this, $date);
+    }
+
+    public function getWarningsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->warnings($this, $date);
+    }
+
+    public function getAlertsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->alerts($this, $date);
+    }
+
+    public function getAbsencesAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->absences($this,$date);
+    }
+
+
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
         if ($date) {
-            $salary = UserSalary::where('user_id', $this->id)
-                ->where('date', '<=', $date)
-                ->get();
-
-            $baseSalary = $salary->isEmpty() ? 0 : $salary->last()->salary;
-            return $baseSalary;
+            $incomingDate = Carbon::parse($date);
+            $today = Carbon::today();
+            if ($incomingDate->lte($today)) {
+                $salary = UserSalary::where('user_id', $this->id)
+                    ->where('date', '<=', $date)
+                    ->sum('salary');
+                //$baseSalary = $salary->isEmpty() ? 0 : $salary->last()->salary;
+                return $salary;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }
     }
+
+    public function getTotalAbsenceHoursAttribute()
+    {
+        $latehours = Late::where('user_id',$this->id)->count('hours_num');
+
+        $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
+
+        $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
+        $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
+        $worktime = $startTime->diffInMinutes($endTime, false);
+
+       //  $worktime = $worktime%60;
+
+        $absence = Absences::where('user_id',$this->id)
+                            ->whereNot('isPaid',1)
+                            ->whereNot('type','justified')
+                            ->count();
+
+        $absencehours = $absence * $worktime;
+        $totalhours = $absencehours + $latehours;
+        return $worktime;
+        //$absencehours = Absences::where('user_id',$this->id);
+    }
+
+    public function getStatusAttribute()
+    {
+        $datetime = Carbon::now();
+        $status = Attendance::query()
+            ->where('pin', $this->pin)
+            ->whereDate('datetime', '=', $datetime)
+            ->whereTime('datetime', '<=', Carbon::parse($datetime)->format('H:i:s'))
+            ->latest()
+            ->value('status');
+        return $status;
+    }
+
+    public function getDismissedAttribute()
+    {
+        $userPolicy = Policy::query()->where('branch_id', $this->branch_id)->first();
+        $userAlerts = UserAlert::query()->where('user_id', $this->id)->sum('alert');
+        if ($userPolicy && $userPolicy->warnings['warnings_to_dismissal'] - 1 <= $userAlerts) {
+            return true;
+        }
+        return false;
+    }
+
+
+//    public function getCompensationAttribute()
+//    {
+//        $date = Carbon::now();
+//        $lates = $this->userServices
+//            ->getLate($this, $date);
+//        $totalLateHours = $this->userServices
+//            ->getLate($this, $date);
+//        return $totalLateHours;
+//    }
+
+    public function getIsTrashAttribute()
+    {
+        return $this->deleted_at === null ? false : true;
+    }
+
+
+    public function getLevelAttribute()
+    {
+        return $this->userInfo()->value('level');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
+
     public function attendance()
     {
         return $this->hasMany('App\Models\Attendance', 'pin', 'pin');
     }
+
     public function my_files()
     {
         return $this->hasMany(AdditionalFile::class, 'user_id', 'id');
     }
+
     public function skills()
     {
         return $this->hasMany(Skills::class, 'user_id');
@@ -189,7 +418,7 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function roles()
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -198,6 +427,22 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Decision::class, 'user_id', 'id');
     }
+
+
+    // public function Warnings()
+    // {
+    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','warning');
+    // }
+
+    // public function  Deductions()
+    // {
+    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','deduction');
+    // }
+
+    // public function Rewards()
+    // {
+    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','reward');
+    // }
 
     public function penalties()
     {
@@ -210,7 +455,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UserSalary::class, 'user_id');
     }
 
-    public function permissions()
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Permission::class);
     }
@@ -223,12 +468,23 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-
     public function my_contacts()
     {
-        return $this->hasMany(Contact::class, 'user_id', 'id')
-            ->where('type', 'user_num')->orwhere('type', 'email');
+        return $this->hasMany(Contact::class, 'user_id', 'id');
     }
+
+    public function phoneNumber()
+    {
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+            ->whereNotNull('phone_num');
+    }
+
+    public function emails()
+    {
+        return $this->hasMany(Contact::class, 'user_id', 'id')
+            ->whereNotNull('email');
+    }
+
     public function emergency()
     {
         return $this->hasMany(Contact::class, 'user_id', 'id')
@@ -245,10 +501,12 @@ class User extends Authenticatable implements JWTSubject
     //     return $this->getRoleNames()->first();
     // }
 
+
     public function userRates()
     {
         return $this->hasMany(Rate::class, 'user_id');
     }
+
 
     public function evaluatorRates()
     {
@@ -260,6 +518,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Absences::class, 'user_id');
     }
 
+
     public function userInfo()
     {
         return $this->hasOne(UserInfo::class, 'user_id');
@@ -267,8 +526,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function isAdmin()
     {
-        if(Auth()->user()->role == 'admin')
-        return  true;
+        if (Auth()->user()->role == 'admin')
+            return true;
         else  return false;
     }
 
@@ -306,8 +565,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(EmpOfMonth::class);
     }
+
     public function reports()
     {
         return $this->hasMany(Report::class, 'user_id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 }

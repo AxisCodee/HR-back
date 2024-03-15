@@ -7,155 +7,70 @@ use App\Http\Requests\RequestRequest\StoreRequestRequest;
 use App\Http\Requests\RequestRequest\UpdateRequestRequest;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\RequestRequest\SendRequest;
-use App\Models\Absences;
-use App\Models\Decision;
-use App\Models\User;
+use App\Services\RequestService;
 use Carbon\Carbon;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-
 
 class RequestController extends Controller
 {
 
-    public function index()
+    protected $requestService;
+
+    public function __construct(RequestService $requestService)
     {
-        $branchId = request('branch_id');
-        $results = Request::query()
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
-                $query->where('branch_id', $branchId);
-            })
-            ->with('user.department:id,name')
-            ->get()
-            ->toArray();
-        if (empty($results)) {
-            return ResponseHelper::success($results, null, 'No requests found for the user', 200);
-        }
-        return ResponseHelper::success($results, null, 'All requests', 200);
+        $this->requestService = $requestService;
     }
 
+    public function index()
+    {
+        return $this->requestService->index();
+    }
 
     public function store(StoreRequestRequest $request)
     {
-        $requests = Request::query()
-            ->create(
-                [
-                    'user_id' => Auth::id(),
-                    'title' => $request->title,
-                    'type' => $request->type,
-                    'date' => Carbon::now(),
-                    'description' => $request->description,
-                    'status' => 'waiting'
-                ]
-            );
-        return ResponseHelper::created($requests, 'request created successfully');
+        return $this->requestService->store($request);
     }
 
-    public function show(Request $request)
+    public function show()
     {
-        $result = Request::query()
-            ->where('user_id', Auth::user()->id)
-            ->get()
-            ->toArray();
-        if (empty($results)) {
-            return ResponseHelper::success($result, 'Request not exist');
-        }
-        return ResponseHelper::success($result, 'my requests:');
+        return $this->requestService->show();
     }
 
-    public function getRequest($request)
+    public function getRequest($request, HttpRequest $hRequest)
     {
-        $result = Request::query()
-            ->where('id', $request)
-            ->with('user:id,first_name,last_name')
-            ->with('user.department:id,name')
-            ->get()
-            ->toArray();
-        if (empty($result)) {
-            return ResponseHelper::success($result, null, 'No requests found for the user', 200);
-        }
-        return ResponseHelper::success($result, 'My requests:');
+        $date = $hRequest->date;
+        return $this->requestService->getRequest($request, $date);
     }
+
 
     public function update(UpdateRequestRequest $request, $id)
     {
-        $request = Request::query()
-            ->where('id', $id)
-            ->where('status', 'waiting')
-            ->update([
-                'title' => $request->title,
-                'type' => $request->type,
-                'description' => $request->description
-            ]);
-        if ($request) {
-            return ResponseHelper::updated('Request updated successfully');
-        } else {
-            return ResponseHelper::success('You cannot update this request');
-        }
+        return $this->requestService->update($request, $id);
     }
 
     public function destroy(Request $request)
     {
-        if ($request->status == 'waiting') {
-            $request->delete();
-        } else {
-            return ResponseHelper::error('You cannot delete this request', null, 'error', 403);
-        }
-        return ResponseHelper::deleted('Request deleted successfully');
+        return $this->requestService->destroy($request);
     }
 
     public function acceptRequest(Request $request)
     {
-        try {
-            return DB::transaction(function () use ($request) {
-                $request->update([
-                    'status' => 'accepted'
-                ]);
-                // تخزين السلفة بالقرارات ضفت نوع ادفانس بالقرارت كمان
-                //  الكمية هي الراتب تقسيم 2 والنوع سلفة بس تتتتخزم هيك هي منحتاجا وقت نعرض الراتب المخصوم منو بالمودل
-                if ($request->type == 'advanced') {
-                    $user = User::find($request->user_id);
-                    $salary = $user->salary;
-                    $result = Decision::query()->create([
-                        'user_id' => $request->user_id,
-                        'type' => 'advanced',
-                        'amount' => ($salary / 2),
-                        'dateTime' => $request->dateTime,
-                        'salary' => $salary
-                    ]);
-                }
-                return ResponseHelper::updated([
-                    'message' => 'Request accepted successfully',
-                ]);
-            });
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+        return $this->requestService->acceptRequest($request);
     }
+
     public function rejectRequest($request)
     {
-        // $request->update(
-        //     [
-        //         'status' => 'rejected'
-        //     ]
-        // );
-
-        $result = Request::where('id', $request)->update([
-
-            'status' => 'rejected'
-
-        ]);
-        return ResponseHelper::success([
-            'message' => 'request rejected successfully',
-        ]);
+        return $this->requestService->rejectRequest($request);
     }
+
     public function addComplaint(Request $request)
     {
         $complaint = Request::query()->create(
             [
                 'user_id' => Auth::id(),
                 'type' => 'complaint',
+                'date' => Carbon::now()->format('Y-m-d'),
                 'description' => $request->description
             ]
         );
@@ -165,57 +80,43 @@ class RequestController extends Controller
     public function getComplaints(HttpRequest $request)
     {
         $branchId = $request->branch_id;
-        $result = Request::with('user', 'user.department', 'user.userInfo:id,user_id,image')
-            ->whereHas('user', function ($query) use ($branchId) {
+        $date = $request->date;
+        $result = Request::with('user.department', 'user.userInfo:id,user_id,image')
+            ->with('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })
-            ->where('type', 'complaint')
-            ->get()
-            ->toArray();
-
-        if (empty($result)) {
-            return ResponseHelper::success($result);
+            ->where('type', 'complaint');
+        if (!empty($date)) {
+            $result->where(function ($query) use ($date) {
+                if (strlen($date) == 4) {
+                    $query->where('date', 'like', $date . '%');
+                }
+                if (strlen($date) == 7) {
+                    $query->orWhere('date', 'like', substr($date, 0, 7) . '%');
+                }
+                if (strlen($date) == 10) {
+                    $query->orWhere('date', 'like', substr($date, 0, 10) . '%');
+                }
+            });
         }
-
-        return ResponseHelper::success($result, null, 'complaint', 200);
+        $results = $result->get()->toArray();
+        if (empty($results)) {
+            return ResponseHelper::success($results);
+        }
+        return ResponseHelper::success($results, null, 'complaint', 200);
     }
 
-    public function send_request(SendRequest $request)
+    public function sendRequest(SendRequest $request)
     {
-        $validate = $request->validated();
-        if ($validate['duration'] == 'hourly') {
-            $start_vac = Carbon::parse($validate['startDate']);
-            $end_vac = Carbon::parse($validate['endDate']);
-            $hours_number = $start_vac->diffInHours($end_vac);
-            $new_req = Absences::create([
-                'user_id' => $validate['user_id'],
-                'startDate' => $start_vac,
-                'endDate' => $end_vac,
-                'duration' => $validate['duration'],
-                'hours_num' => $hours_number,
-            ]);
-            return ResponseHelper::created($new_req, 'Request sent successfully');
-        } elseif ($validate['duration'] == 'daily') {
-            $new_req = Absences::create([
-                'user_id' => $validate['user_id'],
-                'startDate' => $validate['startDate'],
-                'endDate' => $validate['endDate'],
-                'duration' => $validate['duration'],
-            ]);
-            return ResponseHelper::created($new_req, 'Request sent successfully');
-        } else {
-            return ResponseHelper::error($validate, null, 'error sending the request', 400);
-        }
+        return $this->requestService->sendRequest($request);
     }
+
     public function deleteComplaints($request)
     {
-        if($request->type == 'complaint')
-        {
+        if ($request->type == 'complaint') {
             $request->delete();
             return ResponseHelper::success(null, null, 'deleted successfully');
-        }
-        else
-        {
+        } else {
             return ResponseHelper::success(null, null, 'can not deleted');
         }
 
