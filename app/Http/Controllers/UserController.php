@@ -54,7 +54,13 @@ class UserController extends Controller
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
-            ->with('justifiedAbsences')
+            ->with(
+                'justifiedUnPaidAbsences',
+                'justifiedPaidAbsences',
+                'unJustifiedPaidAbsences',
+                'unJustifiedUnPaidAbsences',
+                'sickAbsences'
+            )
             ->whereNull('deleted_at')
             ->get()
             ->toArray();
@@ -76,7 +82,7 @@ class UserController extends Controller
     {
         try {
             $branch_id = $request->branch_id;
-            $branch=Branch::findOrFail($branch_id);
+            $branch = Branch::findOrFail($branch_id);
 
 
             if (!$branch) {
@@ -89,11 +95,11 @@ class UserController extends Controller
 
             $all_users = User::query()
                 ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image','department');
+                ->with('userInfo:id,user_id,image', 'department');
 
             $trashed_users = User::onlyTrashed()
                 ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image','department');
+                ->with('userInfo:id,user_id,image', 'department');
 
             $users = $all_users->union($trashed_users)->get()->toArray();
 
@@ -300,18 +306,18 @@ class UserController extends Controller
 
     public function Tree()
     {
-        try{
+        try {
             return $this->teamService->getTree();
-        }catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         }
     }
 
     public function GetAbsenceTypes(Request $request)
     {
-        try{
+        try {
             return $this->userService->AllAbsenceTypes($request);
-        }catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         }
     }
