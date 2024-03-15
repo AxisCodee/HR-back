@@ -219,7 +219,6 @@ class GmailService
                     $data['date'] = $header->getValue();
                 }
             }
-
             $messages[] = $data;
         }
         return $messages;

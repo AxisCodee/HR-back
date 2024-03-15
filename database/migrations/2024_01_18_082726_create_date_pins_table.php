@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('date_pins', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('date_id')->constrained('dates')->cascadeOnDelete();
             $table->unsignedBigInteger('pin');
             $table->timestamps();
