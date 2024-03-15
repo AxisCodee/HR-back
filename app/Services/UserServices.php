@@ -105,31 +105,37 @@ class UserServices
 
     public function getReward($user, $date)
     {
+        if($date){
         $rewards = Decision::where('type', 'reward')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
         $rewards = $usertimeService->filterDate($rewards, $date, 'dateTime');
         $totalReward = $rewards->sum('amount');
-        return $totalReward;
+        return $totalReward;}
+        return 0;
     }
 
     public function getAbsence($user, $date)
     {
+        if($date){
         $absences = Absences::where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
         $absences = $usertimeService->filterDate($absences, $date, 'startDate');
         $totalAbsence = $absences->count('id');
-        return $totalAbsence;
+        return $totalAbsence;}
+        return 0;
     }
 
     public function getDeduction($user, $date)
     {
+        if($date){
         $deductions = Decision::where('type', 'deduction')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
         $deductions = $usertimeService->filterDate($deductions, $date, 'dateTime');
         $totalDeduction = $deductions->sum('amount');
-        return $totalDeduction;
+        return $totalDeduction;}
+        return 0;
     }
 
     public function getDeductions($user, $date)
@@ -147,34 +153,40 @@ class UserServices
 
     public function getAdvance($user, $date)
     {
+        if($date){
         $advance = Decision::where('type', 'advanced')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
         $advance = $usertimeService->filterDate($advance, $date, 'dateTime');
         $totalAdvance = $advance->sum('amount');
-        return $totalAdvance;
+        return $totalAdvance;}
+        return 0;
     }
 
     public function getLate($user, $date)
     {
+        if($date){
         $lates = Late::whereNotNull('check_in')
             ->where('type', 'Unjustified')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
         $lates = $usertimeService->filterDate($lates, $date, 'lateDate');
         $totalLateHours = $lates->sum('hours_num');
-        return $totalLateHours;
+        return $totalLateHours;}
+        return 0;
     }
 
     public function getOverTime($user, $date)
     {
+        if($date){
         $overTimes = Late::whereNotNull('check_out')
             ->where('type', 'justified')
             ->where('user_id', $user->id);
         $usertimeService = app(UserTimeService::class);
         $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
         $totalOverTimeHours = $overTimes->sum('hours_num');
-        return $totalOverTimeHours;
+        return $totalOverTimeHours;}
+        return 0;
     }
 
     public function editUser(UpdateUserRequest $request, $id)
@@ -322,5 +334,23 @@ class UserServices
        ->get()
        ->toArray();
         return $userAbsence;
+    }
+
+
+
+
+
+
+    public function getBaseSalary($user, $date)
+    {
+        if ($date) {
+            $baseSalary = UserSalary::where('user_id', $user->id);
+            $usertimeService = app(UserTimeService::class);
+            $baseSalary = $usertimeService->filterDate($baseSalary, $date, 'date');
+            $salary = $baseSalary->sum('salary');
+            return $salary;
+        }
+
+        return 0;
     }
 }
