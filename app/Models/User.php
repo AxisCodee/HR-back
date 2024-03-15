@@ -376,22 +376,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Decision::class, 'user_id', 'id');
     }
 
-
-    // public function Warnings()
-    // {
-    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','warning');
-    // }
-
-    // public function  Deductions()
-    // {
-    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','deduction');
-    // }
-
-    // public function Rewards()
-    // {
-    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','reward');
-    // }
-
     public function penalties()
     {
         return $this->hasMany(Decision::class, 'user_id', 'id')
@@ -444,10 +428,6 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Request::class, 'user_id');
     }
-    // public function getRoleAttribute()
-    // {
-    //     return $this->getRoleNames()->first();
-    // }
 
 
     public function userRates()
