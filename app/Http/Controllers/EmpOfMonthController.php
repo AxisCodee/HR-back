@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Models\EmpOfMonth;
-use App\Http\Requests\StoreEmpOfMonthRequest;
-use App\Http\Requests\UpdateEmpOfMonthRequest;
+use App\Http\Requests\EmpOfMonthRequest\StoreEmpOfMonthRequest;
+use App\Http\Requests\EmpOfMonthRequest\UpdateEmpOfMonthRequest;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +18,7 @@ class EmpOfMonthController extends Controller
     {
         $branchId = $request->input('branch_id');
         $result = EmpOfMonth::query()
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId); })->get()->toArray();
         return ResponseHelper::success($result, null);
     }
@@ -72,7 +72,7 @@ class EmpOfMonthController extends Controller
         $branchId =  $request->branch_id;
                 $result = EmpOfMonth::query()
             ->where('date', now()->format('Y-m'))
-            ->with('user')->whereHas('user', function ($query) use ($branchId) {
+            ->with('user','user.userInfo')->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId); })->first();
         return ResponseHelper::success($result, null);
     }

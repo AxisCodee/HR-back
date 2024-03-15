@@ -15,12 +15,6 @@ class SalarySeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('user_salaries')->insert([
-            'date' => Str::random(10), // Replace with actual date values
-            'salary' => 50000.0, // Replace with actual salary values
-            'user_id' => 1, // Replace with the appropriate user ID
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+
     }
 }

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
+use App\Http\Requests\UserRequest\StoreUserRequest;
 use TADPHP\TADFactory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddUserRequest;
 use App\Models\Certificate;
 use App\Models\Language;
 use App\Models\Skills;
@@ -48,8 +48,10 @@ class AuthController extends Controller
             return ResponseHelper::error('email or password are not correct', null, 'error', 401);
         }
         $user = Auth::user();
+        $userInfo = UserInfo::where('user_id', $user->id)->first();
         return ResponseHelper::success([
             'user' => $user,
+            'user_info' => $userInfo,
             'authorization' => [
                 'token' => $token,
                 'type' => 'bearer',
@@ -57,29 +59,31 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(AddUserRequest $request)
+    public function register(StoreUserRequest $request)
     {
         try {
             $validate = $request->validated();
-
-
-
             return DB::transaction(function () use ($request) {
-                $department=Department::find($request->department_id);
-                $branch_id=$department->branch_id;
+                $branch_id = $request->branch_id;
+                if ($request->has('department_id')) {
+                    $department = Department::find($request->department_id);
+                    $department_id = $department ? $department->id : null;
+                } else {
+                    $department_id = null;
+                }
 
                 $user = User::create([
                     'first_name' => $request->first_name,
                     'middle_name' => $request->middle_name,
                     'last_name' => $request->last_name,
                     'email' => $request->email,
-                    'role' => $request->role,
+                    'role' => 'employee',
                     'specialization' => $request->specialization,
-                    'department_id' => $branch_id,
+                    'department_id' => $department_id,
                     'password' => Hash::make($request->password),
                     'pin' => null,
                     'address' => $request->address,
-                    'branch_id' => $request->branch_id
+                    'branch_id' => $branch_id,
                 ]);
                 $user->update(['pin' => $user->id]);
 
@@ -106,7 +110,7 @@ class AuthController extends Controller
                     'health_status' => $request->health_status,
                     'image' => $path
                 ]);
-                $user->assignRole($request->role);
+                $user->assignRole('employee');
 
                 $sal = UserSalary::query()->create([
                     'user_id' => $user->id,
@@ -126,7 +130,7 @@ class AuthController extends Controller
                 foreach ($educations as $education) {
                     $studies = StudySituation::query()->create([
                         'degree' => $education['degree'],
-                        'study'  => $education['study'],
+                        'study' => $education['study'],
                         'user_id' => $user->id,
                     ]);
                 }
@@ -138,7 +142,7 @@ class AuthController extends Controller
                     ]);
                 }
 
-                foreach ($languages as  $language) {
+                foreach ($languages as $language) {
                     $language = Language::query()->create([
                         'name' => $language['languages'],
                         'rate' => $language['rate'],
@@ -167,7 +171,6 @@ class AuthController extends Controller
                         })($file);
                     }
                 }
-
                 foreach ($experiences as $experience) {
                     $new_exp = Career::query()->create([
                         'user_id' => $user->id,
@@ -175,13 +178,12 @@ class AuthController extends Controller
                     ]);
                 }
 
-                if (isset($contacts['emails'])) {
+                if (isset($contacts['emails'][0])) {
                     foreach ($contacts['emails'] as $contact) {
-
                         $multi = Contact::create([
                             'user_id' => $user->id,
                             'type' => 'normal',
-                            'contact' => $contact,
+                            'contact' => $contact['email'],
                         ]);
                     }
                 }
@@ -191,7 +193,7 @@ class AuthController extends Controller
                         $multi = Contact::create([
                             'user_id' => $user->id,
                             'type' => 'normal',
-                            'contact' => $contact,
+                            'contact' => $contact['phone'],
                         ]);
                     }
                 }
@@ -238,7 +240,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return  ResponseHelper::success([
+        return ResponseHelper::success([
             'message' => 'Successfully logged out',
         ]);
     }

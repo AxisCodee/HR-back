@@ -12,8 +12,7 @@ class DepartmentSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
-        DB::table('departments')->insert
+    {DB::table('departments')->insert
         ([[
             'name' => 'Back_End',
             'branch_id'=>1

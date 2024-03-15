@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\DatePin;
-use App\Http\Requests\StoreDatePinRequest;
-use App\Http\Requests\UpdateDatePinRequest;
+use App\Http\Requests\DatePinRequest\StoreDatePinRequest;
+use App\Http\Requests\DatePinRequest\UpdateDatePinRequest;
 
 class DatePinController extends Controller
 {

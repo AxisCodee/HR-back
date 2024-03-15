@@ -84,7 +84,7 @@ class GmailController extends Controller
          * Get authcode from the query string
          * Url decode if necessary
          */
-        $authCode = urldecode($request->input('auth_code'));
+        $authCode = urldecode($request->auth_code);
         /**
          * Google client
          */
@@ -148,76 +148,120 @@ class GmailController extends Controller
             }
             $user = 'me'; // 'me' indicates the authenticated user
             $message = $service->users_messages->get($user, $request->messageId, ['format' => 'full']);
-            //
-            // $payload = $message->getPayload();
-
-            // //sender info
-            // $headers = $payload['headers'];
-            // $fromHeader = Arr::first($headers, function ($header) {
-            //     return $header['name'] === 'From';
-            // });
-            // $fromValue = $fromHeader['value']; // This will be "Ashampoo News <info@news.ashampoo.com>"
-            // preg_match('/^(.*)<(.*)>$/', $fromValue, $matches);
-            // $senderName = $matches[1];
-            // $senderEmail = $matches[2];
-            // $gravatarUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($senderEmail)));
-            // //reciever info
-            // $headers = $payload['headers'];
-            // $toHeader = Arr::first($headers, function ($header) {
-            //     return $header['name'] === 'Delivered-To';
-            // });
-            // $toValue = $toHeader['value'];
-            // //subject
-            // $headers = $payload['headers'];
-            // $subjectHeader = Arr::first($headers, function ($header) {
-            //     return $header['name'] === 'Subject';
-            // });
-            // $subjectValue = $subjectHeader['value'];
-            // //cc
-            // //bc
-            // //body
-            // $body = $payload->getBody();
-            // $messageData = $this->gmailService->parseMessageParts($message['payload']['parts']);
-            // //attachments
-            // $attachments = $this->gmailService->messageAttachments($payload, $messageId);
-            // //lables
-            // $labelIds = $message['labelIds'] ?? [];
-            // $isStarred = in_array('STARRED', $labelIds);
-            // $isPROMOTIONS = in_array('CATEGORY_PROMOTIONS', $labelIds);
-            // $isPERSONAL = in_array('CATEGORY_PERSONAL', $labelIds);
-            // $isSOCIAL = in_array('CATEGORY_SOCIAL', $labelIds);
-            // // Initialize the array to hold the merged values
-            // $labelStatus = [];
-            // // Check if each label exists in the labelIds array and assign the result to the corresponding key
-            // $labelStatus['isPROMOTIONS'] = in_array('CATEGORY_PROMOTIONS', $labelIds);
-            // $labelStatus['isPERSONAL'] = in_array('CATEGORY_PERSONAL', $labelIds);
-            // $labelStatus['isSOCIAL'] = in_array('CATEGORY_SOCIAL', $labelIds);
-            // //Date
-            // $headers = $payload['headers'];
-            // $dateHeader = Arr::first($headers, function ($header) {
-            //     return $header['name'] === 'Date';
-            // });
-            // $dateValue = $dateHeader['value'];
-            // //replies
-            // $threadId = $messageId; // Replace with the actual thread ID
-            // $thread = $service->users_threads->get('me', $threadId);
-            // $messages = $thread->getMessages();
-            // $replies = [];
-            // foreach ($messages as $message) {
-            //     if ($message->getId() !== $messageId) {
-            //         $replies[] = [
-            //             'id' => $message->getId(),
-            //             'snippet' => $message->getSnippet(),
-            //         ];
-            //     }
-            // }
-            // //folder (inbox)
-            // $isInbox = in_array('INBOX', $labelIds);
-            // //readen
-            // $isUnread = in_array('UNREAD', $labelIds);
-
-            $mail = $this->gmailService->messageFormat($message, $messageId);
-            $replies = $this->gmailService->messageReplies($messageId, $service);
+            $payload = $message->getPayload();
+            //sender info
+            $headers = $payload['headers'];
+            $fromHeader = Arr::first($headers, function ($header) {
+                return $header['name'] === 'From';
+            });
+            $fromValue = $fromHeader['value']; // This will be "Ashampoo News <info@news.ashampoo.com>"
+            preg_match('/^(.*)<(.*)>$/', $fromValue, $matches);
+            $senderName = $matches[1]; // This will be "Ashampoo News"
+            $senderEmail = $matches[2]; // This will be "info@news.ashampoo.com"
+            $gravatarUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($senderEmail)));
+            //$gravatarUrl = $service->userinfo->get()->picture;
+            //reciever info
+            $headers = $payload['headers'];
+            $toHeader = Arr::first($headers, function ($header) {
+                return $header['name'] === 'Delivered-To';
+            });
+            $toValue = $toHeader['value'];
+            //subject
+            $headers = $payload['headers'];
+            $subjectHeader = Arr::first($headers, function ($header) {
+                return $header['name'] === 'Subject';
+            });
+            $subjectValue = $subjectHeader['value'];
+            //cc
+            //bc
+            //body
+            function parseParts($parts)
+            {
+                $data = [
+                    'text/plain' => '',
+                    'text/html' => ''
+                ];
+                foreach ($parts as $part) {
+                    if ($part['mimeType'] === 'text/plain') {
+                        $data['text/plain'] = $part['body']['data'];
+                    } elseif ($part['mimeType'] === 'text/html') {
+                        $data['text/html'] = $part['body']['data'];
+                    } elseif ($part['mimeType'] === 'multipart/alternative') {
+                        $data = array_merge($data, parseParts($part['parts']));
+                    }
+                }
+                return $data;
+            }
+            $body = $payload->getBody();
+            $messageData = parseParts($message['payload']['parts']);
+            //attachments
+            $attachments = [];
+            $parts = $payload['parts'] ?? null;
+            if ($parts) {
+                foreach ($parts as $part) {
+                    if (isset($part['body']['attachmentId'])) {
+                        $attachmentId = $part['body']['attachmentId'];
+                        $filename = $part['filename'];
+                        $size = $part['body']['size'];
+                        // Construct the thumbnail URL based on the file type
+                        $thumbnail = ''; // You may need to handle different file types differently
+                        // Construct the URL to download the attachment
+                        $attachmentUrl = "https://www.googleapis.com/gmail/v1/users/me/messages/{$messageId}/attachments/{$attachmentId}";
+                        $attachmentDetails = [
+                            'filename' => $filename,
+                            'thumbnail' => $thumbnail,
+                            'url' => $attachmentUrl,
+                            'size' => $size
+                        ];
+                        $attachments[] = $attachmentDetails;
+                    }
+                }
+            }
+            //lables
+            $labelIds = $message['labelIds'] ?? [];
+            $isStarred = in_array('STARRED', $labelIds);
+            $isPROMOTIONS = in_array('CATEGORY_PROMOTIONS', $labelIds);
+            $isPERSONAL = in_array('CATEGORY_PERSONAL', $labelIds);
+            $isSOCIAL = in_array('CATEGORY_SOCIAL', $labelIds);
+            // Initialize the array to hold the merged values
+            $labelStatus = [];
+            // Check if each label exists in the labelIds array and assign the result to the corresponding key
+            $labelStatus['isPROMOTIONS'] = in_array('CATEGORY_PROMOTIONS', $labelIds);
+            $labelStatus['isPERSONAL'] = in_array('CATEGORY_PERSONAL', $labelIds);
+            $labelStatus['isSOCIAL'] = in_array('CATEGORY_SOCIAL', $labelIds);
+            //Date
+            $headers = $payload['headers'];
+            $dateHeader = Arr::first($headers, function ($header) {
+                return $header['name'] === 'Date';
+            });
+            $dateValue = $dateHeader['value'];
+            //replies
+            $threadId = $messageId; // Replace with the actual thread ID
+            try {
+                $thread = $service->users_threads->get('me', $threadId);
+                $messages = $thread->getMessages();
+                $replies = [];
+                foreach ($messages as $message) {
+                    if ($message->getId() !== $messageId) {
+                        $replies[] = [
+                            'id' => $message->getId(),
+                            'snippet' => $message->getSnippet(),
+                            // Add any other relevant information you need
+                        ];
+                    }
+                }
+            } catch (\Google_Service_Exception $e) { // Note the double backslash here
+                if ($e->getCode() == 404) {
+                    error_log('Error: ' . $e->getMessage());
+                    $replies = null;
+                } else {
+                    throw $e; // If the error is not 404, rethrow the exception
+                }
+            }
+            //folder (inbox)
+            $isInbox = in_array('INBOX', $labelIds);
+            //readen
+            $isUnread = in_array('UNREAD', $labelIds);
             return ResponseHelper::email(
                 $messageId,
                 $mail['senderEmail'],
@@ -243,57 +287,70 @@ class GmailController extends Controller
 
     public function sendEmail(Request $request)
     {
-        try {
-            $client = $this->getClient();
-            $user = User::find(Auth::id());
-            $this->gmailService->refreshAccessToken($user, $client);
-            $service = new \Google\Service\Gmail($client);
-            $userInfoService = new \Google\Service\Oauth2($client);
-            // Use the Gmail service to retrieve user info
-            $userInfo = $userInfoService->userinfo->get();
-            // Define the email parameters
-            // $strSubject = $request->subject;
-            // $strRawMessage = "From: $userInfo->name <$userInfo->email>\r\n";
-            // $strRawMessage .= "To: <$request->recieverEmail>\r\n";
-            // $strRawMessage .= 'Subject: =?utf-8?B?' . base64_encode($strSubject) . "?=\r\n";
-            // $strRawMessage .= "MIME-Version: 1.0\r\n";
-            // $strRawMessage .= "Content-Type: multipart/mixed; boundary=foo_bar_baz\r\n";
-            // $strRawMessage .= "\r\n";
-            // $strRawMessage .= "--foo_bar_baz\r\n";
-            // $strRawMessage .= "Content-Type: text/plain\r\n\r\n";
-            // $strRawMessage .= "$request->content\r\n";
-            // // Check if there is an uploaded file
-            // if ($request->hasFile('attachment')) {
-            //     $file = $request->file('attachment');
-            //     $attachment = chunk_split(base64_encode(file_get_contents($file->getRealPath())));
-            //     $strRawMessage .= "--foo_bar_baz\r\n";
-            //     $strRawMessage .= "Content-Type: application/octet-stream; name=" . $file->getClientOriginalName() . "\r\n" .
-            //         "Content-Transfer-Encoding: base64\r\n" .
-            //         "Content-Disposition: attachment; filename=" . $file->getClientOriginalName() . "\r\n\r\n" .
-            //         $attachment . "\r\n";
-            // }
-            // $strRawMessage .= "--foo_bar_baz--";
-            // // The message needs to be encoded in Base64URL
-            // $mime = rtrim(strtr(base64_encode($strRawMessage), '+/', '-_'), '=');
-            // $msg = new \Google\Service\Gmail\Message();
-            // $msg->setRaw($mime);
-            // Send the message
-
-            $msg = new \Google\Service\Gmail\Message();
-            return DB::transaction(function () use ($service, $msg, $request, $userInfo) {
-                $msg->setRaw($this->gmailService->sendMessage($request, $userInfo));
-                $sentMessage = $service->users_messages->send('me', $msg);
-                // Check if the message was sent successfully
-                if ($sentMessage->getId() != null) {
-                    return ResponseHelper::success("Message sent successfully", null);
-                }
-            });
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        $client = $this->getClient();
+        $user = User::find(Auth::id());
+        // Access the 'google_access_token_json' column from the user model
+        $jsonData = $user->google_access_token_json;
+        // Decode the JSON data
+        $tokenData = json_decode($jsonData, true);
+        // Extract the access token
+        $accessToken = $tokenData['access_token'];
+        $refreshToken = $tokenData['refresh_token'];
+        // Now $accessToken contains the Google access token
+        $userAccessToken = urldecode($accessToken);
+        // Create a new instance of the Google API client
+        $client = $this->getClient();
+        // Set the access token obtained for the user
+        $client->setAccessToken($userAccessToken);
+        //dd($client->isAccessTokenExpired());
+        if ($client->isAccessTokenExpired()) {
+            $at = $client->fetchAccessTokenWithRefreshToken($refreshToken);
+            $client->getRefreshToken();
+            $client->setAccessToken($client->getAccessToken());
+            $user->google_access_token_json = json_encode($at);
+            $user->save();
+        }
+        $service = new \Google\Service\Gmail($client);
+        $userInfoService = new \Google\Service\Oauth2($client);
+        // Use the Gmail service to retrieve user info
+        $userInfo = $userInfoService->userinfo->get();
+        // Define the email parameters
+        $strSubject = $request->subject;
+        $strRawMessage = "From: $userInfo->name <$userInfo->email>\r\n";
+        $strRawMessage .= "To: <$request->recieverEmail>\r\n";
+        $strRawMessage .= 'Subject: =?utf-8?B?' . base64_encode($strSubject) . "?=\r\n";
+        $strRawMessage .= "MIME-Version: 1.0\r\n";
+        $strRawMessage .= "Content-Type: multipart/mixed; boundary=foo_bar_baz\r\n";
+        $strRawMessage .= "\r\n";
+        $strRawMessage .= "--foo_bar_baz\r\n";
+        $strRawMessage .= "Content-Type: text/plain\r\n\r\n";
+        $strRawMessage .= "$request->content\r\n";
+        // Check if there is an uploaded file
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $attachment = chunk_split(base64_encode(file_get_contents($file->getRealPath())));
+            $strRawMessage .= "--foo_bar_baz\r\n";
+            $strRawMessage .= "Content-Type: application/octet-stream; name=" . $file->getClientOriginalName() . "\r\n" .
+                "Content-Transfer-Encoding: base64\r\n" .
+                "Content-Disposition: attachment; filename=" . $file->getClientOriginalName() . "\r\n\r\n" .
+                $attachment . "\r\n";
+        }
+        $strRawMessage .= "--foo_bar_baz--";
+        // The message needs to be encoded in Base64URL
+        $mime = rtrim(strtr(base64_encode($strRawMessage), '+/', '-_'), '=');
+        $msg = new \Google\Service\Gmail\Message();
+        $msg->setRaw($mime);
+        // Send the message
+        $sentMessage = $service->users_messages->send('me', $msg);
+        // Check if the message was sent successfully
+        if ($sentMessage->getId() != null) {
+            return ResponseHelper::success("Message sent successfully", null);
+        } else {
+            return ResponseHelper::error("Message not sent", null);
         }
     }
 
-    public function mail(Request $request)
+    public function mail(Request $request)//mail box by type
     {
         try {
             $client = $this->getClient();

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Date;
-use App\Http\Requests\StoreDateRequest;
-use App\Http\Requests\UpdateDateRequest;
+use App\Http\Requests\DateRequest\StoreDateRequest;
+use App\Http\Requests\DateRequest\UpdateDateRequest;
 
 class DateController extends Controller
 {

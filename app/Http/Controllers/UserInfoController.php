@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Http\Requests\UpdateUserInfoRequest;
-use App\Http\Requests\UserInfoRequest;
+use App\Http\Requests\UserInfoRequest\UpdateUserInfoRequest;
+use App\Http\Requests\UserInfoRequest\StoreUserInfoRequest;
 use App\Models\User;
 use App\Models\UserSalary;
 use App\Models\UserInfo;
@@ -16,7 +16,7 @@ use Carbon\Carbon;
 
 class UserInfoController extends Controller
 {
-    public function store(UserInfoRequest $request)
+    public function store(StoreUserInfoRequest $request)
     {
         $validate = $request->validated();
         $path = Files::saveImage($request);
@@ -84,21 +84,26 @@ class UserInfoController extends Controller
 
     public function updateSalary(Request $request, $id)
     {
-        $salary = $request->salary;
-        $result = UserInfo::query()->where('id', $id)->first();
-        return DB::transaction(function () use ($result, $salary, $id) {
-            $result->update([
-                'salary' => $salary
-            ]);
-            if ($result) {
-                UserSalary::query()->create([
-                    'user_id' => $id,
-                    'date' => Carbon::now()->format('Y-m'),
+        try {
+            $salary = $request->salary;
+            $result = UserInfo::findOrFail($id)->first();
+            return DB::transaction(function () use ($result, $salary, $id) {
+                $result->update([
                     'salary' => $salary
                 ]);
-                return ResponseHelper::updated('Salary updated', null);
-            }
-        });
-        return ResponseHelper::error('Not updated', null);
+                if ($result) {
+                    UserSalary::query()->create([
+                        'user_id' => $id,
+                        'date' => Carbon::now()->format('Y-m'),
+                        'salary' => $salary
+                    ]);
+                    return ResponseHelper::updated('Salary updated', null);
+                }
+            });
+            return ResponseHelper::error('Not updated', null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+
     }
 }

@@ -36,6 +36,7 @@ class BranchSeeder extends Seeder
             ],
         ];
 
+
         DB::table('branches')->insert($branches);
     }
 }

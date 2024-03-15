@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CareerRequest\StoreCareerRequest;
 use App\Models\Career;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\CareerRequest;
-use App\Http\Requests\UpdateCareerRequest;
+use App\Http\Requests\CareerRequest\UpdateCareerRequest;
 use Illuminate\Support\Facades\DB;
 
 
 class CareerController extends Controller
 {
-    public function store(CareerRequest $request)
+    public function store(StoreCareerRequest $request)
     {
         $validate = $request->validated();
         return DB::transaction(function () use ($validate) {

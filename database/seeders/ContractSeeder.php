@@ -13,58 +13,6 @@ class ContractSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('contracts')->insert
-        ([
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'Casdaasdac',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-            [
-                'path' => 'C:/files/dasa.pdf',
-                'endTime' => '2026-10-12 12:12:10',
-                'user_id' => 1,
-            ],
-        ]);
+    
     }
 }
