@@ -201,20 +201,13 @@ class GmailService
             foreach ($headers as $header) {
                 if ($header->getName() == 'id') {
                     $data['id'] = $header->getValue();
-<<<<<<< HEAD
-=======
                     dd(1);
->>>>>>> ca07891d68b98b8ebb9be025a988ecbe4cb5ee46
                 }
                 if ($header->getName() == 'From') {
                     $data['sender'] = $header->getValue();
                     $senderEmail = $header->getValue();
                     preg_match('/^(.*)<(.*)>$/', $senderEmail, $matches);
                     $senderEmail = $matches[2];
-<<<<<<< HEAD
-
-=======
->>>>>>> ca07891d68b98b8ebb9be025a988ecbe4cb5ee46
                     // Fetch Gravatar image URL
                     $gravatarUrl = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($senderEmail)));
                     $data['senderImage'] = $gravatarUrl;
@@ -226,10 +219,6 @@ class GmailService
                     $data['date'] = $header->getValue();
                 }
             }
-<<<<<<< HEAD
-=======
-
->>>>>>> ca07891d68b98b8ebb9be025a988ecbe4cb5ee46
             $messages[] = $data;
         }
         return $messages;
