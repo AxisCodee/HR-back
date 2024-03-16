@@ -205,7 +205,7 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::get('Show/{user}', 'show');
                 Route::post('update', 'update');
                 Route::get('Uabsences', 'unjustifiedAbsence');
-                Route::post('DynamicDecision/{absences}', 'DynamicDecision');
+                Route::post('DynamicDecision/{absences}', 'DynamicDecision');//not exist !!
                 Route::post('AddAbsence', 'store_absence');
                 Route::get('getAbsences/{user}', 'getAbsences');
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');

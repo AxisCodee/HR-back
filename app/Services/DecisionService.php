@@ -14,17 +14,14 @@ class DecisionService
         $userId = $request->user_id;
         $date = $request->date;
         $type = $request->type;
-
         $year = null;
         $month = null;
-
         if (strlen($date) === 4) {
             $year = $date;
         } elseif (strlen($date) === 7) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
         }
-
         $result = User::query()
             ->where('id', $userId)
             ->with(['my_decisions' => function ($query) use ($year, $month, $type) {
@@ -37,30 +34,21 @@ class DecisionService
                 $query->where('type', $type);
             }])
             ->first();
-
         return $result;
     }
-
-
-
-
-
 
     public static function user_absence(Request $request)
     {
         $userId = $request->user_id;
         $date = $request->date;
-
         $year = null;
         $month = null;
-
         if (strlen($date) === 4) {
             $year = $date;
         } elseif (strlen($date) === 7) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
         }
-
         $result = User::query()
             ->where('id', $userId)
             ->with(['absences' => function ($query) use ($year, $month) {
@@ -73,7 +61,6 @@ class DecisionService
                 $query->where('type', 'Unjustified');
             }])
             ->first();
-
         return $result;
     }
 
@@ -90,12 +77,12 @@ class DecisionService
         return ResponseHelper::success('Decision deleted successfully');
     }
 
-    public function UpdateDecision($request,$id)
+    public function UpdateDecision($request, $id)
     {
         $validate = $request->validated();
-            $edited = Decision::where('id', $id)->firstOrFail();
-            $edited->update($validate);
-            return ResponseHelper::updated($edited, 'Decision updated successfully');
+        $edited = Decision::where('id', $id)->firstOrFail();
+        $edited->update($validate);
+        return ResponseHelper::updated($edited, 'Decision updated successfully');
     }
 
     public function AllDecisions($request)

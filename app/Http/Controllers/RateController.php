@@ -7,10 +7,6 @@ use App\Models\User;
 use App\Http\Requests\RateRequest\StoreRateRequest;
 use App\Http\Requests\RateRequest\UpdateRateRequest;
 use App\Helper\ResponseHelper;
-use App\Models\RateType;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Auth;
 use App\Services\RateService;
 use Illuminate\Http\Request;
 
@@ -21,7 +17,6 @@ class RateController extends Controller
     /**
      * Define the constructor to use the service.
      * @param RateService
-     * @return none
      */
     public function __construct(RateService $rateService)
     {
@@ -32,12 +27,11 @@ class RateController extends Controller
      * Get the rates of a user.
      * [RateService => UserRates]
      * @param RateService
-     * @return none
      */
     public function index(User $user)
     {
         try {
-            return  $this->rateService->UserRates($user);
+            return $this->rateService->UserRates($user);
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
         }
@@ -47,7 +41,6 @@ class RateController extends Controller
      * Rate a user with a rate type.
      * [RateService => setRate]
      * @param StoreRateRequest
-     * @return none
      */
     public function setRate(StoreRateRequest $request)
     {
@@ -69,12 +62,11 @@ class RateController extends Controller
      * [RateService => UpdateRate]
      * @param UpdateRateRequest
      * @param Rate
-     * @return none
      */
     public function update(UpdateRateRequest $request, Rate $rate)
     {
         try {
-            return  $this->rateService->UpdateRate($request, $rate);
+            return $this->rateService->UpdateRate($request, $rate);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), 422);
         }
@@ -84,7 +76,6 @@ class RateController extends Controller
      * Update a user's rate.
      * [RateService => Delete]
      * @param Rate
-     * @return none
      */
     public function destroy(Rate $rate)
     {
@@ -99,12 +90,11 @@ class RateController extends Controller
      * Show the rate of the authenticated user.
      * [RateService => MyRate]
      * @param User
-     * @return none
      */
     public function showMyRate(User $user)
     {
         try {
-            return  $this->rateService->MyRate($user);
+            return $this->rateService->MyRate($user);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), 422);
         }
@@ -115,7 +105,6 @@ class RateController extends Controller
      * [RateService => getRate]
      * @param Request
      * @param User
-     * @return none
      */
     public function getRate(Request $request, $id)
     {
@@ -130,7 +119,6 @@ class RateController extends Controller
      * Get rates of all users.
      * [RateService => allRates]
      * @param Request
-     * @return none
      */
     public function allRates(Request $request)
     {
@@ -146,7 +134,6 @@ class RateController extends Controller
      * [RateService => DateRate]
      * @param Request
      * @param $date
-     * @return none
      */
     public function userRates(Request $request, $date)
     {
@@ -158,11 +145,10 @@ class RateController extends Controller
     }
 
     /**
-     * Get rate type of a user in a date.
+     * Get rate type of user in a date.
      * [RateService => UserRateType]
      * @param Request
      * @param $date
-     * @return none
      */
     public function userRate(Request $request, $date)
     {

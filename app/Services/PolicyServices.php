@@ -22,25 +22,25 @@ class PolicyServices
     public function StorePolicy($request)
     {
         $validated = $request->validated();
-            $existencePolicy = Policy::where('branch_id', $validated['branch_id'])->exists();
-            if ($existencePolicy) {
-                return ResponseHelper::error('Already exist.', null);
+        $existencePolicy = Policy::where('branch_id', $validated['branch_id'])->exists();
+        if ($existencePolicy) {
+            return ResponseHelper::error('Already exist.', null);
+        }
+        return DB::transaction(function () use ($validated) {
+            $types = $validated['rate_type'];
+            $validated = collect($validated)->except('rate_type')->toArray();
+            $branchID = $validated['branch_id'];
+            $policy = Policy::query()->create($validated);
+            foreach ($types as $type) {
+                RateType::query()->create(
+                    [
+                        'branch_id' => $branchID,
+                        'rate_type' => $type
+                    ]
+                );
             }
-            return DB::transaction(function () use ($validated) {
-                $types = $validated['rate_type'];
-                $validated = collect($validated)->except('rate_type')->toArray();
-                $branchID = $validated['branch_id'];
-                $policy = Policy::query()->create($validated);
-                foreach ($types as $type) {
-                    RateType::query()->create(
-                        [
-                            'branch_id' => $branchID,
-                            'rate_type' => $type
-                        ]
-                    );
-                }
-                return ResponseHelper::success([$policy], null);
-            });
+            return ResponseHelper::success([$policy], null);
+        });
     }
 
     public function UpdatePolicy($request)

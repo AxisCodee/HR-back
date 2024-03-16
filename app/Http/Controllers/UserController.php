@@ -54,7 +54,13 @@ class UserController extends Controller
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
-            ->with('justifiedAbsences')
+            ->with(
+                'justifiedUnPaidAbsences',
+                'justifiedPaidAbsences',
+                'unJustifiedPaidAbsences',
+                'unJustifiedUnPaidAbsences',
+                'sickAbsences'
+            )
             ->whereNull('deleted_at')
             ->get()
             ->toArray();
@@ -76,35 +82,25 @@ class UserController extends Controller
     {
         try {
             $branch_id = $request->branch_id;
-            $branch=Branch::findOrFail($branch_id);
-
-
+            $branch = Branch::findOrFail($branch_id);
             if (!$branch) {
                 throw new \Exception('Branch Not Found');
             }
-
             if (!$branch_id) {
                 throw new \Exception('Missing branch_id', 400);
             }
-
             $all_users = User::query()
                 ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image','department');
-
+                ->with('userInfo:id,user_id,image', 'department');
             $trashed_users = User::onlyTrashed()
                 ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image','department');
-
+                ->with('userInfo:id,user_id,image', 'department');
             $users = $all_users->union($trashed_users)->get()->toArray();
-
             return ResponseHelper::success($users, null, 'All users (including trashed)', 200);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
-
-
-
 
 
     //get a specific user by the ID
@@ -129,7 +125,6 @@ class UserController extends Controller
                 'skills',
                 'phoneNumber',
                 'emails'
-
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
@@ -137,7 +132,6 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-
         $result = $this->userService->editUser($request, $id);
         return $result;
     }
@@ -188,18 +182,12 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
-
             $department = Department::findOrFail($id);
-
-
             User::where('department_id', $id)->update([
                 'department_id' => null
             ]);
-
             $department->delete();
-
             DB::commit();
-
             return ResponseHelper::deleted('Team deleted successfully');
         } catch (Exception $e) {
             DB::rollBack();
@@ -276,7 +264,6 @@ class UserController extends Controller
             $result = $this->editUserService->updateUser($user, $request);
             return $result;
         } catch (\Illuminate\Validation\ValidationException $e) {
-
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
@@ -300,18 +287,18 @@ class UserController extends Controller
 
     public function Tree()
     {
-        try{
+        try {
             return $this->teamService->getTree();
-        }catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         }
     }
 
     public function GetAbsenceTypes(Request $request)
     {
-        try{
+        try {
             return $this->userService->AllAbsenceTypes($request);
-        }catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         }
     }

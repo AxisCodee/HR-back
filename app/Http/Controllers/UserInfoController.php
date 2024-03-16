@@ -25,7 +25,6 @@ class UserInfoController extends Controller
             $userInfo = UserInfo::query()->create($validate);
             return ResponseHelper::success($userInfo, null);
         });
-        return ResponseHelper::error('error', null);
     }
 
     public function update(UpdateUserInfoRequest $request, $id)
@@ -41,7 +40,6 @@ class UserInfoController extends Controller
                 ->update($validate);
             return ResponseHelper::success('info has been updated', null);
         });
-        return ResponseHelper::error('error', null);
     }
 
     public function show($id)
@@ -61,9 +59,7 @@ class UserInfoController extends Controller
             $career->delete();
             return ResponseHelper::success('info has been deleted', null);
         });
-        return ResponseHelper::error('not deleted', null);
     }
-
 
     // public function updateSalary(Request $request,  $id)
     // {
@@ -102,10 +98,8 @@ class UserInfoController extends Controller
                     return ResponseHelper::updated('Salary updated', null);
                 }
             });
-            return ResponseHelper::error('Not updated', null);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
-
     }
 }
