@@ -26,7 +26,6 @@ class NoteService
     }
 
 
-
     public function store($validatedData)
     {
         try {
@@ -38,7 +37,6 @@ class NoteService
             return ResponseHelper::error('An error occurred while storing the note.', null);
         }
     }
-
 
 
     public function update($validatedData, $id)

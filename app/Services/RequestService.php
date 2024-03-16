@@ -168,19 +168,16 @@ class RequestService
     public function rejectRequest($request)
     {
         $existingRequest = Request::find($request);
-
         if ($existingRequest) {
             $existingRequest->update([
                 'status' => 'rejected'
             ]);
-
             return ResponseHelper::success([
                 'message' => 'Request rejected successfully',
             ]);
         } else {
             return ResponseHelper::error('Request not found', null, 'error', 404);
         }
-
     }
 
 
@@ -189,12 +186,10 @@ class RequestService
         try {
             return DB::transaction(function () use ($request) {
                 $validate = $request->validated();
-
                 if ($validate['duration'] == 'hourly') {
                     $startVac = Carbon::parse($validate['startDate']);
                     $endVac = Carbon::parse($validate['endDate']);
                     $hoursNumber = $startVac->diffInHours($endVac);
-
                     $newRequest = Absences::create([
                         'user_id' => $validate['user_id'],
                         'startDate' => $startVac,
@@ -212,7 +207,6 @@ class RequestService
                 } else {
                     return ResponseHelper::error($validate, null, 'Error sending the request', 400);
                 }
-
                 return ResponseHelper::created($newRequest, 'Request sent successfully');
             });
         } catch (\Exception $e) {
