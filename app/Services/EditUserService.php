@@ -62,7 +62,7 @@ class EditUserService
                     $monthsToCreate = $lastSalaryDate ? Carbon::parse($lastSalaryDate)
                         ->diffInMonths(Carbon::now()->format('Y-m')) : 0;
                     for ($i = 0; $i < $monthsToCreate - 1; $i++) {
-                        $date = Carbon::now()->subMonths($i + 1)->startOfMonth()->format('Y-m');
+                        $date = Carbon::now()->subMonths($i + 1)->startOfMonth()->format('Y-m') . '-00';
                         $user->salary()->create([
                             'date' => $date,
                             'salary' => $lastSalaryUpdate ? $lastSalaryUpdate->salary : 0,
@@ -70,7 +70,7 @@ class EditUserService
                     }
                     $user->salary()->create([
                         'user_id' => $user->id,
-                        'date' => Carbon::now()->startOfMonth()->format('Y-m'),
+                        'date' => Carbon::now()->startOfMonth()->format('Y-m') . '-00',
                         'salary' => $request->salary,
                     ]);
                 }

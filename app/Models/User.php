@@ -31,10 +31,10 @@ class User extends Authenticatable implements JWTSubject
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->userServices = new UserServices();
+        $userTimeService = new UserTimeService();
+        $this->userServices = new UserServices($userTimeService);
         $this->usertimeService = new UserTimeService();
     }
-
 
 
 

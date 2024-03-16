@@ -28,6 +28,29 @@ class UserTimeService
 
         return $result;
     }
+
+
+    public function checkTimeDate($lates, $date, $fieldName)
+    {
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
+            if ($month && $year) {
+                $lates->whereYear( $fieldName, $year)
+                    ->whereMonth( $fieldName, $month);}
+            elseif ($day && $month && $year) {
+                $lates->whereYear( $fieldName, $year)
+                    ->whereMonth( $fieldName, $month)
+                    ->whereDay( $fieldName, $day);}
+
+            elseif ($year) {
+                $lates->whereYear( $fieldName, $year);
+            }
+        }
+
+        return $lates;
+    }
     // public function checkAttendenceDate($lates, $date)
     // {
     //     if ($date) {
