@@ -33,8 +33,6 @@ require 'tad\vendor\autoload.php';
 
 class UserController extends Controller
 {
-
-
     private $roleService;
     private $teamService;
     protected $userService;
