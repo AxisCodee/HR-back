@@ -175,7 +175,7 @@ class AttendanceController extends Controller
                                         $startDate = Carbon::parse($userStartDate->start_date);
                                         $uDate = Carbon::parse($date);
                                         if ($startDate->lt($uDate)) {
-                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true && $policy->demands_compensation == true ) {//auto deduction
+                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true ) {//auto deduction
                                                 Absences::updateOrCreate([
                                                     'user_id' => $user->id,
                                                     'startDate' => $date,
@@ -189,12 +189,12 @@ class AttendanceController extends Controller
                                                     'content' => 'deduction due the Unjustified absence',
                                                     'dateTime' => $date,
                                                 ]);
-                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false && $policy->demands_compensation == true ) {
+                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false ) {
                                                 Absences::updateOrCreate([
                                                     'user_id' => $user->id,
                                                     'startDate' => $date,
                                                     'type' => 'null',
-                                                    'demands_compensation'=>true
+
                                                 ]);
                                             }
 

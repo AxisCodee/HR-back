@@ -335,7 +335,6 @@ class UserServices
         return $userAbsence;
     }
 
-
     public function getBaseSalary($user, $date)
     {
         if ($date) {

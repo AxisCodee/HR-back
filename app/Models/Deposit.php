@@ -14,7 +14,8 @@ class Deposit extends Model
         'user_id',
         'received_date',
         'path',
-      
+        'title'
+
     ];
 
 
