@@ -14,13 +14,13 @@ class DepartmentParent extends Model
     ];
 
 
-public function parents()
+public function department()
 {
-    return $this->belongsToMany(Department::class ,'department_id');
+    return $this->belongsTo(Department::class ,'department_id');
 }
-public function departments()
+public function parent()
 {
-    return $this->belongsToMany(Department::class ,'parent_id');
+    return $this->belongsTo(Department::class ,'parent_id');
 
 }
 

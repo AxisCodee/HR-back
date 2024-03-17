@@ -20,14 +20,14 @@ class PolicyController extends Controller
     /**
      * Show policies of a branch & it's rate types.
      * [PolicyServices => BranchPolicy]
-     * @param Request
+     *@param Request
      * @return Policy
      */
     public function show(Request $request)
     {
         try {
-            return $this->PolicyServices->BranchPolicy($request);
-             $policy;
+            $policy = $this->PolicyServices->BranchPolicy($request);
+            return $policy;
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
@@ -58,8 +58,8 @@ class PolicyController extends Controller
     public function update(Request $request)
     {
         try {
-           $policy =  $this->PolicyServices->UpdatePolicy($request);
-           return $policy;
+            $policy =  $this->PolicyServices->UpdatePolicy($request);
+            return $policy;
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }

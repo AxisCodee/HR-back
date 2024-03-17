@@ -30,7 +30,8 @@ class StorePolicyRequest extends FormRequest
             'absence_management' => ['required'],
             'deduction_status' => ['required'],
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
-            'rate_type' => ['sometimes', 'array']
+            'rate_type' => ['sometimes', 'array'],
+            'demands_compensation'=>['required']
         ];
     }
     protected function failedValidation(Validator $validator)
