@@ -188,7 +188,7 @@ class TeamService
         }
     }
 
-    public function getTree()
+    public function showTree()
     {
         $childs = Department::with('user')->with('child.department.user')->get();
         $tree = [];
@@ -211,6 +211,19 @@ class TeamService
         }
         return $tree;
     }
+
+
+
+    public function getTree()
+    {
+        $childs = DepartmentParent::with('department')->get();
+        $tree = [];
+        foreach ($childs as $department) {
+            $tree[]=$childs;
+        }
+        return $tree;
+    }
+
 
 
 }

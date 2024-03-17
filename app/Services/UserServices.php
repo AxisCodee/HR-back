@@ -72,6 +72,7 @@ class UserServices
 
     public function getCheckOutPercentage($user, $date)
     {
+        
         $date = request()->query('date');
         $checkOut = Attendance::where('status', '1')
             ->where('pin', $user->pin)

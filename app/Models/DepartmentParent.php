@@ -18,10 +18,10 @@ public function department()
 {
     return $this->belongsTo(Department::class ,'department_id');
 }
-// public function departments()
-// {
-//     return $this->belongsToMany(Department::class ,'parent_id');
+public function parent()
+{
+    return $this->belongsTo(Department::class ,'parent_id');
 
-// }
+}
 
 }

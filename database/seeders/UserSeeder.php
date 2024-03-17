@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             [
-                'email' => 'ismaeel@gmail.com',
+                'email' => 'admin@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'ismaeel',
                 'middle_name' => 'tttt',
@@ -160,7 +160,7 @@ class UserSeeder extends Seeder
                 'branch_id'=>1
             ],
             [
-                'email' => 'noOne@gmail.com',   
+                'email' => 'noOne@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'noo',
                 'middle_name' => 'tttt',
