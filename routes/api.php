@@ -135,7 +135,7 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::post('RemoveMember/{user}', 'removeFromTeam');
                 Route::post('addTeams', 'addTeams');
                 Route::post('updateTeam/{department}', 'updateTeam');
-                Route::get('tree/{id}', 'getTree');
+                Route::get('tree', 'getTree');
 
             });
         });
