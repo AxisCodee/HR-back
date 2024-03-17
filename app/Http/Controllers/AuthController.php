@@ -245,6 +245,7 @@ class AuthController extends Controller
                                 'user_id' => $user->id,
                                 'title' => $secretary['title'],
                                 'description' => $secretary['object'],
+                                'path'=>$secretary['path'],
                                 'received_date' => $secretary['delivery_date'],
                             ]);
                         }

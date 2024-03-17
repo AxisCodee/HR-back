@@ -159,7 +159,7 @@ class AttendanceController extends Controller
                             ->whereNull('attendances.pin')
                             ->select('users.*')
                             ->get();
-                        // check if there ate an absence , to don't do the operation on null
+                        // check if there are an absence , to don't do the operation on null
                         if (!empty($usersWithoutAttendance)) {
                             //create the absence
                             foreach ($usersWithoutAttendance as $user) {
@@ -175,11 +175,12 @@ class AttendanceController extends Controller
                                         $startDate = Carbon::parse($userStartDate->start_date);
                                         $uDate = Carbon::parse($date);
                                         if ($startDate->lt($uDate)) {
-                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
+                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true && $policy->demands_compensation == true ) {//auto deduction
                                                 Absences::updateOrCreate([
                                                     'user_id' => $user->id,
                                                     'startDate' => $date,
-                                                    'type' => 'Unjustified'
+                                                    'type' => 'Unjustified',
+                                                    'demands_compensation'=>true
                                                 ]);
                                                 Decision::query()->updateOrCreate([
                                                     'user_id' => $user->id,
@@ -188,13 +189,15 @@ class AttendanceController extends Controller
                                                     'content' => 'deduction due the Unjustified absence',
                                                     'dateTime' => $date,
                                                 ]);
-                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
+                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false && $policy->demands_compensation == true ) {
                                                 Absences::updateOrCreate([
                                                     'user_id' => $user->id,
                                                     'startDate' => $date,
-                                                    'type' => 'null'
+                                                    'type' => 'null',
+                                                    'demands_compensation'=>true
                                                 ]);
                                             }
+
                                         }
                                     }
                                 }
