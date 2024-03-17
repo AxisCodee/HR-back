@@ -8,9 +8,12 @@ use App\Http\Requests\ContactRequest\UpdateContactRequest;
 use App\Http\Requests\TeamRequest\StoreTeamRequest;
 use App\Http\Requests\TeamRequest\UpdateTeamRequest;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
+use App\Http\Traits\Files;
 use App\Models\Attendance;
 use App\Models\Branch;
 use App\Models\Career;
+use App\Models\UserInfo;
+use App\Services\UserRegisterService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -37,13 +40,18 @@ class UserController extends Controller
     private $teamService;
     protected $userService;
     protected $editUserService;
+    public $userRegisterService;
 
-    public function __construct(RoleService $roleService, TeamService $teamService, UserServices $userService, EditUserService $editUserService)
+    public function __construct(RoleService         $roleService, TeamService $teamService,
+                                UserServices        $userService,
+                                EditUserService     $editUserService,
+                                UserRegisterService $userRegisterService)
     {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
         $this->userService = $userService;
         $this->editUserService = $editUserService;
+        $this->userRegisterService = $userRegisterService;
     }
 
     //get all users info
@@ -259,8 +267,54 @@ class UserController extends Controller
     public function updateUser(User $user, Request $request)
     {
         try {
-            $result = $this->editUserService->updateUser($user, $request);
-            return $result;
+            $user = $this->userRegisterService->updateUser($request, $user);
+            //dd($user1);
+            $path = null;
+            if ($request->image) {
+                $path = Files::saveImageProfile($request->image);
+            }
+            $userInfo = UserInfo::where('user_id', $user->id)->first();
+            $this->userRegisterService->updateUserSalary($user, $userInfo, $request);
+            $this->userRegisterService->updateUserInfo($request, $user, $path, $userInfo);
+            $educations = $request->educations;
+            $certificates = $request->certificates;
+            $languages = $request->languages;
+            $skills = $request->skills;
+            $experiences = $request->experiences;
+            $contacts = $request->contacts;
+            $secretaraits = $request->secretaraits;
+            $emergency_contact = $request->emergency_contact;
+            if ($educations) {
+                $this->userRegisterService->updateUserStudySituations($user->id, $educations);
+            }
+            if ($certificates) {
+                $this->userRegisterService->updateUserCertificates($user->id, $certificates);
+            }
+            if ($languages) {
+                $this->userRegisterService->updateUserLanguages($user->id, $languages);
+            }
+            if ($skills) {
+                $this->userRegisterService->updateUserSkills($user->id, $skills);
+            }
+            if ($request->additional_files) {
+                $this->userRegisterService->updateUserFiles($user->id, $request);
+            }
+            if ($experiences) {
+                $this->userRegisterService->updateUserExperiences($user->id, $experiences);
+            }
+            if (isset($contacts['emails'][0])) {
+                $this->userRegisterService->updateUserContacts($user->id, $contacts);
+            }
+            if (isset($contacts['phonenumbers'])) {
+                $this->userRegisterService->updateUserPhoneNumbers($user->id, $contacts);
+            }
+            if ($request->emergency_contact) {
+                $this->userRegisterService->updateUserEmergencyContact($user->id, $emergency_contact);
+            }
+            if ($secretaraits) {
+                $this->userRegisterService->updateUserDeposits($user->id, $secretaraits);
+            }
+            return ResponseHelper::success("Updated");
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Exception $e) {
@@ -282,6 +336,7 @@ class UserController extends Controller
         $result = $this->teamService->updateTeam($department, $request);
         return ResponseHelper::success($result);
     }
+
     public function getTree($id)
     {
         $result = $this->teamService->getTree($id);
