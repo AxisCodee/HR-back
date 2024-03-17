@@ -24,13 +24,12 @@ class StoreAbsencesRequest extends FormRequest
      */
     public function rules(): array
     {
+        //dd($this->input('absence'));
         return [
             'absence.*.user_id' => ['integer', 'exists:users,id'],
-            'absence.*.date' => [
-            'required',
-            'date',
-            new AbsenceRule($this->input('absence'))],
-            'absence.*.type'=>['string','in:justified,Unjustified']
+            'absence.*.date' => ['required', 'date', new AbsenceRule($this->input('absence'))],
+            'absence.*.type' => ['string', 'in:sick,justified,Unjustified'],
+            'absence.*.isPaid' => ['boolean']
         ];
     }
 

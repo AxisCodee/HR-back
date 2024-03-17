@@ -18,7 +18,6 @@ class CareerController extends Controller
             $career = Career::query()->updateOrCreate($validate);
             return ResponseHelper::success($career, null);
         });
-        return ResponseHelper::error('error', null);
     }
 
     public function update(UpdateCareerRequest $request, $id)
@@ -30,7 +29,6 @@ class CareerController extends Controller
                 ->update($validate);
             return ResponseHelper::success('Career has been updated', null);
         });
-        return ResponseHelper::error('error', null);
     }
     public function destroy($id)
     {
@@ -39,6 +37,5 @@ class CareerController extends Controller
             $career->delete();
             return ResponseHelper::success('Career has been deleted', null);
         });
-        return ResponseHelper::error('not deleted', null);
     }
 }

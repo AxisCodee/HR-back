@@ -26,12 +26,17 @@ class User extends Authenticatable implements JWTSubject
     protected $usertimeService;
 
 
+
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->userServices = new UserServices();
-
+        $userTimeService = new UserTimeService();
+        $this->userServices = new UserServices($userTimeService);
+        $this->usertimeService = new UserTimeService();
     }
+
+
 
     protected $fillable =
         [
@@ -71,7 +76,9 @@ class User extends Authenticatable implements JWTSubject
         'alerts',
         'status',
         'level',
-        'isTrash'
+        'isTrash',
+        'dismissed',
+        'TotalAbsenceHours'
     ];
     protected $hidden = [
         'password',
@@ -83,207 +90,215 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+
+    /* **********GO TO USER SERVICE**********
+    *
+       [userServises :
+        late,
+       overtime,
+       absence,
+       advance,
+       reward,
+       deduction,
+       warning,
+       checkinpercentage,
+       checkoutpercentage,
+
+       ]
+    *
+    */
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
-        $totalOverTimeHours = $this->userServices
-            ->getOverTime($this, $date);
-        return $totalOverTimeHours;
+        return $this->userServices->getOverTime($this, $date);
     }
 
-    public function getOverTimesAttribute()
-    {
-        $date = request()->query('date');
-        if ($date) {
-            $overTimes = Late::whereNotNull('check_out')
-                ->where('type', 'justified')
-                ->where('user_id', $this->id);
-
-            $usertimeService = app(UserTimeService::class);
-            $overTimes = $usertimeService->checkOvertimeDate($overTimes, $date);
-
-            $total = $overTimes->get();
-            return $total;
-        }
-        return [];
-    }
 
     public function getLateAttribute()
     {
         $date = request()->query('date');
-        $totalLateHours = $this->userServices
-            ->getLate($this, $date);
-        return $totalLateHours;
+         return $this->userServices->getLate($this, $date);
     }
 
-//    public function getRateAttribute()
-//    {
-//        $date = request()->query('date');
-//        if ($date) {
-//            return $this->userServices->getRates($date, $this);
-//        }
-//        return 0;
-//    }
 
-
-
-public function getIsTrashAttribute()
-{
-    return $this->deleted_at === null ? false : true;
-}
     public function getAdvanceAttribute()
     {
         $date = request()->query('date');
-        $totalAdvance = $this->userServices
-            ->getAdvance($this, $date);
-        return $totalAdvance;
+        return $this->userServices->getAdvance($this, $date);
+    }
+
+    public function getDeductionAttribute($date)
+    {
+        $date = request()->query('date');
+        return $this->userServices->getDeduction($this, $date);
+    }
+
+
+    public function getAbsenceAttribute($date)
+    {
+           $date = request()->query('date');
+            return $this->userServices->getAbsence($this,$date);
+    }
+
+    public function getRewardAttribute()
+    {
+        $date = request()->query('date');
+        return  $this->userServices->getReward($this, $date);
+    }
+
+    public function getCheckInPercentageAttribute()
+    {
+       $date = request()->query('date');
+        return  $this->userServices->getCheckInPercentage($this, $date);
+    }
+
+    public function getCheckOutPercentageAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices ->getCheckOutPercentage($this, $date);
+    }
+
+    /***
+     *
+     *   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER SERVICE **********
+     */
+
+
+    /***
+     *
+     *
+     *
+     *
+     *
+     **********USER ABSENCE RELATIONSHIP **********
+     */
+
+        public function justifiedUnPaidAbsences()//Un paid
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'justified')
+            ->where('isPaid', 0);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function justifiedPaidAbsences()//Paid
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'justified')
+            ->where('isPaid', 1);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+
+    public function unJustifiedPaidAbsences()//Paid
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'UnJustified')
+            ->where('isPaid', 1);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function unJustifiedUnPaidAbsences()//Un paid
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'UnJustified')
+            ->where('isPaid', 0);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+    public function sickAbsences()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'sick');
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+
+    /***
+     *
+     *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER ABSENCE RELATIONSHIP **********
+     */
+
+
+    public function getOverTimesAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->overTimes($this, $date);
     }
 
 
     public function getDeductionsAttribute()
     {
         $date = request()->query('date');
-        if ($date) {
-            $deductions = Decision::where('type', 'deduction')
-                ->where('user_id', $this->id);
-            $usertimeService = app(UserTimeService::class);
-            $deductions = $usertimeService->checkTimeDates($deductions, $date);
-            $total = $deductions->get();
-            return $total;
-        }
-        return [];
+        return $this->userServices->deductions($this, $date);
     }
 
 
     public function getRewardsAttribute()
     {
         $date = request()->query('date');
-        if ($date) {
-            $rewards = Decision::where('type', 'reward')
-                ->where('user_id', $this->id);
-
-            $usertimeService = app(UserTimeService::class);
-            $rewards = $usertimeService->checkTimeDate($rewards, $date);
-
-            $total = $rewards->get();
-            return $total;
-        }
-        return [];
+        return $this->userServices->rewards($this, $date);
     }
 
     public function getAdvancesAttribute()
-
     {
         $date = request()->query('date');
-        if ($date) {
-            $advances = Decision::where('type', 'advance')
-                ->where('user_id', $this->id);
-            $usertimeService = app(UserTimeService::class);
-            $advances = $usertimeService->checkTimeDate($advances, $date);
-            $total = $advances->get();
-            return $total;
-        }
-        return [];
+        return $this->userServices->advances($this, $date);
     }
 
     public function getWarningsAttribute()
     {
         $date = request()->query('date');
-        if ($date) {
-            $warning = Decision::where('type', 'warning')
-                ->where('user_id', $this->id);
-
-            $usertimeService = app(UserTimeService::class);
-            $warning = $usertimeService->checkTimeDate($warning, $date);
-            $total = $warning->get();
-            return $total;
-        }
-        return [];
+        return $this->userServices->warnings($this, $date);
     }
 
     public function getAlertsAttribute()
     {
         $date = request()->query('date');
-        if ($date) {
-            $alert = Decision::where('type', 'alert')
-                ->where('user_id', $this->id);
-
-            $usertimeService = app(UserTimeService::class);
-            $alert = $usertimeService->checkTimeDate($alert, $date);
-            $total = $alert->get();
-            return $total;
-        }
-        return [];
+        return $this->userServices->alerts($this, $date);
     }
 
     public function getAbsencesAttribute()
     {
         $date = request()->query('date');
-        if ($date) {
-            $absences = Absences::where('user_id', $this->id)->where('type', 'Unjustified');
-
-            $usertimeService = app(UserTimeService::class);
-            $absences = $usertimeService->checkAbsenceTimeDate($absences, $date);
-
-            $total = $absences->get();
-            return $total;
-        }
-        return [];
+        return $this->userServices->absences($this,$date);
     }
 
-
-    public function getDeductionAttribute($date)
-    {
-        $date = request()->query('date');
-        $totalDeduction = $this->userServices
-            ->getDeduction($this, $date);
-        return $totalDeduction;
-    }
-
-    public function getAbsenceAttribute($date)
-    {
-        $date = request()->query('date');
-        $totalAbsence = $this->userServices
-            ->getAbsence($this, $date);
-        return $totalAbsence;
-    }
-
-    public function getRewardAttribute()
-    {
-        $date = request()->query('date');
-        $totalReward = $this->userServices
-            ->getReward($this, $date);
-        return $totalReward;
-    }
-
-    public function getCheckInPercentageAttribute()
-    {
-        $date = request()->query('date');
-        $percentage = $this->userServices
-            ->getCheckInPercentage($this, $date);
-        return $percentage;
-    }
-
-    public function getCheckOutPercentageAttribute()
-    {
-        $date = request()->query('date');
-        $percentage = $this->userServices
-            ->getCheckOutPercentage($this, $date);
-        return $percentage;
-    }
 
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
-        if ($date) {
-            $salary = UserSalary::where('user_id', $this->id)
-                ->where('date', '<=', $date)
-                ->get();
-            $baseSalary = $salary->isEmpty() ? 0 : $salary->last()->salary;
-            return $baseSalary;
-        } else {
-            return 0;
-        }
+        return $this->userServices->getBaseSalary($this,$date);
+
+    }
+
+    public function getTotalAbsenceHoursAttribute()
+    {
+    //     $latehours = Late::where('user_id',$this->id)->count('hours_num');
+
+    //     $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
+
+    //     $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
+    //     $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
+    //     $worktime = $startTime->diffInMinutes($endTime, false);
+
+    //    //  $worktime = $worktime%60;
+
+    //     $absence = Absences::where('user_id',$this->id)
+    //                         ->whereNot('isPaid',1)
+    //                         ->whereNot('type','justified')
+    //                         ->count();
+
+    //     $absencehours = $absence * $worktime;
+    //     $totalhours = $absencehours + $latehours;
+    //     return $worktime;
+    //     //$absencehours = Absences::where('user_id',$this->id);
     }
 
     public function getStatusAttribute()
@@ -297,6 +312,33 @@ public function getIsTrashAttribute()
             ->value('status');
         return $status;
     }
+
+    public function getDismissedAttribute()
+    {
+        $userPolicy = Policy::query()->where('branch_id', $this->branch_id)->first();
+        $userAlerts = UserAlert::query()->where('user_id', $this->id)->sum('alert');
+        if ($userPolicy && $userPolicy->warnings['warnings_to_dismissal'] - 1 <= $userAlerts) {
+            return true;
+        }
+        return false;
+    }
+
+
+//    public function getCompensationAttribute()
+//    {
+//        $date = Carbon::now();
+//        $lates = $this->userServices
+//            ->getLate($this, $date);
+//        $totalLateHours = $this->userServices
+//            ->getLate($this, $date);
+//        return $totalLateHours;
+//    }
+
+    public function getIsTrashAttribute()
+    {
+        return $this->deleted_at === null ? false : true;
+    }
+
 
     public function getLevelAttribute()
     {
@@ -353,22 +395,6 @@ public function getIsTrashAttribute()
         return $this->hasMany(Decision::class, 'user_id', 'id');
     }
 
-
-    // public function Warnings()
-    // {
-    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','warning');
-    // }
-
-    // public function  Deductions()
-    // {
-    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','deduction');
-    // }
-
-    // public function Rewards()
-    // {
-    //     return $this->hasMany(Decision::class, 'user_id', 'id')->where('type','reward');
-    // }
-
     public function penalties()
     {
         return $this->hasMany(Decision::class, 'user_id', 'id')
@@ -421,10 +447,6 @@ public function getIsTrashAttribute()
     {
         return $this->hasMany(Request::class, 'user_id');
     }
-    // public function getRoleAttribute()
-    // {
-    //     return $this->getRoleNames()->first();
-    // }
 
 
     public function userRates()
@@ -442,6 +464,7 @@ public function getIsTrashAttribute()
     {
         return $this->hasMany(Absences::class, 'user_id');
     }
+
 
     public function userInfo()
     {

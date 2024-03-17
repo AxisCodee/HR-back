@@ -87,6 +87,7 @@ class AuthController extends Controller
                     'pin' => $newPin,
                     'address' => $request->address,
                     'branch_id' => $branch_id,
+                    'permission'=>$request->permission
                 ]);
                 $user->update(['pin' => $user->id]);
 
@@ -118,7 +119,8 @@ class AuthController extends Controller
 
                 $sal = UserSalary::query()->create([
                     'user_id' => $user->id,
-                    'date' => Carbon::now()->format('Y-m'),
+                    'date' =>  Carbon::now()->format('Y-m') . '-00',
+
                     'salary' => $userInfo->salary
                 ]);
 

@@ -17,7 +17,6 @@ class CertificateController extends Controller
             $cer = Certificate::query()->create($validate);
             return ResponseHelper::success($cer, null);
         });
-        return ResponseHelper::error('error', null);
     }
     public function update(UpdateCertificateRequest $request, $id)
     {
@@ -28,7 +27,6 @@ class CertificateController extends Controller
                 ->update($validate);
             return ResponseHelper::success('Certificate has been updated', null);
         });
-        return ResponseHelper::error('error', null);
     }
 
     public function destroy($id)
@@ -38,6 +36,5 @@ class CertificateController extends Controller
             $cer->delete();
             return ResponseHelper::success('Certificate has been deleted', null);
         });
-        return ResponseHelper::error('not deleted', null);
     }
 }

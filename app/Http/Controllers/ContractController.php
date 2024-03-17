@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contract;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\ContractRequest\StoreContractRequest;
 use App\Http\Requests\ContractRequest\UpdateContractRequest;
 use App\Helper\ResponseHelper;
@@ -21,7 +20,6 @@ class ContractController extends Controller
             $query->where('branch_id', $branchId);
         })->get();
         if ($contracts->isEmpty()) {
-            ;
             return ResponseHelper::success([], null, 'no contract', 200);
         } else {
             foreach ($contracts as $contract) {
@@ -71,7 +69,6 @@ class ContractController extends Controller
                 200
             );
         });
-        return ResponseHelper::error('error', null);
     }
 
     /**
@@ -91,32 +88,29 @@ class ContractController extends Controller
             ->with('user')
             ->where('user_id', $id)
             ->get()->toArray();
-
         return ResponseHelper::success($result, null, 'contract:', 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateContractRequest $request,$contract)
+    public function update(UpdateContractRequest $request, $contract)
     {
         try {
-$contractId=Contract::findOrFail($contract);
-
-if ($contract){
-            if (Carbon::parse($contractId->endTime) <= Carbon::now()) {
-                return ResponseHelper::error('The Contract must be Valid');
+            $contractId = Contract::findOrFail($contract);
+            if ($contract) {
+                if (Carbon::parse($contractId->endTime) <= Carbon::now()) {
+                    return ResponseHelper::error('The Contract must be Valid');
+                }
+                $validate = $request->validated();
+                $path = Files::saveFile($request);
+                $contractId->update([
+                    'startTime' => $request->startTime ?: $contractId->startTime,
+                    'endTime' => $request->endTime ?: $contractId->path,
+                    'path' => $path
+                ]);
+                return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
             }
-            $validate = $request->validated();
-            $path = Files::saveFile($request);
-            $contractId->update([
-                'startTime'=>$request->startTime ?:$contractId->startTime,
-                'endTime'=>$request->endTime ?:$contractId->path,
-                'path'=>$path
-            ]);
-            return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
-        }
-
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
         }

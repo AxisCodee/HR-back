@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
 
-require 'tad\vendor\autoload.php';
 
 require 'tad\vendor\autoload.php';
 
@@ -170,32 +169,32 @@ class AttendanceController extends Controller
                                     ->first();
                                 if (!$absence) {//unjustified absence
                                     $userStartDate = UserInfo::query()->where('user_id', $user->id)
-                                        ->first();
-                                    //dd($userStartDate);
-
-                                    $startDate = Carbon::parse($userStartDate->start_date);
-                                    //dd($startDate);
-                                    $uDate = Carbon::parse($date);
-                                    if ($startDate->lt($uDate)) {
-                                        if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
-                                            Absences::updateOrCreate([
-                                                'user_id' => $user->id,
-                                                'startDate' => $date,
-                                                'type' => 'Unjustified'
-                                            ]);
-                                            Decision::query()->updateOrCreate([
-                                                'user_id' => $user->id,
-                                                'branch_id' => $user->branch_id,
-                                                'type' => 'deduction',
-                                                'content' => 'deduction due the Unjustified absence',
-                                                'dateTime' => $date,
-                                            ]);
-                                        } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
-                                            Absences::updateOrCreate([
-                                                'user_id' => $user->id,
-                                                'startDate' => $date,
-                                                'type' => 'null'
-                                            ]);
+                                        ->exists();
+                                    if ($userStartDate) {
+                                        $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
+                                        $startDate = Carbon::parse($userStartDate->start_date);
+                                        $uDate = Carbon::parse($date);
+                                        if ($startDate->lt($uDate)) {
+                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
+                                                Absences::updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'startDate' => $date,
+                                                    'type' => 'Unjustified'
+                                                ]);
+                                                Decision::query()->updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'branch_id' => $user->branch_id,
+                                                    'type' => 'deduction',
+                                                    'content' => 'deduction due the Unjustified absence',
+                                                    'dateTime' => $date,
+                                                ]);
+                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
+                                                Absences::updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'startDate' => $date,
+                                                    'type' => 'null'
+                                                ]);
+                                            }
                                         }
                                     }
                                 }
@@ -208,7 +207,7 @@ class AttendanceController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error('QueryException', 400);
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
