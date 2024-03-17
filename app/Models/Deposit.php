@@ -10,11 +10,11 @@ class Deposit extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
         'description',
         'user_id',
         'received_date',
-        'path'
+        'path',
+      
     ];
 
 
