@@ -20,14 +20,15 @@ class Department extends Model
     {
         return $this->hasOne(User::class)->where('role','team_leader');
     }
-    public function parent()
-    {
-        return $this->hasMany(DepartmentParent::class ,'department_id');
-    }
-    public function department()
+
+    public function child()
     {
         return $this->hasMany(DepartmentParent::class ,'parent_id');
 
+    }
+    public function parent()
+    {
+        return $this->hasMany(DepartmentParent::class ,'department_id');
     }
 
 

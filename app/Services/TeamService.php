@@ -159,12 +159,6 @@ class TeamService
             return $e->getMessage();
         }
     }
-
-
-
-
-
-
 //update team
     public function updateTeam($department, $request)
     {
@@ -188,8 +182,6 @@ class TeamService
                         ]
                         );
                 }
-
-
             User::where('department_id', $department->id)
                 ->update(['department_id' => null]);
                  //set department_id null for all user
@@ -232,4 +224,37 @@ class TeamService
             return $e->getMessage();
         }
     }
+
+
+    public function getTree()
+{
+    $departments = Department::with('user')->get();
+    $tree = [];
+
+    foreach ($departments as $department) {
+
+            $tree[] = $this->buildTree($department);
+        
+    }
+
+    return $tree;
 }
+
+public function buildTree($department)
+{
+    $tree = $department->toArray();
+    $childDepartments = $department->child;
+
+    if ($childDepartments) {
+        $tree['child'] = [];
+
+        foreach ($childDepartments as $childDepartment) {
+            $tree['child'][] = $this->buildTree($childDepartment);
+        }
+    }
+
+    return $tree;
+}
+
+}
+

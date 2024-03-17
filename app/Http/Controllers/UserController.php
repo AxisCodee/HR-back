@@ -296,5 +296,11 @@ class UserController extends Controller
         $result = $this->teamService->updateTeam($department, $request);
         return ResponseHelper::success($result);
     }
+    public function getTree()
+    {
+        $result = $this->teamService->getTree();
+        return ResponseHelper::success($result);
+    }
+
 
 }
