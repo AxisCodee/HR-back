@@ -49,8 +49,7 @@ public  function updateUser($user,$request)
                 'pin' => $request->pin?:$user->pin,
                 'address' => $request->address?:$user->address,
                 'branch_id' => $request->branch_id?:$user->branch_id,
-                'permission'=>$request->permission
-
+                'permission'=>$request->permission//??
             ]);
 
             $path = null;
