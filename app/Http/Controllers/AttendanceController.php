@@ -159,7 +159,7 @@ class AttendanceController extends Controller
                             ->whereNull('attendances.pin')
                             ->select('users.*')
                             ->get();
-                        // check if there are an absence , to don't do the operation on null
+                        // check if there ae an absence , to don't do the operation on null
                         if (!empty($usersWithoutAttendance)) {
                             //create the absence
                             foreach ($usersWithoutAttendance as $user) {
@@ -167,18 +167,24 @@ class AttendanceController extends Controller
                                     ->where('user_id', $user->id)
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
+
                                 if (!$absence) {//unjustified absence
                                     $userStartDate = UserInfo::query()->where('user_id', $user->id)
                                         ->exists();
+
                                     if ($userStartDate) {
                                         $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
                                         $startDate = Carbon::parse($userStartDate->start_date);
                                         $uDate = Carbon::parse($date);
                                         if ($startDate->lt($uDate)) {
+
                                             if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
-                                                Absences::updateOrCreate([
+
+                                                Absences::updateOrCreate(
+
+                                                    ['startDate' => $date],[
+
                                                     'user_id' => $user->id,
-                                                    'startDate' => $date,
                                                     'type' => 'Unjustified'
                                                 ]);
                                                 Decision::query()->updateOrCreate([
@@ -189,13 +195,25 @@ class AttendanceController extends Controller
                                                     'dateTime' => $date,
                                                 ]);
                                             } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
-                                                Absences::updateOrCreate([
-                                                    'user_id' => $user->id,
-                                                    'startDate' => $date,
-                                                    'type' => 'null'
+                                                Absences::updateOrCreate(
+
+                                                    ['startDate' => $date ,  'user_id' => $user->id],[
+                                                    'type' => 'justified'
                                                 ]);
                                             }
+                                            if($user->branch_id == $branch->id && $policy->demands_compensation == true)
+                                            {
+                                                Absences::updateOrCreate(   ['startDate' => $date ,  'user_id' => $user->id],[
+                                                    'demands_compensation'=>true
+                                                ]);
                                         }
+                                        else if($user->branch_id == $branch->id && $policy->demands_compensation == false)
+                                        {
+                                            Absences::updateOrCreate(   ['startDate' => $date ,  'user_id' => $user->id],[
+                                                'demands_compensation'=>false
+                                            ]);
+                                        }
+                                    }
                                     }
                                 }
                             }

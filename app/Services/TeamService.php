@@ -237,35 +237,62 @@ class TeamService
 
 
 
-public function getTree($parentId = null)
+// public function getTree($parentId = null)
+// {
+//     $tree = $this->buildTree($parentId);
+
+
+// }
+
+
+// public function buildTree($parentId = null)
+// {
+//     $tree = [];
+//     $departments = DepartmentParent::with('department')->where('parent_id', $parentId)->get();
+
+//     foreach ($departments as $department) {
+//         $childTree = $this->buildTree($department->department_id);
+
+//         if (!empty($childTree)) {
+//             $departmentData = $department->department->toArray();
+//             $departmentData['child'] = $childTree;
+//             $tree[] = $departmentData;
+//         } else {
+//             $tree[] = $department->department->toArray();
+//         }
+//     }
+
+//     return $tree;
+// }
+
+public function getTree()
 {
-    $tree = $this->buildTree($parentId);
-
-
-}
-
-
-public function buildTree($parentId = null)
-{
+    $rootDepartments = Department::whereNull('parent_id')->with('user')->get();
     $tree = [];
-    $departments = DepartmentParent::with('department')->where('parent_id', $parentId)->get();
 
-    foreach ($departments as $department) {
-        $childTree = $this->buildTree($department->department_id);
-
-        if (!empty($childTree)) {
-            $departmentData = $department->department->toArray();
-            $departmentData['child'] = $childTree;
-            $tree[] = $departmentData;
-        } else {
-            $tree[] = $department->department->toArray();
-        }
+    foreach ($rootDepartments as $department) {
+        $tree[] = $this->buildTree($department);
     }
 
     return $tree;
 }
 
+public function buildTree($department)
+{
+    $tree = $department->toArray();
 
+    $childDepartments = $department->child;
+
+    if ($childDepartments) {
+        $tree['child'] = [];
+
+        foreach ($childDepartments as $childDepartment) {
+            $tree['child'][] = $this->buildTree($childDepartment);
+        }
+    }
+
+    return $tree;
+}
 
 }
 
