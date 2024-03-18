@@ -278,7 +278,7 @@ public function getTree()
 
 public function buildTree($department)
 {
-    
+
     $tree = $department->toArray();
 
 
@@ -295,9 +295,6 @@ public function buildTree($department)
 
         }
     }
-
-
-
 
     return $tree;
 }
