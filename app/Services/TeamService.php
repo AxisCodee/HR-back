@@ -290,7 +290,7 @@ public function buildTree($department)
         }
     }
 
-    $tree['user'] = $department->user()->get()->toArray(); 
+    $tree['user'] = $department->user()->get()->toArray();
 
     return $tree;
 }
