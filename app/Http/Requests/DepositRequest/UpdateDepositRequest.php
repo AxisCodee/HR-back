@@ -27,6 +27,7 @@ class UpdateDepositRequest extends FormRequest
             'title' => ['string'],
             'description' => ['string'],
             'received_date' => ['date'],
+            'user_id' =>['integer']
         ];
     }
     protected function failedValidation(Validator $validator)
