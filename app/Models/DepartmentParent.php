@@ -10,7 +10,8 @@ class DepartmentParent extends Model
     use HasFactory;
     protected $fillable =[
         'parent_id',
-        'department_id'
+        'department_id',
+        'parent_id'
     ];
 
 

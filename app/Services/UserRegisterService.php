@@ -254,11 +254,13 @@ class UserRegisterService
         try {
             foreach ($secretaraits as $secretary) {
                 if (isset($secretary['delivery_date']) && isset($secretary['object'])) {
+
+                    $path = Files::saveFileF($secretary['path']);
                     Deposit::query()->create([
                         'user_id' => $user_id,
                         'title' => $secretary['title'],
                         'description' => $secretary['object'],
-                        'path' => $secretary['path'],
+                        'path' => $path,
                         'received_date' => $secretary['delivery_date'],
                     ]);
                 }
