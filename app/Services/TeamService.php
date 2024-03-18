@@ -286,11 +286,12 @@ public function buildTree($department)
         $tree['child'] = [];
 
         foreach ($childDepartments as $childDepartment) {
+         
             $tree['child'][] = $this->buildTree($childDepartment);
         }
     }
 
-    $tree['user'] = $department->user()->get()->toArray(); 
+
 
     return $tree;
 }
