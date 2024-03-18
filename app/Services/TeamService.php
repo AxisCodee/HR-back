@@ -86,10 +86,9 @@ class TeamService
                 'branch_id' => $request->branch_id,
             ]);
             if ($request->parent_id) {
-                DepartmentParent::query()->create(
+                Department::query()->where('id',$department->id)->update(
                     [
                         'parent_id' => $request->parent_id,
-                        'department_id' => $department->id
                     ]
                 );
             }
@@ -141,7 +140,7 @@ class TeamService
                 ]);
             //update department (team)
             if ($request->parent_id) {
-                $DepartmentParent = DepartmentParent::query()->where('department_id', $department->id)
+                $DepartmentParent = Department::query()->where('department_id', $department->id)
                     ->update(
                         [
                             'parent_id' => $request->parent_id
