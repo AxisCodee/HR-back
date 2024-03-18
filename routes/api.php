@@ -23,9 +23,10 @@ use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LateController;
 use App\Http\Controllers\UserInfoController;
+use App\Http\Middleware\HandleExceptions;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('exceptionHandler')->group(function () {
+Route::middleware('exception.handler')->group(function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::post('login', 'login');
