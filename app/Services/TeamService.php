@@ -278,18 +278,24 @@ public function getTree()
 
 public function buildTree($department)
 {
+    
     $tree = $department->toArray();
+
 
     $childDepartments = $department->child;
 
     if ($childDepartments) {
         $tree['child'] = [];
 
+
+
         foreach ($childDepartments as $childDepartment) {
-         
             $tree['child'][] = $this->buildTree($childDepartment);
+
+
         }
     }
+
 
 
 
