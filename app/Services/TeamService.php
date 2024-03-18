@@ -289,6 +289,7 @@ public function buildTree($department)
             $tree['child'][] = $this->buildTree($childDepartment);
         }
     }
+    
 
     $tree['user'] = $department->user()->get()->toArray();
 
