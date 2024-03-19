@@ -70,81 +70,90 @@ class AttendanceController extends Controller
                 $uniqueDates = [];
                 foreach ($logsData as $log) {
                     $userLog = User::where('pin', intval($log['PIN']))->first();
-                    if ($userLog) {
-                        $attendance = [
-                            'pin' => $log['PIN'],
-                            'datetime' => $log['DateTime'],
-                            'branch_id' => $userLog->branch_id,
-                            'verified' => $log['Verified'],
-                            'status' => $log['Status'],
-                            'work_code' => $log['WorkCode'],
-                        ];
-                        Attendance::updateOrCreate(['datetime' => $log['DateTime'], 'branch_id' => $userLog->branch_id], $attendance);
-                    }
-                    $date = date('Y-m-d', strtotime($log['DateTime']));
-                    Date::updateOrCreate(['date' => $date]);
-                    // the first of check the late
-                    $checkInDate = substr($log['DateTime'], 0, 10);
-                    $checkInHour = substr($log['DateTime'], 11, 15);
-                    $checkOutHour = substr($log['DateTime'], 11, 15);
-                    $parsedHour = Carbon::parse($checkInHour);
-                    $parsedHourOut = Carbon::parse($checkOutHour);
-                    $policy = Policy::query()->where('branch_id', $branch->id)->first();
-                    $companyStartTime = $policy->work_time['start_time'];
-                    $companyEndTime = $policy->work_time['end_time'];
-                    // check if the person late
-                    if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
-                        ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
-                    ) {
-                        if ($log['Status'] == 1) {
-                            $checkOutHour = substr($log['DateTime'], 11, 15);
-                        }
-                        if ($log['Status'] == 0) {
-                            $checkInHour = substr($log['DateTime'], 11, 15);
-                        }
-                        $diffLate = $parsedHour->diff($companyStartTime);
-                        $hoursLate = $diffLate->format('%H.%I');
-                        $diffOverTime = $parsedHourOut->diff($companyEndTime);
-                        $hoursOverTime = $diffOverTime->format('%H.%I');
-                        $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
-                        $userId = User::query()->where('pin', ($log['PIN']))->value('id');
-                        $lates = Late::query()
-                            ->where('user_id', $userId)
-                            ->whereDate('lateDate', '=', $checkInDate)
-                            ->whereNull('check_in')
-                            ->whereNull('check_out')
-                            ->first();
-                        if (!$lates) {
-                            $newLateData = [
-                                'user_id' => $userId,
-                                'lateDate' => $checkInDate,
-                                'check_in' => $log['Status'] == 0 ? $checkInHour : null,
-                                'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                                'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
+                    $formattedDateTime = substr($log['DateTime'], 0, 10);
+                    $logExistence = Attendance::query()
+                        ->where('pin', $log['PIN'])
+                        ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])                            //->whereDate('datetime', $formattedDateTime)
+                        ->where('status', $log['Status'])
+                        ->exists();
+                    if (!$logExistence) {
+                        if ($userLog) {
+                            $attendance = [
+                                'pin' => $log['PIN'],
+                                'datetime' => $log['DateTime'],
+                                'branch_id' => $userLog->branch_id,
+                                'verified' => $log['Verified'],
+                                'status' => $log['Status'],
+                                'work_code' => $log['WorkCode'],
                             ];
-                            if ($userId) {
-                                $newLate = Late::query()->create($newLateData);
-                            }
-                        } else {
-                            $lates->update([
-                                'check_in' => $checkInHour,
-                            ]);
+                            Attendance::updateOrCreate(['datetime' => $log['DateTime'],
+                                'branch_id' => $userLog->branch_id], $attendance);
                         }
+                        $date = date('Y-m-d', strtotime($log['DateTime']));
+                        Date::updateOrCreate(['date' => $date]);
+                        // the first of check the late
+                        $checkInDate = substr($log['DateTime'], 0, 10);
+                        $checkInHour = substr($log['DateTime'], 11, 15);
+                        $checkOutHour = substr($log['DateTime'], 11, 15);
+                        $parsedHour = Carbon::parse($checkInHour);
+                        $parsedHourOut = Carbon::parse($checkOutHour);
+                        $policy = Policy::query()->where('branch_id', $branch->id)->first();
+                        $companyStartTime = $policy->work_time['start_time'];
+                        $companyEndTime = $policy->work_time['end_time'];
+                        // check if the person late
+                        if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
+                            ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
+                        ) {
+                            if ($log['Status'] == 1) {
+                                $checkOutHour = substr($log['DateTime'], 11, 15);
+                            }
+                            if ($log['Status'] == 0) {
+                                $checkInHour = substr($log['DateTime'], 11, 15);
+                            }
+                            $diffLate = $parsedHour->diff($companyStartTime);
+                            $hoursLate = $diffLate->format('%H.%I');
+                            $diffOverTime = $parsedHourOut->diff($companyEndTime);
+                            $hoursOverTime = $diffOverTime->format('%H.%I');
+                            $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
+                            $userId = User::query()->where('pin', ($log['PIN']))->value('id');
+                            $lates = Late::query()
+                                ->where('user_id', $userId)
+                                ->whereDate('lateDate', '=', $checkInDate)
+                                ->whereNull('check_in')
+                                ->whereNull('check_out')
+                                ->first();
+                            if (!$lates) {
+                                $newLateData = [
+                                    'user_id' => $userId,
+                                    'lateDate' => $checkInDate,
+                                    'check_in' => $log['Status'] == 0 ? $checkInHour : null,
+                                    'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
+                                    'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
+                                ];
+                                if ($userId) {
+                                    $newLate = Late::query()->create($newLateData);
+                                }
+                            } else {
+                                $lates->update([
+                                    'check_in' => $checkInHour,
+                                ]);
+                            }
+                        }
+                        // $numberOfHour = $lates->hours_num;
+                        // if ($hoursLate > $numberOfHour) {
+                        //     $moreLate = $hoursLate - $numberOfHour;
+                        //     $lates->update(
+                        //         [
+                        //             'moreLate' => $moreLate,
+                        //         ]
+                        //     );
+                        // }
                     }
-                    // $numberOfHour = $lates->hours_num;
-                    // if ($hoursLate > $numberOfHour) {
-                    //     $moreLate = $hoursLate - $numberOfHour;
-                    //     $lates->update(
-                    //         [
-                    //             'moreLate' => $moreLate,
-                    //         ]
-                    //     );
-                    // }
-
                     $checkInDate = substr($log['DateTime'], 0, 10);
                     if (!in_array($checkInDate, $uniqueDates)) {
                         $uniqueDates[] = $checkInDate;
                     }
+
                 }
                 // store the absence
                 foreach ($uniqueDates as $date) {
@@ -163,57 +172,60 @@ class AttendanceController extends Controller
                         if (!empty($usersWithoutAttendance)) {
                             //create the absence
                             foreach ($usersWithoutAttendance as $user) {
+                                $userPolicy = Policy::query()->where('branch_id', $user->branch_id)->first();
                                 $absence = DB::table('absences')
                                     ->where('user_id', $user->id)
                                     ->whereRaw('? BETWEEN startDate AND endDate', $date)
                                     ->first();
-
                                 if (!$absence) {//unjustified absence
                                     $userStartDate = UserInfo::query()->where('user_id', $user->id)
                                         ->exists();
-
                                     if ($userStartDate) {
-                                        $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
-                                        $startDate = Carbon::parse($userStartDate->start_date);
-                                        $uDate = Carbon::parse($date);
-                                        if ($startDate->lt($uDate)) {
+                                        $absenceExistence = Absences::query()->where('user_id', $user->id)
+                                            ->whereRaw('DATE(startDate) = ? ', [$date])
+                                            ->exists();
+                                        if (!$absenceExistence) {
+                                            $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
+                                            $startDate = Carbon::parse($userStartDate->start_date);
+                                            $uDate = Carbon::parse($date);
+                                            if ($startDate->lt($uDate)) {
+                                                if ($user->branch_id == $branch->id && $userPolicy->deduction_status == true) {//auto deduction
+                                                    Absences::create(
+                                                        ['startDate' => $date,
+                                                            'user_id' => $user->id,
+                                                            'type' => 'Unjustified',
+                                                            'demands_compensation' => $userPolicy->demands_compensation,
+                                                            'isPaid' => false,
+                                                        ]);
+                                                    Decision::query()->create([
+                                                        'user_id' => $user->id,
+                                                        'branch_id' => $user->branch_id,
+                                                        'type' => 'deduction',
+                                                        'content' => 'deduction due the Unjustified absence',
+                                                        'dateTime' => $date,
+                                                    ]);
+                                                } if ($user->branch_id == $branch->id && $userPolicy->deduction_status == false) {
+                                                    Absences::create(
+                                                        ['startDate' => $date,
+                                                            'user_id' => $user->id,
+                                                            'type' => 'Unjustified',
+                                                            'demands_compensation' => $userPolicy->demands_compensation,
+                                                            'isPaid' => true,
+                                                        ]);
+                                                }
+//                                                if ($user->branch_id == $branch->id && $policy->demands_compensation == true) {
+//                                                    Absences::updateOrCreate(['startDate' => $date, 'user_id' => $user->id], [
+//                                                        'demands_compensation' => true
+//                                                    ]);
+//                                                } else if ($user->branch_id == $branch->id && $policy->demands_compensation == false) {
+//                                                    Absences::updateOrCreate(['startDate' => $date, 'user_id' => $user->id], [
+//                                                        'demands_compensation' => false
+//                                                    ]);
+//                                                }
+                                                //******************************//
 
-                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
-
-                                                Absences::updateOrCreate(
-
-                                                    ['startDate' => $date],[
-
-                                                    'user_id' => $user->id,
-                                                    'type' => 'Unjustified'
-                                                ]);
-                                                Decision::query()->updateOrCreate([
-                                                    'user_id' => $user->id,
-                                                    'branch_id' => $user->branch_id,
-                                                    'type' => 'deduction',
-                                                    'content' => 'deduction due the Unjustified absence',
-                                                    'dateTime' => $date,
-                                                ]);
-                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
-                                                Absences::updateOrCreate(
-
-                                                    ['startDate' => $date ,  'user_id' => $user->id],[
-                                                    'type' => 'justified'
-                                                ]);
                                             }
-                                            if($user->branch_id == $branch->id && $policy->demands_compensation == true)
-                                            {
-                                                Absences::updateOrCreate(   ['startDate' => $date ,  'user_id' => $user->id],[
-                                                    'demands_compensation'=>true
-                                                ]);
                                         }
-                                        else if($user->branch_id == $branch->id && $policy->demands_compensation == false)
-                                        {
-                                            Absences::updateOrCreate(   ['startDate' => $date ,  'user_id' => $user->id],[
-                                                'demands_compensation'=>false
-                                            ]);
-                                        }
-                                    }
                                     }
                                 }
                             }

@@ -16,12 +16,8 @@ class Late extends Model
         'check_out',
         'lateDate',
         'moreLate',
-
-
-
     ];
     use HasFactory;
-
 
 
     public function user()

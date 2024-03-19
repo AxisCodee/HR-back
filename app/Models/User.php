@@ -75,7 +75,8 @@ class User extends Authenticatable implements JWTSubject
         'level',
         'isTrash',
         'dismissed',
-        'TotalAbsenceHours'
+        'TotalAbsenceHours',
+        'totalCompensationHours'
     ];
     protected $hidden = [
         'password',
@@ -321,17 +322,6 @@ class User extends Authenticatable implements JWTSubject
         return false;
     }
 
-
-//    public function getCompensationAttribute()
-//    {
-//        $date = Carbon::now();
-//        $lates = $this->userServices
-//            ->getLate($this, $date);
-//        $totalLateHours = $this->userServices
-//            ->getLate($this, $date);
-//        return $totalLateHours;
-//    }
-
     public function getIsTrashAttribute()
     {
         return $this->deleted_at === null ? false : true;
@@ -343,6 +333,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->userInfo()->value('level');
     }
 
+    //*******************
+    public function getTotalCompensationHoursAttribute()
+    {
+        //dd(Late::query()->where('user_id',$this->id)->count());
+        $demandCompensationHours = $this->userInfo()->value('compensation_hours');
+        $totalCompensationHours = $this->userServices->compensationHours($this);
+        return $totalCompensationHours - $demandCompensationHours;
+    }
+
+    //*******************
     public function getJWTIdentifier()
     {
         return $this->getKey();
