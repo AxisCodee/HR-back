@@ -287,7 +287,6 @@ public function buildTree($department)
         foreach ($childDepartments as $childDepartment) {
             $tree['child'][] = $this->buildTree($childDepartment);
 
-
         }
     }
 
