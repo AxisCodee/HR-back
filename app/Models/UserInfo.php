@@ -22,6 +22,7 @@ class UserInfo extends Model
         'level',
         'health_status',
         'salary',
+        'compensation_hours'
     ];
 
 

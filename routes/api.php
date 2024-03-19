@@ -196,6 +196,7 @@ Route::middleware('exception.handler')->group(function () {
             Route::controller(UserInfoController::class)->group(function () {
                 Route::post('Add', 'store');
                 Route::post('Update/{id}', 'update');
+                Route::post('demandCompensationHours/{id}', 'setDemandCompensationHours');
                 Route::get('Show/{id}', 'show');
                 Route::post('updateSalary/{id}', 'updateSalary');
             });
