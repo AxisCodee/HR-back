@@ -180,6 +180,7 @@ class AttendanceController extends Controller
 
                                             if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
 
+
                                                 Absences::updateOrCreate(
 
                                                     ['startDate' => $date],[
@@ -197,7 +198,7 @@ class AttendanceController extends Controller
                                             } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
                                                 Absences::updateOrCreate(
 
-                                                    ['startDate' => $date ,  'user_id' => $user->id],[
+                                                    ['startDate' => $date ,'user_id' => $user->id],[
                                                     'type' => 'justified'
                                                 ]);
                                             }

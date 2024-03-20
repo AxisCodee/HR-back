@@ -138,4 +138,5 @@ class RateService
             ->toArray();
         return ResponseHelper::success($result, null, 'userRates', 200);
     }
+    
 }
