@@ -81,8 +81,7 @@ class DecisionService
     public function UpdateDecision($request, $id)
     {
         $validate = $request->validated();
-        $edited = Decision::where('id', $id)->firstOrFail();
-        $edited->update($validate);
+        $edited = Decision::where('id', $id)->update($validate);;
         return ResponseHelper::updated($edited, 'Decision updated successfully');
     }
 
@@ -108,7 +107,7 @@ class DecisionService
                     'dateTime'=>Carbon::now(),
                     'branch_id'=>$request->branch_id,
                     'amount'=>$request->amount,
-                    'content'=>$request->content
+                    //'content'=>$request->content
                 ]
                 );
                 $results[] = $newDecision;
