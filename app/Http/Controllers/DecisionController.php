@@ -37,9 +37,10 @@ class DecisionController extends Controller
     public function addDecisions(Request $request)
     {
         try {
-            return $this->decisionService->selectDecision($request);
+            $result= $this->decisionService->selectDecision($request);
+            return ResponseHelper::success($result, null, 'Absence added successfully');
         } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
+            return ResponseHelper::error('Query Exception', $e->getCode());
         }
 
     }
