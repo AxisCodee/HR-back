@@ -26,16 +26,16 @@ use App\Http\Controllers\UserInfoController;
 use App\Http\Middleware\HandleExceptions;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('exception.handler')->group(function () {
 
-    Route::controller(AuthController::class)->group(function () {
+
+    Route::controller(AuthController::class)-> group( function () {
         Route::post('login', 'login');
         Route::post('logout', 'logout');
         Route::post('refresh', 'refresh');
     });
 
 //All the encapsulated APIs for the admin
-    Route::middleware('auth', 'admin')->group(function () {
+    Route::middleware(['auth', 'admin'])->group(function () {
 
         Route::controller(AuthController::class)->group(function () {
             Route::post('register', 'register');
@@ -216,6 +216,7 @@ Route::middleware('exception.handler')->group(function () {
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
                 Route::post('store_one_absence', 'storeAbsence'); //store one absence
                 Route::get('getUserAbsence', 'getUserAbsence');
+                Route::post('AbsenceTypes','AbsenceTypes');
                 Route::get('getUserAbsences', 'getUserAbsences');
 
             });
@@ -331,4 +332,3 @@ Route::middleware('exception.handler')->group(function () {
 
 
     Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
-});

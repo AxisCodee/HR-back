@@ -62,7 +62,6 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
-        try {
             return DB::transaction(function () use ($request) {
                 //store the attendance
                 $branch = Branch::findOrFail($request->branch_id);
@@ -241,13 +240,6 @@ class AttendanceController extends Controller
                 }
                 return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
             });
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return ResponseHelper::error($e->validator->errors()->first(), 400);
-        } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
 
 //        $branch_id = $request->branch_id;
 //       dispatch(new StoreAttendanceLogsJob($branch_id));

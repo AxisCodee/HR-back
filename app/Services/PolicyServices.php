@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Models\Policy;
 use App\Models\RateType;
 use App\Helper\ResponseHelper;
@@ -31,6 +32,14 @@ class PolicyServices
             $validated = collect($validated)->except('rate_type')->toArray();
             $branchID = $validated['branch_id'];
             $policy = Policy::query()->create($validated);
+
+            $startTime = Carbon::createFromFormat('h:i A', $policy->work_time['start_time']);
+            $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
+
+            $workhours = $startTime->diffInHours($endTime, false);
+            $workdays = sizeof($policy->work_time['work_days']) * 4 ;
+            $policy->update(['monthlyhours'=>$workhours*$workdays]);
+
             foreach ($types as $type) {
                 RateType::query()->create(
                     [
