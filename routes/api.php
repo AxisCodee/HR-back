@@ -85,6 +85,7 @@ Route::middleware('exception.handler')->group(function () {
                 Route::post('edit/{decision}', 'edit_decision');
                 Route::get('all', 'all_decisions');
                 Route::get('getUserDecisions', 'getUserDecisions');
+                Route::post('addDecisions', 'addDecisions');
             });
         });
 
@@ -209,6 +210,7 @@ Route::middleware('exception.handler')->group(function () {
                 Route::post('update', 'update');
                 Route::get('Uabsences', 'unjustifiedAbsence');
                 Route::post('DynamicDecision/{absences}', 'DynamicDecision');//not exist !!
+
                 Route::post('AddAbsence', 'store_absence');
                 Route::get('getAbsences/{user}', 'getAbsences');
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
@@ -295,6 +297,8 @@ Route::middleware('exception.handler')->group(function () {
     Route::prefix('Decision')->group(function () {
         Route::controller(DecisionController::class)->group(function () {
             Route::get('my_decisions', 'my_decisions');
+
+
         });
 
 

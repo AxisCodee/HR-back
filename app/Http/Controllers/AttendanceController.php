@@ -181,51 +181,47 @@ class AttendanceController extends Controller
                                     $userStartDate = UserInfo::query()->where('user_id', $user->id)
                                         ->exists();
                                     if ($userStartDate) {
-                                        $absenceExistence = Absences::query()->where('user_id', $user->id)
-                                            ->whereRaw('DATE(startDate) = ? ', [$date])
-                                            ->exists();
-                                        if (!$absenceExistence) {
-                                            $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
-                                            $startDate = Carbon::parse($userStartDate->start_date);
-                                            $uDate = Carbon::parse($date);
-                                            if ($startDate->lt($uDate)) {
-                                                if ($user->branch_id == $branch->id && $userPolicy->deduction_status == true) {//auto deduction
-                                                    Absences::create(
-                                                        ['startDate' => $date,
-                                                            'user_id' => $user->id,
-                                                            'type' => 'Unjustified',
-                                                            'demands_compensation' => $userPolicy->demands_compensation,
-                                                            'isPaid' => false,
-                                                        ]);
-                                                    Decision::query()->create([
-                                                        'user_id' => $user->id,
-                                                        'branch_id' => $user->branch_id,
-                                                        'type' => 'deduction',
-                                                        'content' => 'deduction due the Unjustified absence',
-                                                        'dateTime' => $date,
-                                                    ]);
-                                                } if ($user->branch_id == $branch->id && $userPolicy->deduction_status == false) {
-                                                    Absences::create(
-                                                        ['startDate' => $date,
-                                                            'user_id' => $user->id,
-                                                            'type' => 'Unjustified',
-                                                            'demands_compensation' => $userPolicy->demands_compensation,
-                                                            'isPaid' => true,
-                                                        ]);
-                                                }
-//                                                if ($user->branch_id == $branch->id && $policy->demands_compensation == true) {
-//                                                    Absences::updateOrCreate(['startDate' => $date, 'user_id' => $user->id], [
-//                                                        'demands_compensation' => true
-//                                                    ]);
-//                                                } else if ($user->branch_id == $branch->id && $policy->demands_compensation == false) {
-//                                                    Absences::updateOrCreate(['startDate' => $date, 'user_id' => $user->id], [
-//                                                        'demands_compensation' => false
-//                                                    ]);
-//                                                }
-                                                //******************************//
+                                        $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
+                                        $startDate = Carbon::parse($userStartDate->start_date);
+                                        $uDate = Carbon::parse($date);
+                                        if ($startDate->lt($uDate)) {
 
+                                            if ($user->branch_id == $branch->id && $policy->deduction_status == true) {//auto deduction
+
+                                                Absences::updateOrCreate(
+
+                                                    ['startDate' => $date],[
+
+                                                    'user_id' => $user->id,
+                                                    'type' => 'Unjustified'
+                                                ]);
+                                                Decision::query()->updateOrCreate([
+                                                    'user_id' => $user->id,
+                                                    'branch_id' => $user->branch_id,
+                                                    'type' => 'deduction',
+                                                    'content' => 'deduction due the Unjustified absence',
+                                                    'dateTime' => $date,
+                                                ]);
+                                            } elseif ($user->branch_id == $branch->id && $policy->deduction_status == false) {
+                                                Absences::updateOrCreate(
+
+                                                    ['startDate' => $date ,  'user_id' => $user->id],[
+                                                    'type' => 'justified'
+                                                ]);
                                             }
+                                            if($user->branch_id == $branch->id && $policy->demands_compensation == true)
+                                            {
+                                                Absences::updateOrCreate(   ['startDate' => $date ,  'user_id' => $user->id],[
+                                                    'demands_compensation'=>true
+                                                ]);
                                         }
+                                        else if($user->branch_id == $branch->id && $policy->demands_compensation == false)
+                                        {
+                                            Absences::updateOrCreate(   ['startDate' => $date ,  'user_id' => $user->id],[
+                                                'demands_compensation'=>false
+                                            ]);
+                                        }
+                                    }
                                     }
                                 }
                             }
