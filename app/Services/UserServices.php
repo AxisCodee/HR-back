@@ -258,8 +258,12 @@ class UserServices
 
     public function employeeHourPrice($user)
     {
+        $policy = Policy::query()->where('branch_id', $user->branch_id)->first();
+        if (!$policy) {
+            return;
+        }
         $userSalary = $user->userInfo()->value('salary');
-        $branchWorkHours = $this->branchWorkHours($user->branch_id);
+        $branchWorkHours = $policy->monthlyhours;
         $hourAVG = ($userSalary / $branchWorkHours);
         return $hourAVG;
 

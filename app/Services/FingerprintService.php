@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Decision;
+use App\Models\Policy;
 
 class FingerprintService
 {
@@ -14,12 +15,16 @@ class FingerprintService
 
     }
 
-    public function autoDeduction($user, $date, $type): bool
+    public function autoDeduction($user, $date, $type, $hoursNum): bool
     {
         $content = '';
         $amount = null;
         if ($type == 'Deduction') {
-            $amount = $this->userService->employeeHourPrice($user);
+            if ($hoursNum == 0) {
+                $policy = Policy::query()->where('branch_id', $user->branch_id)->first();
+                $hoursNum = $policy->monthlyhours;
+            }
+            $amount = $hoursNum * ($this->userService->employeeHourPrice($user));
             $content = 'Deduct ' . $amount . ' from ' . $user->first_name . ' ' . $user->last_name . ' Salary';
         }
         if ($type == 'Warning') {
