@@ -40,7 +40,7 @@ class DecisionController extends Controller
             $result= $this->decisionService->selectDecision($request);
             return ResponseHelper::success($result, null, 'Absence added successfully');
         } catch (\Exception $e) {
-            return ResponseHelper::error('Query Exception', $e->getCode());
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
 
     }
