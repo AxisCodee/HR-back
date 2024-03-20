@@ -107,7 +107,7 @@ class DecisionService
                     'dateTime'=>Carbon::now(),
                     'branch_id'=>$request->branch_id,
                     'amount'=>$request->amount,
-                    //'content'=>$request->content
+                    'content'=> 'aaa'
                 ]
                 );
                 $results[] = $newDecision;
