@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->date('birth_date');
             $table->date('start_date');
             $table->enum('gender', ['Male', 'Female']);
-            $table->bigInteger('nationalID');
+            $table->string('nationalID');
             $table->enum('social_situation', ['Single', 'Married']);
             $table->enum('military_situation', ['Postponed', 'Exempt', 'Finished']);
             $table->enum('level', ['Senior', 'Mid', 'Junior']);
