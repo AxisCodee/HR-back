@@ -2,8 +2,18 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Exception;
 use Throwable;
+use Illuminate\Database\QueryException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Session\TokenMismatchException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -18,6 +28,7 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
+
     /**
      * Register the exception handling callbacks for the application.
      */
@@ -26,5 +37,40 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Get the type of the error and throw an exception with details.
+     */
+    public function report(Throwable $exception)
+    {
+        parent::report($exception);
+
+        switch(get_class($exception))
+        {
+            case AuthenticationException::class:
+                throw new Exception($exception->getMessage());
+            case ModelNotFoundException::class:
+                throw new Exception($exception->getMessage());
+            case TokenMismatchException::class:
+                throw new Exception($exception->getMessage());
+            case ValidationException::class:
+                throw new Exception($exception->getMessage());
+            case AuthorizationException::class:
+                throw new Exception($exception->getMessage());
+            case HttpException::class:
+                throw new Exception($exception->getMessage());
+            case NotFoundHttpException::class:
+                throw new Exception($exception->getMessage());
+            case MethodNotAllowedHttpException::class:
+                throw new Exception($exception->getMessage());
+            case QueryException::class:
+                throw new Exception($exception->getMessage());
+        }
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        throw new Exception($exception->getMessage());
     }
 }

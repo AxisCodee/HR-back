@@ -18,7 +18,6 @@ class StudySituationController extends Controller
             $studySit = StudySituation::query()->create($validate);
             return ResponseHelper::success($studySit, null);
         });
-        return ResponseHelper::error('error', null);
     }
     public function update(UpdateStudySitRequest $request, $id)
     {
@@ -28,7 +27,6 @@ class StudySituationController extends Controller
             $studySit->update($validate);
             return ResponseHelper::success('Study has been updated', null);
         });
-        return ResponseHelper::error('error', null);
     }
 
     public function destroy($id)
@@ -38,6 +36,5 @@ class StudySituationController extends Controller
             $studySit->delete();
             return ResponseHelper::success('Study has been deleted', null);
         });
-        return ResponseHelper::error('not deleted', null);
     }
 }

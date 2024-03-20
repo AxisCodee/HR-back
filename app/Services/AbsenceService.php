@@ -105,7 +105,6 @@ class AbsenceService
     {
         $absences = Absences::where('user_id', $user)->get();
         $groupedAbsences = $absences->groupBy('type')->toArray();
-        dd($groupedAbsences);
         $result = [
             'justified' => $groupedAbsences['justified'] ?? [],
             'unjustified' => $groupedAbsences['Unjustified'] ?? [],
@@ -117,15 +116,12 @@ class AbsenceService
     public function deleteAbsence($absence)
     {
         $result = Absences::find($absence);
-
         if (!$result) {
             return $result = 'Absence not found';
         }
-
-        $result->update([
+        $result->update([//???
             'type' => 'null'
         ]);
-
         return $result = 'Absence deleted successfully';
     }
 
@@ -155,17 +151,14 @@ class AbsenceService
     {
         $userId = $request->user_id;
         $date = $request->date;
-
         $year = null;
         $month = null;
-
         if (strlen($date) === 4) {
             $year = $date;
         } elseif (strlen($date) === 7) {
             $year = substr($date, 0, 4);
             $month = substr($date, 5, 2);
         }
-
         $result = User::query()
             ->where('id', $userId)
             ->with(['absences' => function ($query) use ($year, $month) {
@@ -178,11 +171,8 @@ class AbsenceService
                 $query->where('type', 'Unjustified');
             }])
             ->first();
-
         return $result;
     }
-
-
 }
 
 

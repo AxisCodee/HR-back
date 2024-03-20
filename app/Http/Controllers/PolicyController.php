@@ -12,11 +12,6 @@ class PolicyController extends Controller
 {
     protected $PolicyServices;
 
-    /**
-     * Define the constructor to use the service.
-     * @param PolicyServices
-     * @return none
-     */
     public function __construct(PolicyServices $PolicyServices)
     {
         $this->PolicyServices = $PolicyServices;
@@ -31,8 +26,8 @@ class PolicyController extends Controller
     public function show(Request $request)
     {
         try {
-            $policy = $this->PolicyServices->BranchPolicy($request);
-            return $policy;
+            return $this->PolicyServices->BranchPolicy($request);
+             $policy;
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }

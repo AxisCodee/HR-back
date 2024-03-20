@@ -15,10 +15,8 @@ class CalendarService
     {
         $all_events = Calendar::query()->get()->toArray();
         if (empty($all_events)) {
-
             return ResponseHelper::success('events not found');
         } else {
-
             return ResponseHelper::success($all_events, null, 'All Events :', 200);
         }
     }
@@ -27,14 +25,12 @@ class CalendarService
     {
         $validate = $request->validated();
         $new = Calendar::create($validate);
-
         return ResponseHelper::success($new,'Event created successfuly');
     }
 
     public function destroy($id)
     {
         Calendar::findOrFail($id)->delete();
-
         return ResponseHelper::success('Event deleted successfuly');
     }
 
@@ -43,7 +39,6 @@ class CalendarService
         $validate = $request->validated();
         $updated_event = Calendar::findOrFail($id);
         $updated_event->update($validate);
-
         return ResponseHelper::updated($updated_event, 'Event updated successfully');
     }
 
@@ -53,7 +48,6 @@ class CalendarService
             ->format('Y-m-d'))
             ->get()
             ->toArray();
-
         if (empty($today)) {
             return ResponseHelper::success('events not found');
         } else {
@@ -64,7 +58,6 @@ class CalendarService
     public function specific_date($date)
     {
         $data = Calendar::whereDate('start', $date)->get()->toArray();
-
         if (empty($data)) {
             return ResponseHelper::success('events not found');
         } else {
@@ -72,7 +65,6 @@ class CalendarService
                 $start = Carbon::parse($event['start']);
                 $event['day'] = $start->day;
             }
-
             return ResponseHelper::success($data, null, 'events by date', 200);
         }
     }

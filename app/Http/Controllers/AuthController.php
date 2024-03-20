@@ -119,7 +119,8 @@ class AuthController extends Controller
 
                 $sal = UserSalary::query()->create([
                     'user_id' => $user->id,
-                    'date' => Carbon::now()->format('Y-m'),
+                    'date' =>  Carbon::now()->format('Y-m') . '-00',
+
                     'salary' => $userInfo->salary
                 ]);
 

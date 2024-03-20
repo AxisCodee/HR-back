@@ -22,7 +22,6 @@ class DepositServices
           return  $result ='empty';
         }
         return  $results ;
-
     }
 
     public function store($request)
@@ -43,7 +42,6 @@ class DepositServices
     }
     public function update($request, $id)
     {
-     
         return DB::transaction(function () use ($request, $id) {
             Deposit::query()
                 ->where('id', $id)

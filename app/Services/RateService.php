@@ -14,7 +14,6 @@ class RateService
 {
     public function UserRates($user)
     {
-        // $userRate= $user->evaluatorRates()->get();
         $rate = $user->userRates()->get(['rate', 'evaluator_role'])
             ->toArray();
         if (!$rate) {
@@ -27,9 +26,7 @@ class RateService
 
     public function setRate($userId, $rateTypeId, $rate)
     {
-
         $user = User::find($userId);
-
         try {
             $rateType = RateType::findOrFail($rateTypeId);
 
@@ -50,7 +47,6 @@ class RateService
     {
         try {
             $date = $request->input('date');
-
             $user = User::with('department')
                 ->with(['userRates' => function ($query) use ($date) {
                     $query->whereDate('date', '=', $date)
@@ -68,7 +64,7 @@ class RateService
         }
     }
 
-    public function UpdateRate($request,$rate)
+    public function UpdateRate($request, $rate)
     {
         $user = User::find(Auth::id());
         $result = $rate->update(
@@ -119,10 +115,10 @@ class RateService
             })
             ->toArray();
 
-        return ResponseHelper::success($rates, null, 'rates',  200);
+        return ResponseHelper::success($rates, null, 'rates', 200);
     }
 
-    public function DateRate($request,$date)
+    public function DateRate($request, $date)
     {
         $result = RateType::with(['rate' => function ($query) use ($date) {
             $query->whereDate('date', $date);
@@ -140,7 +136,6 @@ class RateService
             })
             ->get()
             ->toArray();
-
         return ResponseHelper::success($result, null, 'userRates', 200);
     }
 }

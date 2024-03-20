@@ -21,8 +21,6 @@ return new class extends Migration
             $table->double('hours_num')->nullable(true)->default(NULL);
             $table->enum('status', ['waiting', 'accepted', 'rejected']);
             $table->enum('type', ['normal', 'Unjustified', 'justified']);
-
-
             $table->timestamps();
         });
     }

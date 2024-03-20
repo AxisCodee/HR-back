@@ -25,11 +25,7 @@ class BranchController extends Controller
      */
     public function index()
     {
-        try {
             $branches = $this->BranchService->index();
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th, null);
-        }
         return ResponseHelper::success($branches, null);
     }
 
@@ -39,7 +35,7 @@ class BranchController extends Controller
     public function store(StoreBranchRequest $request)
     {
         try {
-            
+
             $newbranch = $this->BranchService->store($request);
             return $newbranch;
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -86,11 +82,7 @@ class BranchController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        try {
-            $remove = $this->BranchService->destroy($request, $id);
-            return $remove;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+        $remove = $this->BranchService->destroy($request, $id);
+        return $remove;
     }
 }

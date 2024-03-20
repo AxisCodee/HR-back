@@ -9,26 +9,48 @@ class UserTimeService
 {
 
 
-
     public function filterDate($result, $date, $fieldName)
-{
-    if ($date) {
-        $year = substr($date, 0, 4);
-        $month = substr($date, 5, 2);
-        $day = substr($date, 8, 2);
+    {
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
 
-        if ($day) {
-            $result->whereDate($fieldName, $date);
-        } elseif ($month) {
-            $result->whereYear($fieldName, $year)
-                ->whereMonth($fieldName, $month);
-        } else {
-            $result->whereYear($fieldName, $year);
+            if ($day) {
+                $result->whereDate($fieldName, $date);
+            } elseif ($month) {
+                $result->whereYear($fieldName, $year)
+                    ->whereMonth($fieldName, $month);
+            } else {
+                $result->whereYear($fieldName, $year);
+            }
         }
+
+        return $result;
     }
 
-    return $result;
-}
+
+    public function checkTimeDate($lates, $date, $fieldName)
+    {
+        if ($date) {
+            $year = substr($date, 0, 4);
+            $month = substr($date, 5, 2);
+            $day = substr($date, 8, 2);
+            if ($month && $year) {
+                $lates->whereYear( $fieldName, $year)
+                    ->whereMonth( $fieldName, $month);}
+            elseif ($day && $month && $year) {
+                $lates->whereYear( $fieldName, $year)
+                    ->whereMonth( $fieldName, $month)
+                    ->whereDay( $fieldName, $day);}
+
+            elseif ($year) {
+                $lates->whereYear( $fieldName, $year);
+            }
+        }
+
+        return $lates;
+    }
     // public function checkAttendenceDate($lates, $date)
     // {
     //     if ($date) {

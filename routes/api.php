@@ -134,7 +134,8 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::delete('deleteTeam/{team}', 'deleteTeam');
                 Route::post('RemoveMember/{user}', 'removeFromTeam');
                 Route::post('addTeams', 'addTeams');
-                Route::post('updateTeam/{id}', 'updateTeam');
+                Route::post('updateTeam/{department}', 'updateTeam');
+                Route::get('tree', 'getTree');
                 Route::get('tree','Tree');
             });
         });
@@ -205,12 +206,13 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::get('Show/{user}', 'show');
                 Route::post('update', 'update');
                 Route::get('Uabsences', 'unjustifiedAbsence');
-                Route::post('DynamicDecision/{absences}', 'DynamicDecision');
+                Route::post('DynamicDecision/{absences}', 'DynamicDecision');//not exist !!
                 Route::post('AddAbsence', 'store_absence');
                 Route::get('getAbsences/{user}', 'getAbsences');
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
                 Route::post('store_one_absence', 'storeAbsence'); //store one absence
                 Route::get('getUserAbsence', 'getUserAbsence');
+                Route::post('AbsenceTypes','AbsenceTypes');
             });
         });
 
