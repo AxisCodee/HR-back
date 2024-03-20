@@ -239,6 +239,9 @@ class UserServices
     public function branchWorkHours($branch_id)
     {
         $policy = Policy::query()->where('branch_id', $branch_id)->first();
+        if (!$policy){
+            return ;
+        }
         $startTime = Carbon::createFromFormat('h:i A', $policy->work_time['start_time']);
         $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
         return $endTime->diffInHours($startTime);
@@ -249,7 +252,6 @@ class UserServices
         $branch_id = $user->branch_id;
         $branchWorkHours = $this->branchWorkHours($branch_id);
         $userDelays = Late::query()->where('user_id', $user->id)->sum('hours_num');
-        dd($userDelays);
         $userAbsence = Absences::query()->where('user_id', $user->id)->count();
         return intval($userDelays + ($userAbsence * $branchWorkHours));
     }

@@ -184,6 +184,15 @@ class AbsenceService
                 'unpaidabsences'=>$unpaidabsences,
                 'sickabsences'=>$sickabsences];
     }
+
+    public static function user_absences(Request $request)
+    {
+        $result = User::query()
+            ->with('userInfo:id,image', 'department', 'UnPaidAbsences', 'PaidAbsences', 'sickAbsences')
+            ->get(['id', 'first_name','middle_name','last_name'])->toArray();
+
+        return $result;
+    }
 }
 
 
