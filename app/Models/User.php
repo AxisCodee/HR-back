@@ -415,10 +415,10 @@ class User extends Authenticatable implements JWTSubject
     //*******************
     public function getTotalCompensationHoursAttribute()
     {
-        //dd(Late::query()->where('user_id',$this->id)->count());
-        $demandCompensationHours = $this->userInfo()->value('compensation_hours');
-        $totalCompensationHours = $this->userServices->compensationHours($this);
-        return $totalCompensationHours - $demandCompensationHours;
+        // //dd(Late::query()->where('user_id',$this->id)->count());
+        // $demandCompensationHours = $this->userInfo()->value('compensation_hours');
+        // $totalCompensationHours = $this->userServices->compensationHours($this);
+        // return $totalCompensationHours - $demandCompensationHours;
     }
 
     //*******************

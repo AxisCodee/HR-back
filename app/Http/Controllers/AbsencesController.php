@@ -119,14 +119,14 @@ class AbsencesController extends Controller
             'unJustifiedUnPaidAbsences',
             'sickAbsences')->findOrFail($request->user_id);
 
-        $paidabsences = $user->justifiedPaidAbsences->merge($user->unJustifiedPaidAbsences);
-        $unpaidabsences = $user->justifiedUnPaidAbsences->merge($user->unJustifiedUnPaidAbsences);
-        $sickabsences = $user->sickAbsences;
+        // $paidabsences = $user->justifiedPaidAbsences->merge($user->unJustifiedPaidAbsences);
+        // $unpaidabsences = $user->justifiedUnPaidAbsences->merge($user->unJustifiedUnPaidAbsences);
+        // $sickabsences = $user->sickAbsences;
 
-        return ResponseHelper::success([
-            'Paid'=>$user,
-            'Unpaid'=>$unpaidabsences,
-            'Sick'=>$sickabsences,
+        return ResponseHelper::success([ $user
+            // 'Paid'=>$paidabsences,
+            // 'Unpaid'=>$unpaidabsences,
+            // 'Sick'=>$sickabsences,
             // 'Paid' =>$this->usertimeService->filterDate($paidabsences,$request->date,'startDate'),
             // 'Unpaid'=>$this->usertimeService->filterDate($unpaidabsences,$request->date,'startDate'),
             // 'sick'=>$this->usertimeService->filterDate($sickabsences,$request->date,'startDate'),
