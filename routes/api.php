@@ -214,6 +214,8 @@ Route::middleware('exception.handler')->group(function () {
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
                 Route::post('store_one_absence', 'storeAbsence'); //store one absence
                 Route::get('getUserAbsence', 'getUserAbsence');
+                Route::get('getUserAbsences', 'getUserAbsences');
+
             });
         });
 
