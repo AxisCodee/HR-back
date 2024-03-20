@@ -26,8 +26,6 @@ class User extends Authenticatable implements JWTSubject
     protected $usertimeService;
 
 
-
-
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -35,7 +33,6 @@ class User extends Authenticatable implements JWTSubject
         $this->userServices = new UserServices($userTimeService);
         $this->usertimeService = new UserTimeService();
     }
-
 
 
     protected $fillable =
@@ -78,7 +75,8 @@ class User extends Authenticatable implements JWTSubject
         'level',
         'isTrash',
         'dismissed',
-        'TotalAbsenceHours'
+        'TotalAbsenceHours',
+        'totalCompensationHours'
     ];
     protected $hidden = [
         'password',
@@ -117,7 +115,7 @@ class User extends Authenticatable implements JWTSubject
     public function getLateAttribute()
     {
         $date = request()->query('date');
-         return $this->userServices->getLate($this, $date);
+        return $this->userServices->getLate($this, $date);
     }
 
 
@@ -136,26 +134,26 @@ class User extends Authenticatable implements JWTSubject
 
     public function getAbsenceAttribute($date)
     {
-           $date = request()->query('date');
-            return $this->userServices->getAbsence($this,$date);
+        $date = request()->query('date');
+        return $this->userServices->getAbsence($this, $date);
     }
 
     public function getRewardAttribute()
     {
         $date = request()->query('date');
-        return  $this->userServices->getReward($this, $date);
+        return $this->userServices->getReward($this, $date);
     }
 
     public function getCheckInPercentageAttribute()
     {
-       $date = request()->query('date');
-        return  $this->userServices->getCheckInPercentage($this, $date);
+        $date = request()->query('date');
+        return $this->userServices->getCheckInPercentage($this, $date);
     }
 
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
-        return $this->userServices ->getCheckOutPercentage($this, $date);
+        return $this->userServices->getCheckOutPercentage($this, $date);
     }
 
     /***
@@ -174,7 +172,7 @@ class User extends Authenticatable implements JWTSubject
      **********USER ABSENCE RELATIONSHIP **********
      */
 
-        public function justifiedUnPaidAbsences()//Un paid
+    public function justifiedUnPaidAbsences()//Un paid
     {
         $date = request()->query('date');
         $result = $this->hasMany(Absences::class, 'user_id')
@@ -210,6 +208,7 @@ class User extends Authenticatable implements JWTSubject
             ->where('isPaid', 0);
         return $this->usertimeService->filterDate($result, $date, 'startDate');
     }
+
     public function sickAbsences()
     {
         $date = request()->query('date');
@@ -267,38 +266,38 @@ class User extends Authenticatable implements JWTSubject
     public function getAbsencesAttribute()
     {
         $date = request()->query('date');
-        return $this->userServices->absences($this,$date);
+        return $this->userServices->absences($this, $date);
     }
 
 
     public function getBaseSalaryAttribute()
     {
         $date = request()->query('date');
-        return $this->userServices->getBaseSalary($this,$date);
+        return $this->userServices->getBaseSalary($this, $date);
 
     }
 
     public function getTotalAbsenceHoursAttribute()
     {
-    //     $latehours = Late::where('user_id',$this->id)->count('hours_num');
+        //     $latehours = Late::where('user_id',$this->id)->count('hours_num');
 
-    //     $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
+        //     $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
 
-    //     $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
-    //     $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
-    //     $worktime = $startTime->diffInMinutes($endTime, false);
+        //     $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
+        //     $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
+        //     $worktime = $startTime->diffInMinutes($endTime, false);
 
-    //    //  $worktime = $worktime%60;
+        //    //  $worktime = $worktime%60;
 
-    //     $absence = Absences::where('user_id',$this->id)
-    //                         ->whereNot('isPaid',1)
-    //                         ->whereNot('type','justified')
-    //                         ->count();
+        //     $absence = Absences::where('user_id',$this->id)
+        //                         ->whereNot('isPaid',1)
+        //                         ->whereNot('type','justified')
+        //                         ->count();
 
-    //     $absencehours = $absence * $worktime;
-    //     $totalhours = $absencehours + $latehours;
-    //     return $worktime;
-    //     //$absencehours = Absences::where('user_id',$this->id);
+        //     $absencehours = $absence * $worktime;
+        //     $totalhours = $absencehours + $latehours;
+        //     return $worktime;
+        //     //$absencehours = Absences::where('user_id',$this->id);
     }
 
     public function getStatusAttribute()
@@ -323,17 +322,6 @@ class User extends Authenticatable implements JWTSubject
         return false;
     }
 
-
-//    public function getCompensationAttribute()
-//    {
-//        $date = Carbon::now();
-//        $lates = $this->userServices
-//            ->getLate($this, $date);
-//        $totalLateHours = $this->userServices
-//            ->getLate($this, $date);
-//        return $totalLateHours;
-//    }
-
     public function getIsTrashAttribute()
     {
         return $this->deleted_at === null ? false : true;
@@ -345,6 +333,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->userInfo()->value('level');
     }
 
+    //*******************
+    public function getTotalCompensationHoursAttribute()
+    {
+        //dd(Late::query()->where('user_id',$this->id)->count());
+        $demandCompensationHours = $this->userInfo()->value('compensation_hours');
+        $totalCompensationHours = $this->userServices->compensationHours($this);
+        return $totalCompensationHours - $demandCompensationHours;
+    }
+
+    //*******************
     public function getJWTIdentifier()
     {
         return $this->getKey();

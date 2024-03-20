@@ -86,10 +86,9 @@ class TeamService
                 'branch_id' => $request->branch_id,
             ]);
             if ($request->parent_id) {
-                DepartmentParent::query()->create(
+                Department::query()->where('id',$department->id)->update(
                     [
                         'parent_id' => $request->parent_id,
-                        'department_id' => $department->id
                     ]
                 );
             }
@@ -141,7 +140,7 @@ class TeamService
                 ]);
             //update department (team)
             if ($request->parent_id) {
-                $DepartmentParent = DepartmentParent::query()->where('department_id', $department->id)
+                $DepartmentParent = Department::query()->where('department_id', $department->id)
                     ->update(
                         [
                             'parent_id' => $request->parent_id
@@ -188,30 +187,112 @@ class TeamService
         }
     }
 
-    public function getTree()
-    {
-        $childs = Department::with('user')->with('child.department.user')->get();
-        $tree = [];
-        foreach ($childs as $department) {
-            $tree[] = $this->buildTree($department);
-        }
-        return $tree;
+    // public function showTree()
+    // {
+    //     $childs = Department::with('user')->with('child.department.user')->get();
+    //     $tree = [];
+    //     foreach ($childs as $department) {
+    //         $tree[] = $this->buildTree($department);
+    //     }
+    //     return $tree;}
+    // public function getTree()
+    // {
+    //     $childs = Department::with('user')->with('child')->get();
+    //     $tree = [];
+    //     foreach ($childs as $department) {
+    //         $tree[] = $this->buildTree($department);
+    //     }
+    //     return $tree;
+    // }
+
+    // public function buildTree($department)
+    // {
+    //     $tree = $department->toArray();
+    //     $childDepartments = $department->child;
+    //     if ($childDepartments) {
+    //         $tree['child'] = [];
+
+    //         foreach ($childDepartments as $childDepartment) {
+    //             $tree['child'][] = $this->buildTree($childDepartment);
+    //         }
+    //     }
+    //     return $tree;
+    // }
+
+//     public function getTree($parentId = null)
+// {
+//     $departments = DepartmentParent::with('department')->where('parent_id', $parentId)->get();
+//     $tree = [];
+
+//     foreach ($departments as $department) {
+//         $tree[] = [
+//             'department' => $department,
+//             'child' => $this->getTree($department->id),
+//         ];
+//     }
+
+//     return $tree;
+// }
+
+
+
+// public function getTree($parentId = null)
+// {
+//     $tree = $this->buildTree($parentId);
+
+
+// }
+
+
+// public function buildTree($parentId = null)
+// {
+//     $tree = [];
+//     $departments = DepartmentParent::with('department')->where('parent_id', $parentId)->get();
+
+//     foreach ($departments as $department) {
+//         $childTree = $this->buildTree($department->department_id);
+
+//         if (!empty($childTree)) {
+//             $departmentData = $department->department->toArray();
+//             $departmentData['child'] = $childTree;
+//             $tree[] = $departmentData;
+//         } else {
+//             $tree[] = $department->department->toArray();
+//         }
+//     }
+
+//     return $tree;
+// }
+
+public function getTree()
+{
+    $rootDepartments = Department::whereNull('parent_id')->with('user')->get();
+    $tree = [];
+
+    foreach ($rootDepartments as $department) {
+        $tree[] = $this->buildTree($department);
     }
 
-    public function buildTree($department)
-    {
-        $tree = $department->toArray();
-        $childDepartments = $department->child;
-        if ($childDepartments) {
-            $tree['child'] = [];
+    return $tree;
+}
 
-            foreach ($childDepartments as $childDepartment) {
-                $tree['child'][] = $this->buildTree($childDepartment);
-            }
+public function buildTree($department)
+{
+    $department->user;
+    $tree = $department->toArray();
+    $childDepartments = $department->child;
+
+    if ($childDepartments) {
+        $tree['child'] = [];
+        foreach ($childDepartments as $childDepartment) {
+            $tree['child'][] = $this->buildTree($childDepartment);
+
+
         }
-        return $tree;
     }
 
+    return $tree;
+}
 
 }
 

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('branch_id')->constrained('branches');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('departments')->onDelete('cascade');
             $table->timestamps();
         });
     }

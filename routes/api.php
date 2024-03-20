@@ -23,9 +23,10 @@ use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LateController;
 use App\Http\Controllers\UserInfoController;
+use App\Http\Middleware\HandleExceptions;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('exceptionHandler')->group(function () {
+Route::middleware('exception.handler')->group(function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::post('login', 'login');
@@ -136,7 +137,7 @@ Route::middleware('exceptionHandler')->group(function () {
                 Route::post('addTeams', 'addTeams');
                 Route::post('updateTeam/{department}', 'updateTeam');
                 Route::get('tree', 'getTree');
-                Route::get('tree','Tree');
+
             });
         });
 
@@ -195,6 +196,7 @@ Route::middleware('exceptionHandler')->group(function () {
             Route::controller(UserInfoController::class)->group(function () {
                 Route::post('Add', 'store');
                 Route::post('Update/{id}', 'update');
+                Route::post('demandCompensationHours/{id}', 'setDemandCompensationHours');
                 Route::get('Show/{id}', 'show');
                 Route::post('updateSalary/{id}', 'updateSalary');
             });

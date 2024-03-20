@@ -10,7 +10,10 @@ class Policy extends Model
     use HasFactory;
     protected $fillable = [
         'work_time', 'annual_salary_increase',
-        'warnings', 'absence_management', 'deduction_status', 'branch_id'
+
+        'warnings', 'absence_management', 'deduction_status', 'branch_id','demands_compensation'
+
+  
     ];
 
     protected $casts = [

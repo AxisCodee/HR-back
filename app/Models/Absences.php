@@ -19,7 +19,8 @@ class Absences extends Model
         'duration',
         'status',
         'hours_num',
-        'dayNumber'
+        'dayNumber',
+        'demands_compensation'
     ];
 
     public function users(): BelongsTo

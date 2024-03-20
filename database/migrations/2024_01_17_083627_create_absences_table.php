@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->enum('type', ['sick', 'justified', 'Unjustified']);
             $table->boolean('isPaid')->default(false);
+            $table->boolean('demands_compensation')->default(false);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('startDate')->nullable(true);
             $table->string('endDate')->nullable(true);

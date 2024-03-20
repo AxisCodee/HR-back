@@ -102,4 +102,13 @@ class UserInfoController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
+
+    public function setDemandCompensationHours($id, Request $request)
+    {
+        UserInfo::query()->where('user_id', $id)->update([
+            'compensation_hours' => $request->compensation_hours
+        ]);
+        return ResponseHelper::success('updated');
+
+    }
 }
