@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BranchRequest\StoreBranchRequest;
 use App\Services\BranchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BranchController extends Controller
 {
@@ -39,7 +40,7 @@ class BranchController extends Controller
     public function store(StoreBranchRequest $request)
     {
         try {
-            
+
             $newbranch = $this->BranchService->store($request);
             return $newbranch;
         } catch (\Illuminate\Validation\ValidationException $e) {

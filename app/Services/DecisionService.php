@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Decision;
 use Illuminate\Http\Request;
 use App\Helper\ResponseHelper;
+use Carbon\Carbon;
 
 class DecisionService
 {
@@ -94,5 +95,24 @@ class DecisionService
             })
             ->get()->toArray();
         return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
+    }
+    public function selectDecision($request)
+    {
+        foreach($request->users as $user)
+        {
+
+           $newDecision= Decision::query()->create(
+                [
+                    'user_id'=>$user,
+                    'type'=>$request->type,
+                    'dateTime'=>Carbon::now(),
+                    'branch_id'=>$request->branch_id,
+                    'amount'=>$request->amount,
+                    'content'=>$request->content
+                ]
+                );
+                $results[] = $newDecision;
+            }
+            return $results;
     }
 }

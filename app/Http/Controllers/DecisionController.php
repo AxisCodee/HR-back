@@ -16,7 +16,7 @@ class DecisionController extends Controller
 
     public function __construct(DecisionService $decisionService)
     {
-        $this->$decisionService = $decisionService;
+        $this->decisionService = $decisionService;
     }
 
     /**
@@ -29,6 +29,15 @@ class DecisionController extends Controller
     {
         try {
             return $this->decisionService->StoreDecision($request);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+
+    }
+    public function addDecisions(Request $request)
+    {
+        try {
+            return $this->decisionService->selectDecision($request);
         } catch (\Exception $e) {
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }

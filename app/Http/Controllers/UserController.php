@@ -268,7 +268,10 @@ class UserController extends Controller
     {
         try {
             $user = $this->userRegisterService->updateUser($request, $user);
+<<<<<<< HEAD
             //dd($user1);
+=======
+>>>>>>> b7950e3d98c46b8b4b2e4ad058ef49458cd6c687
             $path = null;
             if ($request->image) {
                 $path = Files::saveImageProfile($request->image);

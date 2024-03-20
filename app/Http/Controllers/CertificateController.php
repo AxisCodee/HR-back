@@ -7,6 +7,7 @@ use App\Http\Requests\CertificateRequest\StoreCertificateRequest;
 use App\Http\Requests\CertificateRequest\UpdateCertificateRequest;
 use App\Models\Certificate;
 use Illuminate\Support\Facades\DB;
+use Mockery\Exception;
 
 class CertificateController extends Controller
 {
