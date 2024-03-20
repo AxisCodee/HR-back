@@ -193,6 +193,13 @@ class AbsenceService
 
         return $result;
     }
+    public static function user_lates(Request $request)
+    {
+        $result = User::query()
+            ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
+            ->get(['id', 'first_name','middle_name','last_name'])->toArray();
+        return $result;
+    }
 }
 
 

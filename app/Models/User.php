@@ -290,10 +290,28 @@ class User extends Authenticatable implements JWTSubject
 
 
 
+      public function UnPaidLates()//Un paid
+      {
+          $date = request()->query('date');
+          $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 0);
+          return $this->usertimeService->filterDate($result, $date, 'lateDate');
+      }
+
+      public function PaidLates()//Paid
+      {
+          $date = request()->query('date');
+          $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 1);
+          return $this->usertimeService->filterDate($result, $date, 'lateDate');
+      }
 
 
-
-
+      public function sickLates()
+      {
+          $date = request()->query('date');
+          $result = $this->hasMany(Late::class, 'user_id')
+              ->where('type', 'sick');
+          return $this->usertimeService->filterDate($result, $date, 'lateDate');
+      }
 
 
 
