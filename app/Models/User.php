@@ -225,6 +225,85 @@ class User extends Authenticatable implements JWTSubject
      */
 
 
+
+
+
+
+ /***
+     *
+     *
+     *
+     *
+     *
+     **********USER LATE RELATIONSHIP **********
+     */
+
+     public function justifiedUnPaidLate()//Un paid
+     {
+         $date = request()->query('date');
+         $result = $this->hasMany(Late::class, 'user_id')
+             ->where('type', 'justified')
+             ->where('isPaid', 0);
+         return $this->usertimeService->filterDate($result, $date, 'lateDate');
+     }
+
+     public function justifiedPaidLate()//Paid
+     {
+         $date = request()->query('date');
+         $result = $this->hasMany(Late::class, 'user_id')
+             ->where('type', 'justified')
+             ->where('isPaid', 1);
+         return $this->usertimeService->filterDate($result, $date, 'lateDate');
+     }
+
+
+     public function unJustifiedPaidLate()//Paid
+     {
+         $date = request()->query('date');
+         $result = $this->hasMany(Late::class, 'user_id')
+             ->where('type', 'UnJustified')
+             ->where('isPaid', 1);
+         return $this->usertimeService->filterDate($result, $date, 'lateDate');
+     }
+
+     public function unJustifiedUnPaidLate()//Un paid
+     {
+         $date = request()->query('date');
+         $result = $this->hasMany(Late::class, 'user_id')
+             ->where('type', 'UnJustified')
+             ->where('isPaid', 0);
+         return $this->usertimeService->filterDate($result, $date, 'lateDate');
+     }
+
+     public function sickLate()
+     {
+         $date = request()->query('date');
+         $result = $this->hasMany(Late::class, 'user_id')
+             ->where('type', 'sick');
+         return $this->usertimeService->filterDate($result, $date, 'lateDate');
+     }
+
+
+     /***
+      *
+      *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      **********USER LATE RELATIONSHIP **********
+      */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function getOverTimesAttribute()
     {
         $date = request()->query('date');
