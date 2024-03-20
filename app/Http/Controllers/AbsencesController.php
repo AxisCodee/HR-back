@@ -9,6 +9,7 @@ use App\Helper\ResponseHelper;
 use App\Services\AbsenceService;
 use App\Services\UserTimeService;
 use App\Http\Requests\AbsencesRequest\StoreAbsencesRequest;
+use App\Http\Requests\AbsencesRequest\UpdateAbsencesRequest;
 
 class AbsencesController extends Controller
 {
@@ -29,22 +30,14 @@ class AbsencesController extends Controller
 
     public function show(User $user)
     {
-        try {
             $result = $this->absenceService->show($user);
             return ResponseHelper::success($result, null, 'Absence');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
     }
 
-    public function update(Request $request)
+    public function update(UpdateAbsencesRequest $request)
     {
-        try {
-            $result = $this->absenceService->update($request);
-            return ResponseHelper::success($result, null, 'Absence updated successfully');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+        $result = $this->absenceService->update($request->toArray());
+        return ResponseHelper::success($result, null, 'Absence updated successfully');
     }
 
     public function getDailyAbsence(Request $request, $branch)
@@ -62,24 +55,15 @@ class AbsencesController extends Controller
 
     public function store_absence(StoreAbsencesRequest $request)//store multi
     {
-        try {
             $request->validated();
             $results = $this->absenceService->store_absence($request);
             return ResponseHelper::success($results, null, 'Absence added successfully');
-        } catch (\Throwable $e) {
-            return ResponseHelper::error($e);
-        }
     }
 
     public function storeAbsence(Request $request)//store one
     {
-        try {
-            //   $request->validated();
-            $result = $this->absenceService->storeAbsence($request);
-            return ResponseHelper::success($result, null, 'Absence added successfully');
-        } catch (\Throwable $e) {
-            return ResponseHelper::error($e);
-        }
+        $result = $this->absenceService->storeAbsence($request);
+        return ResponseHelper::success($result, null, 'Absence added successfully');
     }
 
     public function getAbsences($user)
@@ -109,31 +93,16 @@ class AbsencesController extends Controller
     {
         $validate = $request->validate([
             'user_id'=> ['required','exists:users,id','integer'],
-            // 'date'=>['before_or_equal:today'],
         ]);
 
-        $user = User::with(
-            'justifiedUnPaidAbsences',
-            'justifiedPaidAbsences',
-            'unJustifiedPaidAbsences',
-            'unJustifiedUnPaidAbsences',
-            'sickAbsences')->findOrFail($request->user_id);
+        $absence = $this->absenceService->AbsenceTypes($request);
 
-        // $paidabsences = $user->justifiedPaidAbsences->merge($user->unJustifiedPaidAbsences);
-        // $unpaidabsences = $user->justifiedUnPaidAbsences->merge($user->unJustifiedUnPaidAbsences);
-        // $sickabsences = $user->sickAbsences;
+        return ResponseHelper::success([
+            'Paid'=>$absence['paidabsences'],
+            'Unpaid'=>$absence['unpaidabsences'],
+            'Sick'=>$absence['sickabsences'],
 
-        return ResponseHelper::success([ $user
-            // 'Paid'=>$paidabsences,
-            // 'Unpaid'=>$unpaidabsences,
-            // 'Sick'=>$sickabsences,
-            // 'Paid' =>$this->usertimeService->filterDate($paidabsences,$request->date,'startDate'),
-            // 'Unpaid'=>$this->usertimeService->filterDate($unpaidabsences,$request->date,'startDate'),
-            // 'sick'=>$this->usertimeService->filterDate($sickabsences,$request->date,'startDate'),
         ], null);
-        // $absence = Absences::where('user_id',$request->user_id)
-        //                     ->where;
-
     }
 }
 

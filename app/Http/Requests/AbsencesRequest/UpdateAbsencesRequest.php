@@ -13,7 +13,7 @@ class UpdateAbsencesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class UpdateAbsencesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'isPaid'=>['boolean'],
+            'type'=>['string','in:justified,Unjustified,sick']
         ];
     }
     protected function failedValidation(Validator $validator)

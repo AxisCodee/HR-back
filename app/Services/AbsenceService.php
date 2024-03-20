@@ -61,19 +61,13 @@ class AbsenceService
         return $userAbcences;
     }
 
-    public function update(Request $request)
+    public function update($request)
     {
-        $result = Absences::query()
-            ->where('id', $request->id)
-            ->update(
-                [
-                    'startDate' => $request->startDate,
-                    'type' => $request->type
-                ]
-            );
-        if ($result) {
-            return 'updated successfully';
-        }
+        Absences::query()
+            ->findOrFail($request['id'])
+            ->update($request);
+
+        return 'updated successfully';
     }
 
     public function getDailyAbsence(Request $request, $branch)
@@ -172,6 +166,23 @@ class AbsenceService
             }])
             ->first();
         return $result;
+    }
+
+    public function AbsenceTypes($request)
+    {
+        $user = User::with(
+            'UnPaidAbsences',
+            'PaidAbsences',
+            'sickAbsences'
+            )->findOrFail($request->user_id);
+
+        $paidabsences = $user->PaidAbsences;
+        $unpaidabsences = $user->UnPaidAbsences;
+        $sickabsences = $user->sickAbsences;
+
+        return ['paidabsences'=>$paidabsences,
+                'unpaidabsences'=>$unpaidabsences,
+                'sickabsences'=>$sickabsences];
     }
 }
 

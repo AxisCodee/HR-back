@@ -26,7 +26,7 @@ class BranchController extends Controller
      */
     public function index()
     {
-            $branches = $this->BranchService->index();
+        $branches = $this->BranchService->index();
         return ResponseHelper::success($branches, null);
     }
 
@@ -35,17 +35,8 @@ class BranchController extends Controller
      */
     public function store(StoreBranchRequest $request)
     {
-        try {
-
             $newbranch = $this->BranchService->store($request);
             return $newbranch;
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return ResponseHelper::error($e->validator->errors()->first(), 400);
-        } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error('Invalid branch name or IP', 400);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
     }
 
     /**
