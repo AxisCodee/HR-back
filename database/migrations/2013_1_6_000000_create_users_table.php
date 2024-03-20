@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->foreignId('department_id')->nullable()->constrained('departments')->cascadeOnDelete();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('ownerPassword')->nullable();
             $table->string('address')->nullable();
             $table->integer('pin')->nullable();
             $table->string('specialization');
