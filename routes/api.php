@@ -216,8 +216,12 @@ use Illuminate\Support\Facades\Route;
                 Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
                 Route::post('store_one_absence', 'storeAbsence'); //store one absence
                 Route::get('getUserAbsence', 'getUserAbsence');
-                Route::post('AbsenceTypes','AbsenceTypes');
+
+                //test
+                Route::post('AbsenceTypes','absenceTypes'); //why it post??
                 Route::get('getUserAbsences', 'getUserAbsences');
+                Route::get('allUserAbsences', 'allUserAbsences');
+
 
             });
         });
@@ -275,6 +279,13 @@ use Illuminate\Support\Facades\Route;
                 Route::get('showLate', 'showLate');
                 Route::post('rejectAlert', 'rejectAlert');
                 Route::post('acceptAlert', 'acceptAlert');
+
+                //test
+                Route::get('getUserLates', ' getUserLates');
+                Route::get('lateTypes', ' lateTypes');
+                Route::get('allUserLates', ' allUserLates');
+
+
             });
         });
 

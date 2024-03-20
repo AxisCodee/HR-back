@@ -11,11 +11,18 @@ use App\Models\UserInfo;
 use App\Models\Decision;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Services\LateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LateController extends Controller
 {
+    protected $lateService;
+    public function __construct(LateService $lateService)
+    {
+        $this->lateService = $lateService;
+
+    }
     /**
      * Display a listing of the resource.
      */
@@ -160,4 +167,46 @@ class LateController extends Controller
         }
         return ResponseHelper::success(null, 'Decision done successfully', null);
     }
+
+
+
+
+
+    public function getUserLates(Request $request)
+    {
+        $result = $this->lateService->userLates($request);
+        if ($result) {
+            return ResponseHelper::success($result, null);
+        } else {
+            return ResponseHelper::error('No results found', 404);
+        }
+
+    }
+
+
+    public function lateTypes(Request $request)
+    {
+        $validate = $request->validate([
+            'user_id'=> ['required','exists:users,id','integer'],
+        ]);
+
+        $late = $this->lateService->lateTypes($request);
+
+        return ResponseHelper::success(
+            $late,null);
+    }
+
+
+    public function allUserLates(Request $request)
+    {
+        $validate = $request->validate([
+            'user_id'=> ['required','exists:users,id','integer'],
+        ]);
+
+        $late = $this->lateService->allUserLates($request);
+
+        return ResponseHelper::success(
+            $late,null);
+    }
+
 }
