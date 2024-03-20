@@ -14,10 +14,6 @@ class Policy extends Model
 
 
 
-
-
-        'warnings', 'absence_management', 'deduction_status', 'branch_id','demands_compensation'
-
   
     ];
 

@@ -265,14 +265,6 @@ class TeamService
 // }
 
 public function getTree()
-<<<<<<< HEAD
-{
-    $rootDepartments = Department::whereNull('parent_id')->with('user')->get();
-    $tree = [];
-
-    foreach ($rootDepartments as $department) {
-        $tree[] = $this->buildTree($department);
-=======
 {
     $rootDepartments = Department::whereNull('parent_id')->with('user')->get();
     $tree = [];
@@ -296,34 +288,11 @@ public function buildTree($department)
             $tree['child'][] = $this->buildTree($childDepartment);
 
         }
->>>>>>> b7950e3d98c46b8b4b2e4ad058ef49458cd6c687
     }
 
     return $tree;
 }
 
-<<<<<<< HEAD
-public function buildTree($department)
-{
-    $tree = $department->toArray();
 
-    $childDepartments = $department->child;
-
-    if ($childDepartments) {
-        $tree['child'] = [];
-
-        foreach ($childDepartments as $childDepartment) {
-            $tree['child'][] = $this->buildTree($childDepartment);
-        }
-    }
-
-
-    $tree['user'] = $department->user()->get()->toArray();
-
-    return $tree;
-}
-
-=======
->>>>>>> b7950e3d98c46b8b4b2e4ad058ef49458cd6c687
 }
 
