@@ -99,6 +99,7 @@ class AttendanceController extends Controller
                 }
                 $date = date('Y-m-d', strtotime($log['DateTime']));
                 Date::updateOrCreate(['date' => $date]);
+                //***
                 // the first of check the late
                 $checkInDate = substr($log['DateTime'], 0, 10);
                 $checkInHour = substr($log['DateTime'], 11, 15);
@@ -167,6 +168,7 @@ class AttendanceController extends Controller
                         }
                     }
                 }
+                //**
                 $checkInDate = substr($log['DateTime'], 0, 10);
                 if (!in_array($checkInDate, $uniqueDates)) {
                     $uniqueDates[] = $checkInDate;

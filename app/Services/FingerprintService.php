@@ -19,7 +19,7 @@ class FingerprintService
     {
         $content = '';
         $amount = null;
-        if ($type == 'Deduction') {
+        if ($type == 'deduction') {
             if ($hoursNum == 0) {
                 $policy = Policy::query()->where('branch_id', $user->branch_id)->first();
                 $hoursNum = $policy->monthlyhours;
@@ -27,10 +27,10 @@ class FingerprintService
             $amount = $hoursNum * ($this->userService->employeeHourPrice($user));
             $content = 'Deduct ' . $amount . ' from ' . $user->first_name . ' ' . $user->last_name . ' Salary';
         }
-        if ($type == 'Warning') {
+        if ($type == 'warning') {
             $content = 'Send a Warning to ' . $user->first_name . ' ' . $user->last_name . ' for arriving late at ' . $date;
         }
-        if ($type == 'Absence') {
+        if ($type == 'absence') {
             $content = 'Record the absence of ' . $user->first_name . ' ' . $user->last_name . ' for ' . $date;
         }
         if ($content !== '') {
