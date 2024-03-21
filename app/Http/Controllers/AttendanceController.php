@@ -101,79 +101,88 @@ class AttendanceController extends Controller
                 Date::updateOrCreate(['date' => $date]);
                 //***
                 // the first of check the late
-                $checkInDate = substr($log['DateTime'], 0, 10);
-                $checkInHour = substr($log['DateTime'], 11, 15);
-                $checkOutHour = substr($log['DateTime'], 11, 15);
-                $parsedHour = Carbon::parse($checkInHour);
-                $parsedHourOut = Carbon::parse($checkOutHour);
-                $policy = Policy::query()->where('branch_id', $branch->id)->first();
-                if ($policy != null) {
-                    $companyStartTime = $policy->work_time['start_time'];
-                    $companyEndTime = $policy->work_time['end_time'];
-                    // check if the person late
-                    if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
-                        ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
-                    ) {
-                        if ($log['Status'] == 1) {
-                            $checkOutHour = substr($log['DateTime'], 11, 15);
-                        }
-                        if ($log['Status'] == 0) {
-                            $checkInHour = substr($log['DateTime'], 11, 15);
-                        }
-                        $diffLate = $parsedHour->diff($companyStartTime);
-                        $hoursLate = $diffLate->format('%H.%I');
-                        $diffOverTime = $parsedHourOut->diff($companyEndTime);
-                        $hoursOverTime = $diffOverTime->format('%H.%I');
-                        $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
-                        $thisUser = User::query()->where('id', ($log['PIN']))->first();
-                        $userId = $thisUser->id;
-                        $userPolicy = Policy::query()->where('branch_id', $thisUser->branch_id)->first();
-                        if ($userPolicy != null) {
-                            $attendanceExistence = Attendance::query()
-                                ->where('pin', $log['PIN'])
-                                ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])                            //->whereDate('datetime', $formattedDateTime)
-                                ->where('status', '0')
-                                ->exists();
-                            if (!$attendanceExistence) {
-                                $lateData = [
-                                    'user_id' => $userId,
-                                    'lateDate' => $checkInDate,
-                                    'end' => $checkOutHour,
-                                    'check_in' => $log['Status'] == 0 ? $checkInHour : null,
-                                    'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                                    'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
-                                ];
-                                if ($thisUser->branch_id == $branch->id && $userPolicy->deduction_status) {
-                                    $newLateData = [
-                                        'isPaid' => false,
-                                        'demands_compensation' => $userPolicy->demands_compensation,
-                                    ];
-                                    $mergedData = array_merge($lateData, $newLateData);
-                                    ///cal it here
-                                    $this->fingerprintService->autoDeduction($thisUser, $log['DateTime'], 'Warning', $lateData['hours_num']);
-                                    $this->fingerprintService->autoDeduction($thisUser, $log['DateTime'], 'Deduction', $lateData['hours_num']);
-                                    ///
-                                }
-                                if ($thisUser->branch_id == $branch->id && !$userPolicy->deduction_status) {
-                                    $newLateData = [
-                                        'isPaid' => true,
-                                        'demands_compensation' => $userPolicy->demands_compensation,
-                                    ];
-                                    $mergedData = array_merge($lateData, $newLateData);
-                                }
-                                if ($userId) {
-                                    Late::query()->create($mergedData);
-                                }
-                            }
-                        }
-                    }
-                }
+                // $checkInDate = substr($log['DateTime'], 0, 10);
+                // $checkInHour = substr($log['DateTime'], 11, 15);
+                // $checkOutHour = substr($log['DateTime'], 11, 15);
+                // $parsedHour = Carbon::parse($checkInHour);
+                // $parsedHourOut = Carbon::parse($checkOutHour);
+                // $policy = Policy::query()->where('branch_id', $branch->id)->first();
+                // if ($policy != null) {
+                //     $companyStartTime = $policy->work_time['start_time'];
+                //     $companyEndTime = $policy->work_time['end_time'];
+                //     // check if the person late
+                //     if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
+                //         ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
+                //     ) {
+                //         if ($log['Status'] == 1) {
+                //             $checkOutHour = substr($log['DateTime'], 11, 15);
+                //         }
+                //         if ($log['Status'] == 0) {
+                //             $checkInHour = substr($log['DateTime'], 11, 15);
+                //         }
+                //         $diffLate = $parsedHour->diff($companyStartTime);
+                //         $hoursLate = $diffLate->format('%H.%I');
+                //         $diffOverTime = $parsedHourOut->diff($companyEndTime);
+                //         $hoursOverTime = $diffOverTime->format('%H.%I');
+                //         $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
+                //         $thisUser = User::query()->where('id', ($log['PIN']))->first();
+                //         $userId = $thisUser->id;
+                //         $userPolicy = Policy::query()->where('branch_id', $thisUser->branch_id)->first();
+                //         if ($userPolicy != null) {
+                //             $attendanceExistence = Attendance::query()
+                //                 ->where('pin', $log['PIN'])
+                //                 ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])                            //->whereDate('datetime', $formattedDateTime)
+                //                 ->where('status', '0')
+                //                 ->exists();
+                //             if (!$attendanceExistence) {
+                //                 $lateData = [
+                //                     'user_id' => $userId,
+                //                     'lateDate' => $checkInDate,
+                //                     'end' => $checkOutHour,
+                //                     'check_in' => $log['Status'] == 0 ? $checkInHour : null,
+                //                     'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
+                //                     'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
+                //                 ];
+                //                 if ($thisUser->branch_id == $branch->id && $userPolicy->deduction_status) {
+                //                     $newLateData = [
+                //                         'isPaid' => false,
+                //                         'demands_compensation' => $userPolicy->demands_compensation,
+                //                     ];
+                //                     $mergedData = array_merge($lateData, $newLateData);
+                //                     ///cal it here
+                //                     $this->fingerprintService->autoDeduction($thisUser, $log['DateTime'], 'Warning', $lateData['hours_num']);
+                //                     $this->fingerprintService->autoDeduction($thisUser, $log['DateTime'], 'Deduction', $lateData['hours_num']);
+                //                     ///
+                //                 }
+                //                 if ($thisUser->branch_id == $branch->id && !$userPolicy->deduction_status) {
+                //                     $newLateData = [
+                //                         'isPaid' => true,
+                //                         'demands_compensation' => $userPolicy->demands_compensation,
+                //                     ];
+                //                     $mergedData = array_merge($lateData, $newLateData);
+                //                 }
+                //                 if ($userId) {
+                //                     Late::query()->create($mergedData);
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
                 //**
                 $checkInDate = substr($log['DateTime'], 0, 10);
                 if (!in_array($checkInDate, $uniqueDates)) {
                     $uniqueDates[] = $checkInDate;
                 }
             }
+            $allAttendances = Attendance::query()->where('status','0')->get();
+            foreach($allAttendances as $attendance){
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime);
+
+            }
+
+
+
+            //*
             // store the absence
             foreach ($uniqueDates as $date) {
                 $today = Carbon::now()->format('y-m-d');
