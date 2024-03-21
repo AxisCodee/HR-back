@@ -138,5 +138,9 @@ class RateService
             ->toArray();
         return ResponseHelper::success($result, null, 'userRates', 200);
     }
-    
+    public function reviews()
+    {
+        $result=Rate::query()->get('');
+    }
+
 }
