@@ -35,12 +35,27 @@ class LateService
     }
 
 
+    // public static function userLates(Request $request)
+    // {
+    //     $result = User::query()
+    //         ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
+    //         ->get(['id', 'first_name','middle_name','last_name'])->toArray();
+    //     return $result;
+    // }
+
     public static function userLates(Request $request)
     {
         $result = User::query()
-            ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
-            ->get(['id', 'first_name','middle_name','last_name'])->toArray();
-        return $result;
+        ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
+        ->withCount('justifiedPaidLatesCount as justifiedPaid'
+         ,'justifiedUnPaidLatesCount as justifiedUnPaid'
+         ,'UnjustifiedPaidLatesCount as UnjustifiedPaid'
+         ,'UnjustifiedUnPaidLatesCount as UnjustifiedUnPaid')
+        ->get()
+        ->toArray();
+
+    return $result;
     }
+
 
 }

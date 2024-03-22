@@ -35,23 +35,22 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    protected $fillable =
-        [
-            'first_name',
-            'middle_name',
-            'last_name',
-            'email',
-            'role',
-            'department_id',
-            'password',
-            'address',
-            'specialization',
-            'pin',
-            'provider_id',
-            'provider_name',
-            'google_access_token_json',
-            'branch_id'
-        ];
+    protected $fillable =  [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'email',
+        'role',
+        'department_id',
+        'password',
+        'address',
+        'specialization',
+        'pin',
+        'provider_id',
+        'provider_name',
+        'google_access_token_json',
+        'branch_id'
+    ];
 
 
     protected $appends = [
@@ -174,7 +173,7 @@ class User extends Authenticatable implements JWTSubject
      **********USER ABSENCE RELATIONSHIP **********
      */
 
-    public function UnPaidAbsences()//Un paid
+    public function UnPaidAbsences() //Un paid
     {
         $date = request()->query('date');
         $result = $this->hasMany(Absences::class, 'user_id')
@@ -182,7 +181,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->usertimeService->filterDate($result, $date, 'startDate');
     }
 
-    public function PaidAbsences()//Paid
+    public function PaidAbsences() //Paid
     {
         $date = request()->query('date');
         $result = $this->hasMany(Absences::class, 'user_id')
@@ -207,6 +206,42 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
+
+    /*
+   ----------------ABSENCES COUNT------------------
+   */
+    public function justifiedPaidAbsencesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('isPaid', 1)->where('type', 'justified');
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function justifiedUnPaidAbsencesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'justified')->where('isPaid', 0);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function UnjustifiedPaidAbsencesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'Unjustified')->where('isPaid', 1);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function UnjustifiedUnPaidAbsencesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Absences::class, 'user_id')
+            ->where('type', 'Unjustified')->where('isPaid', 0);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
     /***
      *
      *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -218,7 +253,7 @@ class User extends Authenticatable implements JWTSubject
 
 
 
- /***
+    /***
      *
      *
      *
@@ -227,47 +262,84 @@ class User extends Authenticatable implements JWTSubject
      **********USER LATE RELATIONSHIP **********
      */
 
-     public function UnPaidLates()//Un paid
-     {
-         $date = request()->query('date');
-         $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 0);
-         return $this->usertimeService->filterDate($result, $date, 'lateDate');
-     }
+    public function UnPaidLates() //Un paid
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 0);
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    }
 
-     public function PaidLates()//Paid
-     {
-         $date = request()->query('date');
-         $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 1);
-         return $this->usertimeService->filterDate($result, $date, 'lateDate');
-     }
+    public function PaidLates() //Paid
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 1);
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    }
 
 
-     public function sickLates()//Sick
-     {
-         $date = request()->query('date');
-         $result = $this->hasMany(Late::class, 'user_id')->where('type', 'sick');
-         return $this->usertimeService->filterDate($result, $date, 'lateDate');
-     }
+    public function sickLates() //Sick
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')->where('type', 'sick');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    }
 
-     public function totalLates() //for All lates
-     {
-         $date = request()->query('date');
-         $result = $this->hasMany(Late::class, 'user_id');
-         return $this->usertimeService->filterDate($result, $date, 'lateDate');
-     }
+    public function totalLates() //for All lates
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    }
 
-     public function allLates()//for All User Lates
-     {
-         $date = request()->query('date');
-         $result = $this->hasMany(Late::class, 'user_id');
-         return $this->usertimeService->filterDate($result, $date, 'lateDate');
-     }
+    public function allLates() //for All User Lates
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    }
 
-     /***
-      *
-      *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      **********USER LATE RELATIONSHIP **********
-      */
+
+
+    /*
+   ----------------LATES COUNT------------------
+   */
+    public function justifiedPaidLatesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')
+            ->where('isPaid', 1)->where('type', 'justified');
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function justifiedUnPaidLatesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')
+            ->where('type', 'justified')->where('isPaid', 0);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function UnjustifiedPaidLatesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')
+            ->where('type', 'Unjustified')->where('isPaid', 1);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    public function UnjustifiedUnPaidLatesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')
+            ->where('type', 'Unjustified')->where('isPaid', 0);
+        return $this->usertimeService->filterDate($result, $date, 'startDate');
+    }
+
+    /***
+     *
+     *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     **********USER LATE RELATIONSHIP **********
+     */
 
 
 
@@ -329,7 +401,6 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         return $this->userServices->getBaseSalary($this, $date);
-
     }
 
     public function getTotalAbsenceHoursAttribute()
