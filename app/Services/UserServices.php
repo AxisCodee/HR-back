@@ -239,12 +239,12 @@ class UserServices
     public function branchWorkHours($branch_id)
     {
         $policy = Policy::query()->where('branch_id', $branch_id)->first();
-        if (!$policy) {
-            return;
+        if ($policy != null) {
+            $startTime = Carbon::createFromFormat('h:i A', $policy->work_time['start_time']);
+            $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
+            return $endTime->diffInHours($startTime);
         }
-        $startTime = Carbon::createFromFormat('h:i A', $policy->work_time['start_time']);
-        $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
-        return $endTime->diffInHours($startTime);
+        return false;
     }
 
     public function compensationHours($user)
@@ -259,14 +259,12 @@ class UserServices
     public function employeeHourPrice($user)
     {
         $policy = Policy::query()->where('branch_id', $user->branch_id)->first();
-        if (!$policy) {
-            return;
+        if ($policy != null) {
+            $userSalary = $user->userInfo()->value('salary');
+            $branchWorkHours = $policy->monthlyhours;
+            return ($userSalary / $branchWorkHours);
         }
-        $userSalary = $user->userInfo()->value('salary');
-        $branchWorkHours = $policy->monthlyhours;
-        $hourAVG = ($userSalary / $branchWorkHours);
-        return $hourAVG;
-
+        return false;
     }
 
     /***
@@ -281,8 +279,7 @@ class UserServices
                 ->where('type', 'justified')
                 ->where('user_id', $user->id);
             $overTimes = $this->userTimeService->filterDate($overTimes, $date, 'lateDate');
-            $total = $overTimes->get();
-            return $total;
+            return $overTimes->get();
         }
         return [];
     }
@@ -293,8 +290,7 @@ class UserServices
             $deductions = Decision::where('type', 'deduction')
                 ->where('user_id', $user->id);
             $deductions = $this->userTimeService->filterDate($deductions, $date, 'dateTime');
-            $total = $deductions->get();
-            return $total;
+            return $deductions->get();
         }
         return [];
     }
@@ -305,8 +301,7 @@ class UserServices
             $rewards = Decision::where('type', 'reward')
                 ->where('user_id', $user->id);
             $rewards = $this->userTimeService->filterDate($rewards, $date, 'dateTime');
-            $total = $rewards->get();
-            return $total;
+            return $rewards->get();
         }
         return [];
     }
@@ -317,8 +312,7 @@ class UserServices
             $advances = Decision::where('type', 'advance')
                 ->where('user_id', $user->id);
             $advances = $this->userTimeService->filterDate($advances, $date, 'dateTime');
-            $total = $advances->get();
-            return $total;
+            return $advances->get();
         }
         return [];
     }
@@ -329,8 +323,7 @@ class UserServices
             $warning = Decision::where('type', 'warning')
                 ->where('user_id', $user->id);
             $warning = $this->userTimeService->filterDate($warning, $date, 'dateTime');
-            $total = $warning->get();
-            return $total;
+            return $warning->get();
         }
         return [];
     }
@@ -341,8 +334,7 @@ class UserServices
             $alert = Decision::where('type', 'alert')
                 ->where('user_id', $user->id);
             $alert = $this->userTimeService->filterDate($alert, $date, 'dateTime');
-            $total = $alert->get();
-            return $total;
+            return $alert->get();
         }
         return [];
     }
@@ -352,19 +344,17 @@ class UserServices
         if ($date) {
             $absences = Absences::where('user_id', $user->id)->where('type', 'Unjustified');
             $absences = $this->userTimeService->filterDate($absences, $date, 'startDate');
-            $total = $absences->get();
-            return $total;
+            return $absences->get();
         }
         return [];
     }
 
     public function AllAbsenceTypes($request)
     {
-        $userAbsence = User::query()
+        return User::query()
             ->with('justifiedAbsences', 'unJustifiedAbsences', 'sickAbsences')
             ->get()
             ->toArray();
-        return $userAbsence;
     }
 
     public function getBaseSalary($user, $date)

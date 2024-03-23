@@ -17,15 +17,15 @@ class LateService
             'UnPaidLates',
             'PaidLates',
             'sickLates'
-            )->findOrFail($request->user_id);
+        )->findOrFail($request->user_id);
 
         $paidLates = $user->PaidLates;
         $unpaidLates = $user->UnPaidLates;
         $sickLates = $user->sickLates;
 
-        return ['Paid'=>$paidLates,
-                'UnPaid'=>$unpaidLates,
-                'Sick'=>$sickLates];
+        return ['Paid' => $paidLates,
+            'UnPaid' => $unpaidLates,
+            'Sick' => $sickLates];
     }
 
     public function allUserLates($request)
@@ -39,7 +39,7 @@ class LateService
     {
         $result = User::query()
             ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
-            ->get(['id', 'first_name','middle_name','last_name'])->toArray();
+            ->get(['id', 'first_name', 'middle_name', 'last_name'])->toArray();
         return $result;
     }
 
