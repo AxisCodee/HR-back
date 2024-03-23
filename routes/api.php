@@ -111,6 +111,8 @@ use Illuminate\Support\Facades\Route;
                 Route::post('reportByDay', 'report');
 
                 Route::post('ratesByDate', 'ratesByDate');
+
+                Route::post('checksPercentage', 'checksPercentage');
             });
         });
 

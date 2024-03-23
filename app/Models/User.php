@@ -35,7 +35,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    protected $fillable =  [
+    protected $fillable = [
         'first_name',
         'middle_name',
         'last_name',
@@ -162,8 +162,6 @@ class User extends Authenticatable implements JWTSubject
      */
 
 
-
-
     /***
      *
      *
@@ -206,7 +204,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-
     /*
    ----------------ABSENCES COUNT------------------
    */
@@ -247,10 +244,6 @@ class User extends Authenticatable implements JWTSubject
      *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
      **********USER ABSENCE RELATIONSHIP **********
      */
-
-
-
-
 
 
     /***
@@ -299,7 +292,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-
     /*
    ----------------LATES COUNT------------------
    */
@@ -340,16 +332,6 @@ class User extends Authenticatable implements JWTSubject
      *        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
      **********USER LATE RELATIONSHIP **********
      */
-
-
-
-
-
-
-
-
-
-
 
 
     public function getOverTimesAttribute()
