@@ -148,10 +148,19 @@ class AbsenceService
     public static function user_absences(Request $request)
     {
         $result = User::query()
-            ->with('userInfo:id,image', 'department', 'UnPaidAbsences', 'PaidAbsences', 'sickAbsences')
-            ->get(['id', 'first_name','middle_name','last_name'])->toArray();
+        ->with('userInfo:id,image'
+        , 'department'
+        ,'UnPaidAbsences',
+         'PaidAbsences',
+         'sickAbsences',
+         )->withCount('justifiedPaidAbsencesCount as justifiedPaid'
+         ,'justifiedUnPaidAbsencesCount as justifiedUnPaid'
+         ,'UnjustifiedPaidAbsencesCount as UnjustifiedPaid'
+         ,'UnjustifiedUnPaidAbsencesCount as UnjustifiedUnPaid')
+        ->get()
+        ->toArray();
 
-        return $result;
+    return $result;
     }
 
 
