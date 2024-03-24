@@ -202,6 +202,7 @@ use Illuminate\Support\Facades\Route;
                 Route::post('demandCompensationHours/{id}', 'setDemandCompensationHours');
                 Route::get('Show/{id}', 'show');
                 Route::post('updateSalary/{id}', 'updateSalary');
+                Route::get('comphrs/{user}','getCompensationHours');
             });
         });
 
