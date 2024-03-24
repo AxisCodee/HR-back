@@ -11,53 +11,11 @@ use function Symfony\Component\String\s;
 
 class AbsenceService
 {
-    public function index(Request $request)
-    {
-        $branchId = $request->input('branch_id');
-        if ($request->has('date')) {
-            $dateInput = request()->input('date');
-            $year = substr($dateInput, 0, 4);
-            $month = substr($dateInput, 5, 2);
-        } else {
-            $year = Carbon::now()->format('Y');
-            $month = Carbon::now()->format('m');
-        }
-        $user = User::query()->where('branch_id', $branchId)->with('userInfo')->get();
-        $results = [];
-        foreach ($user as $item) {
-            $justified = $item->absences()
-                ->where('type', 'justified')
-                ->whereYear('startDate', $year)
-                ->whereMonth('startDate', $month)->count();
-            $unjustified = $item->absences()
-                ->where('type', 'Unjustified')
-                ->whereYear('startDate', $year)
-                ->whereMonth('startDate', $month)
-                ->count();
-            $sick = $item->absences()
-                ->where('type', 'sick')
-                ->whereYear('startDate', $year)
-                ->whereMonth('startDate', $month)
-                ->count();
-            $results[] = [
-                'id' => $item->id,
-                'username' => $item->first_name,
-                'lastname' => $item->last_name,
-                'specialization' => $item->specialization,
-                'userDepartment' => $item->department,
-                'userUnjustified' => $unjustified,
-                'sick' => $sick,
-                'userJustified' => $justified,
-                'all' => $unjustified + $justified + $sick,
-                'userinfo' => $item->userInfo
-            ];
-        }
-        return ResponseHelper::success($results);
-    }
+
 
     public function show(User $user)
     {
-        $userAbcences = $user->absences()->get('startDate')->toArray();
+        $userAbcences = $user->absences()->get()->toArray();
         return $userAbcences;
     }
 
@@ -180,19 +138,39 @@ class AbsenceService
         $unpaidabsences = $user->UnPaidAbsences;
         $sickabsences = $user->sickAbsences;
 
-        return ['paidabsences'=>$paidabsences,
-                'unpaidabsences'=>$unpaidabsences,
-                'sickabsences'=>$sickabsences];
+        return ['Paid'=>$paidabsences,
+                'UnPaid'=>$unpaidabsences,
+                'Sick'=>$sickabsences];
     }
+
+
 
     public static function user_absences(Request $request)
     {
         $result = User::query()
-            ->with('userInfo:id,image', 'department', 'UnPaidAbsences', 'PaidAbsences', 'sickAbsences')
-            ->get(['id', 'first_name','middle_name','last_name'])->toArray();
+        ->with('userInfo:id,image'
+        , 'department'
+        ,'UnPaidAbsences',
+         'PaidAbsences',
+         'sickAbsences',
+         )->withCount('justifiedPaidAbsencesCount as justifiedPaid'
+         ,'justifiedUnPaidAbsencesCount as justifiedUnPaid'
+         ,'UnjustifiedPaidAbsencesCount as UnjustifiedPaid'
+         ,'UnjustifiedUnPaidAbsencesCount as UnjustifiedUnPaid')
+        ->get()
+        ->toArray();
 
-        return $result;
+    return $result;
     }
+
+
+
+    public function allUserAbsences($request)
+    {
+        $user = User::with('allAbsences')->findOrFail($request->user_id);
+        return $user;
+    }
+
 }
 
 

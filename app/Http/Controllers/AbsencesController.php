@@ -23,10 +23,10 @@ class AbsencesController extends Controller
 
     }
 
-    public function index(Request $request)
-    {
-        return $this->absenceService->index($request);
-    }
+    // public function index(Request $request)
+    // {
+    //     return $this->absenceService->index($request);
+    // }
 
     public function show(User $user)
     {
@@ -89,7 +89,7 @@ class AbsencesController extends Controller
 
     }
 
-    public function AbsenceTypes(Request $request)
+    public function absenceTypes(Request $request)
     {
         $validate = $request->validate([
             'user_id'=> ['required','exists:users,id','integer'],
@@ -97,14 +97,12 @@ class AbsencesController extends Controller
 
         $absence = $this->absenceService->AbsenceTypes($request);
 
-        return ResponseHelper::success([
-            'Paid'=>$absence['paidabsences'],
-            'Unpaid'=>$absence['unpaidabsences'],
-            'Sick'=>$absence['sickabsences'],
+        return ResponseHelper::success(
+            $absence
 
-        ], null);
+        , null);
     }
-    
+
     public function getUserAbsences(Request $request)
     {
         $result = $this->absenceService->user_absences($request);
@@ -115,5 +113,17 @@ class AbsencesController extends Controller
         }
 
     }
+
+    public function allUserAbsences(Request $request)
+    {
+        $result = $this->absenceService->allUserAbsences($request);
+        if ($result) {
+            return ResponseHelper::success($result, null);
+        } else {
+            return ResponseHelper::error('No results found', 404);
+        }
+
+    }
+
 }
 

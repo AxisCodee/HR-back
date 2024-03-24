@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helper\ResponseHelper;
 use App\Services\ReportServices;
 use App\Http\Requests\ReportRequest\StoreReportRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -32,7 +34,7 @@ class ReportController extends Controller
     {
         try {
             $newreport = $this->ReportServices->StoreReport($request);
-            return  $newreport;
+            return $newreport;
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
         }
@@ -79,7 +81,7 @@ class ReportController extends Controller
     public function all_reports(Request $request) //TODO delete method or not
     {
         try {
-            $allreports =  $this->ReportServices->AllReports($request);
+            $allreports = $this->ReportServices->AllReports($request);
             return $allreports;
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
@@ -127,7 +129,7 @@ class ReportController extends Controller
     public function report(Request $request)
     {
         try {
-            $report =  $this->ReportServices->Report($request);
+            $report = $this->ReportServices->Report($request);
             return $report;
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
@@ -148,5 +150,19 @@ class ReportController extends Controller
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
         }
+    }
+
+    public function checksPercentage(Request $request)
+    {
+        $user = User::query()->findOrFail($request->user_id);
+        $date = $request->date;
+        $status = $request->status;
+        if (strlen($date) == 4) {
+            $format = 'Y';
+        } else {
+            $format = 'Y-m';
+        }
+        $result = $this->ReportServices->getUserChecksPercentage($user, $date, $format, $status);
+        return ResponseHelper::success($result);
     }
 }

@@ -14,6 +14,7 @@ use App\Models\Late;
 use App\Models\Policy;
 use App\Models\User;
 use App\Models\UserInfo;
+use App\Services\FingerprintService;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -26,6 +27,13 @@ require 'tad\vendor\autoload.php';
 
 class AttendanceController extends Controller
 {
+    public $fingerprintService;
+
+    public function __construct(FingerprintService $fingerprintService)
+    {
+        $this->fingerprintService = $fingerprintService;
+
+    }
 
     public function getAttendanceLogs()
     {
@@ -54,106 +62,25 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
-            return DB::transaction(function () use ($request) {
-                //store the attendance
-                $branch = Branch::findOrFail($request->branch_id);
-                $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
-                $tad = $tad_factory->get_instance();
-                $all_user_info = $tad->get_all_user_info();
-                $dt = $tad->get_date();
-                $logs = $tad->get_att_log();
-
-                $xml = simplexml_load_string($logs);
-                $array = json_decode(json_encode($xml), true);
-                $logsData = $array['Row'];
-                $uniqueDates = [];
-                foreach ($logsData as $log) {
-                    $userLog = User::where('pin', intval($log['PIN']))->first();
-                    $formattedDateTime = substr($log['DateTime'], 0, 10);
-                    $logExistence = Attendance::query()
-                        ->where('pin', $log['PIN'])
-                        ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])                            //->whereDate('datetime', $formattedDateTime)
-                        ->where('status', $log['Status'])
-                        ->exists();
-                    if (!$logExistence) {
-                        if ($userLog) {
-                            $attendance = [
-                                'pin' => $log['PIN'],
-                                'datetime' => $log['DateTime'],
-                                'branch_id' => $userLog->branch_id,
-                                'verified' => $log['Verified'],
-                                'status' => $log['Status'],
-                                'work_code' => $log['WorkCode'],
-                            ];
-                            Attendance::updateOrCreate(['datetime' => $log['DateTime'],
-                                'branch_id' => $userLog->branch_id], $attendance);
-                        }
-                    }
-                    $date = date('Y-m-d', strtotime($log['DateTime']));
-                    Date::updateOrCreate(['date' => $date]);
-                    // the first of check the late
-                    $checkInDate = substr($log['DateTime'], 0, 10);
-                    $checkInHour = substr($log['DateTime'], 11, 15);
-                    $checkOutHour = substr($log['DateTime'], 11, 15);
-                    $parsedHour = Carbon::parse($checkInHour);
-                    $parsedHourOut = Carbon::parse($checkOutHour);
-                    $policy = Policy::query()->where('branch_id', $branch->id)->first();
-                    $companyStartTime = $policy->work_time['start_time'];
-                    $companyEndTime = $policy->work_time['end_time'];
-                    // check if the person late
-                    if (($parsedHour->isAfter($companyStartTime) && $log['Status'] == 0) ||
-                        ($parsedHourOut->isAfter($companyEndTime) && $log['Status'] == 1)
-                    ) {
-                        if ($log['Status'] == 1) {
-                            $checkOutHour = substr($log['DateTime'], 11, 15);
-                        }
-                        if ($log['Status'] == 0) {
-                            $checkInHour = substr($log['DateTime'], 11, 15);
-                        }
-                        $diffLate = $parsedHour->diff($companyStartTime);
-                        $hoursLate = $diffLate->format('%H.%I');
-                        $diffOverTime = $parsedHourOut->diff($companyEndTime);
-                        $hoursOverTime = $diffOverTime->format('%H.%I');
-                        $minutesLate = $parsedHour->diffInMinutes($companyStartTime);
-                        $thisUser = User::query()->where('id', ($log['PIN']))->first();
-                        $userId = $thisUser->id;
-                        $thisUserPolicy = Policy::query()->where('branch_id', $thisUser->branch_id)->first();
-                        $attendanceExistence = Attendance::query()
-                            ->where('pin', $log['PIN'])
-                            ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])                            //->whereDate('datetime', $formattedDateTime)
-                            ->where('status', '0')
-                            ->exists();
-                        if (!$attendanceExistence) {
-                            $lateData = [
-                                'user_id' => $userId,
-                                'lateDate' => $checkInDate,
-                                'check_in' => $log['Status'] == 0 ? $checkInHour : null,
-                                'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
-                                'hours_num' => $log['Status'] == 1 ? $hoursOverTime : $hoursLate,
-                            ];
-                            if ($thisUser->branch_id == $branch->id && $thisUserPolicy->deduction_status == true) {
-                                $newLateData = [
-                                    'isPaid' => false,
-                                    'demands_compensation' => $thisUserPolicy->demands_compensation,
-                                ];
-                                $mergedData = array_merge($lateData, $newLateData);
-                            }
-                            if ($thisUser->branch_id == $branch->id && $thisUserPolicy->deduction_status == false) {
-                                $newLateData = [
-                                    'isPaid' => true,
-                                    'demands_compensation' => $thisUserPolicy->demands_compensation,
-                                ];
-                                $mergedData = array_merge($lateData, $newLateData);
-                            }
-                            if ($userId) {
-                                Late::query()->create($mergedData);
-                            }
-                        }
-                    }
-                    $checkInDate = substr($log['DateTime'], 0, 10);
-                    if (!in_array($checkInDate, $uniqueDates)) {
-                        $uniqueDates[] = $checkInDate;
-                    }
+        return DB::transaction(function () use ($request) {
+            //Storing attendance
+            $branch = Branch::findOrFail($request->branch_id);
+            $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
+            $tad = $tad_factory->get_instance();
+            $all_user_info = $tad->get_all_user_info();
+            $dt = $tad->get_date();
+            $logs = $tad->get_att_log();
+            $xml = simplexml_load_string($logs);
+            $array = json_decode(json_encode($xml), true);
+            $logsData = $array['Row'];
+            $uniqueDates = [];
+            foreach ($logsData as $log) {
+                $this->fingerprintService->storeAttendance($log);
+                $date = date('Y-m-d', strtotime($log['DateTime']));
+                Date::updateOrCreate(['date' => $date]);
+                $checkInDate = substr($log['DateTime'], 0, 10);
+                if (!in_array($checkInDate, $uniqueDates)) {
+                    $uniqueDates[] = $checkInDate;
                 }
                 // store the absence
                 foreach ($uniqueDates as $date) {
@@ -226,9 +153,20 @@ class AttendanceController extends Controller
                 }
                 return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
             });
+            }
+            //Storing delays
+            $allAttendances = Attendance::query()->where('status', '0')->get();
+            foreach ($allAttendances as $attendance) {
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime);
 
-//        $branch_id = $request->branch_id;
-//       dispatch(new StoreAttendanceLogsJob($branch_id));
+            }
+            //Storing absence
+            foreach ($uniqueDates as $date) {
+                $this->fingerprintService->storeUserAbsences($date, $request->branch_id);
+            }
+            return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
+        });
+
     }
 
     public function showAttendanceLogs()
