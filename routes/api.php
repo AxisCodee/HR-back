@@ -220,7 +220,7 @@ use Illuminate\Support\Facades\Route;
                 Route::get('getUserAbsence', 'getUserAbsence');
 
                 //test
-                Route::post('AbsenceTypes','absenceTypes'); //why it post??
+                Route::get('AbsenceTypes','absenceTypes'); //why it post??
                 Route::get('getUserAbsences', 'getUserAbsences');
                 Route::get('allUserAbsences', 'allUserAbsences');
 
