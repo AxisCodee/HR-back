@@ -120,6 +120,7 @@ class FingerprintService
             'check_in' => $attendance_datetime,
             //'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
             'hours_num' => $hoursLate,
+            
         ];
         if ($thisUser->branch_id == $branch_id && $userPolicy->deduction_status) {
             $newLateData = [
