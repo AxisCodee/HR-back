@@ -74,6 +74,7 @@ class AttendanceController extends Controller
             $array = json_decode(json_encode($xml), true);
             $logsData = $array['Row'];
             $uniqueDates = [];
+            
             foreach ($logsData as $log) {
                 $this->fingerprintService->storeAttendance($log);
                 $date = date('Y-m-d', strtotime($log['DateTime']));
