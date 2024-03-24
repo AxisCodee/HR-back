@@ -283,9 +283,9 @@ use Illuminate\Support\Facades\Route;
                 Route::post('acceptAlert', 'acceptAlert');
 
                 //test
-                Route::get('getUserLates', ' getUserLates');
-                Route::get('lateTypes', ' lateTypes');
-                Route::get('allUserLates', ' allUserLates');
+                Route::get('getUserLates', 'getUserLates');
+                Route::get('lateTypes', 'lateTypes');
+                Route::get('allUserLates', 'allUserLates');
 
 
             });
