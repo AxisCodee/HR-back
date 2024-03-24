@@ -27,7 +27,7 @@ class LateService
             'Sick' => $sickLates];
     }
 
-    public function allUserLates($request)
+    public function allUserLates(Request $request)
     {
         $user = User::with('allLates')->findOrFail($request->user_id);
         return $user;

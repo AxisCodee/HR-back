@@ -109,6 +109,12 @@ class UserInfoController extends Controller
             ->where('user_id', $id)
             ->increment('compensation_hours', $request->compensation_hours);
         return ResponseHelper::success('updated');
+    }
 
+    public function getCompensationHours(User $user)
+    {
+        return ResponseHelper::success(
+            ['compensation hours'=>$user->userInfo->compensation_hours] ,
+            'compensation hours returned successfully');
     }
 }

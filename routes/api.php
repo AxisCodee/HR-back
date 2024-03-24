@@ -202,6 +202,7 @@ use Illuminate\Support\Facades\Route;
                 Route::post('demandCompensationHours/{id}', 'setDemandCompensationHours');
                 Route::get('Show/{id}', 'show');
                 Route::post('updateSalary/{id}', 'updateSalary');
+                Route::get('comphrs/{user}','getCompensationHours');
             });
         });
 
@@ -283,9 +284,9 @@ use Illuminate\Support\Facades\Route;
                 Route::post('acceptAlert', 'acceptAlert');
 
                 //test
-                Route::get('getUserLates', ' getUserLates');
-                Route::get('lateTypes', ' lateTypes');
-                Route::get('allUserLates', ' allUserLates');
+                Route::get('getUserLates', 'getUserLates');
+                Route::get('lateTypes', 'lateTypes');
+                Route::get('allUserLates', 'allUserLates');
 
 
             });
