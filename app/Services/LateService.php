@@ -46,7 +46,7 @@ class LateService
     {
         $result = User::query()
             ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
-            ->withCount('justifiedPaidLatesCount as justifiedPaid'
+            ->with('justifiedPaidLatesCount as justifiedPaid'
                 , 'justifiedUnPaidLatesCount as justifiedUnPaid'
                 , 'UnjustifiedPaidLatesCount as UnjustifiedPaid'
                 , 'UnjustifiedUnPaidLatesCount as UnjustifiedUnPaid')
