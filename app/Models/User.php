@@ -299,7 +299,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('isPaid', 1)->where('type', 'justified');
+            ->where('isPaid', 1)->where('type', 'justified')->get()->select('hours_num');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
@@ -307,7 +307,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('type', 'justified')->where('isPaid', 0);
+            ->where('type', 'justified')->where('isPaid', 0)->get()->select('hours_num');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
@@ -315,7 +315,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('type', 'Unjustified')->where('isPaid', 1);
+            ->where('type', 'Unjustified')->where('isPaid', 1)->get()->select('hours_num');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
@@ -323,7 +323,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('type', 'Unjustified')->where('isPaid', 0);
+            ->where('type', 'Unjustified')->where('isPaid', 0)->get()->select('hours_num');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
