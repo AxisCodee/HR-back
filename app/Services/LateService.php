@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Helper\ResponseHelper;
 use function Symfony\Component\String\s;
+use Illuminate\Support\Facades\DB;
 
 class LateService
 {
@@ -45,18 +46,29 @@ class LateService
     public static function userLates(Request $request)
     {
         $result = User::query()
-            ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
-            ->with(
-                'justifiedPaidLatesCount',
-                'justifiedUnPaidLatesCount',
-                'UnjustifiedPaidLatesCount',
-                'UnjustifiedUnPaidLatesCount'
-            )
-            ->get()
-            ->toArray();
+        ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates','alerts','warnings','advances','rewards','deductions')
+        ->withCount([
+            'justifiedPaidLatesCount as justifiedPaid' => function ($query) {
+                $query->select(DB::raw("SUM(hours_num)"));
+            },
+            'justifiedUnPaidLatesCount as justifiedUnpaid' => function ($query) {
+                $query->select(DB::raw("SUM(hours_num)"));
+            },
+            'UnjustifiedPaidLatesCount as UnjustifiedPaid' => function ($query) {
+                $query->select(DB::raw("SUM(hours_num)"));
+            },
+            'UnjustifiedUnPaidLatesCount as UnjustifiedUnpaid' => function ($query) {
+                $query->select(DB::raw("SUM(hours_num)"));
+            },
+        ])
+        ->get()
+        ->toArray();
 
-        return $result;
+    return $result;
+
     }
+
+
 
 
 }

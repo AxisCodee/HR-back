@@ -342,7 +342,7 @@ class UserServices
     public function absences($user, $date)
     {
         if ($date) {
-            $absences = Absences::where('user_id', $user->id)->where('type', 'Unjustified');
+            $absences = Absences::where('user_id', $user->id);
             $absences = $this->userTimeService->filterDate($absences, $date, 'startDate');
             return $absences->get();
         }

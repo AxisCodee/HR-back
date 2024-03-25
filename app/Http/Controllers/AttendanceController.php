@@ -100,6 +100,8 @@ class AttendanceController extends Controller
             return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
         });
 
+
+
     }
 
     public function showAttendanceLogs()

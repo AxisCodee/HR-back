@@ -63,12 +63,12 @@ class User extends Authenticatable implements JWTSubject
         'CheckInPercentage',
         'CheckOutPercentage',
         'BaseSalary',
-        'deductions',
-        'rewards',
-        'advances',
-        'warnings',
-        'overTimes',
-        'alerts',
+       // 'deductions',
+        //'rewards',
+        //'advances',
+       // 'warnings',
+        //'overTimes',
+        //'alerts',
         'status',
         'level',
         'isTrash',
@@ -295,20 +295,23 @@ class User extends Authenticatable implements JWTSubject
     /*
    ----------------LATES COUNT------------------
    */
-    public function justifiedPaidLatesCount()
-    {
-        $date = request()->query('date');
-        $result = $this->hasMany(Late::class, 'user_id')
-            ->where('isPaid', 1)->where('type', 'justified');
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
-    }
+  public function justifiedPaidLatesCount()
+  {
+      $date = request()->query('date');
+      $result = $this->hasMany(Late::class, 'user_id')
+          ->where('isPaid', 1)
+          ->where('type', 'justified');
+      $this->usertimeService->filterDate($result, $date, 'lateDate');
+
+      return $result;
+  }
 
     public function justifiedUnPaidLatesCount()
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
             ->where('type', 'justified')->where('isPaid', 0);
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
     public function UnjustifiedPaidLatesCount()
@@ -316,7 +319,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
             ->where('type', 'Unjustified')->where('isPaid', 1);
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
     public function UnjustifiedUnPaidLatesCount()
@@ -324,8 +327,66 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
             ->where('type', 'Unjustified')->where('isPaid', 0);
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
+
+
+
+    public function deductions()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'deduction');
+        return $this->usertimeService->filterDate($result, $date, 'dateTime');
+    }
+      public function rewards()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'reward');
+        return $this->usertimeService->filterDate($result, $date, 'dateTime');
+    }
+      public function advances()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'advance');
+        return $this->usertimeService->filterDate($result, $date, 'dateTime');
+    }
+      public function warnings()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'warning');
+        return $this->usertimeService->filterDate($result, $date, 'dateTime');
+    }
+    //   public function overTimes()
+    // {
+    //     $date = request()->query('date');
+    //     $result = $this->hasMany(Decision::class, 'user_id')
+    //         ->where('type', 'overTime');
+    //     return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    // }
+
+    public function alerts()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'alert');
+        return $this->usertimeService->filterDate($result, $date, 'dateTime');
+    }
+
+    // public function absences()
+    // {
+    //     $date = request()->query('date');
+    //     $result = $this->hasMany(Decision::class, 'user_id')
+    //         ->where('type', 'deduction');
+    //     return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    // }
+
+
+
+
 
     /***
      *
@@ -334,43 +395,43 @@ class User extends Authenticatable implements JWTSubject
      */
 
 
-    public function getOverTimesAttribute()
-    {
-        $date = request()->query('date');
-        return $this->userServices->overTimes($this, $date);
-    }
+    // public function getOverTimesAttribute()
+    // {
+    //     $date = request()->query('date');
+    //     return $this->userServices->overTimes($this, $date);
+    // }
 
 
-    public function getDeductionsAttribute()
-    {
-        $date = request()->query('date');
-        return $this->userServices->deductions($this, $date);
-    }
+    // public function getDeductionsAttribute()
+    // {
+    //     $date = request()->query('date');
+    //     return $this->userServices->deductions($this, $date);
+    // }
 
 
-    public function getRewardsAttribute()
-    {
-        $date = request()->query('date');
-        return $this->userServices->rewards($this, $date);
-    }
+    // public function getRewardsAttribute()
+    // {
+    //     $date = request()->query('date');
+    //     return $this->userServices->rewards($this, $date);
+    // }
 
-    public function getAdvancesAttribute()
-    {
-        $date = request()->query('date');
-        return $this->userServices->advances($this, $date);
-    }
+    // public function getAdvancesAttribute()
+    // {
+    //     $date = request()->query('date');
+    //     return $this->userServices->advances($this, $date);
+    // }
 
-    public function getWarningsAttribute()
-    {
-        $date = request()->query('date');
-        return $this->userServices->warnings($this, $date);
-    }
+    // public function getWarningsAttribute()
+    // {
+    //     $date = request()->query('date');
+    //     return $this->userServices->warnings($this, $date);
+    // }
 
-    public function getAlertsAttribute()
-    {
-        $date = request()->query('date');
-        return $this->userServices->alerts($this, $date);
-    }
+    // public function getAlertsAttribute()
+    // {
+    //     $date = request()->query('date');
+    //     return $this->userServices->alerts($this, $date);
+    // }
 
     public function getAbsencesAttribute()
     {
@@ -566,7 +627,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Rate::class, 'evaluator_id');
     }
 
-    public function absences()
+    public function absence()
     {
         return $this->hasMany(Absences::class, 'user_id');
     }
