@@ -299,32 +299,32 @@ class User extends Authenticatable implements JWTSubject
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('isPaid', 1)->where('type', 'justified');
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
+            ->where('isPaid', 1)->where('type', 'justified')->sum('hours_num');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
     public function justifiedUnPaidLatesCount()
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('type', 'justified')->where('isPaid', 0);
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
+            ->where('type', 'justified')->where('isPaid', 0)->sum('hours_num');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
     public function UnjustifiedPaidLatesCount()
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('type', 'Unjustified')->where('isPaid', 1);
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
+            ->where('type', 'Unjustified')->where('isPaid', 1)->sum('hours_num');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
     public function UnjustifiedUnPaidLatesCount()
     {
         $date = request()->query('date');
         $result = $this->hasMany(Late::class, 'user_id')
-            ->where('type', 'Unjustified')->where('isPaid', 0);
-        return $this->usertimeService->filterDate($result, $date, 'lateDate')->sum('hours_num');
+            ->where('type', 'Unjustified')->where('isPaid', 0)->sum('hours_num');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
     /***
