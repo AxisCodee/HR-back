@@ -111,18 +111,31 @@ class FingerprintService
         }
     }
 
+    public function storeEnd($checkInDate, $pin)
+    {
+        $checkOut = Attendance::query()
+            ->where('pin', $pin)
+            ->whereRaw('DATE(datetime) = ? ', [$checkInDate])
+            //->where('status', '1')
+            ->first();
+        return $checkOut;
+
+    }
+
     public function storeUserLate($thisUser, $checkInDate, $hoursLate, $branch_id, $userPolicy, $attendance_datetime)
     {
+        $end = $this->storeEnd($checkInDate, $thisUser->pin);
+        //dd(Carbon::parse($attendance_datetime)->format('H:i:s'));
+        //dd($end);
         $lateData = [
             'user_id' => $thisUser->id,
             'lateDate' => $checkInDate,
-            // 'end' => $checkOutHour,
-            'check_in' => $attendance_datetime,
+            'check_in' =>Carbon::parse($attendance_datetime)->format('H:i:s'),
+            'end' => $end->datetime,
             //'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
             'hours_num' => $hoursLate,
-
-            
         ];
+
         if ($thisUser->branch_id == $branch_id && $userPolicy->deduction_status) {
             $newLateData = [
                 'isPaid' => false,
