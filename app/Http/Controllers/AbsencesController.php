@@ -10,17 +10,17 @@ use App\Services\AbsenceService;
 use App\Services\UserTimeService;
 use App\Http\Requests\AbsencesRequest\StoreAbsencesRequest;
 use App\Http\Requests\AbsencesRequest\UpdateAbsencesRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AbsencesController extends Controller
 {
     protected $absenceService;
     protected $usertimeService;
 
-    public function __construct(AbsenceService $absenceService,UserTimeService $usertimeService)
+    public function __construct(AbsenceService $absenceService, UserTimeService $usertimeService)
     {
         $this->absenceService = $absenceService;
         $this->usertimeService = $usertimeService;
-
     }
 
     // public function index(Request $request)
@@ -30,12 +30,15 @@ class AbsencesController extends Controller
 
     public function show(User $user)
     {
-            $result = $this->absenceService->show($user);
-            return ResponseHelper::success($result, null, 'Absence');
+        $result = $this->absenceService->show($user);
+        return ResponseHelper::success($result, null, 'Absence');
     }
 
     public function update(UpdateAbsencesRequest $request)
     {
+        if ($request->password != Auth::user()->ownerPassword) {
+            return ResponseHelper::error('You are not authorized');
+        }
         $result = $this->absenceService->update($request->toArray());
         return ResponseHelper::success($result, null, 'Absence updated successfully');
     }
@@ -53,14 +56,14 @@ class AbsencesController extends Controller
         return ResponseHelper::success($absence, null);
     }
 
-    public function store_absence(StoreAbsencesRequest $request)//store multi
+    public function store_absence(StoreAbsencesRequest $request) //store multi
     {
-            $request->validated();
-            $results = $this->absenceService->store_absence($request);
-            return ResponseHelper::success($results, null, 'Absence added successfully');
+        $request->validated();
+        $results = $this->absenceService->store_absence($request);
+        return ResponseHelper::success($results, null, 'Absence added successfully');
     }
 
-    public function storeAbsence(Request $request)//store one
+    public function storeAbsence(Request $request) //store one
     {
         $result = $this->absenceService->storeAbsence($request);
         return ResponseHelper::success($result, null, 'Absence added successfully');
@@ -86,21 +89,20 @@ class AbsencesController extends Controller
         } else {
             return ResponseHelper::error('No results found', 404);
         }
-
     }
 
     public function absenceTypes(Request $request)
     {
         $validate = $request->validate([
-            'user_id'=> ['required','exists:users,id','integer'],
+            'user_id' => ['required', 'exists:users,id', 'integer'],
         ]);
 
         $absence = $this->absenceService->AbsenceTypes($request);
 
         return ResponseHelper::success(
-            $absence
-
-        , null);
+            $absence,
+            null
+        );
     }
 
     public function getUserAbsences(Request $request)
@@ -111,7 +113,6 @@ class AbsencesController extends Controller
         } else {
             return ResponseHelper::error('No results found', 404);
         }
-
     }
 
     public function allUserAbsences(Request $request)
@@ -122,8 +123,5 @@ class AbsencesController extends Controller
         } else {
             return ResponseHelper::error('No results found', 404);
         }
-
     }
-
 }
-
