@@ -18,11 +18,13 @@ use Illuminate\Support\Facades\DB;
 class LateController extends Controller
 {
     protected $lateService;
+
     public function __construct(LateService $lateService)
     {
         $this->lateService = $lateService;
 
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -64,9 +66,10 @@ class LateController extends Controller
         }
     }
 
-    public function update(StoreLateRequest $request)
+    public function update(UpdateLateRequest $request)
     {
-        //
+        $this->lateService->editLate($request->toArray());
+        return ResponseHelper::success([], 'Late Updated successfully');
     }
 
     /**
@@ -169,9 +172,6 @@ class LateController extends Controller
     }
 
 
-
-
-
     public function getUserLates(Request $request)
     {
         $result = $this->lateService->userLates($request);
@@ -187,26 +187,26 @@ class LateController extends Controller
     public function lateTypes(Request $request)
     {
         $validate = $request->validate([
-            'user_id'=> ['required','exists:users,id','integer'],
+            'user_id' => ['required', 'exists:users,id', 'integer'],
         ]);
 
         $late = $this->lateService->lateTypes($request);
 
         return ResponseHelper::success(
-            $late,null);
+            $late, null);
     }
 
 
     public function allUserLates(Request $request)
     {
         $validate = $request->validate([
-            'user_id'=> ['required','exists:users,id','integer'],
+            'user_id' => ['required', 'exists:users,id', 'integer'],
         ]);
 
         $late = $this->lateService->allUserLates($request);
 
         return ResponseHelper::success(
-            $late,null);
+            $late, null);
     }
 
 }

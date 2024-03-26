@@ -118,7 +118,6 @@ class FingerprintService
             ->whereRaw('DATE(datetime) = ? ', [$checkInDate])
             ->where('status', '1')
             ->first();
-            //dd($checkOut);
         return $checkOut;
 
     }
@@ -126,15 +125,10 @@ class FingerprintService
     public function storeUserLate($thisUser, $checkInDate, $hoursLate, $branch_id, $userPolicy, $attendance_datetime)
     {
         $end = $this->storeEnd($checkInDate, $thisUser->pin);
-
-        //dd(Carbon::parse($attendance_datetime)->format('H:i:s'));
-       //dd($end);
         $lateData = [
             'user_id' => $thisUser->id,
             'lateDate' => $checkInDate,
-            'check_in' =>Carbon::parse($attendance_datetime)->format('H:i:s'),
-           // 'end' => $end->datetime,
-            //'check_out' => $log['Status'] == 1 ? $checkOutHour : null,
+            'check_in' => Carbon::parse($attendance_datetime)->format('H:i:s'),
             'hours_num' => $hoursLate,
         ];
 
@@ -156,11 +150,12 @@ class FingerprintService
         }
         if ($thisUser->id) {
             Late::query()->create($mergedData);
-            if($end){
+            if ($end) {
                 Late::query()
-                ->where('lateDate', $checkInDate)
-                ->where('user_id', $thisUser->id)
-                ->update(['end' =>Carbon::parse($end->datetime)->format('H:i:s') ]);}
+                    ->where('lateDate', $checkInDate)
+                    ->where('user_id', $thisUser->id)
+                    ->update(['end' => Carbon::parse($end->datetime)->format('H:i:s')]);
+            }
         }
     }
 

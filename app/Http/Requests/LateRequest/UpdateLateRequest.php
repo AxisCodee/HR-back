@@ -13,7 +13,7 @@ class UpdateLateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,9 +24,12 @@ class UpdateLateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => ['required', 'exists:lates,id'],
+            'type' => [ 'in:normal,justified,Unjustified'],
+            'isPaid' => [ 'boolean'],
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();
