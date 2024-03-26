@@ -149,7 +149,8 @@ class AbsenceService
     {
         $result = User::query()
         ->with('userInfo:id,image'
-        , 'department'
+        , 'department',
+        'allAbsences'
         ,'UnPaidAbsences',
          'PaidAbsences',
          'sickAbsences',
