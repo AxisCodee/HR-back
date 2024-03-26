@@ -12,27 +12,25 @@ class Rate extends Model
     protected $fillable =
         [
             'name',
-            'user_id',
-            'evaluator_id',
-            'date',
-            'rate',
-            'rate_type_id'
-
+            'date'
         ];
 
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+        public function users()
+        {
+            return $this->belongsToMany(User::class, 'rate_users')
+                ->withPivot('evaluator_id','rateType_id');
+        }
 
-    public function evaluators()
-    {
-        return $this->belongsTo(User::class, 'evaluator_id');
-    }
+        public function evaluators()
+        {
+            return $this->belongsToMany(User::class, 'rate_users','rate_id','evalutor_id')
+                ->withPivot('user_id','rateType_id');
+        }
 
-    public function rateType()
+    public function rateTypes()
     {
-        return $this->belongsTo(RateType::class, 'rate_type_id');
+        return $this->belongsToMany(User::class, 'rate_users','rate_id','rateType_id')
+        ->withPivot('user_id','evaluator_id');
     }
 }

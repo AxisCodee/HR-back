@@ -253,6 +253,13 @@ Route::middleware('exception.handler')->group(function () {
                     Route::get('getRate/{id}', 'getRate');
                     Route::get('allRates', 'allRates');
                     Route::get('userRates/{date}', 'userRates');
+
+                    Route::get('AllReview', 'review');
+                    Route::get('reviewDetails/{ratId}', 'reviewDetails');
+                    Route::get('userReview', 'userReview');
+                    Route::post('updateReview/{rate}', 'updateReview');
+                    Route::post('reportReview/{rate}', 'reportReview');
+                });
                 });
             Route::controller(RateTypeController::class)->group(function () {
 
@@ -329,4 +336,4 @@ Route::middleware('exception.handler')->group(function () {
 
 
     Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
-});
+

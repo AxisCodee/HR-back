@@ -524,16 +524,16 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function userRates()
-    {
-        return $this->hasMany(Rate::class, 'user_id');
-    }
+    // public function userRates()
+    // {
+    //     return $this->hasMany(Rate::class, 'user_id');
+    // }
 
 
-    public function evaluatorRates()
-    {
-        return $this->hasMany(Rate::class, 'evaluator_id');
-    }
+    // public function evaluatorRates()
+    // {
+    //     return $this->hasMany(Rate::class, 'evaluator_id');
+    // }
 
     public function absences()
     {
@@ -596,5 +596,21 @@ class User extends Authenticatable implements JWTSubject
     public function branch()
     {
         return $this->belongsTo(Branch::class, 'branch_id');
+    }
+    public function evaluatorRates()
+    {
+        return $this->belongsToMany(Rate::class, 'rate_users','evalutor_id')
+            ->withPivot('evaluator_id','rateType_id');
+    }
+
+    public function userRateTypes()
+    {
+        return $this->belongsToMany(RateType::class, 'rate_users','user_id','rateType_id')
+        ->withPivot('rate_id','evalutor_id','rate');
+    }
+    public function evaluatorRateTypes()
+    {
+        return $this->belongsToMany(RateType::class, 'rate_users','evalutor_id','rateType_id')
+        ->withPivot('rate_id','user_id','rate');
     }
 }
