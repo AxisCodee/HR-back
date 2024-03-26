@@ -36,8 +36,8 @@ class AbsencesController extends Controller
 
     public function update(UpdateAbsencesRequest $request)
     {
-        $password=Auth::user()->ownerPassword;
-        if ($request->password != $password || $password ==null ) {
+        $password = Auth::user()->ownerPassword;
+        if ($password == null || $request->password != $password) {
             return ResponseHelper::error('You are not authorized');
         }
         $result = $this->absenceService->update($request->toArray());
