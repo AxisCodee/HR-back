@@ -290,7 +290,7 @@ class User extends Authenticatable implements JWTSubject
         $result = $this->hasMany(Late::class, 'user_id');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
- 
+
 
 
     /*
@@ -377,13 +377,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
 
-    // public function absences()
-    // {
-    //     $date = request()->query('date');
-    //     $result = $this->hasMany(Decision::class, 'user_id')
-    //         ->where('type', 'deduction');
-    //     return $this->usertimeService->filterDate($result, $date, 'lateDate');
-    // }
+    public function absences()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'deduction');
+        return $this->usertimeService->filterDate($result, $date, 'lateDate');
+    }
 
 
 
@@ -396,43 +396,43 @@ class User extends Authenticatable implements JWTSubject
      */
 
 
-    // public function getOverTimesAttribute()
-    // {
-    //     $date = request()->query('date');
-    //     return $this->userServices->overTimes($this, $date);
-    // }
+    public function getOverTimesAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->overTimes($this, $date);
+    }
 
 
-    // public function getDeductionsAttribute()
-    // {
-    //     $date = request()->query('date');
-    //     return $this->userServices->deductions($this, $date);
-    // }
+    public function getDeductionsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->deductions($this, $date);
+    }
 
 
-    // public function getRewardsAttribute()
-    // {
-    //     $date = request()->query('date');
-    //     return $this->userServices->rewards($this, $date);
-    // }
+    public function getRewardsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->rewards($this, $date);
+    }
 
-    // public function getAdvancesAttribute()
-    // {
-    //     $date = request()->query('date');
-    //     return $this->userServices->advances($this, $date);
-    // }
+    public function getAdvancesAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->advances($this, $date);
+    }
 
-    // public function getWarningsAttribute()
-    // {
-    //     $date = request()->query('date');
-    //     return $this->userServices->warnings($this, $date);
-    // }
+    public function getWarningsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->warnings($this, $date);
+    }
 
-    // public function getAlertsAttribute()
-    // {
-    //     $date = request()->query('date');
-    //     return $this->userServices->alerts($this, $date);
-    // }
+    public function getAlertsAttribute()
+    {
+        $date = request()->query('date');
+        return $this->userServices->alerts($this, $date);
+    }
 
     public function getAbsencesAttribute()
     {
