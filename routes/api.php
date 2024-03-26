@@ -312,7 +312,7 @@ use Illuminate\Support\Facades\Route;
                 Route::post('google/starMessages', 'starMessages');
             });
         });
-    });
+  
 
 
 //All APIs for the normal user (not encapsulated)
@@ -353,4 +353,4 @@ use Illuminate\Support\Facades\Route;
 
 
     Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
-});
+

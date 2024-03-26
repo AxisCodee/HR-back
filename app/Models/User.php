@@ -290,6 +290,7 @@ class User extends Authenticatable implements JWTSubject
         $result = $this->hasMany(Late::class, 'user_id');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
+ 
 
 
     /*
