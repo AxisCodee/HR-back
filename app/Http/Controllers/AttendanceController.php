@@ -86,12 +86,9 @@ class AttendanceController extends Controller
             }
             //Storing delays
             $allAttendances = Attendance::query()
-                //->where('status', '0')
                 ->get();
             foreach ($allAttendances as $attendance) {
-
                 $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime);
-
             }
             //Storing absence
             foreach ($uniqueDates as $date) {
@@ -99,7 +96,6 @@ class AttendanceController extends Controller
             }
             return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
         });
-
 
 
     }
