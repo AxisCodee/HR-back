@@ -21,4 +21,9 @@ class RateType extends Model
     {
         return $this->hasMany(Rate::class);
     }
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'rate_users','rateType_id','user_id')
+        ->withPivot('rate_id','evalutor_id');
+    }
 }

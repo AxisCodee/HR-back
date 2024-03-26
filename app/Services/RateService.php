@@ -138,5 +138,168 @@ class RateService
             ->toArray();
         return ResponseHelper::success($result, null, 'userRates', 200);
     }
-    
+    public function reviews()
+    {
+        $results = Rate::select('rates.*')
+        ->selectSub(function ($query) {
+            $query->from('rate_users')
+                ->whereColumn('rate_users.rate_id', 'rates.id')
+                ->selectRaw('COUNT(DISTINCT evalutor_id)');
+        }, 'evaluators_count')
+        ->get()
+        ->toArray();
+        return  $results;
+    }
+
+    public function reviewDetails($rateId)
+    {
+        $employees = User::with(['userRateTypes'=>function($query) use ($rateId)
+        {
+            $query->where('rate_users.rate_id', $rateId);
+
+         } ])
+
+        ->get();
+
+
+
+        $results = [];
+
+        foreach ($employees as $employee) {
+            $employeeData = [];
+            $employeeData['id']=$employee->id;
+            $employeeData['name'] = $employee->first_name . ' ' . $employee->last_name;
+            $employeeData['department'] = $employee->department;
+            $employeeData['rate_types'] = [];
+            $totalRating = 0;
+            $ratCount = 0;
+
+            foreach ($employee->userRateTypes as $userRateType) {
+                $rate = $userRateType->pivot->rate;
+
+                if ($rate !== null) {
+                    $totalRating += $rate;
+                    $ratCount++;
+                }
+
+                $employeeData['rate_types'][] = [
+                    'rate_type' => $userRateType->rate_type,
+                    'rate' => $rate,
+                ];
+            }
+
+            $averageRating = $ratCount > 0 ? $totalRating / $ratCount : 0;
+
+            $employeeData['totalRating'] = $averageRating;
+
+            $results[] = $employeeData;
+        }
+
+        return $results;
+    }
+    public function getUserReview($userId,$rateId)
+
+        {
+            $user=User::find($userId);
+            $employees =$user->with(['evaluatorRateTypes'=>function($query)use ($rateId)
+            {
+                $query->where('rate_users.rate_id', $rateId);
+
+            } ])->get();
+
+            $results = [];
+
+            foreach ($employees as $employee) {
+                $employeeData = [];
+                $employeeData['id']=$employee->id;
+                $employeeData['name'] = $employee->first_name . ' ' . $employee->last_name;
+                $employeeData['department'] = $employee->department;
+                $employeeData['rate_types'] = [];
+                $totalRating = 0;
+                $ratCount = 0;
+                $evaluators=$employee->evaluatorRateTypes()->where('user_id',$userId)->get();
+
+
+                foreach ($evaluators as $evaluatorRateTypes) {
+                    $rate = $evaluatorRateTypes->pivot->rate;
+
+                    if ($rate !== null) {
+                        $totalRating += $rate;
+                        $ratCount++;
+                    }
+
+                    $employeeData['rate_types'][] = [
+                        'rate_type' => $evaluatorRateTypes->rate_type,
+                        'rate' => $rate,
+                    ];
+                }
+
+                $averageRating = $ratCount > 0 ? $totalRating / $ratCount : 0;
+
+                $employeeData['totalRating'] = $averageRating;
+
+                $results[] = $employeeData;
+            }
+
+            return $results;
+        }
+        public function update( $request , $rate)
+        {
+            $result=$rate->update(
+                [
+                    'name'=>$request->name
+                ]
+                );
+                return $result;
+        }
+        public function ReportReview($user)
+
+        {
+            $totalRating = 0;
+            $ratCount = 0;
+            $rates= Rate::select('rates.*')
+            ->selectSub(function ($query) use ($user){
+                $query->from('rate_users')
+                    ->whereColumn('rate_users.rate_id', 'rates.id')
+                    ->whereColumn('rate_users.user_id', $user->id);
+            })
+            ->get()
+            ->toArray();
+            foreach($rates as $rate)
+            {
+                $employees =$user->with(['evaluatorRateTypes'=>function($query)use ($rate)
+                {
+                    $query->where('rate_users.rate_id',  $rate);
+
+                } ])->get();
+                foreach ($employees as $employee) {
+                    $evaluators=$employee->evaluatorRateTypes()->where('user_id',$user->id)->get();
+                foreach ($evaluators as $evaluatorRateTypes) {
+                    $rate = $evaluatorRateTypes->pivot->rate;
+
+                    if ($rate !== null) {
+                        $totalRating += $rate;
+                        $ratCount++;
+                    }
+
+                    $employeeData['rate_types'][] = [
+                        'rate_type' => $evaluatorRateTypes->rate_type,
+                        'rate' => $rate,
+                    ];
+                }
+
+                $averageRating = $ratCount > 0 ? $totalRating / $ratCount : 0;
+
+                $employeeData['totalRating'] = $averageRating;
+
+
+            }
+
+
+            }
+
+
+            return  $rates;
+        }
 }
+

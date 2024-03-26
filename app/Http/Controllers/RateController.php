@@ -158,4 +158,49 @@ class RateController extends Controller
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
+    public function review()
+    {
+        try {
+           $result= $this->rateService->reviews();
+           return ResponseHelper::success($result, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+    public function reviewDetails($ratId)
+    {
+        try {
+           $result= $this->rateService->reviewDetails($ratId);
+           return ResponseHelper::success($result, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+    public function userReview(Request $Request)
+    {
+        try {
+           $result= $this->rateService->getUserReview($Request->userId,$Request->rateId);
+           return ResponseHelper::success($result, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+    public function updateReview(Request $Request, Rate $rate)
+    {
+        try {
+           $result= $this->rateService->update($Request,$rate);
+           return ResponseHelper::success($result, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
+    public function reportReview(User $user)
+    {
+        try {
+           $result= $this->rateService->ReportReview($user);
+           return ResponseHelper::success($result, null);
+        } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+        }
+    }
 }

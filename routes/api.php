@@ -263,6 +263,13 @@ use Illuminate\Support\Facades\Route;
                     Route::get('getRate/{id}', 'getRate');
                     Route::get('allRates', 'allRates');
                     Route::get('userRates/{date}', 'userRates');
+
+                    Route::get('AllReview', 'review');
+                    Route::get('reviewDetails/{ratId}', 'reviewDetails');
+                    Route::get('userReview', 'userReview');
+                    Route::post('updateReview/{rate}', 'updateReview');
+                    Route::post('reportReview/{rate}', 'reportReview');
+                });
                 });
             Route::controller(RateTypeController::class)->group(function () {
 
@@ -305,7 +312,7 @@ use Illuminate\Support\Facades\Route;
                 Route::post('google/starMessages', 'starMessages');
             });
         });
-    });
+  
 
 
 //All APIs for the normal user (not encapsulated)
@@ -346,3 +353,4 @@ use Illuminate\Support\Facades\Route;
 
 
     Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
+
