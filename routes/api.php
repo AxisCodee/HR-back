@@ -294,6 +294,7 @@ Route::prefix('Late')->group(function () {
         Route::get('lateTypes', 'lateTypes');
         Route::get('allUserLates', 'allUserLates');
 
+        Route::post('edit', 'update');
 
     });
 });
