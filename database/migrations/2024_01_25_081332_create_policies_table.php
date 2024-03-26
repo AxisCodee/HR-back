@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('absence_management');
             $table->boolean('deduction_status')->default(true);
             $table->boolean('demands_compensation');
+            $table->integer('monthlyhours')->default(0);
             $table->foreignId('branch_id')->constrained('branches')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

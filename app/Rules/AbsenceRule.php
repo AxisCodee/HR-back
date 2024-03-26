@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +14,7 @@ class AbsenceRule implements ValidationRule
         $this->absences = $absences;
     }
 
-    public function validate($attribute, $value, Closure $fail): void
+    public function validate($attribute, $value,$fail): void
     {
         $exists = DB::table('absences')
             ->where('user_id', $this->absences[0]['user_id'])

@@ -11,9 +11,9 @@ class Policy extends Model
     protected $fillable = [
         'work_time', 'annual_salary_increase',
 
-        'warnings', 'absence_management', 'deduction_status', 'branch_id','demands_compensation'
+        'warnings', 'absence_management', 'deduction_status', 'branch_id','demands_compensation',
 
-  
+        'monthlyhours',
     ];
 
     protected $casts = [

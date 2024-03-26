@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Helper\ResponseHelper;
 use Closure;
 use Illuminate\Http\Request;
+use App\Helper\ResponseHelper;
 use Symfony\Component\HttpFoundation\Response;
 
 class HandleExceptions
@@ -19,7 +19,7 @@ class HandleExceptions
         try {
             return $next($request);
         } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
+            return ResponseHelper::error($e->getMessage(),$e->getCode());
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Date;
 use Carbon\Carbon;
 use App\Models\Rate;
 use App\Models\User;
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ReportServices
 {
+    protected $userTimeService;
+
+    public function __construct(UserTimeService $userTimeService)
+    {
+        $this->userTimeService = $userTimeService;
+    }
+
     public function StoreReport($request)
     {
         $validate = $request->validated();
@@ -112,6 +120,12 @@ class ReportServices
             'deposits',
             'department',
             'penalties',
+           'deductions',
+        'rewards',
+        'advances',
+        'warnings',
+       // 'overTimes',
+        'alerts',
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',
@@ -145,6 +159,20 @@ class ReportServices
             ];
         });
         return ResponseHelper::success($ratesWithPercentage->values());
+    }
+
+
+    public function getUserChecksPercentage($user, $date, $format, $status)
+    {
+        $dateFormat = $format === 'Y-m' ? "%Y-%m" : "%Y";
+        $checks = Attendance::query()
+            ->where('pin', $user->pin)
+            ->where('status', $status)
+            ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $date])
+            ->count();
+        $workDays = Date::query()->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])->count();
+        return round(($checks / $workDays) * 100);
+
     }
 }
 
