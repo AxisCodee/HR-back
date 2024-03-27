@@ -120,12 +120,12 @@ class ReportServices
             'deposits',
             'department',
             'penalties',
-           'deductions',
-        'rewards',
-        'advances',
-        'warnings',
-       // 'overTimes',
-        'alerts',
+            'deductions',
+            'rewards',
+            'advances',
+            'warnings',
+            // 'overTimes',
+            'alerts',
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',
@@ -162,6 +162,7 @@ class ReportServices
     }
 
 
+
     public function getUserChecksPercentage($user, $date, $format, $status)
     {
         $dateFormat = $format === 'Y-m' ? "%Y-%m" : "%Y";
@@ -170,7 +171,11 @@ class ReportServices
             ->where('status', $status)
             ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $date])
             ->count();
+
         $workDays = Date::query()->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])->count();
+       if ($workDays==0){
+           return 0;
+       }
         return round(($checks / $workDays) * 100);
 
     }
