@@ -112,6 +112,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::post('ratesByDate', 'ratesByDate');
 
             Route::post('checksPercentage', 'checksPercentage');
+            Route::post('checksPercentage', 'checksPercentage');
         });
     });
 
