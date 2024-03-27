@@ -68,7 +68,7 @@ class LateController extends Controller
 
     public function update(UpdateLateRequest $request)
     {
-        $this->lateService->editLate($request->toArray());
+        $this->lateService->editLate($request);
         return ResponseHelper::success([], 'Late Updated successfully');
     }
 

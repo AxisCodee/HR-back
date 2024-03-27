@@ -165,4 +165,20 @@ class ReportController extends Controller
         $result = $this->ReportServices->getUserChecksPercentage($user, $date, $format, $status);
         return ResponseHelper::success($result);
     }
+
+    public function yearlyPercentageDetails(Request $request)
+    {
+        $user = User::query()->findOrFail($request->user_id);
+        $year = $request->date;
+        $status = $request->status;
+        if (strlen($year) == 4) {
+            for ($i = 1; $i <= 12; $i++) {
+                $date = $year . '-0' . $i;
+                $result = $this->ReportServices->getUserChecksPercentage($user, $date, 'Y-m', $status);
+                $monthlyPercentages[] = $result;
+            }
+            return ResponseHelper::success($monthlyPercentages);
+        }
+        return false;
+    }
 }
