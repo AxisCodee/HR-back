@@ -117,4 +117,5 @@ class UserInfoController extends Controller
             ['compensation hours'=>$user->userInfo->compensation_hours] ,
             'compensation hours returned successfully');
     }
+    
 }
