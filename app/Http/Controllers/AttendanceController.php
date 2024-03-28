@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
 
 
-require 'tad\vendor\autoload.php';
+require 'tad/vendor/autoload.php';
 
 class AttendanceController extends Controller
 {
