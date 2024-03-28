@@ -112,6 +112,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::post('ratesByDate', 'ratesByDate');
 
             Route::post('checksPercentage', 'checksPercentage');
+            Route::post('yearlyPercentageDetails', 'yearlyPercentageDetails');
         });
     });
 
@@ -337,7 +338,8 @@ Route::prefix('Notes')->group(function () {
     });
 });
 
-Route::prefix('Report')->group(function () {
+Route::prefix('
+')->group(function () {
     Route::controller(ReportController::class)->group(function () {
         Route::get('myReports', 'my_reports');
     });
