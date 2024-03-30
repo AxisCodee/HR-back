@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -22,7 +21,7 @@ return new class extends Migration
             $table->boolean('demands_compensation')->default(false);
             $table->double('hours_num')->nullable(true)->default(NULL);
             $table->enum('status', ['waiting', 'accepted', 'rejected']);
-            $table->enum('type', ['sick', 'Unjustified', 'justified'])->default('sick');
+            $table->enum('type', ['Unjustified', 'justified', 'sick']);
             $table->timestamps();
         });
     }

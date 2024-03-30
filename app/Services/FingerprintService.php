@@ -136,6 +136,7 @@ class FingerprintService
             $newLateData = [
                 'isPaid' => false,
                 'demands_compensation' => $userPolicy->demands_compensation,
+                'type' => 'Unjustified'
             ];
             $mergedData = array_merge($lateData, $newLateData);
             $this->autoDeduction($thisUser, $attendance_datetime, 'warning', $lateData['hours_num']);
@@ -145,6 +146,7 @@ class FingerprintService
             $newLateData = [
                 'isPaid' => true,
                 'demands_compensation' => $userPolicy->demands_compensation,
+                'type' => 'justified'
             ];
             $mergedData = array_merge($lateData, $newLateData);
         }
