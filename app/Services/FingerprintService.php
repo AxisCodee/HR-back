@@ -235,14 +235,18 @@ class FingerprintService
         Absences::create($mergedData);
     }
 
-    public function clearDelays($branch_id,$date)
+    public function clearDelays($branch_id, $date)
     {
         $userPolicy = Policy::query()->where('branch_id', $branch_id)->first();
-        $companyEndTime = $userPolicy->work_time['end_time'];
-        $now = Carbon::now()->format('H:i:s');
-        if ($now->isAfter($companyEndTime)) {
-                $absences=Absences::query()->where('startDate',$date)
-                ->where()
+        if ($userPolicy != null) {
+            $companyEndTime = Carbon::parse($userPolicy->work_time['end_time'])->format('H:i');
+            $now = Carbon::now();
+            if ($now->greaterThan($companyEndTime)) {
+                Absences::query()->whereRaw('DATE(startDate) = ? ', [$date])
+                    ->where('duration', 'hourly')
+                    ->delete();
+            }
         }
     }
+
 }

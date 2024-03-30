@@ -92,7 +92,7 @@ class AttendanceController extends Controller
             }
             //Storing absence
             foreach ($uniqueDates as $date) {
-                $this->fingerprintService->clearDelays($request->branch_id);
+                $this->fingerprintService->clearDelays($request->branch_id, $date);
                 $this->fingerprintService->storeUserAbsences($date, $request->branch_id);
             }
             return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
