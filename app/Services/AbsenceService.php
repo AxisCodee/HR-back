@@ -61,7 +61,7 @@ class AbsenceService
 
     [
         'user_id' => $user->id,
-        'startDate' => Carbon::now()->format('y-m-d'),
+        'startDate' => Carbon::now()->format('Y-m-d'),
     ],
 
             [
