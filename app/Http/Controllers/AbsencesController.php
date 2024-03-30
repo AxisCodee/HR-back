@@ -49,10 +49,10 @@ class AbsencesController extends Controller
     {
         $password = Auth::user()->ownerPassword;
         if ($password == null || $request->password != $password) {
-            return ResponseHelper::error('You are not authorized');
+            return ResponseHelper::error('You must be admin ^_^');
         }
         $result = $this->absenceService->addAbsence($request);
-    
+
         return ResponseHelper::success($result, null, 'Absence updated successfully');
     }
 
