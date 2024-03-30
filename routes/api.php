@@ -225,6 +225,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('getUserAbsences', 'getUserAbsences');
             Route::get('allUserAbsences', 'allUserAbsences');
 
+            Route::post('hourlyAbsence', 'addAbsence');
+
+
+
 
         });
     });

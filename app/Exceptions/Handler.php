@@ -48,6 +48,8 @@ class Handler extends ExceptionHandler
 
         switch(get_class($exception))
         {
+            case QueryException::class:
+                throw new Exception($exception->getMessage());
             case AuthenticationException::class:
                 throw new Exception($exception->getMessage());
             case ModelNotFoundException::class:
@@ -64,8 +66,7 @@ class Handler extends ExceptionHandler
                 throw new Exception($exception->getMessage());
             case MethodNotAllowedHttpException::class:
                 throw new Exception($exception->getMessage());
-            case QueryException::class:
-                throw new Exception($exception->getMessage());
+
         }
     }
 
