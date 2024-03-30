@@ -61,7 +61,7 @@ public function addAbsence(Request $request)
   $result =  Absences::updateOrCreate(
 
     [
-        'user_id' => $user,
+        'user_id' => $user->id,
         'startDate' => Carbon::now()->format('y-m-d'),
     ],
 
