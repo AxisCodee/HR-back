@@ -59,10 +59,10 @@ class AbsenceService
         $user = User::findOrFail($request->user_id);
         $result = Absences::updateOrCreate(
 
-            [
-                'user_id' => $user,
-                'startDate' => Carbon::now()->format('y-m-d'),
-            ],
+    [
+        'user_id' => $user->id,
+        'startDate' => Carbon::now()->format('y-m-d'),
+    ],
 
             [
                 'type' => $request->type,
