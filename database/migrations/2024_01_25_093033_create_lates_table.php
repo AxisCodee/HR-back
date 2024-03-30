@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('demands_compensation')->default(false);
             $table->double('hours_num')->nullable(true)->default(NULL);
             $table->enum('status', ['waiting', 'accepted', 'rejected']);
-            $table->enum('type', ['normal', 'Unjustified', 'justified']);
+            $table->enum('type', ['sick', 'Unjustified', 'justified']);
             $table->timestamps();
         });
     }

@@ -53,6 +53,29 @@ class AbsenceService
         return $new_abs;
     }
 
+
+
+public function addAbsence(Request $request)
+{
+    $user=User::findOrFail($request->user_id);
+  $result =  Absences::updateOrCreate(
+
+    [
+        'user_id' => $user,
+        'startDate' => Carbon::now()->format('y-m-d'),
+    ],
+
+    [
+        'type' => $request->type,
+        'duration'=> 'hourly',
+        'isPaid' => $request->type == 'sick' ? true : $request->isPaid
+    ]);
+    return $result;
+
+}
+
+
+
     public function getAbsences($user)
     {
         $absences = Absences::where('user_id', $user)->get();

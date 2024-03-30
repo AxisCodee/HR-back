@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('rate_id')->constrained('rates')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('rateType_id')->constrained('rate_Types')->cascadeOnDelete();
+            $table->foreignId('rateType_id')->constrained('rate_types')->cascadeOnDelete();
             $table->foreignId('evalutor_id')->constrained('users')->cascadeOnDelete();
             $table->integer('rate');
             $table->timestamps();
