@@ -237,9 +237,9 @@ class FingerprintService
 
     public function clearDelays($branch_id, $date)
     {
-        $userPolicy = Policy::query()->where('branch_id', $branch_id)->first();
-        if ($userPolicy != null) {
-            $companyEndTime = Carbon::parse($userPolicy->work_time['end_time'])->format('H:i');
+        $policy = Policy::query()->where('branch_id', $branch_id)->first();
+        if ($policy != null) {
+            $companyEndTime = Carbon::parse($policy->work_time['end_time'])->format('H:i');
             $now = Carbon::now();
             if ($now->greaterThan($companyEndTime)) {
                 Absences::query()->whereRaw('DATE(startDate) = ? ', [$date])
