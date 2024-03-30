@@ -54,26 +54,24 @@ class AbsenceService
     }
 
 
-
-public function addAbsence(Request $request)
-{
-    $user=User::findOrFail($request->user_id);
-  $result =  Absences::updateOrCreate(
+    public function addAbsence(Request $request)
+    {
+        $user = User::findOrFail($request->user_id);
+        $result = Absences::updateOrCreate(
 
     [
         'user_id' => $user->id,
-        'startDate' => Carbon::now()->format('y-m-d'),
+        'startDate' => Carbon::now()->format('Y-m-d'),
     ],
 
-    [
-        'type' => $request->type,
-        'duration'=> 'hourly',
-        'isPaid' => $request->type == 'sick' ? true : $request->isPaid
-    ]);
-    return $result;
+            [
+                'type' => $request->type,
+                'duration' => 'hourly',
+                'isPaid' => $request->type == 'sick' ? true : $request->isPaid
+            ]);
+        return $result;
 
-}
-
+    }
 
 
     public function getAbsences($user)
@@ -155,38 +153,36 @@ public function addAbsence(Request $request)
             'UnPaidAbsences',
             'PaidAbsences',
             'sickAbsences'
-            )->findOrFail($request->user_id);
+        )->findOrFail($request->user_id);
 
         $paidabsences = $user->PaidAbsences;
         $unpaidabsences = $user->UnPaidAbsences;
         $sickabsences = $user->sickAbsences;
 
-        return ['Paid'=>$paidabsences,
-                'UnPaid'=>$unpaidabsences,
-                'Sick'=>$sickabsences];
+        return ['Paid' => $paidabsences,
+            'UnPaid' => $unpaidabsences,
+            'Sick' => $sickabsences];
     }
-
 
 
     public static function user_absences(Request $request)
     {
         $result = User::query()
-        ->with('userInfo:id,image'
-        , 'department',
-        'allAbsences'
-        ,'UnPaidAbsences',
-         'PaidAbsences',
-         'sickAbsences',
-         )->withCount('justifiedPaidAbsencesCount as justifiedPaid'
-         ,'justifiedUnPaidAbsencesCount as justifiedUnPaid'
-         ,'UnjustifiedPaidAbsencesCount as UnjustifiedPaid'
-         ,'UnjustifiedUnPaidAbsencesCount as UnjustifiedUnPaid')
-        ->get()
-        ->toArray();
+            ->with('userInfo:id,image'
+                , 'department',
+                'allAbsences'
+                , 'UnPaidAbsences',
+                'PaidAbsences',
+                'sickAbsences',
+            )->withCount('justifiedPaidAbsencesCount as justifiedPaid'
+                , 'justifiedUnPaidAbsencesCount as justifiedUnPaid'
+                , 'UnjustifiedPaidAbsencesCount as UnjustifiedPaid'
+                , 'UnjustifiedUnPaidAbsencesCount as UnjustifiedUnPaid')
+            ->get()
+            ->toArray();
 
-    return $result;
+        return $result;
     }
-
 
 
     public function allUserAbsences($request)
