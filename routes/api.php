@@ -110,9 +110,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::post('reportByDay', 'report');
 
             Route::post('ratesByDate', 'ratesByDate');
-
-            Route::post('checksPercentage', 'checksPercentage');
-            Route::post('yearlyPercentageDetails', 'yearlyPercentageDetails');
         });
     });
 

@@ -133,8 +133,12 @@ class ReportServices
                 $query->whereDate('datetime', $date);
             }
         ])->find($request->user_id);
+        $checkInDetails = $this->checkDetails($date, $request->user_id, '0');
+        $checkOutDetails = $this->checkDetails($date, $request->user_id, '1');
         return ResponseHelper::success([
-            $result
+            $result,
+            'checkInDetails' => $checkInDetails,
+            'checkOutDetails' => $checkOutDetails
         ]);
     }
 
@@ -161,21 +165,42 @@ class ReportServices
         return ResponseHelper::success($ratesWithPercentage->values());
     }
 
+    public function checkDetails($date, $user_pin, $status)
+    {
+        if (strlen($date) == 4) {
+            $allMonths = array_fill_keys(range(1, 12), 0);
+            for ($i = 1; $i <= 12; $i++) {
+                $year = $date . '-0' . $i;
+                $result = $this->getUserChecksPercentage($user_pin, $year, 'Y-m', $status);
+                $allMonths[$i] = $result;
+            }
+            return $allMonths;
+        }
+        if (strlen($date) == 7) {
+            $allMonths = array_fill_keys(range(1, 12), 0);
+            $month = date('n', strtotime($date));
+            $monthlyPercentages = $this->getUserChecksPercentage($user_pin, $date, 'Y-m', $status);
+            $allMonths[$month] = $monthlyPercentages;
+            return $allMonths;
+        }
+
+        return false;
+    }
 
 
-    public function getUserChecksPercentage($user, $date, $format, $status)
+    public function getUserChecksPercentage($user_pin, $date, $format, $status)
     {
         $dateFormat = $format === 'Y-m' ? "%Y-%m" : "%Y";
         $checks = Attendance::query()
-            ->where('pin', $user->pin)
+            ->where('pin', $user_pin)
             ->where('status', $status)
             ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $date])
             ->count();
 
         $workDays = Date::query()->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])->count();
-       if ($workDays==0){
-           return 0;
-       }
+        if ($workDays == 0) {
+            return 0;
+        }
         return round(($checks / $workDays) * 100);
 
     }
