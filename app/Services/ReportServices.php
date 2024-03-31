@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Date;
+use App\Models\Late;
+use App\Models\Policy;
 use Carbon\Carbon;
 use App\Models\Rate;
 use App\Models\User;
@@ -11,6 +13,7 @@ use App\Models\RateType;
 use App\Models\Attendance;
 use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\Auth;
+use function Symfony\Component\String\u;
 
 class ReportServices
 {
@@ -133,8 +136,14 @@ class ReportServices
                 $query->whereDate('datetime', $date);
             }
         ])->find($request->user_id);
-        $checkInDetails = $this->checkDetails($date, $request->user_id, '0');
-        $checkOutDetails = $this->checkDetails($date, $request->user_id, '1');
+        if (strlen($date) == 4) {
+            $checkInDetails = $this->checkDetails($date, $request->user_id, '0');
+            $checkOutDetails = $this->checkDetails($date, $request->user_id, '1');
+        }
+        if (strlen($date) == 7) {
+            $checkInDetails = $this->monthlyCheckIn($request->user_id, $date);
+            $checkOutDetails = $this->monthlyCheckOut($request->user_id, $date);
+        }
         return ResponseHelper::success([
             $result,
             'checkInDetails' => $checkInDetails,
@@ -183,7 +192,6 @@ class ReportServices
             $allMonths[$month] = $monthlyPercentages;
             return $allMonths;
         }
-
         return false;
     }
 
@@ -196,13 +204,58 @@ class ReportServices
             ->where('status', $status)
             ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $date])
             ->count();
-
-        $workDays = Date::query()->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])->count();
+        $workDays = $this->workDays($dateFormat,$date);
         if ($workDays == 0) {
             return 0;
         }
         return round(($checks / $workDays) * 100);
+    }
 
+    public function monthlyCheckOut($user_id, $dateTime)//out late
+    {
+        $allMonths = array_fill_keys(range(1, 12), 0);
+        $dateFormat = "%Y-%m";
+        $user = User::query()->findOrFail($user_id);
+        $policy = Policy::query()->where('branch_id', $user->branch_id)->first();
+        $companyEndTime = $policy->work_time['end_time'];
+        $companyEndTime24 = date("H:i", strtotime($companyEndTime));
+        $checks = Attendance::query()
+            ->where('pin', $user->pin)
+            ->where('status', '1')
+            ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $dateTime])
+            ->whereRaw('TIME(datetime) < ?', [$companyEndTime24])
+            ->count();
+        $workDays = $this->workDays($dateFormat,$dateTime);
+        if ($workDays == 0) {
+            return $allMonths;
+        }
+        $month = date('n', strtotime($dateTime));
+        $result = round(($checks / $workDays) * 100);
+        $allMonths  [$month] = $result;
+        return $allMonths;
+    }
+
+    public function monthlyCheckIn($user_id, $dateTime)//in late
+    {
+        $allMonths = array_fill_keys(range(1, 12), 0);
+        $month = date('n', strtotime($dateTime));
+        $dateFormat = "%Y-%m";
+        $delays = Late::query()->where('user_id', $user_id)
+            ->whereRaw('DATE_FORMAT(lateDate, ?) = ?', [$dateFormat, $dateTime])
+            ->count();
+        $workDays = $this->workDays($dateFormat,$dateTime);
+        if ($workDays == 0) {
+            return $allMonths;
+        }
+        $result = round(($delays / $workDays) * 100);
+        $allMonths  [$month] = $result;
+        return $allMonths;
+    }
+
+    public function workDays($dateFormat, $date)
+    {
+        return Date::query()->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])
+            ->count();
     }
 }
 
