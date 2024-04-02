@@ -129,8 +129,7 @@ class ReportController extends Controller
     public function report(Request $request)
     {
         try {
-            $report = $this->ReportServices->Report($request);
-            return $report;
+            return $this->ReportServices->Report($request);
         } catch (\Exception $e) {
             return ResponseHelper::error($e, null, 'error', 403);
         }

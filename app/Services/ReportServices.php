@@ -61,6 +61,7 @@ class ReportServices
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',
+            'alerts',
             'attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }
@@ -135,7 +136,7 @@ class ReportServices
             'attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }
-        ])->find($request->user_id);
+        ])->findOrFail($request->user_id);
         if (strlen($date) == 4) {
             $checkInDetails = $this->checkDetails($date, $request->user_id, '0');
             $checkOutDetails = $this->checkDetails($date, $request->user_id, '1');
@@ -144,10 +145,10 @@ class ReportServices
             $checkInDetails = $this->monthlyCheckIn($request->user_id, $date);
             $checkOutDetails = $this->monthlyCheckOut($request->user_id, $date);
         }
+        $result['checkInDetails'] = $checkInDetails;
+        $result['checkOutDetails'] = $checkOutDetails;
         return ResponseHelper::success([
             $result,
-            'checkInDetails' => $checkInDetails,
-            'checkOutDetails' => $checkOutDetails
         ]);
     }
 
