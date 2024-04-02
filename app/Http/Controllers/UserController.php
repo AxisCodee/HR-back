@@ -185,6 +185,9 @@ class UserController extends Controller
             User::where('department_id', $id)->update([
                 'department_id' => null
             ]);
+            Department::where('parent_id',$id)->update([
+                'parent_id'=>null
+            ]);
             $department->delete();
             DB::commit();
             return ResponseHelper::deleted('Team deleted successfully');
