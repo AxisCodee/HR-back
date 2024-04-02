@@ -136,6 +136,7 @@ class FingerprintService
             $newLateData = [
                 'isPaid' => false,
                 'demands_compensation' => $userPolicy->demands_compensation,
+                'type' => 'Unjustified'
             ];
             $mergedData = array_merge($lateData, $newLateData);
             $this->autoDeduction($thisUser, $attendance_datetime, 'warning', $lateData['hours_num']);
@@ -145,6 +146,7 @@ class FingerprintService
             $newLateData = [
                 'isPaid' => true,
                 'demands_compensation' => $userPolicy->demands_compensation,
+                'type' => 'justified'
             ];
             $mergedData = array_merge($lateData, $newLateData);
         }
@@ -234,4 +236,19 @@ class FingerprintService
         }
         Absences::create($mergedData);
     }
+
+    public function clearDelays($branch_id, $date)
+    {
+        $policy = Policy::query()->where('branch_id', $branch_id)->first();
+        if ($policy != null) {
+            $companyEndTime = Carbon::parse($policy->work_time['end_time'])->format('H:i');
+            $now = Carbon::now();
+            if ($now->greaterThan($companyEndTime)) {
+                Absences::query()->whereRaw('DATE(startDate) = ? ', [$date])
+                    ->where('duration', 'hourly')
+                    ->delete();
+            }
+        }
+    }
+
 }

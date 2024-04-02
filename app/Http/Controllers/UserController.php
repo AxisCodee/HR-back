@@ -32,7 +32,6 @@ use TADPHP\TADFactory;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Exists;
 
-require 'tad\vendor\autoload.php';
 
 class UserController extends Controller
 {

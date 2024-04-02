@@ -44,6 +44,18 @@ class AbsencesController extends Controller
         return ResponseHelper::success($result, null, 'Absence updated successfully');
     }
 
+
+    public function addAbsence(UpdateAbsencesRequest $request)
+    {
+        $password = Auth::user()->ownerPassword;
+        if ($password == null || $request->password != $password) {
+            return ResponseHelper::error('You must be admin ^_^');
+        }
+        $result = $this->absenceService->addAbsence($request);
+
+        return ResponseHelper::success($result, null, 'Absence updated successfully');
+    }
+
     public function getDailyAbsence(Request $request, $branch)
     {
         $result = $this->absenceService->getDailyAbsence($request, $branch);
@@ -125,4 +137,6 @@ class AbsencesController extends Controller
             return ResponseHelper::error('No results found', 404);
         }
     }
+
+
 }
