@@ -234,4 +234,14 @@ class FingerprintService
         }
         Absences::create($mergedData);
     }
+
+    public function earlyhours($id,$date)
+    {
+        $user = User::with([
+            'attendance' => function ($query) use ($date) {
+                $query->filterDate($query, $date, 'datetime');
+        }])->findOrFail($id);
+
+
+    }
 }
