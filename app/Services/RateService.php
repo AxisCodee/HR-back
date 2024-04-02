@@ -297,8 +297,6 @@ class RateService
 
 
             }
-
-
             return  $rates;
         }
 }
