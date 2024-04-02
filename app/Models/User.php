@@ -196,7 +196,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function allAbsences() //for All user absence 
+    public function allAbsences() //for All user absence
     {
         $date = request()->query('date');
         $result = $this->hasMany(Absences::class, 'user_id');
@@ -379,10 +379,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function absences()
     {
-        $date = request()->query('date');
-        $result = $this->hasMany(Decision::class, 'user_id')
-            ->where('type', 'deduction');
-        return $this->usertimeService->filterDate($result, $date, 'lateDate');
+        // $date = request()->query('date');
+        // $result = $this->hasMany(Decision::class, 'user_id')
+        //     ->where('type', 'deduction');
+        // return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
 
 
