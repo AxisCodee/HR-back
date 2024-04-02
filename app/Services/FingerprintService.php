@@ -79,32 +79,53 @@ class FingerprintService
         }
     }
 
-    public function storeUserDelays($logPin, $branch_id, $checkInDate)
+    public function storeUserDelays($logPin, $branch_id, $checkDate, $status)
     {
         $thisUser = User::query()->where('id', $logPin)->first();
         $userPolicy = Policy::query()->where('branch_id', $thisUser->branch_id)->first();
         if ($userPolicy != null) {
-            $checkInDate = substr($checkInDate, 0, 10);
+            $checkDate = substr($checkDate, 0, 10);
             $attendance = Attendance::query()
                 ->where('pin', $thisUser->pin)
-                ->whereRaw('DATE(datetime) = ? ', [$checkInDate])
-                ->where('status', '0')
+                ->whereRaw('DATE(datetime) = ? ', [$checkDate])
+                ->where('status', $status)
                 ->first();
             if ($attendance != null) {
-                $lateExistence = Late::query()
-                    ->where('user_id', $thisUser->id)
-                    ->whereRaw('DATE(lateDate) = ? ', [$checkInDate])
-                    ->exists();
-                if (!$lateExistence) {
-                    // $checkInDate = substr($attendance->datetime, 0, 10);
-                    $checkInHour = substr($attendance->datetime, 11, 15);
-                    $parsedHour = Carbon::parse($checkInHour);
-                    $companyStartTime = $userPolicy->work_time['start_time'];
-                    if ($parsedHour->isAfter($companyStartTime)) {
-                        $diffLate = $parsedHour->diff($companyStartTime);
-                        $hoursLate = $diffLate->format('%H.%I');
-                        $this->storeUserLate($thisUser, $checkInDate, $hoursLate,
-                            $branch_id, $userPolicy, $attendance->datetime);
+                if ($status == '0') {
+                    $lateExistence = Late::query()
+                        ->where('user_id', $thisUser->id)
+                        ->where('check_in', '!=', null)
+                        ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
+                        ->exists();
+                    if (!$lateExistence) {
+                        $checkInHour = substr($attendance->datetime, 11, 15);
+                        $parsedHour = Carbon::parse($checkInHour);
+                        $companyStartTime = $userPolicy->work_time['start_time'];
+                        if ($parsedHour->isAfter($companyStartTime)) {
+                            $diffLate = $parsedHour->diff($companyStartTime);
+                            $hoursLate = $diffLate->format('%H.%I');
+                            $this->storeUserLate($thisUser, $checkDate, $hoursLate,
+                                $branch_id, $userPolicy, $attendance->datetime, $status);
+
+                        }
+                    }
+                }
+                if ($status == '1') {
+                    $lateExistence = Late::query()
+                        ->where('user_id', $thisUser->id)
+                        ->where('check_out', '!=', null)
+                        ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
+                        ->exists();
+                    if (!$lateExistence) {
+                        $checkOutHour = substr($attendance->datetime, 11, 15);
+                        $parsedHour = Carbon::parse($checkOutHour);
+                        $companyEndTime = $userPolicy->work_time['end_time'];
+                        if ($parsedHour->isBefore($companyEndTime)) {
+                            $diffLate = $parsedHour->diff($companyEndTime);
+                            $hoursLate = $diffLate->format('%H.%I');
+                            $this->storeUserLate($thisUser, $checkDate, $hoursLate,
+                                $branch_id, $userPolicy, $attendance->datetime, $status);
+                        }
                     }
                 }
             }
@@ -122,44 +143,45 @@ class FingerprintService
 
     }
 
-    public function storeUserLate($thisUser, $checkInDate, $hoursLate, $branch_id, $userPolicy, $attendance_datetime)
+    public function storeUserLate($user, $checkDate, $hoursLate, $branch_id, $userPolicy, $attendance_datetime, $status)
     {
-        $end = $this->storeEnd($checkInDate, $thisUser->pin);
-        $lateData = [
-            'user_id' => $thisUser->id,
-            'lateDate' => $checkInDate,
-            'check_in' => Carbon::parse($attendance_datetime)->format('H:i:s'),
-            'hours_num' => $hoursLate,
-        ];
-
-        if ($thisUser->branch_id == $branch_id && $userPolicy->deduction_status) {
-            $newLateData = [
-                'isPaid' => false,
-                'demands_compensation' => $userPolicy->demands_compensation,
-                'type' => 'Unjustified'
-            ];
-            $mergedData = array_merge($lateData, $newLateData);
-            $this->autoDeduction($thisUser, $attendance_datetime, 'warning', $lateData['hours_num']);
-            $this->autoDeduction($thisUser, $attendance_datetime, 'deduction', $lateData['hours_num']);
+        $userId = $user->id;
+        $branchId = $user->branch_id;
+        $deductionStatus = $userPolicy->deduction_status;
+        $compensation = $userPolicy->demands_compensation;
+        $isPaid = !$deductionStatus;
+        $type = $deductionStatus ? 'Unjustified' : 'justified';
+        $checkTime = Carbon::parse($attendance_datetime)->format('H:i:s');
+        $lateDate = $checkDate;
+        if ($branchId == $branch_id && $deductionStatus) {
+            $this->autoDeduction($user, $attendance_datetime, 'warning', $hoursLate);
+            $this->autoDeduction($user, $attendance_datetime, 'deduction', $hoursLate);
         }
-        if ($thisUser->branch_id == $branch_id && !$userPolicy->deduction_status) {
-            $newLateData = [
-                'isPaid' => true,
-                'demands_compensation' => $userPolicy->demands_compensation,
-                'type' => 'justified'
-            ];
-            $mergedData = array_merge($lateData, $newLateData);
-        }
-        if ($thisUser->id) {
-            Late::query()->create($mergedData);
-            if ($end) {
-                Late::query()
-                    ->where('lateDate', $checkInDate)
-                    ->where('user_id', $thisUser->id)
-                    ->update(['end' => Carbon::parse($end->datetime)->format('H:i:s')]);
+        if ($userId) {
+            $lateRecord = new Late();
+            $lateRecord->user_id = $userId;
+            $lateRecord->hours_num = $hoursLate;
+            $lateRecord->isPaid = $isPaid;
+            $lateRecord->demands_compensation = $compensation;
+            $lateRecord->type = $type;
+            if ($status == '0') {
+                $lateRecord->check_in = $checkTime;
+                $lateRecord->lateDate = $lateDate;
+                $end = $this->storeEnd($checkDate, $user->pin);
+                if ($end != null) {
+                    Late::query()
+                        ->where('lateDate', $checkDate)
+                        ->where('user_id', $userId)
+                        ->update(['end' => Carbon::parse($end->datetime)->format('H:i:s')]);
+                }
+            } else {
+                $lateRecord->check_out = $checkTime;
+                $lateRecord->lateDate = $lateDate;
             }
+            $lateRecord->save();
         }
     }
+
 
     public function storeUserAbsences($date, $branch_id)
     {
