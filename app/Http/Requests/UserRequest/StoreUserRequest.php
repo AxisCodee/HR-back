@@ -63,6 +63,10 @@ class StoreUserRequest extends FormRequest
             'contacts.phonenumbers' => ['array'],
             'contacts.phonenumbers.*.phone_num' => ['numeric', 'digits:10'],
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
+
+            'contract.path'=>['required'],
+            'contract.startTime'=>['required','date'],
+            'contract.endTime'=>['required','date'],
         ];
     }
 

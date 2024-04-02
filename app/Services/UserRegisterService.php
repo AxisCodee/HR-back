@@ -2,21 +2,23 @@
 
 namespace App\Services;
 
-use App\Helper\ResponseHelper;
-use App\Http\Traits\Files;
-use App\Models\AdditionalFile;
+use Exception;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Career;
-use App\Models\Certificate;
+use App\Models\Skills;
 use App\Models\Contact;
 use App\Models\Deposit;
+use App\Models\Contract;
 use App\Models\Language;
-use App\Models\Skills;
-use App\Models\StudySituation;
-use App\Models\User;
 use App\Models\UserInfo;
+use App\Http\Traits\Files;
 use App\Models\UserSalary;
-use Carbon\Carbon;
-use Exception;
+use App\Models\Certificate;
+use Illuminate\Http\Request;
+use App\Helper\ResponseHelper;
+use App\Models\AdditionalFile;
+use App\Models\StudySituation;
 use Illuminate\Support\Facades\Hash;
 
 class UserRegisterService
@@ -538,5 +540,17 @@ class UserRegisterService
         }
     }
 
-
+    public function CreateUsercontract($id,$request)
+    {
+        $path = Files::saveFileF($request->contract['path']);
+        $contract = Contract::create(
+            [
+                'path' => $path,
+                'startTime' => $request->contract['startTime'],
+                'endTime' => $request->contract['endTime'],
+                'user_id' => $id
+            ]
+        );
+        return true;
+    }
 }

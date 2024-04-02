@@ -73,8 +73,11 @@ class LateService
 
     public function editLate($request)
     {
-        Late::query()->findOrFail($request['id'])
-            ->update($request);
+        Late::query()->where('id', $request->id)
+            ->update([
+                'type' => $request->type,
+                'isPaid' => $request->isPaid
+            ]);
         return true;
 
     }

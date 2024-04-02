@@ -152,17 +152,4 @@ class ReportController extends Controller
         }
     }
 
-    public function checksPercentage(Request $request)
-    {
-        $user = User::query()->findOrFail($request->user_id);
-        $date = $request->date;
-        $status = $request->status;
-        if (strlen($date) == 4) {
-            $format = 'Y';
-        } else {
-            $format = 'Y-m';
-        }
-        $result = $this->ReportServices->getUserChecksPercentage($user, $date, $format, $status);
-        return ResponseHelper::success($result);
-    }
 }

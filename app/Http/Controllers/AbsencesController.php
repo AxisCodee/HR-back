@@ -36,11 +36,23 @@ class AbsencesController extends Controller
 
     public function update(UpdateAbsencesRequest $request)
     {
-        $password=Auth::user()->ownerPassword;
-        if ($request->password != $password || $password ==null ) {
+        $password = Auth::user()->ownerPassword;
+        if ($password == null || $request->password != $password) {
             return ResponseHelper::error('You are not authorized');
         }
         $result = $this->absenceService->update($request->toArray());
+        return ResponseHelper::success($result, null, 'Absence updated successfully');
+    }
+
+
+    public function addAbsence(UpdateAbsencesRequest $request)
+    {
+        $password = Auth::user()->ownerPassword;
+        if ($password == null || $request->password != $password) {
+            return ResponseHelper::error('You must be admin ^_^');
+        }
+        $result = $this->absenceService->addAbsence($request);
+
         return ResponseHelper::success($result, null, 'Absence updated successfully');
     }
 
@@ -125,4 +137,6 @@ class AbsencesController extends Controller
             return ResponseHelper::error('No results found', 404);
         }
     }
+
+
 }
