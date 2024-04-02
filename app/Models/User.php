@@ -458,7 +458,7 @@ class User extends Authenticatable implements JWTSubject
 
             $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
             $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
-            $worktime = $startTime->diffInHours($endTime, false);
+            $worktime = $startTime->diff($endTime, false);
                 dd($worktime);
            //  $worktime = $worktime%60;
 
