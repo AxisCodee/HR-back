@@ -452,7 +452,7 @@ class User extends Authenticatable implements JWTSubject
           $date = request()->query('date');
 
             $latehours = Late::where('user_id',$this->id);
-            $late=$this->usertimeService->filterDate($latehours, $date, 'dateTime')->sum('hours_num');
+            $late=$this->usertimeService->filterDate($latehours, $date, 'lateDate')->sum('hours_num');
 
             $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
 
