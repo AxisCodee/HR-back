@@ -196,7 +196,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function allAbsences() //for All user absence
+    public function allAbsences() //for All user absence 
     {
         $date = request()->query('date');
         $result = $this->hasMany(Absences::class, 'user_id');

@@ -60,7 +60,7 @@ class UserController extends Controller
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
-          
+
             ->whereNull('deleted_at')
             ->get()
             ->toArray();
@@ -185,6 +185,9 @@ class UserController extends Controller
             $department = Department::findOrFail($id);
             User::where('department_id', $id)->update([
                 'department_id' => null
+            ]);
+            Department::where('parent_id',$id)->update([
+                'parent_id'=>null
             ]);
             $department->delete();
             DB::commit();
