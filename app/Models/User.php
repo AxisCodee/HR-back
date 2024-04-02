@@ -449,7 +449,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function getTotalAbsenceHoursAttribute()
     {
-            $latehours = Late::where('user_id',$this->id)->count('hours_num');
+          $date = request()->query('date');
+
+            $latehours = Late::where('user_id',$this->id);
+            $late=$this->usertimeService->filterDate($latehours, $date, 'dateTime')->sum('hours_num');
 
             $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
 
@@ -461,11 +464,12 @@ class User extends Authenticatable implements JWTSubject
 
             $absence = Absences::where('user_id',$this->id)
                                 ->whereNot('isPaid',1)
-                                ->whereNot('type','justified')
-                                ->count();
+                                ->whereNot('type','justified');
 
-            $absencehours = $absence * $worktime;
-            $totalhours = $absencehours + $latehours;
+             $absences =$this->usertimeService->filterDate($latehours, $date, 'dateTime')->count();
+
+            $absencehours = $absences * $worktime;
+            $totalhours = $absencehours + $late;
             return $worktime;
             // $absencehours = Absences::where('user_id',$this->id);
     }
