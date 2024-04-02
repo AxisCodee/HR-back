@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->double('amount')->nullable(true)->default(null);
             $table->string('dateTime')->nullable(true)->default(null);
             $table->double('salary')->nullable(true)->default(null);
-            $table->boolean('fromSystem')->default(false);
+            $table->enum('status',['requested','accepted'])->default('requested');
             $table->timestamps();
         });
 

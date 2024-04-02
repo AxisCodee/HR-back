@@ -467,7 +467,7 @@ class User extends Authenticatable implements JWTSubject
                                 ->whereNot('type','justified');
 
              $absences =$this->usertimeService->filterDate($absence, $date, 'startDate')->count();
-
+                dd($absences);
             $absencehours = $absences * $worktime;
             $totalhours = $absencehours + $late;
             return $totalhours;}
