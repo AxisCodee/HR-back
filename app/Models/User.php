@@ -458,8 +458,7 @@ class User extends Authenticatable implements JWTSubject
 
             $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
             $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
-            $worktime = $startTime->diff($endTime, false);
-                dd($worktime);
+            $worktime = $startTime->diffInMinutes($endTime, false);
            //  $worktime = $worktime%60;
 
             $absence = Absences::where('user_id',$this->id)
@@ -468,7 +467,7 @@ class User extends Authenticatable implements JWTSubject
 
              $absences =$this->usertimeService->filterDate($absence, $date, 'startDate')->count();
 
-            $absencehours = $absences * $worktime;
+            $absencehours = $absences * ($worktime/60);
             $totalhours = $absencehours + $late;
             return $totalhours;}
             // $absencehours = Absences::where('user_id',$this->id);
