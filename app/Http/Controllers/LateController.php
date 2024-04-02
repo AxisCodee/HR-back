@@ -100,7 +100,7 @@ class LateController extends Controller
                 }
                 $user_id = $late->user_id;
                 $user = User::findOrFail($user_id);
-                if ($late->type === 'normal') {
+
                     $late->update([
                         'type' => 'Unjustified'
                     ]);
@@ -108,7 +108,7 @@ class LateController extends Controller
                         'user_id' => $user_id,
                         'branch_id' => $user->branch_id,
                         'content' => 'alert for late',
-                        'type' => 'warning',
+                        'type' => 'alert',
                         'dateTime' => Carbon::now()->format('Y-m-d')
                     ]);
                     $alert = UserAlert::create([
@@ -117,7 +117,7 @@ class LateController extends Controller
                         'date' => Carbon::now()->format('Y-m-d')
                     ]);
                 }
-            });
+            );
         } catch (\Exception $e) {
             return ResponseHelper::error('Error accepting alert: ' . $e->getMessage());
         }
