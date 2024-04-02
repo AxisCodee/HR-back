@@ -470,7 +470,7 @@ class User extends Authenticatable implements JWTSubject
 
             $absencehours = $absences * $worktime;
             $totalhours = $absencehours + $late;
-            return $worktime;
+            return $totalhours;
             // $absencehours = Absences::where('user_id',$this->id);
     }
 
