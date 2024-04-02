@@ -85,10 +85,11 @@ class AttendanceController extends Controller
                 }
             }
             //Storing delays
-            $allAttendances = Attendance::query()
-                ->get();
+            $allAttendances = Attendance::query()->get();
             foreach ($allAttendances as $attendance) {
-                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime);
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime,'0');
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime,'1');
+
             }
             //Storing absence
             foreach ($uniqueDates as $date) {
