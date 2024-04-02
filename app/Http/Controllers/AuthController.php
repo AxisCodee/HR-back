@@ -82,6 +82,7 @@ class AuthController extends Controller
             $userInfo = $this->userRegisterService->createUserInfo($request, $user, $path);
             $userSalary = $this->userRegisterService->createUserSalary($user, $userInfo);
             $educations = $request->educations;
+            $contract = $request->contract;
             $certificates = $request->certificates;
             $languages = $request->languages;
             $skills = $request->skills;
@@ -108,6 +109,9 @@ class AuthController extends Controller
             }
             if ($request->secretaraits) {
                 $this->userRegisterService->createUserDeposits($user->id, $secretaraits);
+            }
+            if($request->contract){
+                $this->userRegisterService->CreateUsercontract($user->id,$request);
             }
             return ResponseHelper::success($user);
         });
