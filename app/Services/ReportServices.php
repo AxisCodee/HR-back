@@ -61,6 +61,7 @@ class ReportServices
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',
+            'alerts',
             'attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }
