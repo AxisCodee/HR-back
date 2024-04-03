@@ -56,6 +56,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('Archived', 'archivedContracts');
             Route::delete('Delete/{contract}', 'destroy');
             Route::post('Update/{contract}', 'update');
+            Route::post('select', 'selectContractToDelete');
         });
     });
 
@@ -73,7 +74,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('resignedusers', 'resignedusers');
             Route::post('updateUser/{user}', 'updateUser');
             Route::post('AbsenceTypes', 'GetAbsenceTypes');
-
+            Route::post('usersarray','Users_array');
         });
     });
 
@@ -124,6 +125,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::post('accepteRequest/{request}', 'acceptRequest');
             Route::post('rejectRequest/{request}', 'rejectRequest');
             Route::delete('Delete/{request}', 'destroy');
+            Route::post('selectRequest', 'selectRequest');
         });
     });
     Route::prefix('Team')->group(function () {
@@ -171,7 +173,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::controller(LanguageController::class)->group(function () {
             Route::post('Add', 'store');
             Route::post('Update/{id}', 'update');
-            Route::delete('Delete/{id}', 'destroy');  
+            Route::delete('Delete/{id}', 'destroy');
         });
     });
 

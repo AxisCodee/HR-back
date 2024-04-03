@@ -121,4 +121,10 @@ class RequestController extends Controller
         }
 
     }
+    public function selectRequest(HttpRequest $request)
+    {
+        $result= $this->requestService->selectRequest($request);
+        return ResponseHelper::deleted();
+
+    }
 }

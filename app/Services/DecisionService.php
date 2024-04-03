@@ -10,6 +10,14 @@ use Carbon\Carbon;
 
 class DecisionService
 {
+    protected $userTimeService;
+
+    public function __construct(UserTimeService $userTimeService)
+    {
+        $this->userTimeService = $userTimeService;
+    }
+
+
     public static function user_decisions(Request $request)
     {
         $userId = $request->user_id;
@@ -113,5 +121,24 @@ class DecisionService
                 $results[] = $newDecision;
             }
             return $results;
+    }
+    public function selectDecisionToDelete($request)
+    {
+
+        foreach($request->decisions as $item)
+        {
+            $oneDecisions=Decision::find($item);
+            if($oneDecisions == null)
+            {
+                return 'one request not found';
+
+            }
+            else{
+           $result=$oneDecisions->delete();
+        }
+    }
+        return $result;
+
+
     }
 }

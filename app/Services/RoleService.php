@@ -74,6 +74,4 @@ class RoleService
             200
         );
     }
-
-
 }

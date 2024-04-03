@@ -9,6 +9,7 @@ use App\Services\DecisionService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\DecisionRequest\StoreDecisionRequest;
 use App\Http\Requests\DecisionRequest\UpdateDecisionRequest;
+use Google\Service\Docs\Response;
 
 class DecisionController extends Controller
 {
@@ -18,6 +19,7 @@ class DecisionController extends Controller
     {
         $this->decisionService = $decisionService;
     }
+
 
     /**
      * Add new decision for a user.
@@ -106,6 +108,17 @@ class DecisionController extends Controller
             return ResponseHelper::error('No results found', 404);
         }
     }
+    public function selectDecisionToDelete(Request $request)
+    {
+        {
+            try {
+                $result= $this->decisionService->selectDecisionToDelete($request);
+                return ResponseHelper::deleted();
+            } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+            }
+        }
+    }
 
 
     /**
@@ -143,5 +156,15 @@ class DecisionController extends Controller
     //         'absences'=>$abs,
     //         ]
     //         , null, 'user decisions returned successfully', 200);
+
+    public function systemDecision(){
+        $result = $this->decisionService->getSystemDecisions();
+         return ResponseHelper::success($result);
+    }
+
+    public function AcceptSystemDecisions(Request $request){
+        $result = $this->decisionService->AcceptSystemDecisions($request);
+         return ResponseHelper::success($result);
+    }
 
 }

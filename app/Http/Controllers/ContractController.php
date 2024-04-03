@@ -17,33 +17,28 @@ class ContractController extends Controller
     {
         $branchId = $request->input('branch_id');
         $contracts = Contract::with('user', 'user.userInfo')
-        ->whereHas('user', function ($query) use ($branchId) {
-            $query->where('branch_id', $branchId);
-        })->get();
+            ->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })->get();
         if ($contracts->isEmpty()) {
             return ResponseHelper::success([], null, 'no contract', 200);
         } else {
             foreach ($contracts as $contract) {
                 $endTime = Carbon::parse($contract['endTime']);
-                if ($endTime->diffindays(Carbon::now()) < 0) {
-                    $status = 'finished';
-                } else {
+                if ($endTime->gte(Carbon::now())) {
                     $status = 'active';
+                    $results[] = $result = [
+                        'startDate' => $contract['startTime'],
+                        'path' => $contract['path'],
+                        'endDate' => $contract['endTime'],
+                        'user_id' => $contract['user_id'],
+                        'contract_id' => $contract->id,
+                        'user' => $contract['user'],
+                        'status' => $status,
+                    ];
                 }
-                $results[] = $result = [
-                    'startDate' => $contract['startTime'],
-                    'path' => $contract['path'],
-                    'endDate' => $contract['endTime'],
-                    'user_id' => $contract['user_id'],
-                    'contract_id' => $contract->id,
-                    'user' => $contract['user'],
-                    'status' => $status,
-                ];
             }
-            return ResponseHelper::success(
-                $results
-
-            );
+            return ResponseHelper::success($results);
         }
     }
 
@@ -86,7 +81,10 @@ class ContractController extends Controller
     public function show($id)
     {
         $result = Contract::query()
-            ->with('user')
+            ->with(
+                'user',
+                'user.userInfo'
+            )
             ->where('user_id', $id)
             ->get()->toArray();
         return ResponseHelper::success($result, null, 'contract:', 200);
@@ -129,10 +127,47 @@ class ContractController extends Controller
     /**
      * Get All Archived contracts.
      */
-    public function archivedContracts()
+    public function archivedContracts(Request $request)
     {
-        $contracts = Contract::query()->where('endTime', '<=', Carbon::now())
-            ->get()->toArray();
-        return ResponseHelper::success($contracts);
+        $branchId = $request->input('branch_id');
+        $contracts = Contract::with('user', 'user.userInfo')
+            ->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })->get();
+        if ($contracts->isEmpty()) {
+            return ResponseHelper::success([], null, 'no contract', 200);
+        } else {
+            foreach ($contracts as $contract) {
+                $endTime = Carbon::parse($contract['endTime']);
+                if ($endTime->gt(Carbon::now())) {
+                    $status = 'active';
+                } else {
+                    $status = 'finished';
+                }
+                $results[] = $result = [
+                    'startDate' => $contract['startTime'],
+                    'path' => $contract['path'],
+                    'endDate' => $contract['endTime'],
+                    'user_id' => $contract['user_id'],
+                    'contract_id' => $contract->id,
+                    'user' => $contract['user'],
+                    'status' => $status,
+                ];
+            }
+            return ResponseHelper::success($results);
+        }
     }
+
+
+    public function selectContractToDelete(Request $request)
+    {
+        foreach($request->contracts as $request)
+        {
+            $oneRequest=Contract::find($request);
+           $result=$oneRequest->delete();
+        }
+           return ResponseHelper::deleted();
+
+
+}
 }
