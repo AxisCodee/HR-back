@@ -73,7 +73,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('resignedusers', 'resignedusers');
             Route::post('updateUser/{user}', 'updateUser');
             Route::post('AbsenceTypes', 'GetAbsenceTypes');
-
+            Route::post('usersarray','Users_array');
         });
     });
 

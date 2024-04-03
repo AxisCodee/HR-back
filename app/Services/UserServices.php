@@ -370,9 +370,9 @@ class UserServices
     {
         foreach($users as $user)
         {
-            User::findOrFail($user)->delete();
+            $user = User::findOrFail($user);
+            return $user ? $user->delete() : ResponseHelper::error('user not found');
         }
-
         return ResponseHelper::success($users, null, 'selected users removed successfully', 200);
     }
 }

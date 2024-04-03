@@ -74,7 +74,7 @@ class UserController extends Controller
             ->with('userInfo:id,user_id,image')
             ->get()
             ->toArray();
-        return ResponseHelper::success($all_users, null, 'all resigned users', 200);
+        return ResponseHelper::success ($all_users, null, 'all resigned users', 200);
     }
 
     public function allAndTrashUser(Request $request)
@@ -356,11 +356,12 @@ class UserController extends Controller
         }
     }
 
-    public function Users_array($users)
+    public function Users_array(Request $request)
     {
-        $users->validate([
-            'user'=>[]
+        $request->validate([
+            'users'=>['required','array'],
+            'users.*'=>['required','integer','exists:users,id','min:1']
         ]);
-        return $this->userService->usersarray($users);
+        return $this->userService->usersarray($request->users);
     }
 }
