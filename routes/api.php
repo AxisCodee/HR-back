@@ -86,6 +86,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('getUserDecisions', 'getUserDecisions');
             Route::post('addDecisions', 'addDecisions');
             Route::get('systemDecision', 'systemDecision');
+            Route::post('AcceptSystemDecisions', 'AcceptSystemDecisions');
+
 
 
         });
