@@ -74,7 +74,7 @@ class UserController extends Controller
             ->with('userInfo:id,user_id,image')
             ->get()
             ->toArray();
-        return ResponseHelper::success($all_users, null, 'all resigned users', 200);
+        return ResponseHelper::success ($all_users, null, 'all resigned users', 200);
     }
 
     public function allAndTrashUser(Request $request)
@@ -120,7 +120,7 @@ class UserController extends Controller
                 'languages',
                 'study_situations',
                 'emergency',
-                'absences',
+                // 'absences',
                 'skills',
                 'phoneNumber',
                 'emails'
@@ -354,5 +354,14 @@ class UserController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         }
+    }
+
+    public function Users_array(Request $request)
+    {
+        $request->validate([
+            'users'=>['required','array'],
+            'users.*'=>['required','integer','exists:users,id','min:1']
+        ]);
+        return $this->userService->usersarray($request->users);
     }
 }

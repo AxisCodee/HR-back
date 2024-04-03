@@ -39,7 +39,7 @@ class PolicyController extends Controller
      * @param Request
      * @return Policy
      */
-    public function store(StorePolicyRequest $request)
+    public function store(Request $request)
     {
         try {
             $policy = $this->PolicyServices->StorePolicy($request);

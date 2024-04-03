@@ -75,7 +75,7 @@ class User extends Authenticatable implements JWTSubject
         'dismissed',
         'TotalAbsenceHours',
         'totalCompensationHours',
-        'absences',
+       // 'absences',
     ];
     protected $hidden = [
         'password',
@@ -379,10 +379,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function absences()
     {
-        // $date = request()->query('date');
-        // $result = $this->hasMany(Decision::class, 'user_id')
-        //     ->where('type', 'deduction');
-        // return $this->usertimeService->filterDate($result, $date, 'dateTime');
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'deduction');
+        return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
 
 
@@ -434,11 +434,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->userServices->alerts($this, $date);
     }
 
-    public function getAbsencesAttribute()
-    {
-        $date = request()->query('date');
-        return $this->userServices->absences($this, $date);
-    }
+    // public function getAbsencesAttribute()
+    // {
+    //     $date = request()->query('date');
+    //     return $this->userServices->absences($this, $date);
+    // }
 
 
     public function getBaseSalaryAttribute()
@@ -449,28 +449,28 @@ class User extends Authenticatable implements JWTSubject
 
     public function getTotalAbsenceHoursAttribute()
     {
-          $date = request()->query('date');
-            if($date){
-            $latehours = Late::where('user_id',$this->id)
-            ->where('demands_compensation',1);
-            $late=$this->usertimeService->filterDate($latehours, $date, 'lateDate')->sum('hours_num');
+        //   $date = request()->query('date');
+        //     if($date){
+        //     $latehours = Late::where('user_id',$this->id)
+        //     ->where('demands_compensation',1);
+        //     $late=$this->usertimeService->filterDate($latehours, $date, 'lateDate')->sum('hours_num');
 
-            $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
+        //     $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
 
-            $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
-            $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
-            $worktime = $startTime->diffInMinutes($endTime, false);
-           //  $worktime = $worktime%60;
+        //     $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
+        //     $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
+        //     $worktime = $startTime->diffInMinutes($endTime, false);
+        //    //  $worktime = $worktime%60;
 
-            $absence = Absences::where('user_id',$this->id)
-                               ->where('demands_compensation',1);
+        //     $absence = Absences::where('user_id',$this->id)
+        //                        ->where('demands_compensation',1);
 
-             $absences =$this->usertimeService->filterDate($absence, $date, 'startDate')->count();
+        //      $absences =$this->usertimeService->filterDate($absence, $date, 'startDate')->count();
 
-            $absencehours = $absences * ($worktime/60);
-            $totalhours = $absencehours + $late;
-            return $totalhours;}
-            // $absencehours = Absences::where('user_id',$this->id);
+        //     $absencehours = $absences * ($worktime/60);
+        //     $totalhours = $absencehours + $late;
+        //     return $totalhours;}
+        //     // $absencehours = Absences::where('user_id',$this->id);
     }
 
     public function getStatusAttribute()
