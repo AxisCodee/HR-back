@@ -10,6 +10,14 @@ use Carbon\Carbon;
 
 class DecisionService
 {
+    protected $userTimeService;
+
+    public function __construct(UserTimeService $userTimeService)
+    {
+        $this->userTimeService = $userTimeService;
+    }
+
+
     public static function user_decisions(Request $request)
     {
         $userId = $request->user_id;
@@ -113,5 +121,16 @@ class DecisionService
                 $results[] = $newDecision;
             }
             return $results;
+    }
+
+    public function getSystemDecisions()
+    {
+        $date = request()->query('date');
+
+        $result = Decision::whereIn('type', ['alert', 'absence', 'dismiss', 'deduction'])
+            ->where('status', 'requested')
+            ->with('user_decision:id,first_name,last_name','user_decision.userInfo:id,user_id,image','user_decision.department:id,user_id,');
+            $data = $this->userTimeService->filterDate($result,$date,'dateTime')->get()->toArray();
+        return $data;
     }
 }
