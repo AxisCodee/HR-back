@@ -22,7 +22,7 @@ class PolicyServices
 
     public function StorePolicy($request)
     {
-        $validated = $request->validated();
+        $validated = $request->toArray();
         $existencePolicy = Policy::where('branch_id', $validated['branch_id'])->exists();
         if ($existencePolicy) {
             return ResponseHelper::error('Already exist.', null);
