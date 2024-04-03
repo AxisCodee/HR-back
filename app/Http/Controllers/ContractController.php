@@ -135,4 +135,17 @@ class ContractController extends Controller
             ->get()->toArray();
         return ResponseHelper::success($contracts);
     }
+
+
+    public function selectContractToDelete(Request $request)
+    {
+        foreach($request->contracts as $request)
+        {
+            $oneRequest=Contract::find($request);
+           $result=$oneRequest->delete();
+        }
+           return ResponseHelper::deleted();
+
+
+}
 }

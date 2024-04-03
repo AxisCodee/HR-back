@@ -114,4 +114,18 @@ class DecisionService
             }
             return $results;
     }
+    public function selectDecisionToDelete($request)
+    {
+        foreach($request->decisions as $item)
+        {
+            $oneItem=Decision::find($item);
+           $result=$oneItem->delete();
+        }
+           return $result;
+
+
+
+
+    }
+
 }

@@ -213,5 +213,24 @@ class RequestService
             return ResponseHelper::error($e->getMessage(), $e->getCode());
         }
     }
+    public function selectRequest($request)
+    {
+
+        foreach($request->requests as $item)
+        {
+            $oneRequest=Request::find($item);
+            if($oneRequest == null)
+            {
+                return 'one request not found';
+
+            }
+            else{
+           $result=$oneRequest->delete();
+        }
+    }
+        return $result;
+
+
+    }
 
 }
