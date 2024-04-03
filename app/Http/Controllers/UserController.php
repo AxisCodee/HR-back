@@ -111,19 +111,19 @@ class UserController extends Controller
                 'userInfo',
                 'department',
                 'contract',
-                'my_files',
-                'my_contacts',
-                'careers',
-                'deposits',
-                'notes',
-                'certificates',
-                'languages',
-                'study_situations',
-                'emergency',
-                'absences',
-                'skills',
-                'phoneNumber',
-                'emails'
+                // 'my_files',
+                // 'my_contacts',
+                // 'careers',
+                // 'deposits',
+                // 'notes',
+                // 'certificates',
+                // 'languages',
+                // 'study_situations',
+                // 'emergency',
+                // 'absences',
+                // 'skills',
+                // // 'phoneNumber',
+                // 'emails'
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
