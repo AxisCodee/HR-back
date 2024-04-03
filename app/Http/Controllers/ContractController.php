@@ -86,7 +86,8 @@ class ContractController extends Controller
     public function show($id)
     {
         $result = Contract::query()
-            ->with('user')
+            ->with('user',
+            'user.userInfo')
             ->where('user_id', $id)
             ->get()->toArray();
         return ResponseHelper::success($result, null, 'contract:', 200);

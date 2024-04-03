@@ -379,10 +379,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function absences()
     {
-        // $date = request()->query('date');
-        // $result = $this->hasMany(Decision::class, 'user_id')
-        //     ->where('type', 'deduction');
-        // return $this->usertimeService->filterDate($result, $date, 'dateTime');
+        $date = request()->query('date');
+        $result = $this->hasMany(Decision::class, 'user_id')
+            ->where('type', 'deduction');
+        return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
 
 
