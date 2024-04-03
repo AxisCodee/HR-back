@@ -133,4 +133,16 @@ class DecisionService
             $data = $this->userTimeService->filterDate($result,$date,'dateTime')->get()->toArray();
         return $data;
     }
+
+
+    public function AcceptSystemDecisions(Request $request)
+    {
+        $decisionId=Decision::find($request->id);
+        $result = Decision::where('id',$decisionId->id)->update([
+            'status'=>'accepted'
+        ]);
+
+       return $result;
+    }
+
 }
