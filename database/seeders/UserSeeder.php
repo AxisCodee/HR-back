@@ -181,8 +181,6 @@ class UserSeeder extends Seeder
                 'pin' => 15,
                 'branch_id'=>1
             ],
-
-
             [
                 'email' => 'yazan@gmail.com',
                 'password' => Hash::make('password'),
