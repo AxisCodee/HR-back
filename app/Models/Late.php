@@ -15,6 +15,7 @@ class Late extends Model
         'check_in',
         'check_out',
         'lateDate',
+        'end',
         'moreLate',
     ];
     use HasFactory;
@@ -22,6 +23,6 @@ class Late extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class ,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

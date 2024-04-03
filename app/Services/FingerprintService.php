@@ -111,6 +111,8 @@ class FingerprintService
                     }
                 }
                 if ($status == '1') {
+                    $companyEndTime = $userPolicy->work_time['end_time'];
+                    $this->checkUserOverTimes($thisUser->id, $attendance->datetime, $companyEndTime, $checkDate);
                     $lateExistence = Late::query()
                         ->where('user_id', $thisUser->id)
                         ->where('check_out', '!=', null)
@@ -119,7 +121,6 @@ class FingerprintService
                     if (!$lateExistence) {
                         $checkOutHour = substr($attendance->datetime, 11, 15);
                         $parsedHour = Carbon::parse($checkOutHour);
-                        $companyEndTime = $userPolicy->work_time['end_time'];
                         if ($parsedHour->isBefore($companyEndTime)) {
                             $diffLate = $parsedHour->diff($companyEndTime);
                             $hoursLate = $diffLate->format('%H.%I');
@@ -236,27 +237,43 @@ class FingerprintService
 
     public function storeAbsence($user, $date, $userPolicy, $branch_id)
     {
-        $absenceData = [
-            'startDate' => $date,
-            'user_id' => $user->id,
-            'type' => 'Unjustified',
-            'demands_compensation' => $userPolicy->demands_compensation,
-        ];
-        if ($user->branch_id == $branch_id && $userPolicy->deduction_status) {//auto deduction
-            $newAbsenceData = [
-                'isPaid' => false,
-            ];
-            $mergedData = array_merge($absenceData, $newAbsenceData);
-            $this->autoDeduction($user, $date, 'Absence', 0);
-            $this->autoDeduction($user, $date, 'Deduction', 0);
+        $type = 'Unjustified';
+        $isPaid = false;
+        $demandsCompensation = $userPolicy->absence_management['paid_absence_days']['compensatory_time'];
+        if ($user->branch_id == $branch_id && $userPolicy->deduction_status) {//Auto deduction
+            $paidAbsenceDays = $userPolicy->absence_management['paid_absence_days']['count'];
+            $count = $this->userAbsencesDaysCount($user->id, $date);
+            if ($count > $paidAbsenceDays) {
+                $demandsCompensation = $userPolicy->absence_management['unpaid_absence_days']['compensatory_time'];
+                $this->autoDeduction($user, $date, 'Absence', 0);
+                $this->autoDeduction($user, $date, 'Deduction', 0);
+            } if ($count <= $paidAbsenceDays) {
+                $isPaid = true;
+            }
         }
         if ($user->branch_id == $branch_id && !$userPolicy->deduction_status) {
-            $newAbsenceData = [
-                'isPaid' => true,
-            ];
-            $mergedData = array_merge($absenceData, $newAbsenceData);
+            $isPaid = true;
         }
-        Absences::create($mergedData);
+        Absences::query()->create([
+            'type' => $type,
+            'isPaid' => $isPaid,
+            'demands_compensation' => $demandsCompensation,
+            'user_id' => $user->id,
+            'startDate' => $date,
+        ]);
+        return true;
+    }
+
+    public function userAbsencesDaysCount($user_id, $checkDate)
+    {
+        $startDate = Carbon::parse('2023-12-14');
+        $checkDate = Carbon::parse($checkDate);
+        if ($checkDate->isAfter($startDate)) {
+            return Absences::query()->where('user_id', $user_id)
+                ->whereRaw('DATE(startDate) >= ? AND DATE(startDate) <= ?', [$startDate, $checkDate])
+                ->count();
+        }
+        return 0;
     }
 
     public function clearDelays($branch_id, $date)
@@ -272,5 +289,39 @@ class FingerprintService
             }
         }
     }
+
+    public function checkUserOverTimes($user_id, $attendanceDatetime, $companyEndTime, $checkDate)
+    {
+        $lateExistence = Late::query()
+            ->where('user_id', $user_id)
+            ->where('check_in', '==', null)
+            ->where('check_out', '==', null)
+            ->where('end', '!=', null)
+            ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
+            ->exists();
+        if (!$lateExistence) {
+            $checkOutHour = substr($attendanceDatetime, 11, 15);
+            $parsedHour = Carbon::parse($checkOutHour);
+            if ($parsedHour->isAfter($companyEndTime)) {
+                $diffLate = $parsedHour->diff($companyEndTime);
+                $hoursOverTime = $diffLate->format('%H.%I');
+                $this->storeUserOverTime($user_id, $checkDate, $hoursOverTime,
+                    $checkOutHour);
+            }
+        }
+    }
+
+    public function storeUserOverTime($user_id, $checkDate, $hoursOverTime, $checkOutHour)
+    {
+        $overTime = Late::query()->create([
+            'user_id' => $user_id,
+            'lateDate' => $checkDate,
+            'end' => $checkOutHour,
+            'hours_num' => $hoursOverTime,
+            'type' => 'justified'
+        ]);
+        return (bool)$overTime;
+    }
+
 
 }
