@@ -122,4 +122,23 @@ class DecisionService
             }
             return $results;
     }
+    public function selectDecisionToDelete($request)
+    {
+
+        foreach($request->decisions as $item)
+        {
+            $oneDecisions=Decision::find($item);
+            if($oneDecisions == null)
+            {
+                return 'one request not found';
+
+            }
+            else{
+           $result=$oneDecisions->delete();
+        }
+    }
+        return $result;
+
+
+    }
 }
