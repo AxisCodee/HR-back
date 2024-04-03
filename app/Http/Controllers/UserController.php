@@ -111,19 +111,19 @@ class UserController extends Controller
                 'userInfo',
                 'department',
                 'contract',
-                // 'my_files',
-                // 'my_contacts',
-                // 'careers',
-                // 'deposits',
-                // 'notes',
-                // 'certificates',
-                // 'languages',
-                // 'study_situations',
-                // 'emergency',
+                'my_files',
+                'my_contacts',
+                'careers',
+                'deposits',
+                'notes',
+                'certificates',
+                'languages',
+                'study_situations',
+                'emergency',
                 // 'absences',
-                // 'skills',
-                // // 'phoneNumber',
-                // 'emails'
+                'skills',
+                'phoneNumber',
+                'emails'
             )->get()->toArray();
         return ResponseHelper::success($spec_user, null, 'user info returned successfully', 200);
     }
@@ -355,5 +355,13 @@ class UserController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return ResponseHelper::error($e->validator->errors()->first(), 400);
         }
+    }
+
+    public function Users_array($users)
+    {
+        $users->validate([
+            'user'=>[]
+        ]);
+        return $this->userService->usersarray($users);
     }
 }

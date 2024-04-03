@@ -365,4 +365,14 @@ class UserServices
         }
         return 0;
     }
+
+    public function usersarray($users)
+    {
+        foreach($users as $user)
+        {
+            User::findOrFail($user)->delete();
+        }
+
+        return ResponseHelper::success($users, null, 'selected users removed successfully', 200);
+    }
 }
