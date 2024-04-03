@@ -85,6 +85,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('all', 'all_decisions');
             Route::get('getUserDecisions', 'getUserDecisions');
             Route::post('addDecisions', 'addDecisions');
+            Route::get('systemDecision', 'systemDecision');
+
+
         });
     });
 
@@ -171,7 +174,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::controller(LanguageController::class)->group(function () {
             Route::post('Add', 'store');
             Route::post('Update/{id}', 'update');
-            Route::delete('Delete/{id}', 'destroy');  
+            Route::delete('Delete/{id}', 'destroy');
         });
     });
 
