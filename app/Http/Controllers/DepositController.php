@@ -53,9 +53,7 @@ class DepositController extends Controller
 
     public function destroy($id)
     {
-        return DB::transaction(function () use ($id) {
-            $result = $this->DepositServices->destroy($id);
-            return ResponseHelper::success('Deposit has been deleted', null);
-        });
+        return $this->DepositServices->destroy($id);
+        //return ResponseHelper::success('Deposit has been deleted', null);
     }
 }

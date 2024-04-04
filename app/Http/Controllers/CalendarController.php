@@ -3,14 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CalendarRequest\StoreCalendarRequest;
-use Illuminate\Http\Request;
-use App\Models\Calendar;
 use App\Helper\ResponseHelper;
-use App\Http\Requests\CalendarRequest;
 use App\Services\CalendarService;
-use Carbon\Carbon;
-
-use function PHPUnit\Framework\returnSelf;
 
 class CalendarController extends Controller
 {
@@ -30,12 +24,7 @@ class CalendarController extends Controller
      */
     public function add_event(StoreCalendarRequest $request)
     {
-        try {
-            $new = $this->CalenderService->store($request);
-            return $new;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e);
-        }
+        return $this->CalenderService->store($request);
     }
 
     /**
