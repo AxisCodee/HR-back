@@ -52,10 +52,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::controller(ContractController::class)->group(function () {
             Route::post('Add', 'store');
             Route::get('Show/{id}', 'show');
+            Route::get('contractDetails/{contract}', 'showContract');
             Route::get('All', 'index');
             Route::get('Archived', 'archivedContracts');
             Route::delete('Delete/{contract}', 'destroy');
             Route::post('Update/{contract}', 'update');
+            Route::post('select', 'selectContractToDelete'); 
         });
     });
 
@@ -85,11 +87,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('all', 'all_decisions');
             Route::get('getUserDecisions', 'getUserDecisions');
             Route::post('addDecisions', 'addDecisions');
-            Route::get('systemDecision', 'systemDecision');
-            Route::post('AcceptSystemDecisions', 'AcceptSystemDecisions');
-
-
-
         });
     });
 
@@ -129,6 +126,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::post('accepteRequest/{request}', 'acceptRequest');
             Route::post('rejectRequest/{request}', 'rejectRequest');
             Route::delete('Delete/{request}', 'destroy');
+            Route::post('selectRequest', 'selectRequest');
         });
     });
     Route::prefix('Team')->group(function () {

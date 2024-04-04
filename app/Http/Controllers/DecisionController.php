@@ -108,6 +108,17 @@ class DecisionController extends Controller
             return ResponseHelper::error('No results found', 404);
         }
     }
+    public function selectDecisionToDelete(Request $request)
+    {
+        {
+            try {
+                $result= $this->decisionService->selectDecisionToDelete($request);
+                return ResponseHelper::deleted();
+            } catch (\Exception $e) {
+            return ResponseHelper::error($e->getMessage(), $e->getCode());
+            }
+        }
+    }
 
 
     /**
