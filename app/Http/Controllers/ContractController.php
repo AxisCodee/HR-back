@@ -70,14 +70,14 @@ class ContractController extends Controller
     /**
      * Display the specified resource.
      */
-    // public function show(Contract $contract)
-    // {
-    //    $result= $contract->with('user')->get();
-    //    return ResponseHelper::success([
-    //     'message' => 'your contract',
-    //     'data' =>  $result,
-    // ]);
-    // }
+    public function showContract(Contract $contract)
+    {
+       $result= $contract->with('user')->get();
+       return ResponseHelper::success([
+        'message' => 'your contract',
+        'data' =>  $result,
+    ]);
+    }
     public function show($id)
     {
         $result = Contract::query()
@@ -157,4 +157,17 @@ class ContractController extends Controller
             return ResponseHelper::success($results);
         }
     }
+
+
+    public function selectContractToDelete(Request $request)
+    {
+        foreach($request->contracts as $request)
+        {
+            $oneRequest=Contract::find($request);
+           $result=$oneRequest->delete();
+        }
+           return ResponseHelper::deleted();
+
+
+}
 }

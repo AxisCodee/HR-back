@@ -368,11 +368,16 @@ class UserServices
 
     public function usersarray($users)
     {
-        foreach($users as $user)
+        foreach($users as $user_id)
         {
-            $user = User::findOrFail($user);
-            return $user ? $user->delete() : ResponseHelper::error('user not found');
-        }
+            $user = User::find($user_id);
+            if(!$user)
+            {
+                return ResponseHelper::error('user '.$user_id.' not found');
+            }
+                $user->delete();
+            }
+
         return ResponseHelper::success($users, null, 'selected users removed successfully', 200);
     }
 }

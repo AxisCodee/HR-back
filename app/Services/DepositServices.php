@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Services;
-use Illuminate\Http\Request;
+use Exception;
 use App\Models\User;
 use App\Models\Deposit;
-use Illuminate\Support\Facades\DB;
 use App\Http\Traits\Files;
+use Illuminate\Http\Request;
+use App\Helper\ResponseHelper;
+use Illuminate\Support\Facades\DB;
 
 class DepositServices
 {
@@ -60,11 +62,12 @@ class DepositServices
 
     public function destroy($id)
     {
-        return DB::transaction(function () use ($id) {
-            $deposit = Deposit::query()->find($id);
-            $deposit->delete();
-            return  $result = 'Deposit has been deleted';
-        });
+        $deposit = Deposit::query()->find($id);
+        if ($deposit == null) {
+            return ResponseHelper::error('Deposit not found');
+        }
+        $deposit->delete();
+        return  $result = 'Deposit has been deleted';
     }
 }
 

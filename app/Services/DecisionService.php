@@ -122,27 +122,23 @@ class DecisionService
             }
             return $results;
     }
-
-    public function getSystemDecisions()
+    public function selectDecisionToDelete($request)
     {
-        $date = request()->query('date');
 
-        $result = Decision::whereIn('type', ['alert', 'absence', 'dismiss', 'deduction'])
-            ->where('status', 'requested')
-            ->with('user_decision:id,first_name,last_name','user_decision.userInfo:id,user_id,image','user_decision.department:id,user_id,');
-            $data = $this->userTimeService->filterDate($result,$date,'dateTime')->get()->toArray();
-        return $data;
+        foreach($request->decisions as $item)
+        {
+            $oneDecisions=Decision::find($item);
+            if($oneDecisions == null)
+            {
+                return 'one request not found';
+
+            }
+            else{
+           $result=$oneDecisions->delete();
+        }
     }
+        return $result;
 
 
-    public function AcceptSystemDecisions(Request $request)
-    {
-        $decisionId=Decision::find($request->id);
-        $result = Decision::where('id',$decisionId->id)->update([
-            'status'=>'accepted'
-        ]);
-
-       return $result;
     }
-
 }

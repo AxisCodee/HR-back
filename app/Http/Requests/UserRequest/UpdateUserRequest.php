@@ -29,7 +29,7 @@ class UpdateUserRequest extends FormRequest
             'middle_name' => ['string', 'min:3'],
             'last_name' => ['string', 'min:3'],
             'email' => ['email', 'min:10'],
-            'role' => ['exists:roles,id'],
+            'role' => ['exists:roles,name'],
             'specialization'=>['string','min:3'],
             'department_id' => ['exists:departments,id'],
             'password' => ['string', 'min:4'],
@@ -38,7 +38,7 @@ class UpdateUserRequest extends FormRequest
             'branch_id'=>['integer','exists:branches,id'],
         //Validation for the fields that will be inserted into the user_infos table.
             'salary'=>['integer','min:1'],
-            
+
         ];
     }
     protected function failedValidation(Validator $validator)
