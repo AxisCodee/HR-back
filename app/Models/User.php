@@ -129,8 +129,6 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         return $this->userServices->getDeduction($this, $date);
     }
-
-
     public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');

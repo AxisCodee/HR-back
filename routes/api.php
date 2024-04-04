@@ -52,11 +52,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::controller(ContractController::class)->group(function () {
             Route::post('Add', 'store');
             Route::get('Show/{id}', 'show');
+            Route::get('contractDetails/{contract}', 'showContract');
             Route::get('All', 'index');
             Route::get('Archived', 'archivedContracts');
             Route::delete('Delete/{contract}', 'destroy');
             Route::post('Update/{contract}', 'update');
-            Route::post('select', 'selectContractToDelete');
+            Route::post('select', 'selectContractToDelete'); 
         });
     });
 
