@@ -74,7 +74,6 @@ class AttendanceController extends Controller
             $array = json_decode(json_encode($xml), true);
             $logsData = $array['Row'];
             $uniqueDates = [];
-
             foreach ($logsData as $log) {
                 $this->fingerprintService->storeAttendance($log);
                 $date = date('Y-m-d', strtotime($log['DateTime']));
@@ -87,8 +86,8 @@ class AttendanceController extends Controller
             //Storing delays
             $allAttendances = Attendance::query()->get();
             foreach ($allAttendances as $attendance) {
-                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime,'0');
-                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime,'1');
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '0');
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '1');
 
             }
             //Storing absence
@@ -98,8 +97,6 @@ class AttendanceController extends Controller
             }
             return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
         });
-
-
     }
 
     public function showAttendanceLogs()

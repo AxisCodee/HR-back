@@ -3,6 +3,7 @@
 namespace App\Models;
 
 
+use App\Services\AbsenceService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
@@ -24,7 +25,7 @@ class User extends Authenticatable implements JWTSubject
 
     protected $userServices;
     protected $usertimeService;
-
+    protected $absenceService;
 
     public function __construct(array $attributes = [])
     {
@@ -32,6 +33,7 @@ class User extends Authenticatable implements JWTSubject
         $userTimeService = new UserTimeService();
         $this->userServices = new UserServices($userTimeService);
         $this->usertimeService = new UserTimeService();
+        $this->absenceService = new AbsenceService();
     }
 
 
@@ -63,10 +65,10 @@ class User extends Authenticatable implements JWTSubject
         'CheckInPercentage',
         'CheckOutPercentage',
         'BaseSalary',
-       // 'deductions',
+        // 'deductions',
         //'rewards',
         //'advances',
-       // 'warnings',
+        // 'warnings',
         //'overTimes',
         //'alerts',
         'status',
@@ -75,7 +77,7 @@ class User extends Authenticatable implements JWTSubject
         'dismissed',
         'TotalAbsenceHours',
         'totalCompensationHours',
-       // 'absences',
+        'isabsent',
     ];
     protected $hidden = [
         'password',
@@ -129,6 +131,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         return $this->userServices->getDeduction($this, $date);
     }
+
     public function getAbsenceAttribute($date)
     {
         $date = request()->query('date');
@@ -153,6 +156,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->userServices->getCheckOutPercentage($this, $date);
     }
 
+    public function getIsAbsentAttribute()
+    {
+        $date = Carbon::now()->format('Y-m-d');
+        return $this->absenceService->absenceStatus($this->id, $date);
+    }
     /***
      *
      *   ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -290,20 +298,19 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-
     /*
    ----------------LATES COUNT------------------
    */
-  public function justifiedPaidLatesCount()
-  {
-      $date = request()->query('date');
-      $result = $this->hasMany(Late::class, 'user_id')
-          ->where('isPaid', 1)
-          ->where('type', 'justified');
-      $this->usertimeService->filterDate($result, $date, 'lateDate');
+    public function justifiedPaidLatesCount()
+    {
+        $date = request()->query('date');
+        $result = $this->hasMany(Late::class, 'user_id')
+            ->where('isPaid', 1)
+            ->where('type', 'justified');
+        $this->usertimeService->filterDate($result, $date, 'lateDate');
 
-      return $result;
-  }
+        return $result;
+    }
 
     public function justifiedUnPaidLatesCount()
     {
@@ -330,7 +337,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-
     public function deductions()
     {
         $date = request()->query('date');
@@ -338,21 +344,24 @@ class User extends Authenticatable implements JWTSubject
             ->where('type', 'deduction');
         return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
-      public function rewards()
+
+    public function rewards()
     {
         $date = request()->query('date');
         $result = $this->hasMany(Decision::class, 'user_id')
             ->where('type', 'reward');
         return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
-      public function advances()
+
+    public function advances()
     {
         $date = request()->query('date');
         $result = $this->hasMany(Decision::class, 'user_id')
             ->where('type', 'advance');
         return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
-      public function warnings()
+
+    public function warnings()
     {
         $date = request()->query('date');
         $result = $this->hasMany(Decision::class, 'user_id')
@@ -382,9 +391,6 @@ class User extends Authenticatable implements JWTSubject
             ->where('type', 'deduction');
         return $this->usertimeService->filterDate($result, $date, 'dateTime');
     }
-
-
-
 
 
     /***
@@ -691,20 +697,22 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Branch::class, 'branch_id');
     }
+
     public function evaluatorRates()
     {
-        return $this->belongsToMany(Rate::class, 'rate_users','evalutor_id')
-            ->withPivot('evaluator_id','rateType_id');
+        return $this->belongsToMany(Rate::class, 'rate_users', 'evalutor_id')
+            ->withPivot('evaluator_id', 'rateType_id');
     }
 
     public function userRateTypes()
     {
-        return $this->belongsToMany(RateType::class, 'rate_users','user_id','rateType_id')
-        ->withPivot('rate_id','evalutor_id','rate');
+        return $this->belongsToMany(RateType::class, 'rate_users', 'user_id', 'rateType_id')
+            ->withPivot('rate_id', 'evalutor_id', 'rate');
     }
+
     public function evaluatorRateTypes()
     {
-        return $this->belongsToMany(RateType::class, 'rate_users','evalutor_id','rateType_id')
-        ->withPivot('rate_id','user_id','rate');
+        return $this->belongsToMany(RateType::class, 'rate_users', 'evalutor_id', 'rateType_id')
+            ->withPivot('rate_id', 'user_id', 'rate');
     }
 }
