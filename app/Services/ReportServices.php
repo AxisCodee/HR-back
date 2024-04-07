@@ -145,6 +145,10 @@ class ReportServices
             $checkInDetails = $this->monthlyCheckIn($request->user_id, $date);
             $checkOutDetails = $this->monthlyCheckOut($request->user_id, $date);
         }
+        if (strlen($date) == 10){
+            $checkInDetails = $result->attendance->where('status',0)->first();
+            $checkOutDetails = $result->attendance->where('status',1)->first();
+        }
         $result['checkInDetails'] = $checkInDetails;
         $result['checkOutDetails'] = $checkOutDetails;
         return ResponseHelper::success([
