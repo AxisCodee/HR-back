@@ -20,7 +20,8 @@ trait Files
     }
     public static function saveFileF($file)
     {
-        //$file = $request->file('path');
+       // $file = $request->file('path');
+       
         $theFilePath = null;
         if ($file) {
             $theFilePath = time() . '.' . $file->getClientOriginalExtension();
