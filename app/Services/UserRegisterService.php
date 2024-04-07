@@ -551,14 +551,18 @@ class UserRegisterService
            {
             $path= 'no contract';
            }
+
+           if(isset($contract['startTime'],$contract['endTime']))
+           {
         $contract = Contract::create(
             [
                 'path' => $path ,
-                'startTime' => $contract['startTime'],
-                'endTime' => $contract['endTime'],
+                'startTime' => $contract['startTime'] ,
+                'endTime' => $contract['endTime'] ,
                 'user_id' => $id
             ]
-        );
+            );
+        }
         return true;
     }
 }
