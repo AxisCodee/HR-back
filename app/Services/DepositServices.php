@@ -66,6 +66,7 @@ class DepositServices
             return  $result = 'Deposit has been deleted';
         });
     }
+
 }
 
 
