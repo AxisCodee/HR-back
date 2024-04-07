@@ -79,26 +79,17 @@ class UserController extends Controller
 
     public function allAndTrashUser(Request $request)
     {
-        try {
-            $branch_id = $request->branch_id;
-            $branch = Branch::findOrFail($branch_id);
-            if (!$branch) {
-                throw new \Exception('Branch Not Found');
-            }
-            if (!$branch_id) {
-                throw new \Exception('Missing branch_id', 400);
-            }
-            $all_users = User::query()
-                ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image', 'department');
-            $trashed_users = User::onlyTrashed()
-                ->where('branch_id', $branch_id)
-                ->with('userInfo:id,user_id,image', 'department');
-            $users = $all_users->union($trashed_users)->get()->toArray();
-            return ResponseHelper::success($users, null, 'All users (including trashed)', 200);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+        $branch_id = $request->branch_id;
+        $all_users = User::query()
+            ->where('branch_id', $branch_id)
+            ->with('userInfo:id,user_id,image', 'department')->withTrashed()->get();
+
+            $usersWithStatus = collect($all_users)->map(function ($user) {
+                $userArray = $user->toArray();
+                $userArray['state'] = $user->trashed() ? 'Former' : 'Active';
+                return $userArray;
+            });
+        return ResponseHelper::success($usersWithStatus, null, 'All users (including trashed)', 200);
     }
 
 
@@ -149,7 +140,7 @@ class UserController extends Controller
         $before = $remove_user->department_id;
         $remove_user->delete();
         $remove_user->update(['department_id', $before]);
-        return ResponseHelper::deleted('user removed successfully');
+        return ResponseHelper::success('user removed successfully');
     }
 
     //get all teams with their users

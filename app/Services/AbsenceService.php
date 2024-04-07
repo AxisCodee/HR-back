@@ -59,10 +59,10 @@ class AbsenceService
         $user = User::findOrFail($request->user_id);
         $result = Absences::updateOrCreate(
 
-    [
-        'user_id' => $user->id,
-        'startDate' => Carbon::now()->format('Y-m-d'),
-    ],
+            [
+                'user_id' => $user->id,
+                'startDate' => Carbon::now()->format('Y-m-d'),
+            ],
 
             [
                 'type' => $request->type,
@@ -189,6 +189,14 @@ class AbsenceService
     {
         $user = User::with('allAbsences')->findOrFail($request->user_id);
         return $user;
+    }
+
+    public function absenceStatus($user_id, $date)
+    {
+        $result = Absences::query()->where('user_id', $user_id)
+            ->whereRaw('DATE(startDate) = ? ', [$date])
+            ->exists();
+        return $result;
     }
 
 }
