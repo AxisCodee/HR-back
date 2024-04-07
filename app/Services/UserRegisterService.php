@@ -542,7 +542,14 @@ class UserRegisterService
 
     public function CreateUsercontract($id,$request)
     {
+        if($request->has($request->contract['path']))
+        {
         $path = Files::saveFileF($request->contract['path']);
+        }
+        else
+        {
+            $path= null;
+        }
         $contract = Contract::create(
             [
                 'path' => $path,

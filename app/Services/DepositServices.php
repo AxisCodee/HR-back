@@ -69,6 +69,7 @@ class DepositServices
         $deposit->delete();
         return  $result = 'Deposit has been deleted';
     }
+
 }
 
 
