@@ -111,7 +111,7 @@ class AuthController extends Controller
                 $this->userRegisterService->createUserDeposits($user->id, $secretaraits);
             }
             if($request->contract){
-                $this->userRegisterService->CreateUsercontract($user->id,$request);
+                $this->userRegisterService->CreateUsercontract($user->id,$request->contract);
             }
             return ResponseHelper::success($user);
         });

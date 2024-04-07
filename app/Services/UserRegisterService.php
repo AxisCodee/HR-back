@@ -540,21 +540,22 @@ class UserRegisterService
         }
     }
 
-    public function CreateUsercontract($id,$request)
+    public function CreateUsercontract($id,$contract)
     {
-        if($request->has($request->contract['path']))
-        {
-        $path = Files::saveFileF($request->contract['path']);
-        }
-        else
-        {
-            $path= null;
-        }
+           if(isset($contract['path']))
+           {
+
+        $path = Files::saveFileF($contract['path']);
+           }
+           else
+           {
+            $path= 'no contract';
+           }
         $contract = Contract::create(
             [
-                'path' => $path,
-                'startTime' => $request->contract['startTime'],
-                'endTime' => $request->contract['endTime'],
+                'path' => $path ,
+                'startTime' => $contract['startTime'],
+                'endTime' => $contract['endTime'],
                 'user_id' => $id
             ]
         );
