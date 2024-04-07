@@ -19,7 +19,7 @@ class StoreDecisionRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'integer', 'exists:users,id'],
-            'type' => ['required', 'string','in:reward,warning,deduction,alert,penalty'],
+            'type' => ['required', 'string','in:warning, absence, reward, deduction, advanced, alert, penalty'],
             'content' => ['string'],
             'amount' =>['nullable','integer'],
             'dateTime'=>['required'],
