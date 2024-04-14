@@ -57,7 +57,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('Archived', 'archivedContracts');
             Route::delete('Delete/{contract}', 'destroy');
             Route::post('Update/{contract}', 'update');
-            Route::post('select', 'selectContractToDelete'); 
+            Route::post('select', 'selectContractToDelete');
         });
     });
 
@@ -87,6 +87,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('all', 'all_decisions');
             Route::get('getUserDecisions', 'getUserDecisions');
             Route::post('addDecisions', 'addDecisions');
+            Route::get('systemDecision','systemDecision');
         });
     });
 
