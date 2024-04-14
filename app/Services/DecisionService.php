@@ -141,4 +141,27 @@ class DecisionService
 
 
     }
+
+    public function getSystemDecisions()
+    {
+        $date = request()->query('date');
+
+        $result = Decision::whereIn('type', ['alert', 'absence', 'dismiss', 'deduction'])
+            ->where('status', 'requested')
+            ->with('user_decision:id,first_name,last_name','user_decision.userInfo:id,user_id,image','user_decision.department:id,user_id,');
+            $data = $this->userTimeService->filterDate($result,$date,'dateTime')->get()->toArray();
+        return $data;
+    }
+
+
+    public function AcceptSystemDecisions(Request $request)
+    {
+        $decisionId=Decision::find($request->id);
+        $result = Decision::where('id',$decisionId->id)->update([
+            'status'=>'accepted'
+        ]);
+
+       return $result;
+    }
+
 }
