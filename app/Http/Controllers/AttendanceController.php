@@ -70,6 +70,7 @@ class AttendanceController extends Controller
             $all_user_info = $tad->get_all_user_info();
             $dt = $tad->get_date();
             $logs = $tad->get_att_log();
+            dd($logs);
             $xml = simplexml_load_string($logs);
             $array = json_decode(json_encode($xml), true);
             $logsData = $array['Row'];
