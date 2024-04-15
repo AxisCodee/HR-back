@@ -453,27 +453,27 @@ class User extends Authenticatable implements JWTSubject
 
     public function getTotalAbsenceHoursAttribute()
     {
-        //   $date = request()->query('date');
-        //     if($date){
-        //     $latehours = Late::where('user_id',$this->id)
-        //     ->where('demands_compensation',1);
-        //     $late=$this->usertimeService->filterDate($latehours, $date, 'lateDate')->sum('hours_num');
+          $date = request()->query('date');
+            if($date){
+            $latehours = Late::where('user_id',$this->id)
+            ->where('demands_compensation',1);
+            $late=$this->usertimeService->filterDate($latehours, $date, 'lateDate')->sum('hours_num');
 
-        //     $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
+            $branchpolicy = Policy::where('branch_id',$this->branch_id)->first();
 
-        //     $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
-        //     $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
-        //     $worktime = $startTime->diffInMinutes($endTime, false);
-        //    //  $worktime = $worktime%60;
+            $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
+            $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
+            $worktime = $startTime->diffInMinutes($endTime, false);
+           //  $worktime = $worktime%60;
 
-        //     $absence = Absences::where('user_id',$this->id)
-        //                        ->where('demands_compensation',1);
+            $absence = Absences::where('user_id',$this->id)
+                               ->where('demands_compensation',1);
 
-        //      $absences =$this->usertimeService->filterDate($absence, $date, 'startDate')->count();
+             $absences =$this->usertimeService->filterDate($absence, $date, 'startDate')->count();
 
-        //     $absencehours = $absences * ($worktime/60);
-        //     $totalhours = $absencehours + $late;
-        //     return $totalhours;}
+            $absencehours = $absences * ($worktime/60);
+            $totalhours = $absencehours + $late;
+            return $totalhours;}
         //     // $absencehours = Absences::where('user_id',$this->id);
     }
 
