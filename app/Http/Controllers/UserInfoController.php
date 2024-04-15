@@ -114,8 +114,8 @@ class UserInfoController extends Controller
     public function getCompensationHours(User $user)
     {
         return ResponseHelper::success(
-            ['compensation hours'=>$user->userInfo->compensation_hours] ,
+            ['compensation_hours'=>$user->userInfo->compensation_hours] ,
             'compensation hours returned successfully');
     }
-    
+
 }
