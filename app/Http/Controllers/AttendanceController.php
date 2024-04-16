@@ -37,7 +37,7 @@ class AttendanceController extends Controller
 
     public function getAttendanceLogs()
     {
-        $tad_factory = new TADFactory(['ip' => '192.168.2.202']);
+        $tad_factory = new TADFactory(['ip' => '192.168.2.201']);
         $tad = $tad_factory->get_instance();
         $logs = $tad->get_att_log();
         $xml = simplexml_load_string($logs);
@@ -62,16 +62,19 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
-        return DB::transaction(function () use ($request) {
+       return DB::transaction(function () use ($request) {
             //Storing attendance
             $branch = Branch::findOrFail($request->branch_id);
             $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
+
             $tad = $tad_factory->get_instance();
-            $all_user_info = $tad->get_all_user_info();
-            $dt = $tad->get_date();
+           ///// $all_user_info = $tad->get_all_user_info();
+           /// $dt = $tad->get_date();
             $logs = $tad->get_att_log();
+
             $xml = simplexml_load_string($logs);
-            $array = json_decode(json_encode($xml), true);
+
+            $array = json_decode(json_encode($xml),true);
             $logsData = $array['Row'];
             $uniqueDates = [];
             foreach ($logsData as $log) {
@@ -96,7 +99,7 @@ class AttendanceController extends Controller
                 $this->fingerprintService->storeUserAbsences($date, $request->branch_id);
             }
             return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
-        });
+         });
     }
 
     public function showAttendanceLogs()
