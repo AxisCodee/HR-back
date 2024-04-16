@@ -122,7 +122,7 @@ class UserInfoController extends Controller
 
     public function getCompensationHours(User $user)
     {
-        $totalAbsenceHours = $this->absenceService->totalAbsenceHours($user, null);
+        $totalAbsenceHours = $this->absenceService->totalAbsenceHours($user->id, null);
         $compensationHours = $user->userInfo->compensation_hours;
         return ResponseHelper::success(
             ['compensation_hours' => $totalAbsenceHours - $compensationHours],
