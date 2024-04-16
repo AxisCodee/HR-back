@@ -140,7 +140,7 @@ class TeamService
                 ]);
             //update department (team)
             if ($request->parent_id) {
-                $DepartmentParent = Department::query()->where('department_id', $department->id)
+                $DepartmentParent = Department::query()->where('id', $department->id)
                     ->update(
                         [
                             'parent_id' => $request->parent_id
