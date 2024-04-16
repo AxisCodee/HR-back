@@ -209,8 +209,9 @@ class AbsenceService
         return $result;
     }
 
-    public function totalAbsenceHours($user, $date)
+    public function totalAbsenceHours($user_id, $date)
     {
+        $user=User::query()->findOrFail($user_id);
         $latehours = Late::where('user_id', $user->id)
             ->where('demands_compensation', 1);
         $absence = Absences::where('user_id', $user->id)
@@ -223,8 +224,10 @@ class AbsenceService
             $late = $latehours->sum('hours_num');
             $absences = $absence->count();
         }
-        $branchpolicy = Policy::where('branch_id', $user->branch_id)->first();
+        $branchpolicy = Policy::query()->where('branch_id', $user->branch_id)->first();
+        //dd($user);
         if ($branchpolicy != null) {
+
             $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
             $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
             $worktime = $startTime->diffInMinutes($endTime, false);
