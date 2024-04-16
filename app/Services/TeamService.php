@@ -166,18 +166,18 @@ class TeamService
                     }
                 }
             }
-            // $leader = $request->team_leader;
-            // $teamLeader = User::where('id', $leader)->where('role','!=','admin')
-            //     ->first(); // team leader
+            $leader = $request->team_leader;
+            $teamLeader = User::where('id', $leader)->where('role','!=','admin')
+                ->first(); // team leader
 
-            // if (!$teamLeader) { //exception if the team leader is exist in another team
-            //     throw new Exception('You cannot add a team leader to another team');
-            // }
-            //set team leader
-            // $teamLeader->update([
-            //     'role' => 'team_leader',
-            //     'department_id' => $department->id
-            // ]);
+            if (!$teamLeader) { //exception if the team leader is exist in another team
+                throw new Exception('You cannot add a team leader to another team');
+            }
+      //      set team leader
+            $teamLeader->update([
+                'role' => 'team_leader',
+                'department_id' => $department->id
+            ]);
 
             DB::commit();//commit
             return 'Team added successfully';
