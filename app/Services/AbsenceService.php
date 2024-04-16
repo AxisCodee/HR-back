@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Late;
+use App\Models\Policy;
 use App\Models\User;
 use App\Models\Absences;
 use Carbon\Carbon;
@@ -12,6 +14,14 @@ use function Symfony\Component\String\s;
 class AbsenceService
 {
 
+
+    protected $userTimeService;
+
+
+    public function __construct(UserTimeService $userTimeService)
+    {
+        $this->userTimeService = $userTimeService;
+    }
 
     public function show(User $user)
     {
@@ -197,6 +207,32 @@ class AbsenceService
             ->whereRaw('DATE(startDate) = ? ', [$date])
             ->exists();
         return $result;
+    }
+
+    public function totalAbsenceHours($user, $date)
+    {
+        $latehours = Late::where('user_id', $user->id)
+            ->where('demands_compensation', 1);
+        $absence = Absences::where('user_id', $user->id)
+            ->where('demands_compensation', 1);
+        if ($date) {
+            $late = $this->userTimeService->filterDate($latehours, $date, 'lateDate')->sum('hours_num');
+            $absences = $this->userTimeService->filterDate($absence, $date, 'startDate')->count();
+        }
+        if (!$date) {
+            $late = $latehours->sum('hours_num');
+            $absences = $absence->count();
+        }
+        $branchpolicy = Policy::where('branch_id', $user->branch_id)->first();
+        if ($branchpolicy != null) {
+            $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
+            $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
+            $worktime = $startTime->diffInMinutes($endTime, false);
+            //  $worktime = $worktime%60;
+            $absencehours = $absences * ($worktime / 60);
+            $totalhours = $absencehours + $late;
+        }
+        return $totalhours;
     }
 
 }

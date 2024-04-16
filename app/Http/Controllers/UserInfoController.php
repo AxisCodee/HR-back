@@ -8,6 +8,7 @@ use App\Http\Requests\UserInfoRequest\StoreUserInfoRequest;
 use App\Models\User;
 use App\Models\UserSalary;
 use App\Models\UserInfo;
+use App\Services\AbsenceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,14 @@ use Carbon\Carbon;
 
 class UserInfoController extends Controller
 {
+    protected $absenceService;
+
+
+    public function __construct(AbsenceService $absenceService)
+    {
+        $this->absenceService = $absenceService;
+    }
+
     public function store(StoreUserInfoRequest $request)
     {
         $validate = $request->validated();
@@ -113,9 +122,11 @@ class UserInfoController extends Controller
 
     public function getCompensationHours(User $user)
     {
+        $totalAbsenceHours = $this->absenceService->totalAbsenceHours($user, null);
+        $compensationHours = $user->userInfo->compensation_hours;
         return ResponseHelper::success(
-            ['compensation hours'=>$user->userInfo->compensation_hours] ,
+            ['compensation_hours' => $totalAbsenceHours - $compensationHours],
             'compensation hours returned successfully');
     }
-    
+
 }
