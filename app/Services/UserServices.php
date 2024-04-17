@@ -62,7 +62,7 @@ class UserServices
             if ($count == 0) {
                 $percentage = 0;
             } else {
-                $percentage = ($checkIns / $count) * 100;
+                $percentage = ($checkIns / $count) * 10;
             }
             return $percentage;
         } else
@@ -104,7 +104,7 @@ class UserServices
             if ($count == 0) {
                 $percentage = 0;
             } else {
-                $percentage = ($checkOut / $count) * 100;
+                $percentage = ($checkOut / $count) * 10;
             }
             return $percentage;
         } else
@@ -368,15 +368,13 @@ class UserServices
 
     public function usersarray($users)
     {
-        foreach($users as $user_id)
-        {
+        foreach ($users as $user_id) {
             $user = User::find($user_id);
-            if(!$user)
-            {
-                return ResponseHelper::error('user '.$user_id.' not found');
+            if (!$user) {
+                return ResponseHelper::error('user ' . $user_id . ' not found');
             }
-                $user->delete();
-            }
+            $user->delete();
+        }
 
         return ResponseHelper::success($users, null, 'selected users removed successfully', 200);
     }

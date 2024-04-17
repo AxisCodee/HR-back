@@ -70,8 +70,8 @@ class Handler extends ExceptionHandler
         }
     }
 
-    // public function render($request, Throwable $exception)
-    // {
-    //     throw new Exception($exception->getMessage());
-    // }
+    public function render($request, Throwable $exception)
+    {
+        throw new Exception($exception->getMessage());
+    }
 }
