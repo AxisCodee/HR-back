@@ -203,15 +203,14 @@ class AbsenceService
 
     public function absenceStatus($user_id, $date)
     {
-        $result = Absences::query()->where('user_id', $user_id)
+        return Absences::query()->where('user_id', $user_id)
             ->whereRaw('DATE(startDate) = ? ', [$date])
             ->exists();
-        return $result;
     }
 
     public function totalAbsenceHours($user_id, $date)
     {
-        $user=User::query()->findOrFail($user_id);
+        $user = User::query()->findOrFail($user_id);
         $latehours = Late::where('user_id', $user->id)
             ->where('demands_compensation', 1);
         $absence = Absences::where('user_id', $user->id)
