@@ -62,7 +62,7 @@ class UserServices
             if ($count == 0) {
                 $percentage = 0;
             } else {
-                $percentage = ($checkIns / $count) * 10;
+                $percentage = round((($checkIns * 100) / $count));
             }
             return $percentage;
         } else
@@ -104,7 +104,7 @@ class UserServices
             if ($count == 0) {
                 $percentage = 0;
             } else {
-                $percentage = ($checkOut / $count) * 10;
+                $percentage = round(($checkOut * 100) / $count);
             }
             return $percentage;
         } else
@@ -249,7 +249,6 @@ class UserServices
         $branch_id = $user->branch_id;
         $branchWorkHours = $this->branchWorkHours($branch_id);
         $userDelays = Late::query()->where('user_id', $user->id)->sum('hours_num');
-        dd($userDelays);
         $userAbsence = Absences::query()->where('user_id', $user->id)->count();
         return intval($userDelays + ($userAbsence * $branchWorkHours));
     }

@@ -145,9 +145,9 @@ class ReportServices
             $checkInDetails = $this->monthlyCheckIn($request->user_id, $date);
             $checkOutDetails = $this->monthlyCheckOut($request->user_id, $date);
         }
-        if (strlen($date) == 10){
-            $checkInDetails = $result->attendance->where('status',0)->first();
-            $checkOutDetails = $result->attendance->where('status',1)->first();
+        if (strlen($date) == 10) {
+            $checkInDetails = $result->attendance->where('status', 0)->first();
+            $checkOutDetails = $result->attendance->where('status', 1)->first();
         }
         $result['checkInDetails'] = $checkInDetails;
         $result['checkOutDetails'] = $checkOutDetails;
@@ -209,11 +209,11 @@ class ReportServices
             ->where('status', $status)
             ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $date])
             ->count();
-        $workDays = $this->workDays($dateFormat,$date);
+        $workDays = $this->workDays($dateFormat, $date);
         if ($workDays == 0) {
             return 0;
         }
-        return round(($checks / $workDays) * 100);
+        return round((($checks * 100) / $workDays));
     }
 
     public function monthlyCheckOut($user_id, $dateTime)//out late
@@ -230,12 +230,12 @@ class ReportServices
             ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $dateTime])
             ->whereRaw('TIME(datetime) < ?', [$companyEndTime24])
             ->count();
-        $workDays = $this->workDays($dateFormat,$dateTime);
+        $workDays = $this->workDays($dateFormat, $dateTime);
         if ($workDays == 0) {
             return $allMonths;
         }
         $month = date('n', strtotime($dateTime));
-        $result = round(($checks / $workDays) * 100);
+        $result = round((($checks * 100) / $workDays));
         $allMonths  [$month] = $result;
         return $allMonths;
     }
@@ -247,12 +247,13 @@ class ReportServices
         $dateFormat = "%Y-%m";
         $delays = Late::query()->where('user_id', $user_id)
             ->whereRaw('DATE_FORMAT(lateDate, ?) = ?', [$dateFormat, $dateTime])
+            ->whereNull('end')
             ->count();
-        $workDays = $this->workDays($dateFormat,$dateTime);
+        $workDays = $this->workDays($dateFormat, $dateTime);
         if ($workDays == 0) {
             return $allMonths;
         }
-        $result = round(($delays / $workDays) * 100);
+        $result = round((($delays * 100) / $workDays));
         $allMonths  [$month] = $result;
         return $allMonths;
     }
