@@ -225,9 +225,7 @@ class AbsenceService
             $absences = $absence->count();
         }
         $branchpolicy = Policy::query()->where('branch_id', $user->branch_id)->first();
-        //dd($user);
         if ($branchpolicy != null) {
-
             $startTime = Carbon::parse($branchpolicy->work_time['start_time']);
             $endTime = Carbon::parse($branchpolicy->work_time['end_time']);
             $worktime = $startTime->diffInMinutes($endTime, false);

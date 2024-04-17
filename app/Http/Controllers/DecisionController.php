@@ -51,7 +51,7 @@ class DecisionController extends Controller
      * Delete an existing decision.
      * [DecisionService => RemoveDecision]
      * @param Decision
-     * @return DecisionService
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function remove_decision($id)
     {
@@ -67,7 +67,7 @@ class DecisionController extends Controller
      * [DecisionService => UpdateDecision]
      * @param UpdateDecisionRequest
      * @param Decision
-     * @return decisionService
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit_decision(UpdateDecisionRequest $request, $id)
     {
@@ -82,7 +82,7 @@ class DecisionController extends Controller
      * Get all decisions for all users.
      * [DecisionService => AllDecisions]
      * @param Request
-     * @return decisionService
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function all_decisions(Request $request)
     {
@@ -97,7 +97,7 @@ class DecisionController extends Controller
      * Get decisions for a specific user.
      * [DecisionService => user_decisions]
      * @param Request
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function getUserDecisions(Request $request)
     {
@@ -125,7 +125,7 @@ class DecisionController extends Controller
      * Get absence times for a specific user.
      * [DecisionService => user_absence]
      * @param Request
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     // public function getUserAbsence(Request $request)
     // {
