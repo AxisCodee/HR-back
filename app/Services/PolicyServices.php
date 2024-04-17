@@ -37,8 +37,8 @@ class PolicyServices
             $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
 
             $workhours = $startTime->diffInHours($endTime, false);
-            $workdays = sizeof($policy->work_time['work_days']) * 4 ;
-            $policy->update(['monthlyhours'=>$workhours*$workdays]);
+            $workdays = sizeof($policy->work_time['work_days']) * 4;
+            $policy->update(['monthlyhours' => $workhours * $workdays]);
 
             foreach ($types as $type) {
                 RateType::query()->create(
@@ -65,9 +65,9 @@ class PolicyServices
             $policy->update($validated);
             $branchID = $validated['branch_id'];
             if ($types) {
-                RateType::query()->where('branch_id', $request->branch_id)->pluck('rate_type')->toArray();
+                RateType::query()->where('branch_id', $request->branch_id)->delete();
                 foreach ($types as $type) {
-                    RateType::updateOrCreate(
+                    RateType::create(
                         ['branch_id' => $branchID, 'rate_type' => $type],
                         ['branch_id' => $branchID]
                     );
