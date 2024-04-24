@@ -91,7 +91,6 @@ class AttendanceController extends Controller
             foreach ($allAttendances as $attendance) {
                 $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '0');
                 $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '1');
-
             }
             //Storing absence
             foreach ($uniqueDates as $date) {
