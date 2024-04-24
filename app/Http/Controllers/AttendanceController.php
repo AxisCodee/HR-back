@@ -21,6 +21,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
+use function React\Promise\all;
+use function Symfony\Component\String\s;
 
 
 require 'tad\vendor\autoload.php';
@@ -62,7 +64,45 @@ class AttendanceController extends Controller
     public function storeAttendanceLogs(Request $request)
     {
        $job= dispatch(new StoreAttendanceLogsJob($request->branch_id, $this->fingerprintService));
-        
+
+        return DB::transaction(function () use ($request) {
+            //Storing attendance
+            $branch = Branch::findOrFail($request->branch_id);
+            $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
+            $tad = $tad_factory->get_instance();
+            // $all_user_info = $tad->get_all_user_info();
+            // $dt = $tad->get_date();
+            $logs = $tad->get_att_log();
+            //check date table and store attendance
+            $uniqueDates = [];
+            if (Date::all()->count() != 0) {
+                $start = Date::latest('date')->value('date');
+                $end = Carbon::now()->format('Y-m-d');
+                $filtered_att_logs = $logs->filter_by_date(
+                    ['start' => $start, 'end' => $end]
+                );
+                $xml = simplexml_load_string($filtered_att_logs);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml);
+                $allAttendances = Attendance::query()
+                    ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
+                    ->get();
+            } elseif (Date::all()->count() == 0) {
+                $xml = simplexml_load_string($logs);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml);
+                $allAttendances = Attendance::query()->get();
+            }
+            //Storing delays
+            foreach ($allAttendances as $attendance) {
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '0');
+                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '1');
+            }
+            //Storing absence
+            foreach ($uniqueDates as $date) {
+                $this->fingerprintService->clearDelays($request->branch_id, $date);
+                $this->fingerprintService->storeUserAbsences($date, $request->branch_id);
+            }
+            return ResponseHelper::success([], null, 'Attendances logs stored successfully');
+        });
     }
 
     public function showAttendanceLogs()
