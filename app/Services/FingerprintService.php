@@ -20,7 +20,6 @@ class FingerprintService
     public function __construct(UserServices $userService)
     {
         $this->userService = $userService;
-
     }
 
     public function autoDeduction($user, $date, $type, $hoursNum): bool
@@ -55,13 +54,13 @@ class FingerprintService
         return false;
     }
 
-    public function convertAndStoreAttendance($xml)
+    public function convertAndStoreAttendance($xml, $branchId)
     {
         $array = json_decode(json_encode($xml), true);
         $logsData = $array['Row'];
         $uniqueDates = [];
         foreach ($logsData as $log) {
-            $this->storeAttendance($log);
+            $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
             Date::updateOrCreate(['date' => $date]);
             $checkInDate = substr($log['DateTime'], 0, 10);
@@ -70,14 +69,16 @@ class FingerprintService
             }
         }
         return $uniqueDates;
-
     }
-    public function storeAttendance($log)
+    public function storeAttendance($log, $branchId)
     {
-        $userLog = User::where('pin', intval($log['PIN']))->first();
+        $userLog = User::where('pin', intval($log['PIN']))
+            ->where('branch_id', $branchId)
+            ->first();
         $formattedDateTime = substr($log['DateTime'], 0, 10);
         $logExistence = Attendance::query()
             ->where('pin', $log['PIN'])
+            ->where('branch_id', $branchId)
             ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])
             ->where('status', $log['Status'])
             ->exists();
@@ -91,19 +92,24 @@ class FingerprintService
                     'status' => $log['Status'],
                     'work_code' => $log['WorkCode'],
                 ];
-                Attendance::updateOrCreate(['datetime' => $log['DateTime'],
-                    'branch_id' => $userLog->branch_id], $attendance);
+                Attendance::updateOrCreate([
+                    'datetime' => $log['DateTime'],
+                    'branch_id' => $userLog->branch_id
+                ], $attendance);
             }
         }
     }
 
-    public function storeUserDelays($logPin, $branch_id, $checkDate, $status)
+    public function storeUserDelays($logPin, $branchId, $checkDate, $status)
     {
-        $thisUser = User::query()->where('id', $logPin)->first();
+        $thisUser = User::query()->where('pin', $logPin) //TODO change id to pin
+            ->where('branch_id', $branchId)
+            ->first();
         $userPolicy = Policy::query()->where('branch_id', $thisUser->branch_id)->first();
         if ($userPolicy != null) {
             $checkDate = substr($checkDate, 0, 10);
             $attendance = Attendance::query()
+                ->where('branch_id', $branchId)
                 ->where('pin', $thisUser->pin)
                 ->whereRaw('DATE(datetime) = ? ', [$checkDate])
                 ->where('status', $status)
@@ -122,9 +128,15 @@ class FingerprintService
                         if ($parsedHour->isAfter($companyStartTime)) {
                             $diffLate = $parsedHour->diff($companyStartTime);
                             $hoursLate = $diffLate->format('%H.%I');
-                            $this->storeUserLate($thisUser, $checkDate, $hoursLate,
-                                $branch_id, $userPolicy, $attendance->datetime, $status);
-
+                            $this->storeUserLate(
+                                $thisUser,
+                                $checkDate,
+                                $hoursLate,
+                                $branchId,
+                                $userPolicy,
+                                $attendance->datetime,
+                                $status
+                            );
                         }
                     }
                 }
@@ -142,8 +154,15 @@ class FingerprintService
                         if ($parsedHour->isBefore($companyEndTime)) {
                             $diffLate = $parsedHour->diff($companyEndTime);
                             $hoursLate = $diffLate->format('%H.%I');
-                            $this->storeUserLate($thisUser, $checkDate, $hoursLate,
-                                $branch_id, $userPolicy, $attendance->datetime, $status);
+                            $this->storeUserLate(
+                                $thisUser,
+                                $checkDate,
+                                $hoursLate,
+                                $branchId,
+                                $userPolicy,
+                                $attendance->datetime,
+                                $status
+                            );
                         }
                     }
                 }
@@ -151,28 +170,28 @@ class FingerprintService
         }
     }
 
-    public function storeEnd($checkInDate, $pin)
+    public function storeEnd($checkInDate, $pin, $branchId)
     {
         $checkOut = Attendance::query()
             ->where('pin', $pin)
+            ->where('branch_id', $branchId)
             ->whereRaw('DATE(datetime) = ? ', [$checkInDate])
             ->where('status', '1')
             ->first();
         return $checkOut;
-
     }
 
-    public function storeUserLate($user, $checkDate, $hoursLate, $branch_id, $userPolicy, $attendance_datetime, $status)
+    public function storeUserLate($user, $checkDate, $hoursLate, $branchId, $userPolicy, $attendance_datetime, $status)
     {
         $userId = $user->id;
-        $branchId = $user->branch_id;
+        $userBranchId = $user->branch_id;
         $deductionStatus = $userPolicy->deduction_status;
         $compensation = $userPolicy->demands_compensation;
         $isPaid = !$deductionStatus;
         $type = $deductionStatus ? 'Unjustified' : 'justified';
         $checkTime = Carbon::parse($attendance_datetime)->format('H:i:s');
         $lateDate = $checkDate;
-        if ($branchId == $branch_id && $deductionStatus) {
+        if ($$userBranchId == $branchId && $deductionStatus) {
             $this->autoDeduction($user, $attendance_datetime, 'warning', $hoursLate);
             $this->autoDeduction($user, $attendance_datetime, 'deduction', $hoursLate);
         }
@@ -186,7 +205,7 @@ class FingerprintService
             if ($status == '0') {
                 $lateRecord->check_in = $checkTime;
                 $lateRecord->lateDate = $lateDate;
-                $end = $this->storeEnd($checkDate, $user->pin);
+                $end = $this->storeEnd($checkDate, $user->pin, $branchId);
                 if ($end != null) {
                     Late::query()
                         ->where('lateDate', $checkDate)
@@ -258,7 +277,7 @@ class FingerprintService
         $type = 'Unjustified';
         $isPaid = false;
         $demandsCompensation = $userPolicy->absence_management['paid_absence_days']['compensatory_time'];
-        if ($user->branch_id == $branch_id && $userPolicy->deduction_status) {//Auto deduction
+        if ($user->branch_id == $branch_id && $userPolicy->deduction_status) { //Auto deduction
             $paidAbsenceDays = $userPolicy->absence_management['paid_absence_days']['count'];
             $count = $this->userAbsencesDaysCount($user->id, $date);
             if ($count > $paidAbsenceDays) {
@@ -285,7 +304,7 @@ class FingerprintService
 
     public function userAbsencesDaysCount($user_id, $checkDate)
     {
-        $startDate = Carbon::parse('2023-12-14');//start fingerprint date
+        $startDate = Carbon::parse('2023-12-14'); //start fingerprint date
         $checkDate = Carbon::parse($checkDate);
         if ($checkDate->isAfter($startDate)) {
             return Absences::query()->where('user_id', $user_id)
@@ -324,8 +343,12 @@ class FingerprintService
             if ($parsedHour->isAfter($companyEndTime)) {
                 $diffLate = $parsedHour->diff($companyEndTime);
                 $hoursOverTime = $diffLate->format('%H.%I');
-                $this->storeUserOverTime($user_id, $checkDate, $hoursOverTime,
-                    $checkOutHour);
+                $this->storeUserOverTime(
+                    $user_id,
+                    $checkDate,
+                    $hoursOverTime,
+                    $checkOutHour
+                );
             }
         }
     }
@@ -341,6 +364,4 @@ class FingerprintService
         ]);
         return (bool)$overTime;
     }
-
-
 }
