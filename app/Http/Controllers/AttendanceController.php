@@ -32,7 +32,6 @@ class AttendanceController extends Controller
     public function __construct(FingerprintService $fingerprintService)
     {
         $this->fingerprintService = $fingerprintService;
-
     }
 
     public function getAttendanceLogs()
@@ -62,44 +61,8 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
-       return DB::transaction(function () use ($request) {
-            //Storing attendance
-            $branch = Branch::findOrFail($request->branch_id);
-            $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
-
-            $tad = $tad_factory->get_instance();
-           ///// $all_user_info = $tad->get_all_user_info();
-           /// $dt = $tad->get_date();
-            $logs = $tad->get_att_log();
-
-            $xml = simplexml_load_string($logs);
-
-            $array = json_decode(json_encode($xml),true);
-            $logsData = $array['Row'];
-            $uniqueDates = [];
-            foreach ($logsData as $log) {
-                $this->fingerprintService->storeAttendance($log);
-                $date = date('Y-m-d', strtotime($log['DateTime']));
-                Date::updateOrCreate(['date' => $date]);
-                $checkInDate = substr($log['DateTime'], 0, 10);
-                if (!in_array($checkInDate, $uniqueDates)) {
-                    $uniqueDates[] = $checkInDate;
-                }
-            }
-            //Storing delays
-            $allAttendances = Attendance::query()->get();
-            foreach ($allAttendances as $attendance) {
-                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '0');
-                $this->fingerprintService->storeUserDelays($attendance->pin, $request->branch_id, $attendance->datetime, '1');
-
-            }
-            //Storing absence
-            foreach ($uniqueDates as $date) {
-                $this->fingerprintService->clearDelays($request->branch_id, $date);
-                $this->fingerprintService->storeUserAbsences($date, $request->branch_id);
-            }
-            return ResponseHelper::success([], null, 'attendances logs stored successfully', 200);
-         });
+       $job= dispatch(new StoreAttendanceLogsJob($request->branch_id, $this->fingerprintService));
+        
     }
 
     public function showAttendanceLogs()
