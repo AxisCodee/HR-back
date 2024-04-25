@@ -50,7 +50,8 @@ class AttendanceController extends Controller
     public function employees_percent()
     {
         $all_users = User::query()->count();
-        $attended_users = Attendance::whereDate('datetime', now()->format('Y-m-d'))->where('status', '0')->count();
+        $attended_users = Attendance::whereDate('datetime', now()->format('Y-m-d'))
+            ->where('status', '0')->count();
         return ResponseHelper::success(
             [
                 'present_employees' => $attended_users,
