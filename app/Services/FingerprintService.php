@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Absences;
 use App\Models\Attendance;
+use App\Models\Date;
 use App\Models\Decision;
 use App\Models\Late;
 use App\Models\Policy;
@@ -54,6 +55,23 @@ class FingerprintService
         return false;
     }
 
+    public function convertAndStoreAttendance($xml)
+    {
+        $array = json_decode(json_encode($xml), true);
+        $logsData = $array['Row'];
+        $uniqueDates = [];
+        foreach ($logsData as $log) {
+            $this->storeAttendance($log);
+            $date = date('Y-m-d', strtotime($log['DateTime']));
+            Date::updateOrCreate(['date' => $date]);
+            $checkInDate = substr($log['DateTime'], 0, 10);
+            if (!in_array($checkInDate, $uniqueDates)) {
+                $uniqueDates[] = $checkInDate;
+            }
+        }
+        return $uniqueDates;
+
+    }
     public function storeAttendance($log)
     {
         $userLog = User::where('pin', intval($log['PIN']))->first();
@@ -247,7 +265,8 @@ class FingerprintService
                 $demandsCompensation = $userPolicy->absence_management['unpaid_absence_days']['compensatory_time'];
                 $this->autoDeduction($user, $date, 'Absence', 0);
                 $this->autoDeduction($user, $date, 'Deduction', 0);
-            } if ($count <= $paidAbsenceDays) {
+            }
+            if ($count <= $paidAbsenceDays) {
                 $isPaid = true;
             }
         }
