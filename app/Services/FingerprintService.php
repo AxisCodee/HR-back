@@ -62,7 +62,7 @@ class FingerprintService
         foreach ($logsData as $log) {
             $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
-            Date::updateOrCreate(['date' => $date]);
+            Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
             $checkInDate = substr($log['DateTime'], 0, 10);
             if (!in_array($checkInDate, $uniqueDates)) {
                 $uniqueDates[] = $checkInDate;
@@ -70,11 +70,14 @@ class FingerprintService
         }
         return $uniqueDates;
     }
+
     public function storeAttendance($log, $branchId)
     {
         $userLog = User::where('pin', intval($log['PIN']))
             ->where('branch_id', $branchId)
             ->first();
+
+
         $formattedDateTime = substr($log['DateTime'], 0, 10);
         $logExistence = Attendance::query()
             ->where('pin', $log['PIN'])
@@ -82,92 +85,97 @@ class FingerprintService
             ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])
             ->where('status', $log['Status'])
             ->exists();
+
         if (!$logExistence) {
+            $attendanceObj = new Attendance();
+            $attendanceObj->pin = intval($log['PIN']);
+            $attendanceObj->datetime = $log['DateTime'];
+            $attendanceObj->verified = $log['Verified'];
+            $attendanceObj->status = $log['Status'];
+            $attendanceObj->work_code = $log['WorkCode'];
+
             if ($userLog) {
-                $attendance = [
-                    'pin' => $log['PIN'],
-                    'datetime' => $log['DateTime'],
-                    'branch_id' => $userLog->branch_id,
-                    'verified' => $log['Verified'],
-                    'status' => $log['Status'],
-                    'work_code' => $log['WorkCode'],
-                ];
-                Attendance::updateOrCreate([
-                    'datetime' => $log['DateTime'],
-                    'branch_id' => $userLog->branch_id
-                ], $attendance);
+                $attendanceObj->branch_id = $userLog->branch->id;
+            } else {
+                $attendanceObj->branch_id = $branchId;
             }
+            $attendanceObj->save();
+
         }
     }
 
     public function storeUserDelays($logPin, $branchId, $checkDate, $status)
     {
-        $thisUser = User::query()->where('pin', $logPin) //TODO change id to pin
+        $thisUser = User::query()->where('pin', $logPin)
             ->where('branch_id', $branchId)
             ->first();
-        $userPolicy = Policy::query()->where('branch_id', $thisUser->branch_id)->first();
-        if ($userPolicy != null) {
-            $checkDate = substr($checkDate, 0, 10);
-            $attendance = Attendance::query()
-                ->where('branch_id', $branchId)
-                ->where('pin', $thisUser->pin)
-                ->whereRaw('DATE(datetime) = ? ', [$checkDate])
-                ->where('status', $status)
-                ->first();
-            if ($attendance != null) {
-                if ($status == '0') {
-                    $lateExistence = Late::query()
-                        ->where('user_id', $thisUser->id)
-                        ->where('check_in', '!=', null)
-                        ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
-                        ->exists();
-                    if (!$lateExistence) {
-                        $checkInHour = substr($attendance->datetime, 11, 15);
-                        $parsedHour = Carbon::parse($checkInHour);
-                        $companyStartTime = $userPolicy->work_time['start_time'];
-                        if ($parsedHour->isAfter($companyStartTime)) {
-                            $diffLate = $parsedHour->diff($companyStartTime);
-                            $hoursLate = $diffLate->format('%H.%I');
-                            $this->storeUserLate(
-                                $thisUser,
-                                $checkDate,
-                                $hoursLate,
-                                $branchId,
-                                $userPolicy,
-                                $attendance->datetime,
-                                $status
-                            );
+        if ($thisUser) {
+            $userPolicy = Policy::query()->where('branch_id', $thisUser->branch_id)->first();
+            if ($userPolicy != null) {
+                $checkDate = substr($checkDate, 0, 10);
+                $attendance = Attendance::query()
+                    ->where('branch_id', $branchId)
+                    ->where('pin', $thisUser->pin)
+                    ->whereRaw('DATE(datetime) = ? ', [$checkDate])
+                    ->where('status', $status)
+                    ->first();
+                if ($attendance != null) {
+                    if ($status == '0') {
+                        $lateExistence = Late::query()
+                            ->where('user_id', $thisUser->id)
+                            ->where('check_in', '!=', null)
+                            ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
+                            ->exists();
+
+                        if (!$lateExistence) {
+                            $checkInHour = substr($attendance->datetime, 11, 15);
+                            $parsedHour = Carbon::parse($checkInHour);
+                            $companyStartTime = $userPolicy->work_time['start_time'];
+                            if ($parsedHour->isAfter($companyStartTime)) {
+                                $diffLate = $parsedHour->diff($companyStartTime);
+                                $hoursLate = $diffLate->format('%H.%I');
+                                $this->storeUserLate(
+                                    $thisUser,
+                                    $checkDate,
+                                    $hoursLate,
+                                    $branchId,
+                                    $userPolicy,
+                                    $attendance->datetime,
+                                    $status
+                                );
+                            }
                         }
                     }
-                }
-                if ($status == '1') {
-                    $companyEndTime = $userPolicy->work_time['end_time'];
-                    $this->checkUserOverTimes($thisUser->id, $attendance->datetime, $companyEndTime, $checkDate);
-                    $lateExistence = Late::query()
-                        ->where('user_id', $thisUser->id)
-                        ->where('check_out', '!=', null)
-                        ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
-                        ->exists();
-                    if (!$lateExistence) {
-                        $checkOutHour = substr($attendance->datetime, 11, 15);
-                        $parsedHour = Carbon::parse($checkOutHour);
-                        if ($parsedHour->isBefore($companyEndTime)) {
-                            $diffLate = $parsedHour->diff($companyEndTime);
-                            $hoursLate = $diffLate->format('%H.%I');
-                            $this->storeUserLate(
-                                $thisUser,
-                                $checkDate,
-                                $hoursLate,
-                                $branchId,
-                                $userPolicy,
-                                $attendance->datetime,
-                                $status
-                            );
+                    if ($status == '1') {
+                        $companyEndTime = $userPolicy->work_time['end_time'];
+                        $this->checkUserOverTimes($thisUser->id, $attendance->datetime, $companyEndTime, $checkDate);
+                        $lateExistence = Late::query()
+                            ->where('user_id', $thisUser->id)
+                            ->where('check_out', '!=', null)
+                            ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
+                            ->exists();
+                        if (!$lateExistence) {
+                            $checkOutHour = substr($attendance->datetime, 11, 15);
+                            $parsedHour = Carbon::parse($checkOutHour);
+                            if ($parsedHour->isBefore($companyEndTime)) {
+                                $diffLate = $parsedHour->diff($companyEndTime);
+                                $hoursLate = $diffLate->format('%H.%I');
+                                $this->storeUserLate(
+                                    $thisUser,
+                                    $checkDate,
+                                    $hoursLate,
+                                    $branchId,
+                                    $userPolicy,
+                                    $attendance->datetime,
+                                    $status
+                                );
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 
     public function storeEnd($checkInDate, $pin, $branchId)
@@ -191,7 +199,7 @@ class FingerprintService
         $type = $deductionStatus ? 'Unjustified' : 'justified';
         $checkTime = Carbon::parse($attendance_datetime)->format('H:i:s');
         $lateDate = $checkDate;
-        if ($$userBranchId == $branchId && $deductionStatus) {
+        if ($userBranchId == $branchId && $deductionStatus) {
             $this->autoDeduction($user, $attendance_datetime, 'warning', $hoursLate);
             $this->autoDeduction($user, $attendance_datetime, 'deduction', $hoursLate);
         }
@@ -227,6 +235,7 @@ class FingerprintService
         // check if the date not today to do not store the absence
         if (!Carbon::parse($today)->equalTo(Carbon::parse($date))) {
             $usersWithoutAttendance = DB::table('users')
+                ->where('users.branch_id', $branch_id)
                 ->leftJoin('attendances', function ($join) use ($date) {
                     $join->on('users.pin', '=', 'attendances.pin')
                         ->whereRaw('DATE(attendances.datetime) = ?', $date);
@@ -304,7 +313,7 @@ class FingerprintService
 
     public function userAbsencesDaysCount($user_id, $checkDate)
     {
-        $startDate = Carbon::parse('2023-12-14'); //start fingerprint date
+        $startDate = Carbon::parse(Date::first()->date); //start fingerprint date
         $checkDate = Carbon::parse($checkDate);
         if ($checkDate->isAfter($startDate)) {
             return Absences::query()->where('user_id', $user_id)
@@ -314,14 +323,17 @@ class FingerprintService
         return 0;
     }
 
-    public function clearDelays($branch_id, $date)
+    public function clearDelays($branchId, $date)
     {
-        $policy = Policy::query()->where('branch_id', $branch_id)->first();
+        $policy = Policy::query()->where('branch_id', $branchId)->first();
         if ($policy != null) {
             $companyEndTime = Carbon::parse($policy->work_time['end_time'])->format('H:i');
             $now = Carbon::now();
             if ($now->greaterThan($companyEndTime)) {
                 Absences::query()->whereRaw('DATE(startDate) = ? ', [$date])
+                    ->whereHas('users', function ($query) use ($branchId) {
+                        $query->where('branch_id', $branchId);
+                    })
                     ->where('duration', 'hourly')
                     ->delete();
             }
