@@ -26,8 +26,8 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'first_name' => ['required', 'string', 'min:3', 'max:25'],
-            'middle_name' => ['required', 'string', 'min:3', 'max:25'],
-            'last_name' => ['required', 'string', 'min:3', 'max:25'],
+            'middle_name' => ['string', 'max:25'],
+            'last_name' => ['string', 'min:3', 'max:25'],
             'password' => ['required', 'string', RulesPassword::min(8)],
             'email' => ['required', 'email', 'unique:users,email,' . $this->id],
             'address' => ['required', 'string', 'min:3', 'max:25'],

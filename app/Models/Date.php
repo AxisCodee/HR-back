@@ -7,15 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Date extends Model
 {
-    protected $fillable =
-    ['date'];
+    protected $fillable = [
+        'date',
+        'branch_id'
+
+    ];
     use HasFactory;
 
 
-
-    public function  pin()
+    public function pin()
     {
-        return $this->belongsToMany(Attendance::class,'date_pins','date_id','pin');
+        return $this->belongsToMany(Attendance::class, 'date_pins', 'date_id', 'pin');
 
     }
 }
