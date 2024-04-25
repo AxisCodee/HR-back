@@ -121,8 +121,7 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        $result = $this->userService->editUser($request, $id);
-        return $result;
+        return $this->userService->editUser($request, $id);
     }
 
     //remove a user from a team
