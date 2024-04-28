@@ -32,12 +32,9 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request) //TODO delete method or not
     {
-        try {
             $newreport = $this->ReportServices->StoreReport($request);
             return $newreport;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+
     }
 
     /**
@@ -48,12 +45,9 @@ class ReportController extends Controller
      */
     public function remove($id) //TODO delete method or not
     {
-        try {
             $remove = $this->ReportServices->RemoveReport($id);
             return $remove;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+
     }
 
     /**
@@ -64,12 +58,9 @@ class ReportController extends Controller
      */
     public function my_reports() //TODO delete method or not
     {
-        try {
             $reports = $this->ReportServices->MyReports();
             return $reports;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+
     }
 
     /**
@@ -80,12 +71,9 @@ class ReportController extends Controller
      */
     public function all_reports(Request $request) //TODO delete method or not
     {
-        try {
             $allreports = $this->ReportServices->AllReports($request);
             return $allreports;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+
     }
 
     /**
@@ -96,12 +84,9 @@ class ReportController extends Controller
      */
     public function daily_reports(Request $request) //TODO delete method or not
     {
-        try {
             $todayreports = $this->ReportServices->DailyReports($request);
             return $todayreports;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+
     }
 
     /**
@@ -112,12 +97,9 @@ class ReportController extends Controller
      */
     public function user_checks(Request $request)
     {
-        try {
             $checks = $this->ReportServices->UserChecks($request);
             return $checks;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+
     }
 
     /**
@@ -128,11 +110,8 @@ class ReportController extends Controller
      */
     public function report(Request $request)
     {
-        try {
             return $this->ReportServices->Report($request);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+
     }
 
     /**
@@ -143,12 +122,9 @@ class ReportController extends Controller
      */
     public function ratesByDate(Request $request)
     {
-        try {
             $rates = $this->ReportServices->RatesByDate($request);
             return $rates;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+       
     }
 
 }

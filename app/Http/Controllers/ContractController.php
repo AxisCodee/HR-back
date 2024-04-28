@@ -95,7 +95,6 @@ class ContractController extends Controller
      */
     public function update(UpdateContractRequest $request, $contract)
     {
-        try {
             $contractId = Contract::findOrFail($contract);
             if ($contract) {
                 if (Carbon::parse($contractId->endTime) <= Carbon::now()) {
@@ -110,9 +109,7 @@ class ContractController extends Controller
                 ]);
                 return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
             }
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e, null, 'error', 403);
-        }
+       
     }
 
     /**

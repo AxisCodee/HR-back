@@ -128,6 +128,7 @@ class ReportServices
             'rewards',
             'advances',
             'warnings',
+            'totalLates',
             // 'overTimes',
             'alerts',
             // 'Warnings',

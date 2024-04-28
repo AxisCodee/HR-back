@@ -25,12 +25,9 @@ class PolicyController extends Controller
      */
     public function show(Request $request)
     {
-        try {
             $policy = $this->PolicyServices->BranchPolicy($request);
             return $policy;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+        
     }
 
     /**
@@ -41,12 +38,10 @@ class PolicyController extends Controller
      */
     public function store(Request $request)
     {
-        try {
+
             $policy = $this->PolicyServices->StorePolicy($request);
             return $policy;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 
     /**
@@ -57,12 +52,9 @@ class PolicyController extends Controller
      */
     public function update(Request $request)
     {
-        try {
             $policy =  $this->PolicyServices->UpdatePolicy($request);
             return $policy;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 
     /**
@@ -73,11 +65,9 @@ class PolicyController extends Controller
      */
     public function destroy(Request $request)
     {
-        try {
+
             $policy = $this->PolicyServices->DeletePolicy($request);
             return $policy;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 }
