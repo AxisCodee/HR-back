@@ -44,12 +44,9 @@ class BranchController extends Controller
      */
     public function show($id)
     {
-        try {
             $branch = $this->BranchService->show($id);
             return ResponseHelper::success($branch, null);
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
+
     }
 
     /**
@@ -57,16 +54,9 @@ class BranchController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
+
             $updated = $this->BranchService->update($request, $id);
             return $updated;
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return ResponseHelper::error($e->validator->errors()->first(), 400);
-        } catch (\Illuminate\Database\QueryException $e) {
-            return ResponseHelper::error('Invalid branch name or IP', 400);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
     }
 
     /**

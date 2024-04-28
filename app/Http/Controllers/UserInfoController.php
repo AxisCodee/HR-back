@@ -91,7 +91,6 @@ class UserInfoController extends Controller
 
     public function updateSalary(Request $request, $id)
     {
-        try {
             $salary = $request->salary;
             $result = UserInfo::findOrFail($id)->first();
             return DB::transaction(function () use ($result, $salary, $id) {
@@ -107,9 +106,7 @@ class UserInfoController extends Controller
                     return ResponseHelper::updated('Salary updated', null);
                 }
             });
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 
     public function setDemandCompensationHours($id, Request $request)

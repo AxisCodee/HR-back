@@ -48,7 +48,6 @@ class LateController extends Controller
      */
     public function showLate(Request $request)
     {
-        try {
             $branchId = $request->branch_id;
             $currentMonthYear = Carbon::now()->format('Y-m');
             $result = Late::query()
@@ -61,9 +60,7 @@ class LateController extends Controller
                 ->get()
                 ->toArray();
             return ResponseHelper::success($result, null, 'alerts', 200);
-        } catch (\Exception $e) {
-            return ResponseHelper::error(null, $e->getMessage(), 500);
-        }
+
     }
 
     public function update(UpdateLateRequest $request)
@@ -92,7 +89,6 @@ class LateController extends Controller
      */
     public function acceptAlert(Request $request)
     {
-        try {
             DB::transaction(function () use ($request) {
                 $late = Late::find($request->alert_id);
                 if (!$late) {
@@ -118,9 +114,7 @@ class LateController extends Controller
                     ]);
                 }
             );
-        } catch (\Exception $e) {
-            return ResponseHelper::error('Error accepting alert: ' . $e->getMessage());
-        }
+        
         return ResponseHelper::success('Alert accepted successfully');
     }
 

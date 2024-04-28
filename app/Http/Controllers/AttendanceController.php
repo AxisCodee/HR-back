@@ -66,6 +66,8 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
+
+
         //$job = dispatch(new StoreAttendanceLogsJob($request->branch_id, $this->fingerprintService));
         return DB::transaction(function () use ($request) {
             //Storing attendance

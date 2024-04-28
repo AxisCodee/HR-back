@@ -29,21 +29,16 @@ class DecisionController extends Controller
      */
     public function new_decision(StoreDecisionRequest $request)
     {
-        try {
+
             return $this->decisionService->StoreDecision($request);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
 
     }
     public function addDecisions(Request $request)
     {
-        try {
             $result= $this->decisionService->selectDecision($request);
             return ResponseHelper::success($result, null, 'Absence added successfully');
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+      
 
     }
 
@@ -55,11 +50,9 @@ class DecisionController extends Controller
      */
     public function remove_decision($id)
     {
-        try {
+
             return $this->decisionService->RemoveDecision($id);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 
     /**
@@ -71,11 +64,8 @@ class DecisionController extends Controller
      */
     public function edit_decision(UpdateDecisionRequest $request, $id)
     {
-        try {
             return $this->decisionService->UpdateDecision($request,$id);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 
     /**
@@ -86,11 +76,8 @@ class DecisionController extends Controller
      */
     public function all_decisions(Request $request)
     {
-        try {
             return $this->decisionService->AllDecisions($request);
-        } catch (\Exception $e) {
-        return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 
     /**
@@ -111,12 +98,9 @@ class DecisionController extends Controller
     public function selectDecisionToDelete(Request $request)
     {
         {
-            try {
                 $result= $this->decisionService->selectDecisionToDelete($request);
                 return ResponseHelper::deleted();
-            } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-            }
+
         }
     }
 

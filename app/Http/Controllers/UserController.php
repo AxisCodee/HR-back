@@ -168,7 +168,6 @@ class UserController extends Controller
     //delete an exisiting team
     public function deleteTeam($id)
     {
-        try {
             DB::beginTransaction();
             $department = Department::findOrFail($id);
             User::where('department_id', $id)->update([
@@ -180,10 +179,7 @@ class UserController extends Controller
             $department->delete();
             DB::commit();
             return ResponseHelper::deleted('Team deleted successfully');
-        } catch (Exception $e) {
-            DB::rollBack();
-            return ResponseHelper::error($e->getMessage());
-        }
+        
     }
 
     //get all members of a team
@@ -251,7 +247,6 @@ class UserController extends Controller
 
     public function updateUser(User $user, Request $request)
     {
-        try {
             $user = $this->userRegisterService->updateUser($request, $user);
             $path = null;
             if ($request->image) {
@@ -299,11 +294,7 @@ class UserController extends Controller
                 $this->userRegisterService->updateUserDeposits($user->id, $secretaraits);
             }
             return ResponseHelper::success("Updated");
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return ResponseHelper::error($e->validator->errors()->first(), 400);
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e->getMessage(), $e->getCode());
-        }
+
     }
 
     //add team
@@ -330,20 +321,14 @@ class UserController extends Controller
 
     public function Tree()
     {
-        try {
             return $this->teamService->getTree();
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return ResponseHelper::error($e->validator->errors()->first(), 400);
-        }
+
     }
 
     public function GetAbsenceTypes(Request $request)
     {
-        try {
             return $this->userService->AllAbsenceTypes($request);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return ResponseHelper::error($e->validator->errors()->first(), 400);
-        }
+
     }
 
     public function Users_array(Request $request)
