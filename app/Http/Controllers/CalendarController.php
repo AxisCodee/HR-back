@@ -32,12 +32,10 @@ class CalendarController extends Controller
      */
     public function cancel_event($id)
     {
-        try {
+
             $removed = $this->CalenderService->destroy($id);
             return $removed;
-        } catch (\Exception $e) {
-            return ResponseHelper::error($e);
-        }
+
     }
 
     /**
@@ -45,12 +43,9 @@ class CalendarController extends Controller
      */
     public function all_events()
     {
-        try {
             $all = $this->CalenderService->All();
             return $all;
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
+
     }
 
     /**
@@ -58,12 +53,9 @@ class CalendarController extends Controller
      */
     public function update_event(StoreCalendarRequest $request, $id)
     {
-        try {
             $update = $this->CalenderService->update($request, $id);
             return $update;
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
+
     }
 
     /**
@@ -71,12 +63,9 @@ class CalendarController extends Controller
      */
     public function day_events()
     {
-        try {
             $today = $this->CalenderService->today();
             return $today;
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
+
     }
 
     /**
@@ -84,12 +73,9 @@ class CalendarController extends Controller
      */
     public function getEvenetsByDay($date)
     {
-        try {
             $specific = $this->CalenderService->specific_date($date);
             return $specific;
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
+
     }
 
     /**
@@ -97,12 +83,9 @@ class CalendarController extends Controller
      */
     public function week_events()
     {
-        try {
             $week = $this->CalenderService->weekly();
             return $week;
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
+
     }
 
     /**
@@ -110,11 +93,8 @@ class CalendarController extends Controller
      */
     public function month_events()
     {
-        try {
             $month = $this->CalenderService->monthly();
             return $month;
-        } catch (\Throwable $th) {
-            return ResponseHelper::error($th);
-        }
+      
     }
 }
