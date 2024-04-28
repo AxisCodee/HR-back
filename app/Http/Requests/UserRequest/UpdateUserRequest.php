@@ -24,23 +24,24 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-        //Validation for the fields that will be inserted into the users table.
+            //Validation for the fields that will be inserted into the users table.
             'first_name' => ['string', 'min:3'],
-            'middle_name' => ['string', 'min:3'],
+            'middle_name' => ['string'],
             'last_name' => ['string', 'min:3'],
             'email' => ['email', 'min:10'],
             'role' => ['exists:roles,name'],
-            'specialization'=>['string','min:3'],
+            'specialization' => ['string', 'min:3'],
             'department_id' => ['exists:departments,id'],
             'password' => ['string', 'min:4'],
-            'pin'=>['integer','min:1'],
-            'address'=>['string','min:3'],
-            'branch_id'=>['integer','exists:branches,id'],
-        //Validation for the fields that will be inserted into the user_infos table.
-            'salary'=>['integer','min:1'],
+            'pin' => ['integer', 'min:1'],
+            'address' => ['string', 'min:3'],
+            'branch_id' => ['integer', 'exists:branches,id'],
+            //Validation for the fields that will be inserted into the user_infos table.
+            'salary' => ['integer', 'min:1'],
 
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();

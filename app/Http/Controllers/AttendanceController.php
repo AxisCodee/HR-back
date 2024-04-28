@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use TADPHP\TADFactory;
 use function React\Promise\all;
 use function Symfony\Component\String\s;
+use function Symfony\Component\String\u;
 
 
 require 'tad\vendor\autoload.php';
@@ -36,9 +37,10 @@ class AttendanceController extends Controller
         $this->fingerprintService = $fingerprintService;
     }
 
-    public function getAttendanceLogs()
+    public function getAttendanceLogs(Request $request)//TODO
     {
-        $tad_factory = new TADFactory(['ip' => '192.168.2.201']);
+        $fingerprintIP = Branch::query()->findOrFail($request->branch_id)->fingerprint_scanner_ip;
+        $tad_factory = new TADFactory(['ip' => $fingerprintIP]);
         $tad = $tad_factory->get_instance();
         $logs = $tad->get_att_log();
         $xml = simplexml_load_string($logs);
@@ -49,7 +51,8 @@ class AttendanceController extends Controller
     public function employees_percent()
     {
         $all_users = User::query()->count();
-        $attended_users = Attendance::whereDate('datetime', now()->format('Y-m-d'))->where('status', '0')->count();
+        $attended_users = Attendance::whereDate('datetime', now()->format('Y-m-d'))
+            ->where('status', '0')->count();
         return ResponseHelper::success(
             [
                 'present_employees' => $attended_users,
@@ -63,9 +66,48 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
-       $job= dispatch(new StoreAttendanceLogsJob($request->branch_id, $this->fingerprintService));
 
-     
+
+        //$job = dispatch(new StoreAttendanceLogsJob($request->branch_id, $this->fingerprintService));
+        return DB::transaction(function () use ($request) {
+            //Storing attendance
+            $branchId = $request->branch_id;
+            $branch = Branch::findOrFail($branchId);
+            $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
+            $tad = $tad_factory->get_instance();
+            // $all_user_info = $tad->get_all_user_info();
+            // $dt = $tad->get_date();
+            $logs = $tad->get_att_log();
+            //check date table and store attendance
+            $uniqueDates = [];
+            if (Date::query()->where('branch_id', $branchId)->get()->count() != 0) {
+                $start = Date::latest('date')->value('date');
+                $end = Carbon::now()->format('Y-m-d');
+                $filtered_att_logs = $logs->filter_by_date(
+                    ['start' => $start, 'end' => $end]
+                );
+                $xml = simplexml_load_string($filtered_att_logs);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId);
+                $allAttendances = Attendance::query()
+                    ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
+                    ->get();
+            } elseif (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
+                $xml = simplexml_load_string($logs);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId);
+                $allAttendances = Attendance::query()->get();
+            }
+            //Storing delays
+            foreach ($allAttendances as $attendance) {
+                $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '0');
+                $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '1');
+            }
+            //Storing absence
+            foreach ($uniqueDates as $date) { //replacing the delay with absence
+                $this->fingerprintService->clearDelays($branchId, $date); //delete the delay
+                $this->fingerprintService->storeUserAbsences($date, $branchId); //store absence
+            }
+            return ResponseHelper::success([], null, 'Attendances logs stored successfully');
+        });
     }
 
     public function showAttendanceLogs()

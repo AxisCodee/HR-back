@@ -59,7 +59,6 @@ class UserController extends Controller
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
             ->with('department', 'userInfo:id,user_id,image')
-
             ->whereNull('deleted_at')
             ->get()
             ->toArray();
@@ -74,7 +73,7 @@ class UserController extends Controller
             ->with('userInfo:id,user_id,image')
             ->get()
             ->toArray();
-        return ResponseHelper::success ($all_users, null, 'all resigned users', 200);
+        return ResponseHelper::success($all_users, null, 'all resigned users', 200);
     }
 
     public function allAndTrashUser(Request $request)
@@ -82,13 +81,13 @@ class UserController extends Controller
         $branch_id = $request->branch_id;
         $all_users = User::query()
             ->where('branch_id', $branch_id)
-            ->with('userInfo:id,user_id,image', 'department')->withTrashed()->get();
-
-            $usersWithStatus = collect($all_users)->map(function ($user) {
-                $userArray = $user->toArray();
-                $userArray['state'] = $user->trashed() ? 'Former' : 'Active';
-                return $userArray;
-            });
+            ->with('userInfo:id,user_id,image', 'department')
+            ->withTrashed()->get();
+        $usersWithStatus = collect($all_users)->map(function ($user) {
+            $userArray = $user->toArray();
+            $userArray['state'] = $user->trashed() ? 'Former' : 'Active';
+            return $userArray;
+        });
         return ResponseHelper::success($usersWithStatus, null, 'All users (including trashed)', 200);
     }
 
@@ -122,8 +121,7 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        $result = $this->userService->editUser($request, $id);
-        return $result;
+        return $this->userService->editUser($request, $id);
     }
 
     //remove a user from a team
@@ -175,8 +173,8 @@ class UserController extends Controller
             User::where('department_id', $id)->update([
                 'department_id' => null
             ]);
-            Department::where('parent_id',$id)->update([
-                'parent_id'=>null
+            Department::where('parent_id', $id)->update([
+                'parent_id' => null
             ]);
             $department->delete();
             DB::commit();
@@ -250,7 +248,6 @@ class UserController extends Controller
     public function updateUser(User $user, Request $request)
     {
             $user = $this->userRegisterService->updateUser($request, $user);
-            //dd($user1);
             $path = null;
             if ($request->image) {
                 $path = Files::saveImageProfile($request->image);
@@ -314,6 +311,7 @@ class UserController extends Controller
         $result = $this->teamService->updateTeam($department, $request);
         return ResponseHelper::success($result);
     }
+
     public function getTree()
     {
         $result = $this->teamService->getTree();
@@ -336,8 +334,8 @@ class UserController extends Controller
     public function Users_array(Request $request)
     {
         $request->validate([
-            'users'=>['required','array'],
-            'users.*'=>['required','integer','exists:users,id','min:1']
+            'users' => ['required', 'array'],
+            'users.*' => ['required', 'integer', 'exists:users,id', 'min:1']
         ]);
         return $this->userService->usersarray($request->users);
     }
