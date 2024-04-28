@@ -236,7 +236,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('All', 'index');
             Route::post('Add', 'store');
             Route::get('Show', 'show');
-            Route::get('Delete', 'destroy');
+            Route::delete('Delete', 'destroy');
         });
     });
 
