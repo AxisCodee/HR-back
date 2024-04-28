@@ -73,7 +73,7 @@ class UserController extends Controller
             ->with('userInfo:id,user_id,image')
             ->get()
             ->toArray();
-        return ResponseHelper::success ($all_users, null, 'all resigned users', 200);
+        return ResponseHelper::success($all_users, null, 'all resigned users', 200);
     }
 
     public function allAndTrashUser(Request $request)
@@ -81,13 +81,13 @@ class UserController extends Controller
         $branch_id = $request->branch_id;
         $all_users = User::query()
             ->where('branch_id', $branch_id)
-            ->with('userInfo:id,user_id,image', 'department')->withTrashed()->get();
-
-            $usersWithStatus = collect($all_users)->map(function ($user) {
-                $userArray = $user->toArray();
-                $userArray['state'] = $user->trashed() ? 'Former' : 'Active';
-                return $userArray;
-            });
+            ->with('userInfo:id,user_id,image', 'department')
+            ->withTrashed()->get();
+        $usersWithStatus = collect($all_users)->map(function ($user) {
+            $userArray = $user->toArray();
+            $userArray['state'] = $user->trashed() ? 'Former' : 'Active';
+            return $userArray;
+        });
         return ResponseHelper::success($usersWithStatus, null, 'All users (including trashed)', 200);
     }
 
@@ -174,8 +174,8 @@ class UserController extends Controller
             User::where('department_id', $id)->update([
                 'department_id' => null
             ]);
-            Department::where('parent_id',$id)->update([
-                'parent_id'=>null
+            Department::where('parent_id', $id)->update([
+                'parent_id' => null
             ]);
             $department->delete();
             DB::commit();
@@ -320,6 +320,7 @@ class UserController extends Controller
         $result = $this->teamService->updateTeam($department, $request);
         return ResponseHelper::success($result);
     }
+
     public function getTree()
     {
         $result = $this->teamService->getTree();
@@ -348,8 +349,8 @@ class UserController extends Controller
     public function Users_array(Request $request)
     {
         $request->validate([
-            'users'=>['required','array'],
-            'users.*'=>['required','integer','exists:users,id','min:1']
+            'users' => ['required', 'array'],
+            'users.*' => ['required', 'integer', 'exists:users,id', 'min:1']
         ]);
         return $this->userService->usersarray($request->users);
     }

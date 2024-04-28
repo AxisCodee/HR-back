@@ -201,7 +201,7 @@ class UserServices
         return DB::transaction(function () use ($id, $request) {
             $specUser = User::findOrFail($id);
             if ($specUser->role != $request->role) {
-                $addExp = Career::create([
+                Career::create([
                     'user_id' => $id,
                     'content' => 'worked as a ' . $specUser->role,
                 ]);

@@ -37,9 +37,10 @@ class AttendanceController extends Controller
         $this->fingerprintService = $fingerprintService;
     }
 
-    public function getAttendanceLogs()
+    public function getAttendanceLogs(Request $request)//TODO
     {
-        $tad_factory = new TADFactory(['ip' => '192.168.2.201']);
+        $fingerprintIP = Branch::query()->findOrFail($request->branch_id)->fingerprint_scanner_ip;
+        $tad_factory = new TADFactory(['ip' => $fingerprintIP]);
         $tad = $tad_factory->get_instance();
         $logs = $tad->get_att_log();
         $xml = simplexml_load_string($logs);
