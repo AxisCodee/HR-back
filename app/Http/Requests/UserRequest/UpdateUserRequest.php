@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
         return [
             //Validation for the fields that will be inserted into the users table.
             'first_name' => ['string', 'min:3'],
-            'middle_name' => ['string'],
+            'middle_name' => ['sometimes'],
             'last_name' => ['string', 'min:3'],
             'email' => ['email', 'min:10'],
             'role' => ['exists:roles,name'],
