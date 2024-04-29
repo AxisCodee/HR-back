@@ -147,8 +147,8 @@ class ReportServices
             $checkOutDetails = [];
         }
         if (strlen($date) == 10) {
-            $checkInDetails = $result->attendance->where('status', 0)->first();
-            $checkOutDetails = $result->attendance->where('status', 1)->first();
+            $checkInDetails = [];
+            $checkOutDetails = [];
         }
         $result['checkInDetails'] = $checkInDetails;
         $result['checkOutDetails'] = $checkOutDetails;
