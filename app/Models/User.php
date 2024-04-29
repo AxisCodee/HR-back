@@ -147,12 +147,18 @@ class User extends Authenticatable implements JWTSubject
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
+        if (strlen($date) == 10){
+            return null;
+        }
         return $this->userServices->getCheckInPercentage($this, $date);
     }
 
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
+        if (strlen($date) == 10){
+            return null;
+        }
         return $this->userServices->getCheckOutPercentage($this, $date);
     }
 

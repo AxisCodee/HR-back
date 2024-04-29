@@ -98,7 +98,7 @@ class UserServices
                         return $query->whereYear('datetime', $year);
                     }
                 })
-                ->selectRaw('COUNT(DISTINCT CONCAT(pin, DATE(datetime))) as check_outs')
+                ->selectRaw('COUNT(DISTINCT CONCAT(pin, branch_id ,DATE(datetime))) as check_outs')
                 ->value('check_outs');
             if ($date) {
                 $year = substr($date, 0, 4);
