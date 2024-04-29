@@ -60,7 +60,7 @@ class UserController extends Controller
     {
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
-            ->where('role','employee')
+            ->whereNot('role','admin')
             ->with('department', 'userInfo:id,user_id,image')
             ->whereNull('deleted_at')
             ->get()
