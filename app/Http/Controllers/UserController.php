@@ -41,11 +41,13 @@ class UserController extends Controller
     protected $editUserService;
     public $userRegisterService;
 
-    public function __construct(RoleService         $roleService, TeamService $teamService,
-                                UserServices        $userService,
-                                EditUserService     $editUserService,
-                                UserRegisterService $userRegisterService)
-    {
+    public function __construct(
+        RoleService $roleService,
+        TeamService $teamService,
+        UserServices $userService,
+        EditUserService $editUserService,
+        UserRegisterService $userRegisterService
+    ) {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
         $this->userService = $userService;
@@ -168,18 +170,19 @@ class UserController extends Controller
     //delete an exisiting team
     public function deleteTeam($id)
     {
-            DB::beginTransaction();
-            $department = Department::findOrFail($id);
-            User::where('department_id', $id)->update([
-                'department_id' => null
-            ]);
-            Department::where('parent_id', $id)->update([
-                'parent_id' => null
-            ]);
-            $department->delete();
-            DB::commit();
-            return ResponseHelper::deleted('Team deleted successfully');
-        
+        DB::beginTransaction();
+        $department = Department::findOrFail($id);
+        User::where('department_id', $id)->update([
+            'department_id' => null,
+            'role' => null
+        ]);
+        Department::where('parent_id', $id)->update([
+            'parent_id' => null
+        ]);
+        $department->delete();
+        DB::commit();
+        return ResponseHelper::success('Team deleted successfully');
+
     }
 
     //get all members of a team
@@ -247,53 +250,53 @@ class UserController extends Controller
 
     public function updateUser(User $user, Request $request)
     {
-            $user = $this->userRegisterService->updateUser($request, $user);
-            $path = null;
-            if ($request->image) {
-                $path = Files::saveImageProfile($request->image);
-            }
-            $userInfo = UserInfo::where('user_id', $user->id)->first();
-            $this->userRegisterService->updateUserSalary($user, $userInfo, $request);
-            $this->userRegisterService->updateUserInfo($request, $user, $path, $userInfo);
-            $educations = $request->educations;
-            $certificates = $request->certificates;
-            $languages = $request->languages;
-            $skills = $request->skills;
-            $experiences = $request->experiences;
-            $contacts = $request->contacts;
-            $secretaraits = $request->secretaraits;
-            $emergency_contact = $request->emergency_contact;
-            if ($educations) {
-                $this->userRegisterService->updateUserStudySituations($user->id, $educations);
-            }
-            if ($certificates) {
-                $this->userRegisterService->updateUserCertificates($user->id, $certificates);
-            }
-            if ($languages) {
-                $this->userRegisterService->updateUserLanguages($user->id, $languages);
-            }
-            if ($skills) {
-                $this->userRegisterService->updateUserSkills($user->id, $skills);
-            }
-            if ($request->additional_files) {
-                $this->userRegisterService->updateUserFiles($user->id, $request);
-            }
-            if ($experiences) {
-                $this->userRegisterService->updateUserExperiences($user->id, $experiences);
-            }
-            if (isset($contacts['emails'][0])) {
-                $this->userRegisterService->updateUserContacts($user->id, $contacts);
-            }
-            if (isset($contacts['phonenumbers'])) {
-                $this->userRegisterService->updateUserPhoneNumbers($user->id, $contacts);
-            }
-            if ($request->emergency_contact) {
-                $this->userRegisterService->updateUserEmergencyContact($user->id, $emergency_contact);
-            }
-            if ($secretaraits) {
-                $this->userRegisterService->updateUserDeposits($user->id, $secretaraits);
-            }
-            return ResponseHelper::success("Updated");
+        $user = $this->userRegisterService->updateUser($request, $user);
+        $path = null;
+        if ($request->image) {
+            $path = Files::saveImageProfile($request->image);
+        }
+        $userInfo = UserInfo::where('user_id', $user->id)->first();
+        $this->userRegisterService->updateUserSalary($user, $userInfo, $request);
+        $this->userRegisterService->updateUserInfo($request, $user, $path, $userInfo);
+        $educations = $request->educations;
+        $certificates = $request->certificates;
+        $languages = $request->languages;
+        $skills = $request->skills;
+        $experiences = $request->experiences;
+        $contacts = $request->contacts;
+        $secretaraits = $request->secretaraits;
+        $emergency_contact = $request->emergency_contact;
+        if ($educations) {
+            $this->userRegisterService->updateUserStudySituations($user->id, $educations);
+        }
+        if ($certificates) {
+            $this->userRegisterService->updateUserCertificates($user->id, $certificates);
+        }
+        if ($languages) {
+            $this->userRegisterService->updateUserLanguages($user->id, $languages);
+        }
+        if ($skills) {
+            $this->userRegisterService->updateUserSkills($user->id, $skills);
+        }
+        if ($request->additional_files) {
+            $this->userRegisterService->updateUserFiles($user->id, $request);
+        }
+        if ($experiences) {
+            $this->userRegisterService->updateUserExperiences($user->id, $experiences);
+        }
+        if (isset($contacts['emails'][0])) {
+            $this->userRegisterService->updateUserContacts($user->id, $contacts);
+        }
+        if (isset($contacts['phonenumbers'])) {
+            $this->userRegisterService->updateUserPhoneNumbers($user->id, $contacts);
+        }
+        if ($request->emergency_contact) {
+            $this->userRegisterService->updateUserEmergencyContact($user->id, $emergency_contact);
+        }
+        if ($secretaraits) {
+            $this->userRegisterService->updateUserDeposits($user->id, $secretaraits);
+        }
+        return ResponseHelper::success("Updated");
 
     }
 
@@ -321,13 +324,13 @@ class UserController extends Controller
 
     public function Tree()
     {
-            return $this->teamService->getTree();
+        return $this->teamService->getTree();
 
     }
 
     public function GetAbsenceTypes(Request $request)
     {
-            return $this->userService->AllAbsenceTypes($request);
+        return $this->userService->AllAbsenceTypes($request);
 
     }
 
