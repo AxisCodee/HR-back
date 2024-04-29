@@ -31,84 +31,99 @@ class UserServices
 
     public function getCheckInPercentage($user, $date)
     {
-        $checkIns = Attendance::where('status', '0')
-            ->where('pin', $user->pin)
-            ->when($date, function ($query, $date) {
+        $userPolicy = Policy::query()->where('branch_id', $user->branch_id)->first();
+        if ($userPolicy) {
+            $companyStartTime = Carbon::createFromFormat('h:i A', $userPolicy->work_time['start_time'])->format('H:i:s');
+            $checkIns = Attendance::where('status', '0')
+                ->where('pin', $user->pin)
+                ->where('branch_id', $user->branch_id)
+                ->whereRaw('TIME(datetime) <= ?', [$companyStartTime])
+                ->when($date, function ($query, $date) {
+                    $year = substr($date, 0, 4);
+                    $month = substr($date, 5, 2);
+                    if ($month) {
+                        return $query->whereYear('datetime', $year)
+                            ->whereMonth('datetime', $month);
+                    } else {
+                        return $query->whereYear('datetime', $year);
+                    }
+                })
+                ->selectRaw('COUNT(DISTINCT CONCAT(pin, branch_id , DATE(datetime))) as check_ins')
+                ->value('check_ins');
+            if ($date) {
                 $year = substr($date, 0, 4);
                 $month = substr($date, 5, 2);
-                if ($month) {
-                    return $query->whereYear('datetime', $year)
-                        ->whereMonth('datetime', $month);
+                $day = substr($date, 8, 2);
+                $dates = Date::query()
+                    ->where('branch_id', $user->branch_id);
+                if ($day) {
+                    $dates->whereDate('date', $date);
+                } elseif ($month) {
+                    $dates->whereYear('date', $year)
+                        ->whereMonth('date', $month);
                 } else {
-                    return $query->whereYear('datetime', $year);
+                    $dates->whereYear('date', $year);
                 }
-            })
-            ->selectRaw('COUNT(DISTINCT CONCAT(pin, DATE(datetime))) as check_ins')
-            ->value('check_ins');
-        if ($date) {
-            $year = substr($date, 0, 4);
-            $month = substr($date, 5, 2);
-            $day = substr($date, 8, 2);
-            $dates = Date::query();
-            if ($day) {
-                $dates->whereDate('date', $date);
-            } elseif ($month) {
-                $dates->whereYear('date', $year)
-                    ->whereMonth('date', $month);
-            } else {
-                $dates->whereYear('date', $year);
-            }
-            $count = $dates->count('id');
-            if ($count == 0) {
-                $percentage = 0;
-            } else {
-                $percentage = round((($checkIns * 100) / $count));
-            }
-            return $percentage;
-        } else
-            return 0;
+                $count = $dates->count('id');
+
+                if ($count == 0) {
+                    $percentage = 0;
+                } else {
+                    $percentage = round((($checkIns * 100) / $count));
+                }
+                return $percentage;
+            } else
+                return 0;
+        }
+        return 0;
     }
 
     public function getCheckOutPercentage($user, $date)
     {
-
-        $date = request()->query('date');
-        $checkOut = Attendance::where('status', '1')
-            ->where('pin', $user->pin)
-            ->when($date, function ($query, $date) {
+        $userPolicy = Policy::query()->where('branch_id', $user->branch_id)->first();
+        if ($userPolicy) {
+            $companyEndTime = Carbon::createFromFormat('h:i A', $userPolicy->work_time['end_time'])->format('H:i:s');
+            $date = request()->query('date');
+            $checkOut = Attendance::where('status', '1')
+                ->where('pin', $user->pin)
+                ->where('branch_id', $user->branch_id)
+                ->whereRaw('TIME(datetime) >= ?', [$companyEndTime])
+                ->when($date, function ($query, $date) {
+                    $year = substr($date, 0, 4);
+                    $month = substr($date, 5, 2);
+                    if ($month) {
+                        return $query->whereYear('datetime', $year)
+                            ->whereMonth('datetime', $month);
+                    } else {
+                        return $query->whereYear('datetime', $year);
+                    }
+                })
+                ->selectRaw('COUNT(DISTINCT CONCAT(pin, DATE(datetime))) as check_outs')
+                ->value('check_outs');
+            if ($date) {
                 $year = substr($date, 0, 4);
                 $month = substr($date, 5, 2);
-                if ($month) {
-                    return $query->whereYear('datetime', $year)
-                        ->whereMonth('datetime', $month);
+                $day = substr($date, 8, 2);
+                $dates = Date::query();
+                if ($day) {
+                    $dates->whereDate('date', $date);
+                } elseif ($month) {
+                    $dates->whereYear('date', $year)
+                        ->whereMonth('date', $month);
                 } else {
-                    return $query->whereYear('datetime', $year);
+                    $dates->whereYear('date', $year);
                 }
-            })
-            ->selectRaw('COUNT(DISTINCT CONCAT(pin, DATE(datetime))) as check_outs')
-            ->value('check_outs');
-        if ($date) {
-            $year = substr($date, 0, 4);
-            $month = substr($date, 5, 2);
-            $day = substr($date, 8, 2);
-            $dates = Date::query();
-            if ($day) {
-                $dates->whereDate('date', $date);
-            } elseif ($month) {
-                $dates->whereYear('date', $year)
-                    ->whereMonth('date', $month);
-            } else {
-                $dates->whereYear('date', $year);
-            }
-            $count = $dates->count('id');
-            if ($count == 0) {
-                $percentage = 0;
-            } else {
-                $percentage = round(($checkOut * 100) / $count);
-            }
-            return $percentage;
-        } else
-            return 0;
+                $count = $dates->count('id');
+                if ($count == 0) {
+                    $percentage = 0;
+                } else {
+                    $percentage = round(($checkOut * 100) / $count);
+                }
+                return $percentage;
+            } else
+                return 0;
+        }
+        return 0;
     }
 
     public function getReward($user, $date)

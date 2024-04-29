@@ -313,9 +313,7 @@ class FingerprintService
 
     public function userAbsencesDaysCount($user_id, $checkDate)
     {
-
-        $startDate = Carbon::parse('2023-12-14');
-
+        //$startDate = Carbon::parse('2023-12-14');
         $startDate = Carbon::parse(Date::first()->date); //start fingerprint date
         $checkDate = Carbon::parse($checkDate);
         if ($checkDate->isAfter($startDate)) {
