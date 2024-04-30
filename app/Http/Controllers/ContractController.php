@@ -26,6 +26,7 @@ class ContractController extends Controller
     if ($contracts->isEmpty()) {
         return ResponseHelper::success($results);
     }
+    
     else {
         // foreach ($contracts as $contract) {
         //     $endTime = Carbon::parse($contract['endTime']);
