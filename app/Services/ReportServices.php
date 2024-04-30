@@ -145,12 +145,12 @@ class ReportServices
             $checkOutDetails = $this->checkDetails($date, $request->user_id, '1');
         }
         if (strlen($date) == 7) {
-            $checkInDetails = $this->monthlyCheckIn($request->user_id, $date);
-            $checkOutDetails = $this->monthlyCheckOut($request->user_id, $date);
+            $checkInDetails = [];
+            $checkOutDetails = [];
         }
         if (strlen($date) == 10) {
-            $checkInDetails = $result->attendance->where('status', 0)->first();
-            $checkOutDetails = $result->attendance->where('status', 1)->first();
+            $checkInDetails = [];
+            $checkOutDetails = [];
         }
         $result['checkInDetails'] = $checkInDetails;
         $result['checkOutDetails'] = $checkOutDetails;

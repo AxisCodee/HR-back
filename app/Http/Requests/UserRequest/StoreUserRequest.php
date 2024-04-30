@@ -29,6 +29,7 @@ class StoreUserRequest extends FormRequest
             'middle_name' => ['string', 'max:25'],
             'last_name' => ['string', 'min:3', 'max:25'],
             'password' => ['required', 'string', RulesPassword::min(8)],
+            'role'=>['required','string', 'in:employee,admin']
             'email' => ['required', 'email', 'unique:users,email,' . $this->id],
             'address' => ['required', 'string', 'min:3', 'max:25'],
             'birth_date' => ['required', 'date', 'before:today', 'date_format:Y-m-d'],

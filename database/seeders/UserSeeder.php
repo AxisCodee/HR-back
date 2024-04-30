@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
@@ -14,194 +13,136 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-
         DB::table('users')->insert([
             [
-                'email' => 'admin@gmail.com',
+                'email' => 'ismail@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'ismaeel',
-                'middle_name' => 'tttt',
-                'last_name' => 'aarangy',
+                'first_name' => 'اسماعيل',
+                'last_name' => 'عرنجي',
                 'role' => 'admin',
-                'specialization' => 'spa',
+                'specialization' => 'Mobile',
                 'pin' => 1,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'dani@gmail.com',
+                'email' => 'dani@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'dani',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'first_name' => 'دانييل',
+                'last_name' => 'فرنسيس',
+                'role' => 'team_leader',
+                'specialization' => 'Front-End',
                 'pin' => 2,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'mhmd@gmail.com',
+                'email' => 'abdalrahman@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'mhmd',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
+                'first_name' => 'عبد الرحمن',
+                'last_name' => 'خدام الجامع',
                 'role' => 'employee',
-                'specialization' => 'spa',
-                'pin' => 3,
-                'branch_id'=>1
-            ],
-            [
-                'email' => 'abdalrahman@gmail.com',
-                'password' => Hash::make('password'),
-                'first_name' => 'abdalrahman',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'specialization' => 'Front-End',
                 'pin' => 4,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'laith@gmail.com',
+                'email' => 'laith@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'laith',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
+                'first_name' => 'ليث',
+                'last_name' => 'خيربك',
                 'role' => 'employee',
-                'specialization' => 'spa',
+                'specialization' => 'Training',
                 'pin' => 5,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'ali@gmail.com',
+                'email' => 'ali@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'ali',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
+                'first_name' => 'علي',
+                'last_name' => 'أسد',
                 'role' => 'employee',
-                'specialization' => 'spa',
+                'specialization' => 'Back-End',
                 'pin' => 6,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'mazhar@gmail.com',
+                'email' => 'hussam@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'mazhar',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
+                'first_name' => 'حسام',
+                'last_name' => 'الزعبي',
                 'role' => 'employee',
-                'specialization' => 'spa',
-                'pin' => 7,
-                'branch_id'=>1
-            ],
-            [
-                'email' => 'hussam@gmail.com',
-                'password' => Hash::make('password'),
-                'first_name' => 'hussam',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'specialization' => 'Design',
                 'pin' => 8,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'elfat@gmail.com',
+                'email' => 'thalees@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'elfat',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
-                'pin' => 9,
-                'branch_id'=>1
-            ],
-            [
-                'email' => 'thalees@gmail.com',
-                'password' => Hash::make('password'),
-                'first_name' => 'thalees',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'first_name' => 'طاليس',
+                'last_name' => 'مصطفى',
+                'role' => 'team_leader',
+                'specialization' => 'Back-End',
                 'pin' => 10,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'ghfran@gmail.com',
+                'email' => 'raneem@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'ghfran',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
+                'first_name' => 'رنيم',
+                'last_name' => 'المرعوني',
                 'role' => 'employee',
-                'specialization' => 'spa',
-                'pin' => 11,
-                'branch_id'=>1
-            ],
-            [
-                'email' => 'raneem@gmail.com',
-                'password' => Hash::make('password'),
-                'first_name' => 'raneem',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'specialization' => 'Training',
                 'pin' => 12,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'hadi@gmail.com',
+                'email' => 'hadi@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'hadi',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'first_name' => 'عبد الهادي',
+                'last_name' => 'حمودة',
+                'role' => 'team_leader',
+                'specialization' => 'Design',
                 'pin' => 13,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'noOne@gmail.com',
+                'email' => 'nour@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'noo',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
+                'first_name' => 'نور الهدى',
+                'last_name' => 'موسى',
                 'role' => 'employee',
-                'specialization' => 'spa',
+                'specialization' => 'Mobile',
                 'pin' => 14,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'noOne1@gmail.com',
+                'email' => 'yazan@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'noo1',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
+                'first_name' => 'يزن',
+                'last_name' => 'الحوري',
                 'role' => 'employee',
-                'specialization' => 'spa',
-                'pin' => 15,
-                'branch_id'=>1
-            ],
-            [
-                'email' => 'yazan@gmail.com',
-                'password' => Hash::make('password'),
-                'first_name' => 'yazan',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'specialization' => 'Design',
                 'pin' => 16,
-                'branch_id'=>1
+                'branch_id' => 1
             ],
             [
-                'email' => 'kamal@gmail.com',
+                'email' => 'kamal@mail.com',
                 'password' => Hash::make('password'),
-                'first_name' => 'kamal',
-                'middle_name' => 'tttt',
-                'last_name' => 'yyyy',
-                'role' => 'employee',
-                'specialization' => 'spa',
+                'first_name' => 'كمال',
+                'last_name' => 'بدران',
+                'role' => 'admin',
+                'specialization' => 'Management',
                 'pin' => 17,
-                'branch_id'=>1
+                'branch_id' => 1
+            ],
+            [
+                'email' => 'manager@mail.com',
+                'password' => Hash::make('password'),
+                'first_name' => 'Manager',
+                'last_name' => 'Manager',
+                'role' => 'admin',
+                'specialization' => 'Management',
+                'pin' => 17,
+                'branch_id' => 1
             ],
         ]);
     }

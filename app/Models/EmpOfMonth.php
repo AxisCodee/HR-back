@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EmpOfMonth extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'date',
         'user_id',

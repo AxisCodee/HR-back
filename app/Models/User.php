@@ -147,12 +147,18 @@ class User extends Authenticatable implements JWTSubject
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
+        if (strlen($date) == 10){
+            return null;
+        }
         return $this->userServices->getCheckInPercentage($this, $date);
     }
 
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
+        if (strlen($date) == 10){
+            return null;
+        }
         return $this->userServices->getCheckOutPercentage($this, $date);
     }
 
@@ -451,7 +457,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->userServices->getBaseSalary($this, $date);
     }
 
-   public function getTotalAbsenceHoursAttribute()
+    public function getTotalAbsenceHoursAttribute()
     {
         $date = request()->query('date');
         if ($date) {

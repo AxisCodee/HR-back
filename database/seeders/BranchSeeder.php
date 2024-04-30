@@ -15,13 +15,13 @@ class BranchSeeder extends Seeder
     {
         $branches = [
             [
-                'name' => 'Branch 1',
+                'name' => 'COde Shield',
                 'fingerprint_scanner_ip' => '192.168.2.202'
+            ], [
+                'name' => 'Tobacco',
+                'fingerprint_scanner_ip' => '192.168.2.201'
             ],
-          
         ];
-
-
         DB::table('branches')->insert($branches);
     }
 }

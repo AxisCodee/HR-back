@@ -25,20 +25,19 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             //Validation for the fields that will be inserted into the users table.
-            'first_name' => ['string', 'min:3'],
-            'middle_name' => ['string'],
-            'last_name' => ['string', 'min:3'],
-            'email' => ['email', 'min:10'],
-            'role' => ['exists:roles,name'],
-            'specialization' => ['string', 'min:3'],
-            'department_id' => ['exists:departments,id'],
-            'password' => ['string', 'min:4'],
-            'pin' => ['integer', 'min:1'],
-            'address' => ['string', 'min:3'],
-            'branch_id' => ['integer', 'exists:branches,id'],
+            'first_name' => ['sometimes', 'string', 'min:3'],
+            'middle_name' => ['sometimes'],
+            'last_name' => ['sometimes', 'string', 'min:3'],
+            'email' => ['sometimes', 'email', 'min:10'],
+            'role' => ['sometimes', 'exists:roles,name'],
+            'specialization' => ['sometimes', 'string', 'min:3'],
+            'department_id' => ['sometimes', 'exists:departments,id'],
+            'password' => ['sometimes', 'string', 'min:4'],
+            'pin' => ['sometimes', 'integer', 'min:1'],
+            'address' => ['sometimes', 'string', 'min:3'],
+            'branch_id' => ['sometimes', 'integer', 'exists:branches,id'],
             //Validation for the fields that will be inserted into the user_infos table.
-            'salary' => ['integer', 'min:1'],
-
+            'salary' => ['sometimes', 'integer', 'min:1'],
         ];
     }
 
