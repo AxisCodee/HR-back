@@ -13,7 +13,6 @@ use App\Models\RateType;
 use App\Models\Attendance;
 use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\Auth;
-use function Symfony\Component\String\u;
 
 class ReportServices
 {
@@ -118,6 +117,7 @@ class ReportServices
     public function Report($request)
     {
         $date = $request->date;
+        $user = User::query()->findOrFail($request->user_id);
         $result = User::with([
             'notes',
             'userInfo',
@@ -134,8 +134,9 @@ class ReportServices
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',
-            'attendance' => function ($query) use ($date) {
-                $query->whereDate('datetime', $date);
+            'attendance' => function ($query) use ($user, $date) {
+                $query->whereDate('datetime', $date)
+                    ->where('branch_id', $user->branch_id);
             }
         ])->findOrFail($request->user_id);
         if (strlen($date) == 4) {
@@ -161,7 +162,8 @@ class ReportServices
     {
         $user = Auth::user();
         $date = substr($request->date, 0, 7);
-        $result = Rate::where('user_id', $user->id)->whereRaw("SUBSTRING(date, 1, 4) = ?", [$date])
+        $result = Rate::where('user_id', $user->id)
+            ->whereRaw("SUBSTRING(date, 1, 4) = ?", [$date])
             ->orWhere(function ($query) use ($date) {
                 $query->whereRaw("SUBSTRING(date, 1, 4) = ?", [substr($date, 0, 4)])
                     ->whereRaw("SUBSTRING(date, 6, 2) = ?", [substr($date, 5, 2)]);
@@ -180,13 +182,13 @@ class ReportServices
         return ResponseHelper::success($ratesWithPercentage->values());
     }
 
-    public function checkDetails($date, $user_pin, $status)
+    public function checkDetails($date, $user_id, $status)
     {
         if (strlen($date) == 4) {
             $allMonths = array_fill_keys(range(1, 12), 0);
             for ($i = 1; $i <= 12; $i++) {
                 $year = $date . '-0' . $i;
-                $result = $this->getUserChecksPercentage($user_pin, $year, 'Y-m', $status);
+                $result = $this->getUserChecksPercentage($user_id, $year, 'Y-m', $status);
                 $allMonths[$i] = $result;
             }
             return $allMonths;
@@ -194,30 +196,31 @@ class ReportServices
         if (strlen($date) == 7) {
             $allMonths = array_fill_keys(range(1, 12), 0);
             $month = date('n', strtotime($date));
-            $monthlyPercentages = $this->getUserChecksPercentage($user_pin, $date, 'Y-m', $status);
+            $monthlyPercentages = $this->getUserChecksPercentage($user_id, $date, 'Y-m', $status);
             $allMonths[$month] = $monthlyPercentages;
             return $allMonths;
         }
         return false;
     }
 
-
-    public function getUserChecksPercentage($user_pin, $date, $format, $status)
+    public function getUserChecksPercentage($user_id, $date, $format, $status)
     {
+        $user = User::query()->where('id', $user_id)->first();
         $dateFormat = $format === 'Y-m' ? "%Y-%m" : "%Y";
         $checks = Attendance::query()
-            ->where('pin', $user_pin)
+            ->where('pin', $user->pin)
+            ->where('branch_id', $user->branch_id)
             ->where('status', $status)
             ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $date])
             ->count();
-        $workDays = $this->workDays($dateFormat, $date);
+        $workDays = $this->workDays($dateFormat, $date, $user->branch_id);
         if ($workDays == 0) {
             return 0;
         }
         return round((($checks * 100) / $workDays));
     }
 
-    public function monthlyCheckOut($user_id, $dateTime)//out late
+    public function monthlyCheckOut($user_id, $dateTime)//out-late
     {
         $allMonths = array_fill_keys(range(1, 12), 0);
         $dateFormat = "%Y-%m";
@@ -226,12 +229,13 @@ class ReportServices
         $companyEndTime = $policy->work_time['end_time'];
         $companyEndTime24 = date("H:i", strtotime($companyEndTime));
         $checks = Attendance::query()
+            ->where('branch_id', $user->branch_id)
             ->where('pin', $user->pin)
             ->where('status', '1')
             ->whereRaw('DATE_FORMAT(datetime, ?) = ?', [$dateFormat, $dateTime])
             ->whereRaw('TIME(datetime) < ?', [$companyEndTime24])
             ->count();
-        $workDays = $this->workDays($dateFormat, $dateTime);
+        $workDays = $this->workDays($dateFormat, $dateTime, $user->branch_id);
         if ($workDays == 0) {
             return $allMonths;
         }
@@ -241,8 +245,9 @@ class ReportServices
         return $allMonths;
     }
 
-    public function monthlyCheckIn($user_id, $dateTime)//in late
+    public function monthlyCheckIn($user_id, $dateTime)//in-late
     {
+        $user = User::query()->findOrFail($user_id);
         $allMonths = array_fill_keys(range(1, 12), 0);
         $month = date('n', strtotime($dateTime));
         $dateFormat = "%Y-%m";
@@ -250,7 +255,7 @@ class ReportServices
             ->whereRaw('DATE_FORMAT(lateDate, ?) = ?', [$dateFormat, $dateTime])
             ->whereNull('end')
             ->count();
-        $workDays = $this->workDays($dateFormat, $dateTime);
+        $workDays = $this->workDays($dateFormat, $dateTime, $user->branch_id);
         if ($workDays == 0) {
             return $allMonths;
         }
@@ -259,9 +264,11 @@ class ReportServices
         return $allMonths;
     }
 
-    public function workDays($dateFormat, $date)
+    public function workDays($dateFormat, $date, $branch_id)
     {
-        return Date::query()->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])
+        return Date::query()
+            ->where('branch_id', $branch_id)
+            ->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])
             ->count();
     }
 }

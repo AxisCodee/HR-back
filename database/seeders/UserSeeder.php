@@ -15,17 +15,17 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'email' => 'ismail@mail.com',
+                'email' => 'ismail@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'اسماعيل',
                 'last_name' => 'عرنجي',
-                'role' => 'admin',
+                'role' => 'team_leader',
                 'specialization' => 'Mobile',
                 'pin' => 1,
                 'branch_id' => 1
             ],
             [
-                'email' => 'dani@mail.com',
+                'email' => 'dani@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'دانييل',
                 'last_name' => 'فرنسيس',
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'abdalrahman@mail.com',
+                'email' => 'abdalrahman@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'عبد الرحمن',
                 'last_name' => 'خدام الجامع',
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'laith@mail.com',
+                'email' => 'laith@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'ليث',
                 'last_name' => 'خيربك',
@@ -55,7 +55,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'ali@mail.com',
+                'email' => 'ali@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'علي',
                 'last_name' => 'أسد',
@@ -65,7 +65,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'hussam@mail.com',
+                'email' => 'hussam@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'حسام',
                 'last_name' => 'الزعبي',
@@ -75,7 +75,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'thalees@mail.com',
+                'email' => 'thalees@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'طاليس',
                 'last_name' => 'مصطفى',
@@ -85,7 +85,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'raneem@mail.com',
+                'email' => 'raneem@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'رنيم',
                 'last_name' => 'المرعوني',
@@ -95,7 +95,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'hadi@mail.com',
+                'email' => 'hadi@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'عبد الهادي',
                 'last_name' => 'حمودة',
@@ -105,7 +105,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'nour@mail.com',
+                'email' => 'nour@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'نور الهدى',
                 'last_name' => 'موسى',
@@ -115,7 +115,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'yazan@mail.com',
+                'email' => 'yazan@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'يزن',
                 'last_name' => 'الحوري',
@@ -125,7 +125,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'kamal@mail.com',
+                'email' => 'kamal@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'كمال',
                 'last_name' => 'بدران',
@@ -135,7 +135,7 @@ class UserSeeder extends Seeder
                 'branch_id' => 1
             ],
             [
-                'email' => 'manager@mail.com',
+                'email' => 'manager@gmail.com',
                 'password' => Hash::make('password'),
                 'first_name' => 'Manager',
                 'last_name' => 'Manager',

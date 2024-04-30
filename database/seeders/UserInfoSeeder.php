@@ -19,12 +19,12 @@ class UserInfoSeeder extends Seeder
         $military_situations = ['Postponed', 'Exempt', 'Finished'];
         $levels = ['Senior', 'Mid', 'Junior'];
 
-        for ($i = 1; $i <= 17; $i++) {
+        for ($i = 1; $i <= 12; $i++) {
             DB::table('user_infos')->insert([
                 'user_id' => $i,
                 'image' => Str::random(10),
                 'birth_date' => date('Y-m-d', mt_rand(strtotime('1980-01-01'), strtotime('2000-12-31'))),
-                'start_date' => date('Y-m-d', mt_rand(strtotime('2010-01-01'), strtotime('2020-12-31'))),
+                'start_date' => '2024-01-01',
                 'gender' => $genders[array_rand($genders)],
                 'nationalID' => Str::random(10),
                 'social_situation' => $social_situations[array_rand($social_situations)],

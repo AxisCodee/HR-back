@@ -15,7 +15,7 @@ class BranchSeeder extends Seeder
     {
         $branches = [
             [
-                'name' => 'COde Shield',
+                'name' => 'Code Shield',
                 'fingerprint_scanner_ip' => '192.168.2.202'
             ], [
                 'name' => 'Tobacco',
