@@ -148,7 +148,7 @@ class User extends Authenticatable implements JWTSubject
     public function getCheckInPercentageAttribute()
     {
         $date = request()->query('date');
-        if (strlen($date) == 10){
+        if (strlen($date) == 10) {
             return null;
         }
         return $this->userServices->getCheckInPercentage($this, $date);
@@ -157,7 +157,7 @@ class User extends Authenticatable implements JWTSubject
     public function getCheckOutPercentageAttribute()
     {
         $date = request()->query('date');
-        if (strlen($date) == 10){
+        if (strlen($date) == 10) {
             return null;
         }
         return $this->userServices->getCheckOutPercentage($this, $date);
@@ -468,13 +468,21 @@ class User extends Authenticatable implements JWTSubject
 
     public function getStatusAttribute()
     {
-        $datetime = Carbon::now();
+        $datetime = Carbon::now()->format('Y-m-d');
+//        $status = Attendance::query()
+//            ->where('pin', $this->pin)
+//            ->where('branch_id',$this->branch_id)
+//            ->whereDate('datetime', '=', $datetime)
+//            ->whereTime('datetime', '<=', Carbon::parse($datetime)->format('H:i:s'))
+//            ->latest()
+//            ->value('status');
+
         $status = Attendance::query()
             ->where('pin', $this->pin)
-            ->where('branch_id',$this->branch_id)
-            ->whereDate('datetime', '=', $datetime)
-            ->whereTime('datetime', '<=', Carbon::parse($datetime)->format('H:i:s'))
-            ->latest()
+            ->where('branch_id', $this->branch_id)
+            ->whereRaw('DATE(datetime) = ? ', [$datetime])
+            ->where('status', '0')
+           ->latest()
             ->value('status');
         return $status;
     }
