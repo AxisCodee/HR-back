@@ -25,15 +25,15 @@ class DepartmentSeeder extends Seeder
                 ],
                 [
                     'name' => 'Mobile',
-                    'branch_id' => 2
+                    'branch_id' => 1
                 ],
                 [
                     'name' => 'UX/UI',
-                    'branch_id' => 2
+                    'branch_id' => 1
                 ],
                 [
                     'name' => 'Training',
-                    'branch_id' => 2
+                    'branch_id' => 1
                 ],
             ]
         );
