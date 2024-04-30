@@ -19,7 +19,8 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'اسماعيل',
                 'last_name' => 'عرنجي',
-                'role' => 'team_leader',
+                'role' => 'employee',
+                'department_id' => 3,
                 'specialization' => 'Mobile',
                 'pin' => 1,
                 'branch_id' => 1
@@ -29,7 +30,8 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'دانييل',
                 'last_name' => 'فرنسيس',
-                'role' => 'team_leader',
+                'role' => 'employee',
+                'department_id' => 2,
                 'specialization' => 'Front-End',
                 'pin' => 2,
                 'branch_id' => 1
@@ -40,6 +42,7 @@ class UserSeeder extends Seeder
                 'first_name' => 'عبد الرحمن',
                 'last_name' => 'خدام الجامع',
                 'role' => 'employee',
+                'department_id' => 2,
                 'specialization' => 'Front-End',
                 'pin' => 4,
                 'branch_id' => 1
@@ -50,6 +53,7 @@ class UserSeeder extends Seeder
                 'first_name' => 'ليث',
                 'last_name' => 'خيربك',
                 'role' => 'employee',
+                'department_id' => 5,
                 'specialization' => 'Training',
                 'pin' => 5,
                 'branch_id' => 1
@@ -60,6 +64,7 @@ class UserSeeder extends Seeder
                 'first_name' => 'علي',
                 'last_name' => 'أسد',
                 'role' => 'employee',
+                'department_id' => 1,
                 'specialization' => 'Back-End',
                 'pin' => 6,
                 'branch_id' => 1
@@ -70,7 +75,8 @@ class UserSeeder extends Seeder
                 'first_name' => 'حسام',
                 'last_name' => 'الزعبي',
                 'role' => 'employee',
-                'specialization' => 'Design',
+                'department_id' => 4,
+                'specialization' => 'UX/UI',
                 'pin' => 8,
                 'branch_id' => 1
             ],
@@ -79,7 +85,8 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'طاليس',
                 'last_name' => 'مصطفى',
-                'role' => 'team_leader',
+                'role' => 'employee',
+                'department_id' => 1,
                 'specialization' => 'Back-End',
                 'pin' => 10,
                 'branch_id' => 1
@@ -90,6 +97,7 @@ class UserSeeder extends Seeder
                 'first_name' => 'رنيم',
                 'last_name' => 'المرعوني',
                 'role' => 'employee',
+                'department_id' => 5,
                 'specialization' => 'Training',
                 'pin' => 12,
                 'branch_id' => 1
@@ -99,8 +107,9 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'عبد الهادي',
                 'last_name' => 'حمودة',
-                'role' => 'team_leader',
-                'specialization' => 'Design',
+                'role' => 'employee',
+                'department_id' => 4,
+                'specialization' => 'UX/UI',
                 'pin' => 13,
                 'branch_id' => 1
             ],
@@ -110,6 +119,7 @@ class UserSeeder extends Seeder
                 'first_name' => 'نور الهدى',
                 'last_name' => 'موسى',
                 'role' => 'employee',
+                'department_id' => 3,
                 'specialization' => 'Mobile',
                 'pin' => 14,
                 'branch_id' => 1
@@ -120,7 +130,8 @@ class UserSeeder extends Seeder
                 'first_name' => 'يزن',
                 'last_name' => 'الحوري',
                 'role' => 'employee',
-                'specialization' => 'Design',
+                'department_id' => 4,
+                'specialization' => 'UX/UI',
                 'pin' => 16,
                 'branch_id' => 1
             ],
@@ -129,9 +140,18 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'first_name' => 'كمال',
                 'last_name' => 'بدران',
+                'role' => 'employee',
+                'department_id' => 1,
+                'specialization' => 'Back-End',
+                'pin' => 17,
+                'branch_id' => 1
+            ], [
+                'email' => 'kamalManager@gmail.com',
+                'password' => Hash::make('password'),
+                'first_name' => 'كمال',
+                'last_name' => 'بدران',
                 'role' => 'admin',
                 'specialization' => 'Management',
-                'pin' => 17,
                 'branch_id' => 1
             ],
             [
@@ -141,7 +161,6 @@ class UserSeeder extends Seeder
                 'last_name' => 'Manager',
                 'role' => 'admin',
                 'specialization' => 'Management',
-                'pin' => 17,
                 'branch_id' => 1
             ],
         ]);

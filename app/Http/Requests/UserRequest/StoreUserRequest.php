@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\UserRequest;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -20,7 +21,7 @@ class StoreUserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
@@ -29,7 +30,7 @@ class StoreUserRequest extends FormRequest
             'middle_name' => ['string', 'max:25'],
             'last_name' => ['string', 'min:3', 'max:25'],
             'password' => ['required', 'string', RulesPassword::min(8)],
-            'role'=>['required','string', 'in:employee,admin']
+            'role' => ['required', 'string', 'in:employee,admin'],
             'email' => ['required', 'email', 'unique:users,email,' . $this->id],
             'address' => ['required', 'string', 'min:3', 'max:25'],
             'birth_date' => ['required', 'date', 'before:today', 'date_format:Y-m-d'],
