@@ -30,7 +30,7 @@ class ContractController extends Controller
             $endTime = Carbon::parse($contract['endTime']);
             if ($endTime->gte(Carbon::now())) {
                 $status = 'active';
-                $results[] = [
+                $result = [
                     'startDate' => $contract['startTime'],
                     'path' => $contract['path'],
                     'endDate' => $contract['endTime'],
@@ -39,6 +39,7 @@ class ContractController extends Controller
                     'user' => $contract['user'],
                     'status' => $status,
                 ];
+                $results[] = $result;
             }
         }
         return ResponseHelper::success($results);
