@@ -21,10 +21,10 @@ class ContractController extends Controller
             $query->where('branch_id', $branchId);
         })->get();
 
-    $results = [];
+   // $results = [];
 
     if ($contracts->isEmpty()) {
-        return ResponseHelper::success($results);
+        return ResponseHelper::success('empty');
     }
     else {
         foreach ($contracts as $contract) {
