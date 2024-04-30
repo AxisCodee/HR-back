@@ -469,20 +469,11 @@ class User extends Authenticatable implements JWTSubject
     public function getStatusAttribute()
     {
         $datetime = Carbon::now()->format('Y-m-d');
-//        $status = Attendance::query()
-//            ->where('pin', $this->pin)
-//            ->where('branch_id',$this->branch_id)
-//            ->whereDate('datetime', '=', $datetime)
-//            ->whereTime('datetime', '<=', Carbon::parse($datetime)->format('H:i:s'))
-//            ->latest()
-//            ->value('status');
-
         $status = Attendance::query()
             ->where('pin', $this->pin)
             ->where('branch_id', $this->branch_id)
             ->whereRaw('DATE(datetime) = ? ', [$datetime])
-            ->where('status', '0')
-           ->latest()
+            ->latest()
             ->value('status');
         return $status;
     }
