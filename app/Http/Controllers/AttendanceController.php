@@ -66,8 +66,6 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
-
-
         //$job = dispatch(new StoreAttendanceLogsJob($request->branch_id, $this->fingerprintService));
         return DB::transaction(function () use ($request) {
             //Storing attendance
@@ -80,7 +78,8 @@ class AttendanceController extends Controller
             $logs = $tad->get_att_log();
             //check date table and store attendance
             $uniqueDates = [];
-            if (Date::query()->where('branch_id', $branchId)->get()->count() != 0) {
+            //dd(Date::query()->where('branch_id', $branchId)->get()->count() > 0);
+            if (Date::query()->where('branch_id', $branchId)->get()->count() > 0) {
                 $start = Date::latest('date')->value('date');
                 $end = Carbon::now()->format('Y-m-d');
                 $filtered_att_logs = $logs->filter_by_date(
@@ -89,12 +88,18 @@ class AttendanceController extends Controller
                 $xml = simplexml_load_string($filtered_att_logs);
                 $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId);
                 $allAttendances = Attendance::query()
+                    ->where('branch_id', $branchId)
                     ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
                     ->get();
-            } elseif (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
+                //dd($allAttendances);
+            }
+            if (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
                 $xml = simplexml_load_string($logs);
                 $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId);
-                $allAttendances = Attendance::query()->get();
+                //dd($uniqueDates);
+                $allAttendances = Attendance::query()
+                    ->where('branch_id', $branchId)
+                    ->get();
             }
             //Storing delays
             foreach ($allAttendances as $attendance) {

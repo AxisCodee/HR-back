@@ -28,103 +28,88 @@ class ReportController extends Controller
      * Validate request & Store the new report.
      * [ReportServices => StoreReport]
      * @param StoreReportRequest
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function store(StoreReportRequest $request) //TODO delete method or not
     {
-            $newreport = $this->ReportServices->StoreReport($request);
-            return $newreport;
-
+        return $this->ReportServices->StoreReport($request);
     }
 
     /**
      * Remove existing report by a specific user.
      * [ReportServices => RemoveReport]
      * @param Report
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function remove($id) //TODO delete method or not
     {
-            $remove = $this->ReportServices->RemoveReport($id);
-            return $remove;
-
+        return $this->ReportServices->RemoveReport($id);
     }
 
     /**
      * Get reports of the authenticated user.
      * [ReportServices => MyReports]
      * @param none
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function my_reports() //TODO delete method or not
     {
-            $reports = $this->ReportServices->MyReports();
-            return $reports;
-
+        return $this->ReportServices->MyReports();
     }
 
     /**
      * Get all reports of all users in a specific branch.
      * [ReportServices => AllReports]
      * @param Request
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function all_reports(Request $request) //TODO delete method or not
     {
-            $allreports = $this->ReportServices->AllReports($request);
-            return $allreports;
-
+        return $this->ReportServices->AllReports($request);
     }
 
     /**
      * Get all reports of all users in a specific branch at the current day.
      * [ReportServices => DailyReports]
      * @param Request
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function daily_reports(Request $request) //TODO delete method or not
     {
-            $todayreports = $this->ReportServices->DailyReports($request);
-            return $todayreports;
-
+        return $this->ReportServices->DailyReports($request);
     }
 
     /**
      * Get CHECK-INs & CHECK-OUTs of a user in a specific day.
      * [ReportServices => UserChecks]
      * @param Request
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function user_checks(Request $request)
     {
-            $checks = $this->ReportServices->UserChecks($request);
-            return $checks;
-
+        return $this->ReportServices->UserChecks($request);
     }
 
     /**
      * Get the report of a user in a specific date.
      * [ReportServices => Report]
      * @param Request
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function report(Request $request)
     {
-            return $this->ReportServices->Report($request);
-
+        return $this->ReportServices->Report($request);
     }
 
     /**
      * Get the rates of a user in a given date.
      * [ReportServices => RatesByDate]
      * @param Request
-     * @return ResponseHelper
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function ratesByDate(Request $request)
     {
-            $rates = $this->ReportServices->RatesByDate($request);
-            return $rates;
-       
+        return $this->ReportServices->RatesByDate($request);
     }
 
 }

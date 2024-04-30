@@ -126,7 +126,6 @@ class FingerprintService
                             ->where('check_in', '!=', null)
                             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
                             ->exists();
-
                         if (!$lateExistence) {
                             $checkInHour = substr($attendance->datetime, 11, 15);
                             $parsedHour = Carbon::parse($checkInHour);

@@ -12,23 +12,30 @@ class DepartmentSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {DB::table('departments')->insert
-        ([[
-            'name' => 'Back_End',
-            'branch_id'=>1
-        ],
-        [
-            'name' => 'Front_End',
-            'branch_id'=>1
-        ],
-        [
-            'name' => 'Mobile',
-            'branch_id'=>2
-        ],
-        [
-            'name' => 'UI_UX',
-            'branch_id'=>2
-        ],]
-    );
+    {
+        DB::table('departments')->insert
+        ([
+                [
+                    'name' => 'Back-End',
+                    'branch_id' => 1
+                ],
+                [
+                    'name' => 'Front-End',
+                    'branch_id' => 1
+                ],
+                [
+                    'name' => 'Mobile',
+                    'branch_id' => 2
+                ],
+                [
+                    'name' => 'UX/UI',
+                    'branch_id' => 2
+                ],
+                [
+                    'name' => 'Training',
+                    'branch_id' => 2
+                ],
+            ]
+        );
     }
 }

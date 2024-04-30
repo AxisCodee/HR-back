@@ -5,6 +5,7 @@ namespace App\Models;
 
 use App\Services\AbsenceService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -470,6 +471,7 @@ class User extends Authenticatable implements JWTSubject
         $datetime = Carbon::now();
         $status = Attendance::query()
             ->where('pin', $this->pin)
+            ->where('branch_id',$this->branch_id)
             ->whereDate('datetime', '=', $datetime)
             ->whereTime('datetime', '<=', Carbon::parse($datetime)->format('H:i:s'))
             ->latest()
@@ -548,7 +550,7 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -569,7 +571,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UserSalary::class, 'user_id');
     }
 
-    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class);
     }
