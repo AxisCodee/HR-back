@@ -24,7 +24,7 @@ class ContractController extends Controller
 
 
     if ($contracts->isEmpty()) {
-          $results = [];
+          $results[] = [];
         return ResponseHelper::success( $results);
     }
     else {
@@ -43,9 +43,10 @@ class ContractController extends Controller
                 ];
                 $results[] = $result;
             }
-            return ResponseHelper::success($results);
 
         }
+        return ResponseHelper::success($results);
+
     }
 }
 
