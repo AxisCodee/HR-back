@@ -14,41 +14,35 @@ use Illuminate\Support\Facades\DB;
 class ContractController extends Controller
 {
     public function index(Request $request)
-{
-    $branchId = $request->input('branch_id');
-    $contracts = Contract::with('user', 'user.userInfo')
-        ->whereHas('user', function ($query) use ($branchId) {
-            $query->where('branch_id', $branchId);
-        })->get();
-
-
-
-    if ($contracts->isEmpty()) {
-          $results[] = [];
-        return ResponseHelper::success( $results);
-    }
-    else {
-        foreach ($contracts as $contract) {
-            $endTime = Carbon::parse($contract['endTime']);
-            if ($endTime->gte(Carbon::now())) {
-                $status = 'active';
-                $result = [
-                    'startDate' => $contract['startTime'],
-                    'path' => $contract['path'],
-                    'endDate' => $contract['endTime'],
-                    'user_id' => $contract['user_id'],
-                    'contract_id' => $contract->id,
-                    'user' => $contract['user'],
-                    'status' => $status,
-                ];
-                $results[] = $result;
+    {
+        $branchId = $request->input('branch_id');
+        $contracts = Contract::with('user', 'user.userInfo')
+            ->whereHas('user', function ($query) use ($branchId) {
+                $query->where('branch_id', $branchId);
+            })->get();
+        if ($contracts->isEmpty()) {
+            $results = [];
+            return ResponseHelper::success($results);
+        } else {
+            foreach ($contracts as $contract) {
+                $endTime = Carbon::parse($contract['endTime']);
+                if ($endTime->gte(Carbon::now())) {
+                    $status = 'active';
+                    $result = [
+                        'startDate' => $contract['startTime'],
+                        'path' => $contract['path'],
+                        'endDate' => $contract['endTime'],
+                        'user_id' => $contract['user_id'],
+                        'contract_id' => $contract->id,
+                        'user' => $contract['user'],
+                        'status' => $status,
+                    ];
+                    $results[] = $result;
+                }
             }
-
+            return ResponseHelper::success($results);
         }
-        return ResponseHelper::success($results);
-
     }
-}
 
 
     /**
@@ -80,12 +74,13 @@ class ContractController extends Controller
      */
     public function showContract(Contract $contract)
     {
-       $result= $contract->with('user')->get();
-       return ResponseHelper::success([
-        'message' => 'your contract',
-        'data' =>  $result,
-    ]);
+        $result = $contract->with('user')->get();
+        return ResponseHelper::success([
+            'message' => 'your contract',
+            'data' => $result,
+        ]);
     }
+
     public function show($id)
     {
         $result = Contract::query()
@@ -103,20 +98,20 @@ class ContractController extends Controller
      */
     public function update(UpdateContractRequest $request, $contract)
     {
-            $contractId = Contract::findOrFail($contract);
-            if ($contract) {
-                if (Carbon::parse($contractId->endTime) <= Carbon::now()) {
-                    return ResponseHelper::error('The Contract must be Valid');
-                }
-                $validate = $request->validated();
-                $path = Files::saveFile($request);
-                $contractId->update([
-                    'startTime' => $request->startTime ?: $contractId->startTime,
-                    'endTime' => $request->endTime ?: $contractId->path,
-                    'path' => $path
-                ]);
-                return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
+        $contractId = Contract::findOrFail($contract);
+        if ($contract) {
+            if (Carbon::parse($contractId->endTime) <= Carbon::now()) {
+                return ResponseHelper::error('The Contract must be Valid');
             }
+            $validate = $request->validated();
+            $path = Files::saveFile($request);
+            $contractId->update([
+                'startTime' => $request->startTime ?: $contractId->startTime,
+                'endTime' => $request->endTime ?: $contractId->path,
+                'path' => $path
+            ]);
+            return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
+        }
 
     }
 
@@ -166,13 +161,12 @@ class ContractController extends Controller
 
     public function selectContractToDelete(Request $request)
     {
-        foreach($request->contracts as $request)
-        {
-            $oneRequest=Contract::find($request);
-           $result=$oneRequest->delete();
+        foreach ($request->contracts as $request) {
+            $oneRequest = Contract::find($request);
+            $result = $oneRequest->delete();
         }
-           return ResponseHelper::deleted();
+        return ResponseHelper::deleted();
 
 
-}
+    }
 }
