@@ -15,38 +15,37 @@ class ContractController extends Controller
 {
     public function index(Request $request)
 {
-    $branchId = $request->input('branch_id');
-    $contracts = Contract::with('user', 'user.userInfo')
-        ->whereHas('user', function ($query) use ($branchId) {
-            $query->where('branch_id', $branchId);
-        })->get();
+    // $branchId = $request->input('branch_id');
+    // $contracts = Contract::with('user', 'user.userInfo')
+    //     ->whereHas('user', function ($query) use ($branchId) {
+    //         $query->where('branch_id', $branchId);
+    //     })->get();
 
-    //$results = [];
+    // $results = [];
 
-    if ($contracts->isEmpty()) {
-        return ResponseHelper::success('aa');
-    }
+    // if ($contracts->isEmpty()) {
+    //     return ResponseHelper::success($results);
+    // }
+    // else {
+    //     foreach ($contracts as $contract) {
+    //         $endTime = Carbon::parse($contract['endTime']);
+    //         if ($endTime->gte(Carbon::now())) {
+    //             $status = 'active';
+    //             $result = [
+    //                 'startDate' => $contract['startTime'],
+    //                 'path' => $contract['path'],
+    //                 'endDate' => $contract['endTime'],
+    //                 'user_id' => $contract['user_id'],
+    //                 'contract_id' => $contract->id,
+    //                 'user' => $contract['user'],
+    //                 'status' => $status,
+    //             ];
+    //             $results[] = $result;
+    //         }
+    //         return ResponseHelper::success($results);
 
-    else {
-        // foreach ($contracts as $contract) {
-        //     $endTime = Carbon::parse($contract['endTime']);
-        //     if ($endTime->gte(Carbon::now())) {
-        //         $status = 'active';
-        //         $result = [
-        //             'startDate' => $contract['startTime'],
-        //             'path' => $contract['path'],
-        //             'endDate' => $contract['endTime'],
-        //             'user_id' => $contract['user_id'],
-        //             'contract_id' => $contract->id,
-        //             'user' => $contract['user'],
-        //             'status' => $status,
-        //         ];
-        //         $results[] = $result;
-        //     }
-        //     return ResponseHelper::success($results);
-
-        // }
-    }
+    //     }
+    // }
 }
 
 
