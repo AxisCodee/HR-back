@@ -25,25 +25,26 @@ class ContractController extends Controller
 
     if ($contracts->isEmpty()) {
         return ResponseHelper::success($results);
-    } else {
-        foreach ($contracts as $contract) {
-            $endTime = Carbon::parse($contract['endTime']);
-            if ($endTime->gte(Carbon::now())) {
-                $status = 'active';
-                $result = [
-                    'startDate' => $contract['startTime'],
-                    'path' => $contract['path'],
-                    'endDate' => $contract['endTime'],
-                    'user_id' => $contract['user_id'],
-                    'contract_id' => $contract->id,
-                    'user' => $contract['user'],
-                    'status' => $status,
-                ];
-                $results[] = $result;
-            }
-            return ResponseHelper::success([]);
+    }
+    else {
+        // foreach ($contracts as $contract) {
+        //     $endTime = Carbon::parse($contract['endTime']);
+        //     if ($endTime->gte(Carbon::now())) {
+        //         $status = 'active';
+        //         $result = [
+        //             'startDate' => $contract['startTime'],
+        //             'path' => $contract['path'],
+        //             'endDate' => $contract['endTime'],
+        //             'user_id' => $contract['user_id'],
+        //             'contract_id' => $contract->id,
+        //             'user' => $contract['user'],
+        //             'status' => $status,
+        //         ];
+        //         $results[] = $result;
+        //     }
+        //     return ResponseHelper::success($results);
 
-        }
+        // }
     }
 }
 
