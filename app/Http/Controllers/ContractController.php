@@ -24,7 +24,7 @@ class ContractController extends Controller
 
 
     if ($contracts->isEmpty()) {
-          $results = [];
+          $results[] = [];
         return ResponseHelper::success( $results);
     }
     else {
