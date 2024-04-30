@@ -205,6 +205,7 @@ class AbsenceService
     {
         return Absences::query()->where('user_id', $user_id)
             ->whereRaw('DATE(startDate) = ? ', [$date])
+            ->latest()
             ->exists();
     }
 
