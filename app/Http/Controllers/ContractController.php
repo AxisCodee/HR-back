@@ -15,6 +15,7 @@ class ContractController extends Controller
 {
     public function index(Request $request)
     {
+        $results[]=[];
         $branchId = $request->input('branch_id');
         $contracts = Contract::with('user', 'user.userInfo')
             ->whereHas('user', function ($query) use ($branchId) {
@@ -109,7 +110,7 @@ class ContractController extends Controller
                 ]);
                 return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
             }
-       
+
     }
 
     /**
