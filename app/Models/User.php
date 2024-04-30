@@ -63,7 +63,7 @@ class User extends Authenticatable implements JWTSubject
         'overtime',
         'absence',
         'late',
-        'CheckIPercentage',
+        'CheckInPercentage',
         'CheckOutPercentage',
         'BaseSalary',
         // 'deductions',
