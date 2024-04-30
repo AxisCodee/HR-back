@@ -153,7 +153,7 @@ class UserSeeder extends Seeder
                 'role' => 'admin',
                 'department_id' => 1,
                 'specialization' => 'Management',
-                'pin' => 9999,
+                'pin' => null,
                 'branch_id' => 1
             ],
             [
@@ -164,7 +164,7 @@ class UserSeeder extends Seeder
                 'role' => 'admin',
                 'department_id' => 1,
                 'specialization' => 'Management',
-                'pin' => 999,
+                'pin' => null,
                 'branch_id' => 1
             ],
         ]);
