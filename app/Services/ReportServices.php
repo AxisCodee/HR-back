@@ -58,6 +58,8 @@ class ReportServices
             'deposits',
             'department',
             'penalties',
+            'totalLates',
+
             // 'Warnings',
             // 'Deductions',
             // 'Rewards',
