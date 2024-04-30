@@ -41,7 +41,7 @@ class ContractController extends Controller
                 ];
                 $results[] = $result;
             }
-            return ResponseHelper::success($results);
+            return ResponseHelper::success([]);
 
         }
     }
