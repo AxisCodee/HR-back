@@ -362,5 +362,15 @@ class UserController extends Controller
     }
 
 
+    public function updatePassword(Request $request)
+    {
+        User::where('id',$request->id)->update(
+            [
+                'password' => Hash::make($request->password)
+
+            ]
+        );
+
+    }
 
 }
