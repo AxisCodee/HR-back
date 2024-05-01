@@ -37,8 +37,8 @@ class DecisionController extends Controller
     public function addDecisions(Request $request)
     {
             $result= $this->decisionService->selectDecision($request);
-            return ResponseHelper::success($result, null, 'Absence added successfully');
-      
+            return ResponseHelper::success($result, null, 'Decision added successfully');
+
 
     }
 
