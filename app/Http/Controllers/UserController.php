@@ -131,6 +131,17 @@ class UserController extends Controller
         }
         return ResponseHelper::success($result, null, 'user info updated successfully');
 
+
+    }
+    public function updateAdmin(Request $request)
+    {
+        $user = User::query()->findOrFail(Auth::id());
+        if ($user->role == 'admin') {
+            $result = $this->userService->updateAdmin($user, $request);
+        } else {
+            ResponseHelper::error('not authorized');
+        }
+        return ResponseHelper::success($result, null, 'user info updated successfully');
     }
 
     //remove a user from a team
@@ -349,4 +360,7 @@ class UserController extends Controller
         ]);
         return $this->userService->usersarray($request->users);
     }
+
+
+
 }
