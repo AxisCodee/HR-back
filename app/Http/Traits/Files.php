@@ -21,7 +21,7 @@ trait Files
     public static function saveFileF($file)
     {
        // $file = $request->file('path');
-       
+
         $theFilePath = null;
         if ($file) {
             $theFilePath = time() . '.' . $file->getClientOriginalExtension();
@@ -49,13 +49,13 @@ trait Files
 
     public static function saveImageProfile($file)
     {
-        //$file = $request->file('image');
         $theFilePath = null;
-        if ($file) {
+        if (!$file){
+            return false;
+        }
             $theFilePath = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('Filepath'), $theFilePath);
             $theFilePath = 'Filepath/' . $theFilePath;
-        }
         return $theFilePath;
     }
 }

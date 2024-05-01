@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use App\Services\AbsenceService;
+use App\Services\FileService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,8 @@ class User extends Authenticatable implements JWTSubject
     {
         parent::__construct($attributes);
         $userTimeService = new UserTimeService();
-        $this->userServices = new UserServices($userTimeService);
+        $fileService = new FileService();
+        $this->userServices = new UserServices($userTimeService, $fileService);
         $this->usertimeService = new UserTimeService();
         $this->absenceService = new AbsenceService($userTimeService);
     }

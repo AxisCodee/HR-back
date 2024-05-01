@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Http\Traits\Files;
 use App\Models\Date;
 use App\Models\Late;
 use App\Models\Policy;
@@ -11,21 +12,25 @@ use App\Models\Career;
 use App\Models\Absences;
 use App\Models\Decision;
 use App\Models\Attendance;
+use App\Models\UserInfo;
 use App\Models\UserSalary;
 use App\Helper\ResponseHelper;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
+use Illuminate\Support\Facades\Hash;
 
 class UserServices
 {
 
-
+    protected $fileService;
     protected $userTimeService;
 
-    public function __construct(UserTimeService $userTimeService)
+    public function __construct(UserTimeService $userTimeService, FileService $fileService)
     {
         $this->userTimeService = $userTimeService;
+        $this->fileService = $fileService;
     }
 
 
@@ -211,6 +216,29 @@ class UserServices
         return 0;
     }
 
+    public function updateAdmin($specUser,$request)
+    {
+        if ($request->password) {
+            $specUser->password = Hash::make($request->password);
+        }
+        if ($request->has('image')) {
+            if (!$specUser->userInfo) {
+                UserInfo::query()
+                    ->create([
+                        'user_id' => $specUser->id,
+                        'image' => $this->fileService->upload($request->file('image'), 'image'),
+                    ]);
+            } else {
+                $specUser->userInfo->update([
+                    'image' => $this->fileService->update($specUser->userInfo['image'],
+                        $request->file('image'), 'image')]);
+            }
+        }
+        $specUser->first_name = $request->first_name;
+        $specUser->last_name = $request->last_name;
+        $specUser->save();
+        return true;
+    }
     public function editUser(UpdateUserRequest $request, $id)
     {
         return DB::transaction(function () use ($id, $request) {
@@ -221,6 +249,28 @@ class UserServices
                     'content' => 'worked as a ' . $specUser->role,
                 ]);
             }
+//            if ($specUser->role == 'admin') {
+//                if ($request->password) {
+//                    $specUser->password = Hash::make($request->password);
+//                }
+//                if ($request->has('image')) {
+//                    if (!$specUser->userInfo) {
+//                        UserInfo::query()
+//                            ->create([
+//                                'user_id' => $specUser->id,
+//                                'image' => $this->fileService->upload($request->file('image'), 'image'),
+//                            ]);
+//                    } else {
+//                        $specUser->userInfo->update([
+//                            'image' => $this->fileService->update($specUser->userInfo['image'],
+//                                $request->file('image'), 'image')]);
+//                    }
+//                }
+//                $specUser->first_name = $request->first_name;
+//                $specUser->last_name = $request->last_name;
+//                $specUser->save();
+//                return true;
+//            }
             $specUser->update([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,

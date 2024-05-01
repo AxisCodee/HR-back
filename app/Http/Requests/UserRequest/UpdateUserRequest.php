@@ -28,6 +28,7 @@ class UpdateUserRequest extends FormRequest
             'first_name' => ['sometimes', 'string', 'min:3'],
             'middle_name' => ['sometimes'],
             'last_name' => ['sometimes', 'string', 'min:3'],
+            'image' => ['sometimes'],
             'email' => ['sometimes', 'email', 'min:10'],
             'role' => ['sometimes', 'exists:roles,name'],
             'specialization' => ['sometimes', 'string', 'min:3'],

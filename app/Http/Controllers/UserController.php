@@ -25,6 +25,7 @@ use App\Services\TeamService;
 use App\Services\UserServices;
 use App\Services\EditUserService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use TADPHP\TAD;
@@ -38,20 +39,18 @@ class UserController extends Controller
     private $roleService;
     private $teamService;
     protected $userService;
-    protected $editUserService;
     public $userRegisterService;
 
     public function __construct(
-        RoleService $roleService,
-        TeamService $teamService,
-        UserServices $userService,
-        EditUserService $editUserService,
+        RoleService         $roleService,
+        TeamService         $teamService,
+        UserServices        $userService,
         UserRegisterService $userRegisterService
-    ) {
+    )
+    {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
         $this->userService = $userService;
-        $this->editUserService = $editUserService;
         $this->userRegisterService = $userRegisterService;
     }
 
@@ -60,7 +59,7 @@ class UserController extends Controller
     {
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
-            ->whereNot('role','admin')
+            ->whereNot('role', 'admin')
             ->with('department', 'userInfo:id,user_id,image')
             ->whereNull('deleted_at')
             ->get()
@@ -124,7 +123,14 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        return $this->userService->editUser($request, $id);
+        $user = User::query()->findOrFail(Auth::id());
+        if ($user->role == 'admin') {
+            $result = $this->userService->updateAdmin($user, $request);
+        } else {
+            $result = $this->userService->editUser($request, $id);
+        }
+        return ResponseHelper::success($result, null, 'user info updated successfully');
+
     }
 
     //remove a user from a team

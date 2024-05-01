@@ -15,7 +15,6 @@ use App\Models\UserInfo;
 use App\Http\Traits\Files;
 use App\Models\UserSalary;
 use App\Models\Certificate;
-use Illuminate\Http\Request;
 use App\Helper\ResponseHelper;
 use App\Models\AdditionalFile;
 use App\Models\StudySituation;
