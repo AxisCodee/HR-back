@@ -323,9 +323,9 @@ class UserController extends Controller
         $result = $this->teamService->getTree();
         return ResponseHelper::success($result);
     }
-    public function Tree()
+    public function Tree(Request $request )
     {
-        return $this->teamService->getTree();
+        return $this->teamService->getTree($request);
     }
 
     public function GetAbsenceTypes(Request $request)

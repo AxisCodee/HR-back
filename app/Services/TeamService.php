@@ -264,9 +264,10 @@ class TeamService
 //     return $tree;
 // }
 
-public function getTree()
+public function getTree($request)
 {
-    $rootDepartments = Department::whereNull('parent_id')->with('user')->get();
+    $rootDepartments = Department::where('branch_id',$request->branch_id)
+    ->whereNull('parent_id')->with('user')->get();
     $tree = [];
 
     foreach ($rootDepartments as $department) {
