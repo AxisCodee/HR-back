@@ -123,12 +123,9 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        $user = User::query()->findOrFail(Auth::id());
-        if ($user->role == 'admin') {
-            $result = $this->userService->updateAdmin($user, $request);
-        } else {
+        
             $result = $this->userService->editUser($request, $id);
-        }
+
         return ResponseHelper::success($result, null, 'user info updated successfully');
 
 

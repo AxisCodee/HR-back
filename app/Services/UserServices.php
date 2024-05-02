@@ -247,12 +247,12 @@ class UserServices
     {
         return DB::transaction(function () use ($id, $request) {
             $specUser = User::findOrFail($id);
-            if ($specUser->role != $request->role) {
-                Career::create([
-                    'user_id' => $id,
-                    'content' => 'worked as a ' . $specUser->role,
-                ]);
-            }
+            // if ($specUser->role != $request->role) {
+            //     Career::create([
+            //         'user_id' => $id,
+            //         'content' => 'worked as a ' . $specUser->role,
+            //     ]);
+            // }
             $specUser->update([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
