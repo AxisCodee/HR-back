@@ -45,7 +45,7 @@ class RoleService
     public function userProf()
     {
         $levels = ["Junior", "Mid", "Senior"];
-        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Design", "Project-Manager"];
+        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Design", "Project-Manager", "Trainig"];
         $departments = Department::query()->get()->toArray();
 
         return ResponseHelper::success(
