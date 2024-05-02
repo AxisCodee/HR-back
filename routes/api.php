@@ -76,6 +76,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::post('updateUser/{user}', 'updateUser');
             Route::post('AbsenceTypes', 'GetAbsenceTypes');
             Route::post('usersarray', 'Users_array');
+            Route::post('updatePassword', 'updatePassword');
+
+
         });
     });
 

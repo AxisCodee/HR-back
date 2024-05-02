@@ -215,7 +215,7 @@ class UserServices
         return 0;
     }
 
-    public function updateAdmin($specUser,$request)
+    public function updateAdmin($specUser, $request)
     {
         if ($request->password) {
             $specUser->password = Hash::make($request->password);
@@ -229,47 +229,29 @@ class UserServices
                     ]);
             } else {
                 $specUser->userInfo->update([
-                    'image' => $this->fileService->update($specUser->userInfo['image'],
-                        $request->file('image'), 'image')]);
+                    'image' => $this->fileService->update(
+                        $specUser->userInfo['image'],
+                        $request->file('image'),
+                        'image'
+                    )
+                ]);
             }
         }
         $specUser->first_name = $request->first_name;
         $specUser->last_name = $request->last_name;
         $specUser->save();
-        return true;
+        return $specUser->with('userInfo')->first();
     }
     public function editUser(UpdateUserRequest $request, $id)
     {
         return DB::transaction(function () use ($id, $request) {
             $specUser = User::findOrFail($id);
-            if ($specUser->role != $request->role) {
-                Career::create([
-                    'user_id' => $id,
-                    'content' => 'worked as a ' . $specUser->role,
-                ]);
-            }
-//            if ($specUser->role == 'admin') {
-//                if ($request->password) {
-//                    $specUser->password = Hash::make($request->password);
-//                }
-//                if ($request->has('image')) {
-//                    if (!$specUser->userInfo) {
-//                        UserInfo::query()
-//                            ->create([
-//                                'user_id' => $specUser->id,
-//                                'image' => $this->fileService->upload($request->file('image'), 'image'),
-//                            ]);
-//                    } else {
-//                        $specUser->userInfo->update([
-//                            'image' => $this->fileService->update($specUser->userInfo['image'],
-//                                $request->file('image'), 'image')]);
-//                    }
-//                }
-//                $specUser->first_name = $request->first_name;
-//                $specUser->last_name = $request->last_name;
-//                $specUser->save();
-//                return true;
-//            }
+            // if ($specUser->role != $request->role) {
+            //     Career::create([
+            //         'user_id' => $id,
+            //         'content' => 'worked as a ' . $specUser->role,
+            //     ]);
+            // }
             $specUser->update([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
@@ -278,8 +260,7 @@ class UserServices
                 'role' => $request->role,
                 'department_id' => $request->department_id,
             ]);
-            return ResponseHelper::success($specUser, null, 'user info updated successfully', 200);
-
+            return $specUser;
         });
     }
 

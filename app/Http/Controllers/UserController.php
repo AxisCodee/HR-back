@@ -124,6 +124,7 @@ class UserController extends Controller
             $result = $this->userService->updateAdmin($user, $request);
         } else {
             ResponseHelper::error('not authorized');
+            ResponseHelper::error('not authorized');
         }
         return ResponseHelper::success($result, null, 'user info updated successfully');
     }
@@ -340,4 +341,17 @@ class UserController extends Controller
         ]);
         return $this->userService->usersarray($request->users);
     }
+
+
+    public function updatePassword(Request $request)
+    {
+        User::where('id',$request->id)->update(
+            [
+                'password' => Hash::make($request->password)
+
+            ]
+        );
+
+    }
+
 }
