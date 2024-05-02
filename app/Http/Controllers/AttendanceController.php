@@ -48,19 +48,20 @@ class AttendanceController extends Controller
         return ResponseHelper::success($array, null, 'all logs returned successfully', 200);
     }
 
-    public function employees_percent()
+    public function employees_percent(Request $request)
     {
-        $all_users = User::query()->count();
-        $attended_users = Attendance::whereDate('datetime', now()->format('Y-m-d'))
+        $all_users = User::query()
+            ->where('branch_id', $request->branch_id)
+            ->count();
+        $attended_users = Attendance::query()
+            ->where('branch_id', $request->branch_id)
+            ->whereDate('datetime', now()->format('Y-m-d'))
             ->where('status', '0')->count();
-        return ResponseHelper::success(
-            [
-                'present_employees' => $attended_users,
-                'total_employees' => $all_users
-            ],
+        return ResponseHelper::success([
+            'present_employees' => $attended_users,
+            'total_employees' => $all_users],
             null,
-            'attended users returned successfully',
-            200
+            'Attended users returned successfully',
         );
     }
 
@@ -115,17 +116,20 @@ class AttendanceController extends Controller
         });
     }
 
-    public function showAttendanceLogs()
+    public function showAttendanceLogs(Request $request)
     {
-        $result = User::with('department')->with('attendance')->get()->toArray();
+        $result = User::query()
+            ->where('branch_id', $request->branch_id)
+            ->with('department')->with('attendance')->get()->toArray();
         return ResponseHelper::success(
             $result
         );
     }
 
-    public function DayAttendance($date)
+    public function DayAttendance(Request $request, $date)
     {
         $users = User::query()
+            ->where('branch_id', $request->branch_id)
             ->whereNot('role', 'admin')
             ->with('department', 'userInfo')
             ->with(['attendance' => function ($query) use ($date) {

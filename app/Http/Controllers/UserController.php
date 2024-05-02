@@ -6,32 +6,19 @@ use App\Helper\ResponseHelper;
 use App\Http\Requests\ContactRequest\StoreContactRequest;
 use App\Http\Requests\ContactRequest\UpdateContactRequest;
 use App\Http\Requests\TeamRequest\StoreTeamRequest;
-use App\Http\Requests\TeamRequest\UpdateTeamRequest;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
-use App\Http\Traits\Files;
-use App\Models\Attendance;
-use App\Models\Branch;
-use App\Models\Career;
 use App\Models\UserInfo;
+use App\Services\FileService;
 use App\Services\UserRegisterService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Contact;
 use App\Models\Department;
-use App\Models\Role;
 use App\Services\RoleService;
 use App\Services\TeamService;
 use App\Services\UserServices;
-use App\Services\EditUserService;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use TADPHP\TAD;
-use TADPHP\TADFactory;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Exists;
 
 
 class UserController extends Controller
@@ -40,18 +27,21 @@ class UserController extends Controller
     private $teamService;
     protected $userService;
     public $userRegisterService;
+    public $fileService;
 
     public function __construct(
         RoleService         $roleService,
         TeamService         $teamService,
         UserServices        $userService,
-        UserRegisterService $userRegisterService
+        UserRegisterService $userRegisterService,
+        FileService         $fileService,
     )
     {
         $this->roleService = $roleService;
         $this->teamService = $teamService;
         $this->userService = $userService;
         $this->userRegisterService = $userRegisterService;
+        $this->fileService = $fileService;
     }
 
     //get all users info
@@ -123,19 +113,17 @@ class UserController extends Controller
     //edit a specific user info by his ID
     public function edit_user(UpdateUserRequest $request, $id)
     {
-        
-            $result = $this->userService->editUser($request, $id);
-
+        $result = $this->userService->editUser($request, $id);
         return ResponseHelper::success($result, null, 'user info updated successfully');
-
-
     }
+
     public function updateAdmin(Request $request)
     {
         $user = User::query()->findOrFail(Auth::id());
         if ($user->role == 'admin') {
             $result = $this->userService->updateAdmin($user, $request);
         } else {
+            ResponseHelper::error('not authorized');
             ResponseHelper::error('not authorized');
         }
         return ResponseHelper::success($result, null, 'user info updated successfully');
@@ -268,7 +256,7 @@ class UserController extends Controller
         $user = $this->userRegisterService->updateUser($request, $user);
         $path = null;
         if ($request->image) {
-            $path = Files::saveImageProfile($request->image);
+            $path = $this->fileService->upload($request->image, 'image');
         }
         $userInfo = UserInfo::where('user_id', $user->id)->first();
         $this->userRegisterService->updateUserSalary($user, $userInfo, $request);
@@ -335,18 +323,14 @@ class UserController extends Controller
         $result = $this->teamService->getTree();
         return ResponseHelper::success($result);
     }
-
-
     public function Tree()
     {
         return $this->teamService->getTree();
-
     }
 
     public function GetAbsenceTypes(Request $request)
     {
         return $this->userService->AllAbsenceTypes($request);
-
     }
 
     public function Users_array(Request $request)

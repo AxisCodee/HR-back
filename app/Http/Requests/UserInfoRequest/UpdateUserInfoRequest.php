@@ -34,9 +34,10 @@ class UpdateUserInfoRequest extends FormRequest
             'military_situation' => [Rule::in(['Postponed', 'Exempt', 'Finished'])],
             'health_status' => ['string'],
             'salary' => ['integer'],
-            'level' => [Rule::in(['in:Senior,Mid,Junior'])],
+            'level' => [Rule::in(['Senior', 'Mid', 'Junior'])],
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();

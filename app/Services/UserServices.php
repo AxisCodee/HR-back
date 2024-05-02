@@ -16,7 +16,6 @@ use App\Models\UserInfo;
 use App\Models\UserSalary;
 use App\Helper\ResponseHelper;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;

@@ -6,13 +6,20 @@ use App\Models\Contract;
 use App\Http\Requests\ContractRequest\StoreContractRequest;
 use App\Http\Requests\ContractRequest\UpdateContractRequest;
 use App\Helper\ResponseHelper;
-use App\Http\Traits\Files;
+use App\Services\FileService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ContractController extends Controller
 {
+    protected $fileService;
+
+    public function __construct(FileService $fileService)
+    {
+        $this->fileService = $fileService;
+    }
+
     public function index(Request $request)
     {
         $branchId = $request->input('branch_id');
@@ -51,7 +58,9 @@ class ContractController extends Controller
     public function store(StoreContractRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            $path = Files::saveFile($request);
+            if ($request->has('path')) {
+                $path = $this->fileService->upload($request->file('path'), 'file');
+            }
             $contract = Contract::create(
                 [
                     'path' => $path,
@@ -60,12 +69,7 @@ class ContractController extends Controller
                     'user_id' => $request->user_id
                 ]
             );
-            return ResponseHelper::success(
-                $contract,
-                null,
-                'contract',
-                200
-            );
+            return ResponseHelper::success($contract, null, 'contract');
         });
     }
 
@@ -84,10 +88,7 @@ class ContractController extends Controller
     public function show($id)
     {
         $result = Contract::query()
-            ->with(
-                'user',
-                'user.userInfo'
-            )
+            ->with('user', 'user.userInfo')
             ->where('user_id', $id)
             ->get()->toArray();
         return ResponseHelper::success($result, null, 'contract:', 200);
@@ -98,21 +99,22 @@ class ContractController extends Controller
      */
     public function update(UpdateContractRequest $request, $contract)
     {
-        $contractId = Contract::findOrFail($contract);
+        $contract = Contract::findOrFail($contract);
         if ($contract) {
-            if (Carbon::parse($contractId->endTime) <= Carbon::now()) {
+            if (Carbon::parse($contract->endTime) <= Carbon::now()) {
                 return ResponseHelper::error('The Contract must be Valid');
             }
-            $validate = $request->validated();
-            $path = Files::saveFile($request);
-            $contractId->update([
-                'startTime' => $request->startTime ?: $contractId->startTime,
-                'endTime' => $request->endTime ?: $contractId->path,
+            if ($request->has('path')) {
+                $path = $this->fileService->update($contract->path, $request->file('path'), 'file');
+            }
+            $contract->update([
+                'startTime' => $request->startTime ?: $contract->startTime,
+                'endTime' => $request->endTime ?: $contract->path,
                 'path' => $path
             ]);
-            return ResponseHelper::success($contractId, null, 'contract updated successfully', 200);
+            return ResponseHelper::success($contract, null, 'contract updated successfully', 200);
         }
-
+        return ResponseHelper::error('The Contract does not exist');
     }
 
     /**
@@ -144,7 +146,7 @@ class ContractController extends Controller
                 } else {
                     $status = 'finished';
                 }
-                $results[] = $result = [
+                $results[] = [
                     'startDate' => $contract['startTime'],
                     'path' => $contract['path'],
                     'endDate' => $contract['endTime'],
@@ -163,7 +165,7 @@ class ContractController extends Controller
     {
         foreach ($request->contracts as $request) {
             $oneRequest = Contract::find($request);
-            $result = $oneRequest->delete();
+            $oneRequest->delete();
         }
         return ResponseHelper::deleted();
 
