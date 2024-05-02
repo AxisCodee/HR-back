@@ -44,14 +44,19 @@ class UserInfoController extends Controller
             if (!$userInfo) {
                 return ResponseHelper::error('User Info not found for this user.');
             }
-            $path = $userInfo->image
-                ? $this->fileService->update($userInfo->image, $request->image, 'image')
-                : ($request->has('image') ? $this->fileService->upload($request->image, 'image') : null);
+            if ($request->has('image')) {
+                $path = $userInfo->image
+                    ? $this->fileService->update($userInfo->image, $request->image, 'image')
+                    : $this->fileService->upload($request->image, 'image');
+            } else {
+                $path = $userInfo->image;
+            }
             UserInfo::query()
                 ->where('user_id', $id)
                 ->update(array_merge($request->all(), ['image' => $path]));
             return ResponseHelper::success('updated successfully');
         });
+
     }
 
     public function show($id)
