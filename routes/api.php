@@ -67,6 +67,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('allAndTrashUser', 'allAndTrashUser');
             Route::delete('removeUser/{user}', 'remove_user');
             Route::post('EditUser/{user}', 'edit_user');
+            Route::post('EditAdmin', 'updateAdmin');
             Route::get('Deps&Roles', 'all_dep_rul');
             Route::get('MembersHierarchy', 'roleHierarchy');
             Route::get('user/{id}', 'specific_user');

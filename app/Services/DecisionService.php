@@ -107,7 +107,6 @@ class DecisionService
     {
         foreach($request->users as $user)
         {
-
            $newDecision= Decision::query()->create(
                 [
                     'user_id'=>$user,

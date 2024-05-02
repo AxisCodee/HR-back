@@ -9,30 +9,29 @@ use App\Models\User;
 use App\Models\UserSalary;
 use App\Models\UserInfo;
 use App\Services\AbsenceService;
+use App\Services\FileService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Http\Traits\Files;
 use Carbon\Carbon;
 
 class UserInfoController extends Controller
 {
     protected $absenceService;
+    protected $fileService;
 
-
-    public function __construct(AbsenceService $absenceService)
+    public function __construct(AbsenceService $absenceService, FileService $fileService)
     {
         $this->absenceService = $absenceService;
+        $this->fileService = $fileService;
     }
 
     public function store(StoreUserInfoRequest $request)
     {
-        $validate = $request->validated();
-        $path = Files::saveImage($request);
-        $validate['image'] = $path;
+        $validate['image'] = $this->fileService->upload($request->has('image'), 'image');
         return DB::transaction(function () use ($validate) {
             $userInfo = UserInfo::query()->create($validate);
-            return ResponseHelper::success($userInfo, null);
+            return ResponseHelper::success($userInfo);
         });
     }
 
@@ -40,14 +39,13 @@ class UserInfoController extends Controller
     {
         $validate = $request->validated();
         if ($request->image) {
-            $path = Files::saveImage($request);
-            $validate['image'] = $path;
+            $validate['image'] = $this->fileService->upload($request->image, 'file');
         }
         return DB::transaction(function () use ($validate, $id) {
             UserInfo::query()
                 ->where('user_id', $id)
                 ->update($validate);
-            return ResponseHelper::success('info has been updated', null);
+            return ResponseHelper::success('info has been updated');
         });
     }
 
@@ -70,42 +68,23 @@ class UserInfoController extends Controller
         });
     }
 
-    // public function updateSalary(Request $request,  $id)
-    // {
-    //     $salary = $request->salary;
-    //     $result = UserInfo::query()
-    //         ->where('id', $id)
-    //         ->update([
-    //             'salary' => $salary
-    //         ]);
-    //     if ($result) {
-    //         UserSalary::query()->create([
-    //             'user_id' => $id,
-    //             'date' => Carbon::now()->format('Y-m'),
-    //             'salary' => $salary
-    //         ]);
-    //         return ResponseHelper::updated('salary updated', null);
-    //     }
-    //     return ResponseHelper::error('not updated', null);
-    // }
-
     public function updateSalary(Request $request, $id)
     {
-            $salary = $request->salary;
-            $result = UserInfo::findOrFail($id)->first();
-            return DB::transaction(function () use ($result, $salary, $id) {
-                $result->update([
+        $salary = $request->salary;
+        $result = UserInfo::findOrFail($id)->first();
+        return DB::transaction(function () use ($result, $salary, $id) {
+            $result->update([
+                'salary' => $salary
+            ]);
+            if ($result) {
+                UserSalary::query()->create([
+                    'user_id' => $id,
+                    'date' => Carbon::now()->format('Y-m'),
                     'salary' => $salary
                 ]);
-                if ($result) {
-                    UserSalary::query()->create([
-                        'user_id' => $id,
-                        'date' => Carbon::now()->format('Y-m'),
-                        'salary' => $salary
-                    ]);
-                    return ResponseHelper::updated('Salary updated', null);
-                }
-            });
+                return ResponseHelper::updated('Salary updated', null);
+            }
+        });
 
     }
 

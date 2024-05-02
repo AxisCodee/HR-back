@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use Exception;
 use App\Models\User;
 use App\Models\Deposit;
@@ -11,6 +12,13 @@ use Illuminate\Support\Facades\DB;
 
 class DepositServices
 {
+    protected $fileService;
+
+
+    public function __construct( FileService $fileService)
+    {
+        $this->fileService = $fileService;
+    }
     public function index($request) //all users with department and deposits
     {
         $branchId = $request->branch_id;
@@ -21,43 +29,45 @@ class DepositServices
             ->get()
             ->toArray();
         if (empty($results)) {
-          return  $result ='empty';
+            return $result = 'empty';
         }
-        return  $results ;
+        return $results;
     }
 
     public function store($request)
     {
-        $validate = $request->validated();
-            $path = Files::saveFile($request);
-        return DB::transaction(function () use ( $request , $path) {
+        $request->validated();
+        if ($request->has('path')) {
+            $path = $this->fileService->upload($request->file('path'), 'file');
+        }
+        return DB::transaction(function () use ($request, $path) {
             $deposit = Deposit::query()->create([
-                'title'=> $request->title,
-                'name'=>$request->name,
-                'description'=>$request->description,
-                'user_id'=>$request->user_id,
-                'received_date'=>$request->received_date,
-                'path'=> $path,
+                'title' => $request->title,
+                'name' => $request->name,
+                'description' => $request->description,
+                'user_id' => $request->user_id,
+                'received_date' => $request->received_date,
+                'path' => $path,
             ]);
-            return  $deposit;
+            return $deposit;
         });
     }
+
     public function update($request, $id)
     {
         return DB::transaction(function () use ($request, $id) {
             Deposit::query()
                 ->where('id', $id)
                 ->update($request);
-            return  $result ='Deposit has been updated';
+            return 'Deposit has been updated';
         });
     }
 
     public function show()
     {
-        $result = Deposit::query()->with('user', 'user.userInfo:id,user_id,image')
+        return Deposit::query()->with('user', 'user.userInfo:id,user_id,image')
             ->get()
             ->toArray();
-        return  $result;
     }
 
     public function destroy($id)
@@ -67,7 +77,7 @@ class DepositServices
             return ResponseHelper::error('Deposit not found');
         }
         $deposit->delete();
-        return  $result = 'Deposit has been deleted';
+        return 'Deposit has been deleted';
     }
 
 }

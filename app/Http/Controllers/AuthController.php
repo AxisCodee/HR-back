@@ -4,28 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
 use App\Http\Requests\UserRequest\StoreUserRequest;
+use App\Services\FileService;
 use App\Services\UserRegisterService;
-use TADPHP\TADFactory;
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\Certificate;
-use App\Models\Language;
-use App\Models\Skills;
 use App\Models\UserInfo;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Traits\Files;
-use App\Models\AdditionalFile;
-use App\Models\Career;
-use App\Models\Contact;
 use App\Models\Department;
-use App\Models\Deposit;
-use App\Models\StudySituation;
-use App\Models\UserSalary;
-use Carbon\Carbon;
-use App\Services\EditUserService;
-use Exception;
 use Illuminate\Support\Facades\DB;
 
 require 'tad/vendor/autoload.php';
@@ -34,11 +18,13 @@ require 'tad/vendor/autoload.php';
 class AuthController extends Controller
 {
     public $userRegisterService;
+    public $fileService;
 
-    public function __construct(UserRegisterService $userRegisterService)
+    public function __construct(UserRegisterService $userRegisterService, FileService $fileService)
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
         $this->userRegisterService = $userRegisterService;
+        $this->fileService = $fileService;
     }
 
     public function login(Request $request)
@@ -77,12 +63,12 @@ class AuthController extends Controller
             $user = $this->userRegisterService->createUser($request, $department_id, $branch_id);
             $path = null;
             if ($request->image) {
-                $path = Files::saveImageProfile($request->image);
+                $path = $this->fileService->upload($request->image, 'image');
             }
             $userInfo = $this->userRegisterService->createUserInfo($request, $user, $path);
-            $userSalary = $this->userRegisterService->createUserSalary($user, $userInfo);
+            $this->userRegisterService->createUserSalary($user, $userInfo);
             $educations = $request->educations;
-            $contract = $request->contract;
+            $request->contract;
             $certificates = $request->certificates;
             $languages = $request->languages;
             $skills = $request->skills;
@@ -110,8 +96,8 @@ class AuthController extends Controller
             if ($request->secretaraits) {
                 $this->userRegisterService->createUserDeposits($user->id, $secretaraits);
             }
-            if($request->contract){
-                $this->userRegisterService->CreateUsercontract($user->id,$request->contract);
+            if ($request->contract) {
+                $this->userRegisterService->CreateUsercontract($user->id, $request->contract);
             }
             return ResponseHelper::success($user);
         });

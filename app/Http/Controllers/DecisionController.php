@@ -25,21 +25,17 @@ class DecisionController extends Controller
      * Add new decision for a user.
      * [DecisionService => StoreDecision]
      * @param StoreDecisionRequest
-     * @return DecisionService
+     * @return \Illuminate\Http\JsonResponse
      */
     public function new_decision(StoreDecisionRequest $request)
     {
-
-            return $this->decisionService->StoreDecision($request);
-
-
+        return $this->decisionService->StoreDecision($request);
     }
+
     public function addDecisions(Request $request)
     {
-            $result= $this->decisionService->selectDecision($request);
-            return ResponseHelper::success($result, null, 'Absence added successfully');
-      
-
+        $result = $this->decisionService->selectDecision($request);
+        return ResponseHelper::success($result, null, 'Absence added successfully');
     }
 
     /**
@@ -50,9 +46,7 @@ class DecisionController extends Controller
      */
     public function remove_decision($id)
     {
-
-            return $this->decisionService->RemoveDecision($id);
-
+        return $this->decisionService->RemoveDecision($id);
     }
 
     /**
@@ -64,8 +58,7 @@ class DecisionController extends Controller
      */
     public function edit_decision(UpdateDecisionRequest $request, $id)
     {
-            return $this->decisionService->UpdateDecision($request,$id);
-
+        return $this->decisionService->UpdateDecision($request, $id);
     }
 
     /**
@@ -76,8 +69,7 @@ class DecisionController extends Controller
      */
     public function all_decisions(Request $request)
     {
-            return $this->decisionService->AllDecisions($request);
-
+        return $this->decisionService->AllDecisions($request);
     }
 
     /**
@@ -95,11 +87,12 @@ class DecisionController extends Controller
             return ResponseHelper::error('No results found', 404);
         }
     }
+
     public function selectDecisionToDelete(Request $request)
     {
         {
-                $result= $this->decisionService->selectDecisionToDelete($request);
-                return ResponseHelper::deleted();
+            $result = $this->decisionService->selectDecisionToDelete($request);
+            return ResponseHelper::deleted();
 
         }
     }
@@ -141,14 +134,16 @@ class DecisionController extends Controller
     //         ]
     //         , null, 'user decisions returned successfully', 200);
 
-    public function systemDecision(){
+    public function systemDecision()
+    {
         $result = $this->decisionService->getSystemDecisions();
-         return ResponseHelper::success($result);
+        return ResponseHelper::success($result);
     }
 
-    public function AcceptSystemDecisions(Request $request){
+    public function AcceptSystemDecisions(Request $request)
+    {
         $result = $this->decisionService->AcceptSystemDecisions($request);
-         return ResponseHelper::success($result);
+        return ResponseHelper::success($result);
     }
 
 }
