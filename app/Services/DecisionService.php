@@ -141,11 +141,11 @@ class DecisionService
 
     }
 
-    public function getSystemDecisions()
+    public function getSystemDecisions($request)
     {
         $date = request()->query('date');
 
-        $result = Decision::whereIn('type', ['alert', 'absence', 'dismiss', 'deduction'])
+        $result = Decision::where('branch_id',$request->branch_id)->whereIn('type', ['alert', 'absence', 'dismiss', 'deduction'])
             ->where('status', 'requested')
             ->with('user_decision:id,first_name,last_name','user_decision.userInfo:id,user_id,image','user_decision.department:id,user_id,');
             $data = $this->userTimeService->filterDate($result,$date,'dateTime')->get()->toArray();
