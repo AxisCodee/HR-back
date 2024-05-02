@@ -318,9 +318,9 @@ class UserController extends Controller
         return ResponseHelper::success($result);
     }
 
-    public function getTree()
+    public function getTree(Request $request)
     {
-        $result = $this->teamService->getTree();
+        $result = $this->teamService->getTree($request);
         return ResponseHelper::success($result);
     }
     public function Tree(Request $request )
