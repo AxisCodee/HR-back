@@ -261,7 +261,7 @@ class UserServices
                 'role' => $request->role,
                 'department_id' => $request->department_id,
             ]);
-            return ResponseHelper::success($specUser, null, 'user info updated successfully', 200);
+            return $specUser;
         });
     }
 
