@@ -116,9 +116,11 @@ class AttendanceController extends Controller
         });
     }
 
-    public function showAttendanceLogs()
+    public function showAttendanceLogs(Request $request)
     {
-        $result = User::with('department')->with('attendance')->get()->toArray();
+        $result = User::query()
+            ->where('branch_id', $request->branch_id)
+            ->with('department')->with('attendance')->get()->toArray();
         return ResponseHelper::success(
             $result
         );
