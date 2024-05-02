@@ -114,7 +114,7 @@ class LateController extends Controller
                     ]);
                 }
             );
-        
+
         return ResponseHelper::success('Alert accepted successfully');
     }
 
@@ -169,11 +169,9 @@ class LateController extends Controller
     public function getUserLates(Request $request)
     {
         $result = $this->lateService->userLates($request);
-        if ($result) {
+
             return ResponseHelper::success($result, null);
-        } else {
-            return ResponseHelper::error('No results found', 404);
-        }
+
 
     }
 
