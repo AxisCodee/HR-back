@@ -56,7 +56,6 @@ class UserInfoController extends Controller
                 ->update(array_merge($request->all(), ['image' => $path]));
             return ResponseHelper::success('updated successfully');
         });
-
     }
 
     public function show($id)
