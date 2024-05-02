@@ -124,9 +124,10 @@ class AttendanceController extends Controller
         );
     }
 
-    public function DayAttendance($date)
+    public function DayAttendance(Request $request, $date)
     {
         $users = User::query()
+            ->where('branch_id', $request->branch_id)
             ->whereNot('role', 'admin')
             ->with('department', 'userInfo')
             ->with(['attendance' => function ($query) use ($date) {
