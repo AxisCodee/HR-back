@@ -6,7 +6,6 @@ use App\Models\Contract;
 use App\Http\Requests\ContractRequest\StoreContractRequest;
 use App\Http\Requests\ContractRequest\UpdateContractRequest;
 use App\Helper\ResponseHelper;
-use App\Http\Traits\Files;
 use App\Services\FileService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -70,12 +69,7 @@ class ContractController extends Controller
                     'user_id' => $request->user_id
                 ]
             );
-            return ResponseHelper::success(
-                $contract,
-                null,
-                'contract',
-                200
-            );
+            return ResponseHelper::success($contract, null, 'contract');
         });
     }
 
@@ -94,10 +88,7 @@ class ContractController extends Controller
     public function show($id)
     {
         $result = Contract::query()
-            ->with(
-                'user',
-                'user.userInfo'
-            )
+            ->with('user', 'user.userInfo')
             ->where('user_id', $id)
             ->get()->toArray();
         return ResponseHelper::success($result, null, 'contract:', 200);
@@ -155,7 +146,7 @@ class ContractController extends Controller
                 } else {
                     $status = 'finished';
                 }
-                $results[] = $result = [
+                $results[] = [
                     'startDate' => $contract['startTime'],
                     'path' => $contract['path'],
                     'endDate' => $contract['endTime'],
@@ -174,7 +165,7 @@ class ContractController extends Controller
     {
         foreach ($request->contracts as $request) {
             $oneRequest = Contract::find($request);
-            $result = $oneRequest->delete();
+            $oneRequest->delete();
         }
         return ResponseHelper::deleted();
 

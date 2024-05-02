@@ -28,24 +28,29 @@ class UserInfoController extends Controller
 
     public function store(StoreUserInfoRequest $request)
     {
-        $validate['image'] = $this->fileService->upload($request->has('image'), 'image');
-        return DB::transaction(function () use ($validate) {
-            $userInfo = UserInfo::query()->create($validate);
+        return DB::transaction(function () use ($request) {
+            $path = $request->has('image') ? $this->fileService->upload($request->image, 'image') : null;
+            $userInfo = UserInfo::query()->create(array_merge($request->all(), ['image' => $path]));
             return ResponseHelper::success($userInfo);
         });
     }
 
     public function update(UpdateUserInfoRequest $request, $id)
     {
-        $validate = $request->validated();
-        if ($request->image) {
-            $validate['image'] = $this->fileService->upload($request->image, 'file');
-        }
-        return DB::transaction(function () use ($validate, $id) {
+        return DB::transaction(function () use ($request, $id) {
+            $userInfo = UserInfo::query()
+                ->where('user_id', $id)
+                ->first();
+            if (!$userInfo) {
+                return ResponseHelper::error('User Info not found for this user.');
+            }
+            $path = $userInfo->image
+                ? $this->fileService->update($userInfo->image, $request->image, 'image')
+                : ($request->has('image') ? $this->fileService->upload($request->image, 'image') : null);
             UserInfo::query()
                 ->where('user_id', $id)
-                ->update($validate);
-            return ResponseHelper::success('info has been updated');
+                ->update(array_merge($request->all(), ['image' => $path]));
+            return ResponseHelper::success('updated successfully');
         });
     }
 
@@ -84,6 +89,7 @@ class UserInfoController extends Controller
                 ]);
                 return ResponseHelper::updated('Salary updated', null);
             }
+            return ResponseHelper::error('not updated');
         });
 
     }
