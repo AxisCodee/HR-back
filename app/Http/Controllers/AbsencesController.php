@@ -121,11 +121,8 @@ class AbsencesController extends Controller
     public function getUserAbsences(Request $request)
     {
         $result = $this->absenceService->user_absences($request);
-        if ($result) {
             return ResponseHelper::success($result, null);
-        } else {
-            return ResponseHelper::error('No results found', 404);
-        }
+
     }
 
     public function allUserAbsences(Request $request)

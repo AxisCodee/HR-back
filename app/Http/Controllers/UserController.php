@@ -19,7 +19,7 @@ use App\Services\TeamService;
 use App\Services\UserServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -318,14 +318,14 @@ class UserController extends Controller
         return ResponseHelper::success($result);
     }
 
-    public function getTree()
+    public function getTree(Request $request)
     {
-        $result = $this->teamService->getTree();
+        $result = $this->teamService->getTree($request);
         return ResponseHelper::success($result);
     }
-    public function Tree()
+    public function Tree(Request $request )
     {
-        return $this->teamService->getTree();
+        return $this->teamService->getTree($request);
     }
 
     public function GetAbsenceTypes(Request $request)

@@ -51,7 +51,7 @@ class ReportServices
     public function AllReports($request)
     {
         $date = $request->date;
-        $result = User::with([
+        $result = User::where('branch_id',$request->branch_id)->with([
             'notes',
             'userInfo',
             'deposits',

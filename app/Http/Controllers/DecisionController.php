@@ -94,9 +94,9 @@ class DecisionController extends Controller
     }
 
 
-    public function systemDecision()
+    public function systemDecision(Request $request)
     {
-        $result = $this->decisionService->getSystemDecisions();
+        $result = $this->decisionService->getSystemDecisions($request);
         return ResponseHelper::success($result);
     }
 
