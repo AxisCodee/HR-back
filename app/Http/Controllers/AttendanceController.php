@@ -72,6 +72,9 @@ class AttendanceController extends Controller
             //Storing attendance
             $branchId = $request->branch_id;
             $branch = Branch::findOrFail($branchId);
+            if ($branch->users->count() == 0) {
+                return ResponseHelper::error('This branch does not have employees.');
+            }
             $tad_factory = new TADFactory(['ip' => $branch->fingerprint_scanner_ip]);
             $tad = $tad_factory->get_instance();
             // $all_user_info = $tad->get_all_user_info();
@@ -92,12 +95,10 @@ class AttendanceController extends Controller
                     ->where('branch_id', $branchId)
                     ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
                     ->get();
-                //dd($allAttendances);
             }
             if (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
                 $xml = simplexml_load_string($logs);
                 $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId);
-                //dd($uniqueDates);
                 $allAttendances = Attendance::query()
                     ->where('branch_id', $branchId)
                     ->get();

@@ -76,8 +76,6 @@ class FingerprintService
         $userLog = User::where('pin', intval($log['PIN']))
             ->where('branch_id', $branchId)
             ->first();
-
-
         $formattedDateTime = substr($log['DateTime'], 0, 10);
         $logExistence = Attendance::query()
             ->where('pin', $log['PIN'])
@@ -85,7 +83,6 @@ class FingerprintService
             ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])
             ->where('status', $log['Status'])
             ->exists();
-
         if (!$logExistence) {
             $attendanceObj = new Attendance();
             $attendanceObj->pin = intval($log['PIN']);
@@ -93,14 +90,12 @@ class FingerprintService
             $attendanceObj->verified = $log['Verified'];
             $attendanceObj->status = $log['Status'];
             $attendanceObj->work_code = $log['WorkCode'];
-
             if ($userLog) {
                 $attendanceObj->branch_id = $userLog->branch->id;
             } else {
                 $attendanceObj->branch_id = $branchId;
             }
             $attendanceObj->save();
-
         }
     }
 
