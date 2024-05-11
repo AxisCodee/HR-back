@@ -3,27 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Jobs\StoreAttendanceLogsJob;
-use App\Models\Absences;
 use App\Models\Attendance;
 use App\Models\Branch;
-use App\Models\Contract;
 use App\Models\Date;
-use App\Models\Decision;
-use App\Models\Late;
-use App\Models\Policy;
 use App\Models\User;
-use App\Models\UserInfo;
 use App\Services\FingerprintService;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use TADPHP\TAD;
 use TADPHP\TADFactory;
-use function React\Promise\all;
-use function Symfony\Component\String\s;
-use function Symfony\Component\String\u;
 
 
 require 'tad\vendor\autoload.php';
@@ -115,6 +104,39 @@ class AttendanceController extends Controller
             }
             return ResponseHelper::success([], null, 'Attendances logs stored successfully');
         });
+    }
+
+    public function importFromFingerprint(Request $request)
+    {
+        return DB::transaction(function () use ($request) {
+            $fingerprintIP = Branch::query()->findOrFail($request->branch_id)->fingerprint_scanner_ip;
+            $tad_factory = new TADFactory(['ip' => $fingerprintIP]);
+            $tad = $tad_factory->get_instance();
+            $all_user_info = $tad->get_all_user_info();
+            $xml = simplexml_load_string($all_user_info);
+            if ($xml === false) {
+                error_log('Failed to parse XML string.');
+                foreach (libxml_get_errors() as $error) {
+                    error_log($error->message);
+                }
+            } else {
+                $array = json_decode(json_encode($xml), true);
+                foreach ($array['Row'] as $row) {
+                    $user = new User();
+                    $user->pin = intval($row['PIN']);
+                    $user->first_name = !empty($row['Name']) ? $row['Name'] : "name";
+                    $user->last_name = "null";
+                    $user->email = intval($row['PIN']) . "@gmail.com";
+                    $user->password = "1234";
+                    $user->specialization = "specialization";
+                    $user->branch_id = $request->branch_id;
+                    // Set other user properties...
+                    $user->save();
+                }
+            }
+            return ResponseHelper::success([], null, 'Users imported successfully', 200);
+        });
+
     }
 
     public function showAttendanceLogs(Request $request)
