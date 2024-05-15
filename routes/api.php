@@ -361,4 +361,5 @@ Route::prefix('Request')->group(function () {
 
 
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
+Route::get('importFromFingerprint', [AttendanceController::class, 'importFromFingerprint']);
 
