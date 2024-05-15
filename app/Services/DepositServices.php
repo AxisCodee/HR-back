@@ -38,6 +38,7 @@ class DepositServices
     {
         // $request->validated();
         if ($request->hasFile('path')) {
+            $path = null;
             $path = $this->fileService->upload($request->file('path'), 'file');
         }
         return DB::transaction(function () use ($request, $path) {
