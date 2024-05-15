@@ -19,7 +19,7 @@ class FileService
         }
         if ($type == 'file') {
             if ($request->hasFile('path')) {
-                $file = $request->file('file');
+                $file = $request->file('path');
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/files'), $filename);
                 $path = 'uploads/files/' . $filename;

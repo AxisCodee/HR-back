@@ -36,7 +36,6 @@ class DepositServices
 
     public function store($request)
     {
-
         return DB::transaction(function () use ($request) {
             $path = null;
             if ($request->hasFile('path')) {
