@@ -8,6 +8,7 @@ class FileService
 {
     public function upload($request, $type)
     {
+        $path = null;
         if ($type == 'image') {
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
@@ -17,7 +18,7 @@ class FileService
             }
         }
         if ($type == 'file') {
-            if ($request->hasFile('file')) {
+            if ($request->hasFile('path')) {
                 $file = $request->file('file');
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/files'), $filename);
