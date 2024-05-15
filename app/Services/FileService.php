@@ -24,8 +24,8 @@ class FileService
                 $file->move(public_path('uploads/files'), $filename);
                 $path = 'uploads/files/' . $filename;
             }
-            return $path;
         }
+        return $path;
     }
 
     public function delete($filename): void
