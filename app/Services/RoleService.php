@@ -16,7 +16,7 @@ class RoleService
         $leaders = User::where('role', 'team_leader')->with('my_team')->get();
         $teamMembers = $leaders->map(function ($leader) {
             $leaderData = $leader->toArray();
-            unset($leaderData['my_team']);
+            unset ($leaderData['my_team']);
             return [
                 'leader' => $leaderData,
                 'image' => $leader->userInfo ? $leader->userInfo->image : null,
@@ -45,7 +45,7 @@ class RoleService
     public function userProf()
     {
         $levels = ["Junior", "Mid", "Senior"];
-        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Design", "Project-Manager", "Trainig"];
+        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Design", "Project-Manager", "Traineeship"];
         $departments = Department::query()->get()->toArray();
 
         return ResponseHelper::success(
