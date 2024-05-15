@@ -6,20 +6,20 @@ use Illuminate\Support\Facades\File;
 
 class FileService
 {
-    public function upload($request, $type)
+    public function upload($file, $type)
     {
         $path = null;
         if ($type == 'image') {
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
+            if ($file) {
+                //$file = $request->file('image');
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/images'), $filename);
                 $path = 'uploads/images/' . $filename;
             }
         }
         if ($type == 'file') {
-            if ($request->hasFile('path')) {
-                $file = $request->file('path');
+            if ($file) {
+               // $file = $request->file('path');
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads/files'), $filename);
                 $path = 'uploads/files/' . $filename;
