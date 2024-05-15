@@ -52,7 +52,7 @@ class AttendanceController extends Controller
     {
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
-            ->count();
+            ->where('role','!=','admin')->count();
         $attended_users = Attendance::query()
             ->where('branch_id', $request->branch_id)
             ->whereDate('datetime', now()->format('Y-m-d'))
