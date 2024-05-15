@@ -8,7 +8,6 @@ class FileService
 {
     public function upload($request, $type)
     {
-        $path = null;
         if ($type == 'image') {
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
