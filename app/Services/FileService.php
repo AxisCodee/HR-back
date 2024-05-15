@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\File;
 
 class FileService
 {
-    public function upload($request, $type): string
+    public function upload($request, $type)
     {
         $path = null;
         if ($type == 'image') {
