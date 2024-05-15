@@ -36,9 +36,10 @@ class DepositServices
 
     public function store($request)
     {
-
-        $path = $this->fileService->upload($request->file('path'), 'file');
-
+        $path = null;
+        if ($request->hasFile('path')) {
+            $path = $this->fileService->upload($request->file('path'), 'file');
+        }
         return DB::transaction(function () use ($request, $path) {
             $deposit = Deposit::query()->create([
                 'title' => $request->title,
