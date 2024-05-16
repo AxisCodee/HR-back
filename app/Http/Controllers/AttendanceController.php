@@ -39,10 +39,11 @@ class AttendanceController extends Controller
 
     public function employees_percent(Request $request)
     {
-        $all_users = User::query()
-            ->where('branch_id', $request->branch_id)
+        $users = User::query();
+        $userspin = $users->get('pin');
+         $all_users = $users->where('branch_id', $request->branch_id)
             ->where('role','!=','admin')->count();
-        $attended_users = Attendance::query()
+        $attended_users = Attendance::query()->whereIn('pin', $userspin)
             ->where('branch_id', $request->branch_id)
             ->whereDate('datetime', now()->format('Y-m-d'))
             ->where('status', '0')->count();
