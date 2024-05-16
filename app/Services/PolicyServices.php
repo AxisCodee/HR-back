@@ -56,13 +56,15 @@ class PolicyServices
     {
         $existencePolicy = Policy::where('branch_id', $request->branch_id)->exists();
         if (!$existencePolicy) {
-            return ResponseHelper::error('Not exist, Store it first!.', null);
+            return ResponseHelper::error('Not exist, Store it first!.');
         }
         return DB::transaction(function () use ($request) {
             $policy = Policy::query()->where('branch_id', $request->branch_id)->first();
             $types = $request['rate_type'];
             $validated = collect($request)->except('rate_type')->toArray();
-            $policy->update($validated);
+            $policy->update([
+
+            ]);
             $branchID = $validated['branch_id'];
             if ($types) {
                 RateType::query()->where('branch_id', $request->branch_id)->delete();
