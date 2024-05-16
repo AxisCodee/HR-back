@@ -15,7 +15,7 @@ class DepositServices
     protected $fileService;
 
 
-    public function __construct( FileService $fileService)
+    public function __construct(FileService $fileService)
     {
         $this->fileService = $fileService;
     }
@@ -36,11 +36,11 @@ class DepositServices
 
     public function store($request)
     {
-        $request->validated();
-        if ($request->has('path')) {
-            $path = $this->fileService->upload($request->file('path'), 'file');
-        }
-        return DB::transaction(function () use ($request, $path) {
+        return DB::transaction(function () use ($request) {
+            $path = null;
+            if ($request->hasFile('path')) {
+                $path = $this->fileService->upload($request->file('path'), 'file');
+            }
             $deposit = Deposit::query()->create([
                 'title' => $request->title,
                 'name' => $request->name,
