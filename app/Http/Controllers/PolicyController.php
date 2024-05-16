@@ -20,13 +20,13 @@ class PolicyController extends Controller
     /**
      * Show policies of a branch & it's rate types.
      * [PolicyServices => BranchPolicy]
-     *@param Request
+     * @param Request
      * @return array|\Illuminate\Http\JsonResponse
      */
     public function show(Request $request)
     {
-            $policy = $this->PolicyServices->BranchPolicy($request);
-            return $policy;
+        $policy = $this->PolicyServices->BranchPolicy($request);
+        return $policy;
 
     }
 
@@ -38,10 +38,8 @@ class PolicyController extends Controller
      */
     public function store(Request $request)
     {
-
-            $policy = $this->PolicyServices->StorePolicy($request);
-            return $policy;
-
+        $policy = $this->PolicyServices->StorePolicy($request);
+        return $policy;
     }
 
     /**
@@ -52,8 +50,8 @@ class PolicyController extends Controller
      */
     public function update(StorePolicyRequest $request)
     {
-            $policy =  $this->PolicyServices->UpdatePolicy($request);
-            return $policy;
+        $policy = $this->PolicyServices->UpdatePolicy($request);
+        return $policy;
 
     }
 
@@ -66,8 +64,8 @@ class PolicyController extends Controller
     public function destroy(Request $request)
     {
 
-            $policy = $this->PolicyServices->DeletePolicy($request);
-            return $policy;
+        $policy = $this->PolicyServices->DeletePolicy($request);
+        return $policy;
 
     }
 }

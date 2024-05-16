@@ -11,7 +11,7 @@ use App\Services\FingerprintService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use TADPHP\TAD;
+use Illuminate\Support\Facades\Hash;
 use TADPHP\TADFactory;
 
 
@@ -41,7 +41,9 @@ class AttendanceController extends Controller
     {
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
-            ->where('role','!=','admin')->count();
+            ->where('role', '!=', 'admin')
+            ->orWhereNull('role')
+            ->count();
         $attended_users = Attendance::query()
             ->where('branch_id', $request->branch_id)
             ->whereDate('datetime', now()->format('Y-m-d'))
@@ -114,7 +116,6 @@ class AttendanceController extends Controller
             $tad = $tad_factory->get_instance();
             $all_user_info = $tad->get_all_user_info();
             $xml = simplexml_load_string($all_user_info);
-           //dd($xml);
             if ($xml === false) {
                 error_log('Failed to parse XML string.');
                 foreach (libxml_get_errors() as $error) {
@@ -124,20 +125,19 @@ class AttendanceController extends Controller
                 $array = json_decode(json_encode($xml), true);
                 foreach ($array['Row'] as $row) {
                     $user = new User();
-                    $user->pin = intval($row['PIN']);
+                    $user->pin = intval($row['PIN2']);
                     $user->first_name = !empty($row['Name']) ? $row['Name'] : "name";
                     $user->last_name = "null";
-                    $user->email = intval($row['PIN']) . "@gmail.com";
-                    $user->password = "1234";
+                    $user->email = intval($row['PIN2']) . "@gmail.com";
+                    $user->password = Hash::make('password');
                     $user->specialization = "specialization";
                     $user->branch_id = $request->branch_id;
                     // Set other user properties...
                     $user->save();
                 }
             }
-            return ResponseHelper::success([], null, 'Users imported successfully', 200);
+            return ResponseHelper::success([], null, 'Users imported successfully');
         });
-
     }
 
     public function showAttendanceLogs(Request $request)
