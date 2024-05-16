@@ -38,22 +38,28 @@ class AttendanceController extends Controller
     }
 
     public function employees_percent(Request $request)
-    {
-        $users = User::query();
-        $userspin = $users->get('pin');
-         $all_users = $users->where('branch_id', $request->branch_id)
-            ->where('role','!=','admin')->orWhereNull('role')->count();
-        $attended_users = Attendance::query()->whereIn('pin', $userspin)
-            ->where('branch_id', $request->branch_id)
-            ->whereDate('datetime', now()->format('Y-m-d'))
-            ->where('status', '0')->count();
-        return ResponseHelper::success([
-            'present_employees' => $attended_users,
-            'total_employees' => $all_users],
-            null,
-            'Attended users returned successfully',
-        );
-    }
+{
+    $users = User::query()->where('branch_id', $request->branch_id)
+        ->where(function ($query) {
+            $query->where('role', '!=', 'admin')
+                ->orWhereNull('role');
+        });
+
+    $all_users = $users->count();
+
+    $userspin = $users->pluck('pin')->toArray();
+
+    $attended_users = Attendance::query()->whereIn('pin', $userspin)
+        ->where('branch_id', $request->branch_id)
+        ->whereDate('datetime', now()->format('Y-m-d'))
+        ->where('status', '0')
+        ->count();
+
+    return ResponseHelper::success([
+        'present_employees' => $attended_users,
+        'total_employees' => $all_users
+    ], null, 'Attended users returned successfully');
+}
 
     public function storeAttendanceLogs(Request $request)
     {
