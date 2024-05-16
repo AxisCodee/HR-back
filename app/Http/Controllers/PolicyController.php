@@ -27,7 +27,7 @@ class PolicyController extends Controller
     {
             $policy = $this->PolicyServices->BranchPolicy($request);
             return $policy;
-        
+
     }
 
     /**
@@ -50,7 +50,7 @@ class PolicyController extends Controller
      * @param Request
      * @return array|\Illuminate\Http\JsonResponse
      */
-    public function update(Request $request)
+    public function update(StorePolicyRequest $request)
     {
             $policy =  $this->PolicyServices->UpdatePolicy($request);
             return $policy;
