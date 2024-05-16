@@ -42,11 +42,13 @@ class RoleService
         );
     }
 
-    public function userProf()
+    public function userProf($request)
     {
         $levels = ["Junior", "Mid", "Senior"];
-        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Design", "Project-Manager", "Traineeship"];
-        $departments = Department::query()->get()->toArray();
+        $specialisation = ["UI-UX", "Front-End", "Back-End", "Mobile", "Graphic-Design",
+            "Project-Manager", "Traineeship"];
+        $departments = Department::query()->where('branch_id', $request->branch_id)
+            ->get()->toArray();
 
         return ResponseHelper::success(
             [

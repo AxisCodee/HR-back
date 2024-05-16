@@ -237,9 +237,9 @@ class UserController extends Controller
         return $result;
     }
 
-    public function user_prof()
+    public function user_prof(Request $request)
     {
-        $result = $this->roleService->userProf();
+        $result = $this->roleService->userProf($request);
         return $result;
     }
 
