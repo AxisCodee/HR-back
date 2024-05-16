@@ -114,6 +114,7 @@ class AttendanceController extends Controller
             $tad = $tad_factory->get_instance();
             $all_user_info = $tad->get_all_user_info();
             $xml = simplexml_load_string($all_user_info);
+           //dd($xml);
             if ($xml === false) {
                 error_log('Failed to parse XML string.');
                 foreach (libxml_get_errors() as $error) {
