@@ -38,26 +38,22 @@ class AttendanceController extends Controller
     }
 
     public function employees_percent(Request $request)
-{
-    $users = User::query()->where('branch_id', $request->branch_id)
-        ->where('role', '!=', 'admin')->whereNotNull('role');
-
-    $all_users = $users->count();
-
-    $userspin = $users->pluck('pin')->toArray();
-
-    $attended = Attendance::query();
-    $attended_users= $attended ->whereIn('pin', $userspin)
-        ->where('branch_id', $request->branch_id)
-        ->whereDate('datetime','>=', now()->format('Y-m-d H:i:s'))
-        ->where('status', '0')
-        ->count();
-
-    return ResponseHelper::success([
-        'present_employees' => $attended_users,
-        'total_employees' => $all_users
-    ], null, 'Attended users returned successfully');
-}
+    {
+        $users = User::query()->where('branch_id', $request->branch_id)
+            ->where('role', '!=', 'admin')->whereNotNull('role');
+        $all_users = $users->count();
+        $userspin = $users->pluck('pin')->toArray();
+        $attended = Attendance::query();
+        $attended_users = $attended->whereIn('pin', $userspin)
+            ->where('branch_id', $request->branch_id)
+            ->whereDate('datetime', '>=', now()->format('Y-m-d H:i:s'))
+            ->where('status', '0')
+            ->count();
+        return ResponseHelper::success([
+            'present_employees' => $attended_users,
+            'total_employees' => $all_users
+        ], null, 'Attended users returned successfully');
+    }
 
     public function storeAttendanceLogs(Request $request)
     {
@@ -127,16 +123,20 @@ class AttendanceController extends Controller
             } else {
                 $array = json_decode(json_encode($xml), true);
                 foreach ($array['Row'] as $row) {
-                    $user = new User();
-                    $user->pin = intval($row['PIN2']);
-                    $user->first_name = !empty($row['Name']) ? $row['Name'] : "name";
-                    $user->last_name = "null";
-                    $user->email = intval($row['PIN2']) . "@gmail.com";
-                    $user->password = Hash::make('password');
-                    $user->specialization = "specialization";
-                    $user->branch_id = $request->branch_id;
-                    // Set other user properties...
-                    $user->save();
+                    $existedUSer = User::query()->where('pin', $row['pin'])
+                        ->where('branch_id', $request->branch_id)
+                        ->first();
+                    if (!$existedUSer) {
+                        $user = new User();
+                        $user->pin = intval($row['PIN2']);
+                        $user->first_name = !empty($row['Name']) ? $row['Name'] : "name";
+                        $user->last_name = "null";
+                        $user->email = intval($row['PIN2']) . "@gmail.com";
+                        $user->password = Hash::make('password');
+                        $user->specialization = "specialization";
+                        $user->branch_id = $request->branch_id;
+                        $user->save();
+                    }
                 }
             }
             return ResponseHelper::success([], null, 'Users imported successfully');
