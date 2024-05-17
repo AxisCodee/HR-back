@@ -41,13 +41,13 @@ class AttendanceController extends Controller
     {
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
-            ->where('role', '!=', 'admin')
-            ->orWhereNull('role')
+            ->whereNot('role', 'admin')
             ->count();
         $attended_users = Attendance::query()
             ->where('branch_id', $request->branch_id)
             ->whereDate('datetime', now()->format('Y-m-d'))
-            ->where('status', '0')->count();
+            ->where('status', '0')
+            ->count();
         return ResponseHelper::success([
             'present_employees' => $attended_users,
             'total_employees' => $all_users],
@@ -144,7 +144,11 @@ class AttendanceController extends Controller
     {
         $result = User::query()
             ->where('branch_id', $request->branch_id)
-            ->with('department')->with('attendance')->get()->toArray();
+            ->with('department')
+            ->with(['attendance' => function ($query) use ($request) {
+                $query->where('branch_id', $request->branch_id);
+            }])
+            ->get()->toArray();
         return ResponseHelper::success(
             $result
         );
@@ -156,8 +160,9 @@ class AttendanceController extends Controller
             ->where('branch_id', $request->branch_id)
             ->whereNot('role', 'admin')
             ->with('department', 'userInfo')
-            ->with(['attendance' => function ($query) use ($date) {
-                $query->whereDate('datetime', $date);
+            ->with(['attendance' => function ($query) use ($date, $request) {
+                $query->whereDate('datetime', $date)
+                    ->where('branch_id', $request->branch_id);
             }])
             ->has('attendance')
             ->get();
@@ -166,8 +171,11 @@ class AttendanceController extends Controller
 
     public function showAttendanceUser($user)
     {
-        $result = User::with('attendance')
-            ->where('id', $user)
+        $user = User::query()->findOrFail($user);
+        $result = User::with(['attendance' => function ($query) use ($user) {
+            $query->where('branch_id', $user->branch_id);
+        }])
+            ->where('id', $user->id)
             ->get()->toArray();
         return ResponseHelper::success($result);
     }
