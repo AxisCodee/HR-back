@@ -49,7 +49,7 @@ class AttendanceController extends Controller
     $attended = Attendance::query();
     $attended_users= $attended ->whereIn('pin', $userspin)
         ->where('branch_id', $request->branch_id)
-        ->whereDate('datetime','>=', now()->format('Y-m-d H:i:s'))
+        ->whereDate('datetime', now()->format('Y-m-d'))
         ->where('status', '0')
         ->count();
 
