@@ -123,7 +123,7 @@ class AttendanceController extends Controller
             } else {
                 $array = json_decode(json_encode($xml), true);
                 foreach ($array['Row'] as $row) {
-                    $existedUSer = User::query()->where('pin', $row['pin'])
+                    $existedUSer = User::query()->where('pin', $row['PIN2'])
                         ->where('branch_id', $request->branch_id)
                         ->first();
                     if (!$existedUSer) {
