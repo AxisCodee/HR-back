@@ -129,9 +129,9 @@ class AttendanceController extends Controller
                     if (!$existedUSer) {
                         $user = new User();
                         $user->pin = intval($row['PIN2']);
-                        $user->first_name = !empty($row['Name']) ? $row['Name'] : "name";
-                        $user->last_name = "null";
-                        $user->email = intval($row['PIN2']) . "@gmail.com";
+                        $user->first_name = !empty($row['Name']) ? $row['Name'] : "first name";
+                        $user->last_name = "last name";
+                        $user->email = intval($row['PIN2']) . "user@gmail.com";
                         $user->password = Hash::make('password');
                         $user->specialization = "specialization";
                         $user->branch_id = $request->branch_id;
