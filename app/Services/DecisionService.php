@@ -77,7 +77,7 @@ class DecisionService
     {
         $new = $request->validated();
         $created = Decision::create($new);
-        return ResponseHelper::created($created, 'decision created successfully');
+        return ResponseHelper::created($created, 'Decision created successfully');
     }
 
     public function RemoveDecision($id)
