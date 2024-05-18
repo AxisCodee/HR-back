@@ -177,7 +177,9 @@ class AbsenceService
 
     public static function user_absences(Request $request)
     {
-        $result = User::query()->where('branch_id',$request->branch_id)
+        $result = User::query()
+            ->where('role', '!=', 'admin')
+            ->where('branch_id', $request->branch_id)
             ->with('userInfo:id,image'
                 , 'department',
                 'allAbsences'

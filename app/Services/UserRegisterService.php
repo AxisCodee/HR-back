@@ -34,7 +34,6 @@ class UserRegisterService
 
     public function createUser($request, $department_id, $branch_id)
     {
-        //$newPin = User::query()->latest()->value('pin') + 1;
         $user = User::create([
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -44,12 +43,12 @@ class UserRegisterService
             'specialization' => $request->specialization,
             'department_id' => $department_id,
             'password' => Hash::make($request->password),
-            //'pin' => $newPin,
+            'pin' => $request->pin,
             'address' => $request->address,
             'branch_id' => $branch_id,
             'permission' => $request->permission
         ]);
-        $user->update(['pin' => $user->id]);
+//        $user->update(['pin' => $user->id]);
         return $user;
     }
 

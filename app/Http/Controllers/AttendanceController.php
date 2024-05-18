@@ -58,6 +58,7 @@ class AttendanceController extends Controller
         'total_employees' => $all_users
     ], null, 'Attended users returned successfully');
 }
+  
 
     public function storeAttendanceLogs(Request $request)
     {
@@ -127,16 +128,20 @@ class AttendanceController extends Controller
             } else {
                 $array = json_decode(json_encode($xml), true);
                 foreach ($array['Row'] as $row) {
-                    $user = new User();
-                    $user->pin = intval($row['PIN2']);
-                    $user->first_name = !empty($row['Name']) ? $row['Name'] : "name";
-                    $user->last_name = "null";
-                    $user->email = intval($row['PIN2']) . "@gmail.com";
-                    $user->password = Hash::make('password');
-                    $user->specialization = "specialization";
-                    $user->branch_id = $request->branch_id;
-                    // Set other user properties...
-                    $user->save();
+                    $existedUSer = User::query()->where('pin', $row['PIN2'])
+                        ->where('branch_id', $request->branch_id)
+                        ->first();
+                    if (!$existedUSer) {
+                        $user = new User();
+                        $user->pin = intval($row['PIN2']);
+                        $user->first_name = !empty($row['Name']) ? $row['Name'] : "first name";
+                        $user->last_name = "last name";
+                        $user->email = intval($row['PIN2']) . "user@gmail.com";
+                        $user->password = Hash::make('password');
+                        $user->specialization = "specialization";
+                        $user->branch_id = $request->branch_id;
+                        $user->save();
+                    }
                 }
             }
             return ResponseHelper::success([], null, 'Users imported successfully');
