@@ -56,11 +56,11 @@ class AbsencesController extends Controller
         return ResponseHelper::success($result, null, 'Absence updated successfully');
     }
 
-    public function getDailyAbsence(Request $request, $branch)
-    {
-        $result = $this->absenceService->getDailyAbsence($request, $branch);
-        return ResponseHelper::success($result, null, 'daily absence');
-    }
+//    public function getDailyAbsence(Request $request, $branch)
+//    {
+//        $result = $this->absenceService->getDailyAbsence($request, $branch);
+//        return ResponseHelper::success($result, null, 'daily absence');
+//    }
 
     //without return
     public function unjustifiedAbsence()
