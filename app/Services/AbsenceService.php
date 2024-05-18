@@ -8,8 +8,6 @@ use App\Models\User;
 use App\Models\Absences;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Helper\ResponseHelper;
-use function Symfony\Component\String\s;
 
 class AbsenceService
 {
@@ -34,23 +32,22 @@ class AbsenceService
         Absences::query()
             ->findOrFail($request['id'])
             ->update($request);
-
         return 'updated successfully';
     }
 
-    public function getDailyAbsence(Request $request, $branch)
-    {
-        $today = Carbon::now();
-        if ($today->eq($request->date)) {
-        } else {
-            $dateInput = request()->input('date');
-            $day = substr($dateInput, 8, 2);
-            $user = User::query()->where('branch_id', $branch)->get();
-            $result = $user->with('absences')
-                ->whereDay('startDate', $day)->get();
-            return $result;
-        }
-    }
+//    public function getDailyAbsence(Request $request, $branch)
+//    {
+//        $today = Carbon::now();
+//        if ($today->eq($request->date)) {
+//        } else {
+//            $dateInput = request()->input('date');
+//            $day = substr($dateInput, 8, 2);
+//            $user = User::query()->where('branch_id', $branch)->get();
+//            $result = $user->with('absences')
+//                ->whereDay('startDate', $day)->get();
+//            return $result;
+//        }
+//    }
 
     public function storeAbsence(Request $request)
     {
@@ -125,7 +122,11 @@ class AbsenceService
 
     public function unjustifiedAbsence()
     {
-        $absence = Absences::query()->where('type', 'Unjustified')
+        $absence = Absences::query()
+            ->whereHas('users', function ($query) {
+                $query->where('role', '!=', 'admin');
+            })
+            ->where('type', 'Unjustified')
             ->where('status', 'waiting')->get()->toArray();
         return $absence;
     }
@@ -199,7 +200,9 @@ class AbsenceService
 
     public function allUserAbsences($request)
     {
-        $user = User::with('allAbsences')->findOrFail($request->user_id);
+        $user = User::query()
+            ->where('role', '!=', 'admin')
+            ->with('allAbsences')->findOrFail($request->user_id);
         return $user;
     }
 

@@ -139,6 +139,7 @@ class AttendanceController extends Controller
                         $user->email = intval($row['PIN2']) . "user@gmail.com";
                         $user->password = Hash::make('password');
                         $user->specialization = "specialization";
+                        $user->role = "employee";
                         $user->branch_id = $request->branch_id;
                         $user->save();
                     }
