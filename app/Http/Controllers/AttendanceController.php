@@ -40,7 +40,7 @@ class AttendanceController extends Controller
     public function employees_percent(Request $request)
 {
     $users = User::query()->where('branch_id', $request->branch_id)
-        ->where('role', '!=', 'admin')->whereNotNull('role');
+        ->where('role', '!=', 'admin');
 
     $all_users = $users->count();
 
@@ -58,7 +58,7 @@ class AttendanceController extends Controller
         'total_employees' => $all_users
     ], null, 'Attended users returned successfully');
 }
-  
+
 
     public function storeAttendanceLogs(Request $request)
     {
