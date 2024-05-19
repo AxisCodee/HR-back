@@ -60,8 +60,6 @@ class FingerprintService
         $logsData = $array['Row'];
         $uniqueDates = [];
         foreach ($logsData as $log) {
-            $userExist = User::query()->where('branch_id', $branchId)
-                ->where('pin', $log)
             $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
             Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
