@@ -192,7 +192,7 @@ class FingerprintService
         $compensation = $userPolicy->demands_compensation;
         $isPaid = !$deductionStatus;
         $type = $deductionStatus ? 'Unjustified' : 'justified';
-        $checkTime = Carbon::parse($attendance_datetime)->format('H:i');
+        $checkTime = Carbon::parse($attendance_datetime)->format('H:i:s');
         $lateDate = $checkDate;
         if ($userBranchId == $branchId && $deductionStatus) {
             $this->autoDeduction($user, $attendance_datetime, 'warning', $hoursLate);
@@ -213,7 +213,7 @@ class FingerprintService
                     Late::query()
                         ->where('lateDate', $checkDate)
                         ->where('user_id', $userId)
-                        ->update(['end' => Carbon::parse($end->datetime)->format('H:i')]);
+                        ->update(['end' => Carbon::parse($end->datetime)->format('H:i:s')]);
                 }
             } else {
                 $lateRecord->check_out = $checkTime;
