@@ -506,9 +506,9 @@ class User extends Authenticatable implements JWTSubject
     {
         $demandCompensationHours = $this->userInfo()->value('compensation_hours');
         $totalCompensationHours = $this->userServices->compensationHours($this);
-        if($demandCompensationHours && $totalCompensationHours ){
-
-        return $totalCompensationHours - $demandCompensationHours;}
+        if ($demandCompensationHours && $totalCompensationHours) {
+            return $totalCompensationHours - $demandCompensationHours;
+        }
         return 0;
     }
 
