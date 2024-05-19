@@ -77,12 +77,12 @@ class DecisionService
     {
         $new = $request->validated();
         $created = Decision::create($new);
-        return ResponseHelper::created($created, 'decision created successfully');
+        return ResponseHelper::created($created, 'Decision created successfully');
     }
 
     public function RemoveDecision($id)
     {
-        $removed = Decision::findOrFail($id)->delete();
+        Decision::findOrFail($id)->delete();
         return ResponseHelper::success('Decision deleted successfully');
     }
 
@@ -103,39 +103,37 @@ class DecisionService
             ->get()->toArray();
         return ResponseHelper::success($all, null, 'all decisions returned successfully', 200);
     }
+
     public function selectDecision($request)
     {
-        foreach($request->users as $user)
-        {
-           $newDecision= Decision::query()->create(
+        foreach ($request->users as $user) {
+            $newDecision = Decision::query()->create(
                 [
-                    'user_id'=>$user,
-                    'type'=>$request->type,
-                    'dateTime'=>Carbon::now(),
-                    'branch_id'=>$request->branch_id,
-                    'amount'=>$request->amount,
-                    'content'=> 'aaa'
+                    'user_id' => $user,
+                    'type' => $request->type,
+                    'dateTime' => Carbon::now(),
+                    'branch_id' => $request->branch_id,
+                    'amount' => $request->amount,
+                    'content' => 'aaa'
                 ]
-                );
-                $results[] = $newDecision;
-            }
-            return $results;
+            );
+            $results[] = $newDecision;
+        }
+        return $results;
     }
+
     public function selectDecisionToDelete($request)
     {
 
-        foreach($request->decisions as $item)
-        {
-            $oneDecisions=Decision::find($item);
-            if($oneDecisions == null)
-            {
+        foreach ($request->decisions as $item) {
+            $oneDecisions = Decision::find($item);
+            if ($oneDecisions == null) {
                 return 'one request not found';
 
+            } else {
+                $result = $oneDecisions->delete();
             }
-            else{
-           $result=$oneDecisions->delete();
         }
-    }
         return $result;
 
 
@@ -145,22 +143,22 @@ class DecisionService
     {
         $date = request()->query('date');
 
-        $result = Decision::where('branch_id',$request->branch_id)->whereIn('type', ['alert', 'absence', 'dismiss', 'deduction'])
+        $result = Decision::where('branch_id', $request->branch_id)->whereIn('type', ['alert', 'absence', 'dismiss', 'deduction'])
             ->where('status', 'requested')
-            ->with('user_decision:id,first_name,last_name','user_decision.userInfo:id,user_id,image','user_decision.department:id,user_id,');
-            $data = $this->userTimeService->filterDate($result,$date,'dateTime')->get()->toArray();
+            ->with('user_decision:id,first_name,last_name', 'user_decision.userInfo:id,user_id,image', 'user_decision.department:id,user_id,');
+        $data = $this->userTimeService->filterDate($result, $date, 'dateTime')->get()->toArray();
         return $data;
     }
 
 
     public function AcceptSystemDecisions(Request $request)
     {
-        $decisionId=Decision::find($request->id);
-        $result = Decision::where('id',$decisionId->id)->update([
-            'status'=>'accepted'
+        $decisionId = Decision::find($request->id);
+        $result = Decision::where('id', $decisionId->id)->update([
+            'status' => 'accepted'
         ]);
 
-       return $result;
+        return $result;
     }
 
 }
