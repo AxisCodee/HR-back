@@ -62,7 +62,7 @@ class PolicyServices
             $policy = Policy::query()->where('branch_id', $request->branch_id)->first();
             $types = $request['rate_type'];
             $validated = collect($request)->except('rate_type')->toArray();
-            $policy->update($request->except('rate_type'));
+            $policy->update($validated);
             $branchID = $validated['branch_id'];
             if ($types) {
                 RateType::query()->where('branch_id', $request->branch_id)->delete();
