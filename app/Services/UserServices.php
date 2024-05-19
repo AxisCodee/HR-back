@@ -284,9 +284,10 @@ class UserServices
     public function branchWorkHours($branch_id)
     {
         $policy = Policy::query()->where('branch_id', $branch_id)->first();
+        if($policy){
         $startTime = Carbon::createFromFormat('h:i A', $policy->work_time['start_time']);
         $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
-        return $endTime->diffInHours($startTime);
+        return $endTime->diffInHours($startTime);}
     }
 
     public function compensationHours($user)
