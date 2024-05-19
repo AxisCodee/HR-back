@@ -69,7 +69,6 @@ class PolicyServices
                 foreach ($types as $type) {
                     RateType::create(
                         ['branch_id' => $branchID, 'rate_type' => $type],
-                        ['branch_id' => $branchID]
                     );
                 }
             }
