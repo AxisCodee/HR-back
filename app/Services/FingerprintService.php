@@ -60,6 +60,8 @@ class FingerprintService
         $logsData = $array['Row'];
         $uniqueDates = [];
         foreach ($logsData as $log) {
+            $userExist = User::query()->where('branch_id', $branchId)
+                ->where('pin', $log)
             $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
             Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
@@ -92,10 +94,8 @@ class FingerprintService
             $attendanceObj->work_code = $log['WorkCode'];
             if ($userLog) {
                 $attendanceObj->branch_id = $userLog->branch->id;
-            } else {
-                $attendanceObj->branch_id = $branchId;
+                $attendanceObj->save();
             }
-            $attendanceObj->save();
         }
     }
 
