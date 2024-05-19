@@ -52,7 +52,6 @@ class PolicyController extends Controller
     {
         $policy = $this->PolicyServices->UpdatePolicy($request);
         return $policy;
-
     }
 
     /**
