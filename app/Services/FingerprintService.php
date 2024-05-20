@@ -153,8 +153,12 @@ class FingerprintService
                             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
                             ->exists();
                         if (!$lateExistence) {
-                            $checkOutHour = substr($attendance->datetime, 11, 15);
-                            $parsedHour = Carbon::parse($checkOutHour);
+                            $attendanceDatetime = $attendance->datetime;
+                            $checkOutHour = substr($attendanceDatetime, 11, 5);
+                            $parsedHour = Carbon::createFromFormat('H:i', $checkOutHour);
+                            if (!($companyEndTime instanceof Carbon)) {
+                                $companyEndTime = Carbon::parse($companyEndTime);
+                            }
                             $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime, false);
                             if ($diffInMinutes >= 15) {
                                 $diffLate = $parsedHour->diff($companyEndTime);
@@ -364,8 +368,11 @@ class FingerprintService
             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
             ->exists();
         if (!$lateExistence) {
-            $checkOutHour = substr($attendanceDatetime, 11, 15);
-            $parsedHour = Carbon::parse($checkOutHour);
+            $checkOutHour = substr($attendanceDatetime, 11, 5);
+            $parsedHour = Carbon::createFromFormat('H:i', $checkOutHour);
+            if (!($companyEndTime instanceof Carbon)) {
+                $companyEndTime = Carbon::parse($companyEndTime);
+            }
             $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime, false);
             if ($diffInMinutes >= 15) {
                 $diffLate = $parsedHour->diff($companyEndTime);
