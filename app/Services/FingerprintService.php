@@ -54,7 +54,7 @@ class FingerprintService
         return false;
     }
 
-    public function convertAndStoreAttendance($xml, $branchId,$request)
+    public function convertAndStoreAttendance($xml, $branchId, $request)
     {
         $array = json_decode(json_encode($xml), true);
         $logsData = $array['Row'];
@@ -153,6 +153,12 @@ class FingerprintService
                             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
                             ->exists();
                         if (!$lateExistence) {
+//                            $checkInHour = substr($attendance->datetime, 11, 15);
+//                            $parsedHour = Carbon::parse($checkInHour);
+//                            $companyStartTime = $userPolicy->work_time['start_time'];
+//                            $diffInMinutes = $parsedHour->diffInMinutes($companyStartTime, false);
+//                            if ($diffInMinutes >= 15) {
+
                             $checkOutHour = substr($attendance->datetime, 11, 15);
                             $parsedHour = Carbon::parse($checkOutHour);
                             if ($parsedHour->isBefore($companyEndTime)) {
@@ -245,12 +251,12 @@ class FingerprintService
             if (!empty($usersWithoutAttendance)) {
                 //create the absence
                 foreach ($usersWithoutAttendance as $user) {
-                    $days=Date::query()->whereDate('date',$date)->exist();
-                   if(!$days){
-                    $this->checkUserAbsences($user, $date, $branch_id);
+                    $days = Date::query()->whereDate('date', $date)->exists();
+                    if (!$days) {
+                        $this->checkUserAbsences($user, $date, $branch_id);
+                    }
                 }
             }
-        }
         }
     }
 
@@ -273,13 +279,13 @@ class FingerprintService
                         $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
                         $startDate = Carbon::parse($userStartDate->start_date);
                         $uDate = Carbon::parse($date);
-                        $days=Date::query()->whereDate('date',$date)->exists();
-                        if(!$days){
+                        $days = Date::query()->whereDate('date', $date)->exists();
+                        if (!$days) {
                             if ($startDate->lt($uDate)) {
 
                                 $this->storeAbsence($user, $date, $userPolicy, $branch_id);
                             }
-                     }
+                        }
 
                     }
                 }
@@ -359,7 +365,7 @@ class FingerprintService
         if (!$lateExistence) {
             $checkOutHour = substr($attendanceDatetime, 11, 15);
             $parsedHour = Carbon::parse($checkOutHour);
-            if ($parsedHour->isAfter($companyEndTime)) {
+            if ($parsedHour->isAfter(Carbon::parse($companyEndTime)->addMinutes(15))) {
                 $diffLate = $parsedHour->diff($companyEndTime);
                 $hoursOverTime = $diffLate->format('%H.%I');
                 $this->storeUserOverTime(
