@@ -65,7 +65,6 @@ class FingerprintService
             $day = Carbon::parse($date);
             $offDays = app(BranchService::class)->offDays($request->branch_id);
             $dayName = $day->format('l');
-
             if (!in_array($dayName, $offDays)) {
                 Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
             }
@@ -246,8 +245,12 @@ class FingerprintService
             if (!empty($usersWithoutAttendance)) {
                 //create the absence
                 foreach ($usersWithoutAttendance as $user) {
+                    $days=Date::query()->whereDate('date',$date)->exist();
+                   if(!$days){
                     $this->checkUserAbsences($user, $date, $branch_id);
-            }}
+                }
+            }
+        }
         }
     }
 
@@ -270,10 +273,14 @@ class FingerprintService
                         $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
                         $startDate = Carbon::parse($userStartDate->start_date);
                         $uDate = Carbon::parse($date);
-                        if ($startDate->lt($uDate)) {
+                        $days=Date::query()->whereDate('date',$date)->exist();
+                        if(!$days){
+                            if ($startDate->lt($uDate)) {
 
-                            $this->storeAbsence($user, $date, $userPolicy, $branch_id);
-                        }
+                                $this->storeAbsence($user, $date, $userPolicy, $branch_id);
+                            }
+                     }
+
                     }
                 }
             }
