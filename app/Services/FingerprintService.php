@@ -99,10 +99,8 @@ class FingerprintService
             $attendanceObj->work_code = $log['WorkCode'];
             if ($userLog) {
                 $attendanceObj->branch_id = $userLog->branch->id;
-            } else {
-                $attendanceObj->branch_id = $branchId;
+                $attendanceObj->save();
             }
-            $attendanceObj->save();
         }
     }
 

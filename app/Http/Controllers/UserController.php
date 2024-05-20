@@ -124,7 +124,6 @@ class UserController extends Controller
             $result = $this->userService->updateAdmin($user, $request);
         } else {
             ResponseHelper::error('not authorized');
-            ResponseHelper::error('not authorized');
         }
         return ResponseHelper::success($result, null, 'user info updated successfully');
     }
