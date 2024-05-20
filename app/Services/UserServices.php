@@ -220,7 +220,7 @@ class UserServices
         if ($request->password) {
             $specUser->password = Hash::make($request->password);
         }
-        if ($request->has('image')) {
+        if ($request->has('image') && $request->file('image')) {
             if (!$specUser->userInfo) {
                 UserInfo::query()
                     ->create([
@@ -228,16 +228,19 @@ class UserServices
                         'image' => $this->fileService->upload($request->file('image'), 'image'),
                     ]);
             } else {
+                $userInfo = UserInfo::query()->where('user_id', $specUser->id)->first();
                 $specUser->userInfo->update([
                     'image' => $this->fileService
-                        ->update($specUser->userInfo['image'], $request->file('image'), 'image')
+                        ->update($specUser->userInfo['image'] ?? $userInfo->image, $request->file('image'), 'image')
                 ]);
             }
-        }
+        } 
+
         $specUser->first_name = $request->first_name;
         $specUser->last_name = $request->last_name;
         $specUser->save();
         return $specUser->with('userInfo')->find($specUser->id);
+
     }
 
     public function editUser(UpdateUserRequest $request, $id)
