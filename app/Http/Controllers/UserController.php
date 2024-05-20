@@ -119,13 +119,13 @@ class UserController extends Controller
 
     public function updateAdmin(Request $request)
     {
-        $user = User::query()->findOrFail(Auth::id());
+        $user = Auth::user();
         if ($user->role == 'admin') {
             $result = $this->userService->updateAdmin($user, $request);
-        } else {
-            ResponseHelper::error('not authorized');
+            return ResponseHelper::success($result, null, 'Updated successfully');
         }
-        return ResponseHelper::success($result, null, 'user info updated successfully');
+        return ResponseHelper::error('not authorized');
+
     }
 
     //remove a user from a team
@@ -322,7 +322,8 @@ class UserController extends Controller
         $result = $this->teamService->getTree($request);
         return ResponseHelper::success($result);
     }
-    public function Tree(Request $request )
+
+    public function Tree(Request $request)
     {
         return $this->teamService->getTree($request);
     }
@@ -344,7 +345,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request)
     {
-        User::where('id',$request->id)->update(
+        User::where('id', $request->id)->update(
             [
                 'password' => Hash::make($request->password)
 

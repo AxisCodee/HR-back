@@ -229,19 +229,17 @@ class UserServices
                     ]);
             } else {
                 $specUser->userInfo->update([
-                    'image' => $this->fileService->update(
-                        $specUser->userInfo['image'],
-                        $request->file('image'),
-                        'image'
-                    )
+                    'image' => $this->fileService
+                        ->update($specUser->userInfo['image'], $request->file('image'), 'image')
                 ]);
             }
         }
         $specUser->first_name = $request->first_name;
         $specUser->last_name = $request->last_name;
         $specUser->save();
-        return $specUser->with('userInfo')->first();
+        return $specUser->with('userInfo')->find($specUser->id);
     }
+
     public function editUser(UpdateUserRequest $request, $id)
     {
         return DB::transaction(function () use ($id, $request) {
@@ -284,10 +282,11 @@ class UserServices
     public function branchWorkHours($branch_id)
     {
         $policy = Policy::query()->where('branch_id', $branch_id)->first();
-        if($policy){
-        $startTime = Carbon::createFromFormat('h:i A', $policy->work_time['start_time']);
-        $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
-        return $endTime->diffInHours($startTime);}
+        if ($policy) {
+            $startTime = Carbon::createFromFormat('h:i A', $policy->work_time['start_time']);
+            $endTime = Carbon::createFromFormat('h:i A', $policy->work_time['end_time']);
+            return $endTime->diffInHours($startTime);
+        }
     }
 
     public function compensationHours($user)
