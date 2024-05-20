@@ -229,6 +229,8 @@ class FingerprintService
 
     public function storeUserAbsences($date, $branch_id)
     {
+
+
         $today = Carbon::now()->format('Y-m-d');
         // check if the date not today to do not store the absence
         if (!Carbon::parse($today)->equalTo(Carbon::parse($date))) {
@@ -245,17 +247,17 @@ class FingerprintService
             if (!empty($usersWithoutAttendance)) {
                 //create the absence
                 foreach ($usersWithoutAttendance as $user) {
-                    $days=Date::query()->whereDate('date',$date)->exist();
-                   if(!$days){
+
                     $this->checkUserAbsences($user, $date, $branch_id);
                 }
-            }
+
         }
         }
     }
 
     public function checkUserAbsences($user, $date, $branch_id)
     {
+
         $userPolicy = Policy::query()->where('branch_id', $user->branch_id)->first();
         if ($userPolicy != null) {
             $absence = DB::table('absences')
@@ -273,10 +275,14 @@ class FingerprintService
                         $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
                         $startDate = Carbon::parse($userStartDate->start_date);
                         $uDate = Carbon::parse($date);
-
+//dd($date);
                             if ($startDate->lt($uDate)) {
 
+                                $days=Date::query()->whereDate('date',$date)->exists();
+                                if(!$days){
+
                                 $this->storeAbsence($user, $date, $userPolicy, $branch_id);
+                            }
                             }
 
 
@@ -288,6 +294,7 @@ class FingerprintService
 
     public function storeAbsence($user, $date, $userPolicy, $branch_id)
     {
+
         $type = 'Unjustified';
         $isPaid = false;
         $demandsCompensation = $userPolicy->absence_management['paid_absence_days']['compensatory_time'];
@@ -306,8 +313,8 @@ class FingerprintService
         if ($user->branch_id == $branch_id && !$userPolicy->deduction_status) {
             $isPaid = true;
         }
-        $days=Date::query()->whereDate('date',$date)->exists();
-        if(!$days){
+
+
         Absences::query()->create([
             'type' => $type,
             'isPaid' => $isPaid,
@@ -316,7 +323,7 @@ class FingerprintService
             'startDate' => $date,
         ]);
         return true;
-    }}
+    }
 
     public function userAbsencesDaysCount($user_id, $checkDate)
     {
