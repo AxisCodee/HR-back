@@ -73,7 +73,7 @@ class UserController extends Controller
         $branch_id = $request->branch_id;
         $all_users = User::query()
             ->where('branch_id', $branch_id)
-            ->with('userInfo:id,user_id,image', 'department', 'contract:startTime')
+            ->with('userInfo:id,user_id,image', 'department', 'contract:id,user_id,startTime,endTime')
             ->withTrashed()->get();
         $usersWithStatus = collect($all_users)->map(function ($user) {
             $userArray = $user->toArray();
