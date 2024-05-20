@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\Branch;
 use App\Models\Date;
 use App\Models\User;
+use App\Services\BranchService;
 use App\Services\FingerprintService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -62,6 +63,8 @@ class AttendanceController extends Controller
 
     public function storeAttendanceLogs(Request $request)
     {
+
+
         //$job = dispatch(new StoreAttendanceLogsJob($request->branch_id, $this->fingerprintService));
         return DB::transaction(function () use ($request) {
             //Storing attendance
@@ -85,7 +88,7 @@ class AttendanceController extends Controller
                     ['start' => $start, 'end' => $end]
                 );
                 $xml = simplexml_load_string($filtered_att_logs);
-                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId,$request);
                 $allAttendances = Attendance::query()
                     ->where('branch_id', $branchId)
                     ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
@@ -93,7 +96,7 @@ class AttendanceController extends Controller
             }
             if (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
                 $xml = simplexml_load_string($logs);
-                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId,$request);
                 $allAttendances = Attendance::query()
                     ->where('branch_id', $branchId)
                     ->get();
@@ -109,7 +112,7 @@ class AttendanceController extends Controller
                 $this->fingerprintService->storeUserAbsences($date, $branchId); //store absence
             }
             return ResponseHelper::success([], null, 'Attendances logs stored successfully');
-        });
+       });
     }
 
     public function importFromFingerprint(Request $request)

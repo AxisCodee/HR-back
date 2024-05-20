@@ -61,4 +61,14 @@ class BranchService
             return ResponseHelper::success('deleted');
         });
     }
+
+
+
+    public function offDays($branch_id)
+    {
+       // $branch_id = request()->input('branch_id');
+        $policy = Policy::query()->where('branch_id',$branch_id)->first();
+
+        return $policy['work_time']['work_days'];
+    }
 }
