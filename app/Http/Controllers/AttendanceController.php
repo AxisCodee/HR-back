@@ -38,26 +38,26 @@ class AttendanceController extends Controller
     }
 
     public function employees_percent(Request $request)
-{
-    $users = User::query()->where('branch_id', $request->branch_id)
-        ->where('role', '!=', 'admin');
+    {
+        $users = User::query()->where('branch_id', $request->branch_id)
+            ->where('role', '!=', 'admin');
 
-    $all_users = $users->count();
+        $all_users = $users->count();
 
-    $userspin = $users->pluck('pin')->toArray();
+        $userspin = $users->pluck('pin')->toArray();
 
-    $attended = Attendance::query();
-    $attended_users= $attended ->whereIn('pin', $userspin)
-        ->where('branch_id', $request->branch_id)
-        ->whereDate('datetime', now()->format('Y-m-d'))
-        ->where('status', '0')
-        ->count();
+        $attended = Attendance::query();
+        $attended_users = $attended->whereIn('pin', $userspin)
+            ->where('branch_id', $request->branch_id)
+            ->whereDate('datetime', now()->format('Y-m-d'))
+            ->where('status', '0')
+            ->count();
 
-    return ResponseHelper::success([
-        'present_employees' => $attended_users,
-        'total_employees' => $all_users
-    ], null, 'Attended users returned successfully');
-}
+        return ResponseHelper::success([
+            'present_employees' => $attended_users,
+            'total_employees' => $all_users
+        ], null, 'Attended users returned successfully');
+    }
 
 
     public function storeAttendanceLogs(Request $request)
@@ -100,8 +100,13 @@ class AttendanceController extends Controller
             }
             //Storing delays
             foreach ($allAttendances as $attendance) {
-                $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '0');
-                $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '1');
+                $attendanceDate = Carbon::parse($attendance->datetime)->format('Y-m-d');
+                $dateExists = Date::query()->whereDate('date', $attendanceDate)
+                    ->exists();
+                if ($dateExists) {
+                    $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '0');
+                    $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '1');
+                }
             }
             //Storing absence
             foreach ($uniqueDates as $date) { //replacing the delay with absence
