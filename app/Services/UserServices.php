@@ -237,7 +237,7 @@ class UserServices
         $specUser->first_name = $request->first_name;
         $specUser->last_name = $request->last_name;
         $specUser->save();
-        return $specUser->with('userInfo')->first();
+        return $specUser;
     }
 
     public function editUser(UpdateUserRequest $request, $id)
