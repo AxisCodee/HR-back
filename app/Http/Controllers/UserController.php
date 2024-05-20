@@ -119,7 +119,7 @@ class UserController extends Controller
 
     public function updateAdmin(Request $request)
     {
-        $user = User::query()->findOrFail(Auth::id());
+        $user = Auth::user();
         if ($user->role == 'admin') {
             $result = $this->userService->updateAdmin($user, $request);
             return ResponseHelper::success($result, null, 'Updated successfully');
