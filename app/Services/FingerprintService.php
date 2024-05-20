@@ -273,13 +273,12 @@ class FingerprintService
                         $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
                         $startDate = Carbon::parse($userStartDate->start_date);
                         $uDate = Carbon::parse($date);
-                        $days=Date::query()->whereDate('date',$date)->exists();
-                        if(!$days){
+
                             if ($startDate->lt($uDate)) {
 
                                 $this->storeAbsence($user, $date, $userPolicy, $branch_id);
                             }
-                     }
+
 
                     }
                 }
@@ -307,6 +306,8 @@ class FingerprintService
         if ($user->branch_id == $branch_id && !$userPolicy->deduction_status) {
             $isPaid = true;
         }
+        $days=Date::query()->whereDate('date',$date)->exists();
+        if(!$days){
         Absences::query()->create([
             'type' => $type,
             'isPaid' => $isPaid,
@@ -315,7 +316,7 @@ class FingerprintService
             'startDate' => $date,
         ]);
         return true;
-    }
+    }}
 
     public function userAbsencesDaysCount($user_id, $checkDate)
     {
