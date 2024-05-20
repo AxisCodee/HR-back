@@ -65,10 +65,13 @@ class BranchService
 
 
     public function offDays($branch_id)
-    {
-       // $branch_id = request()->input('branch_id');
-        $policy = Policy::query()->where('branch_id',$branch_id)->first();
+{
+    $policy = Policy::query()->where('branch_id', $branch_id)->first();
+    $workDays = $policy['work_time']['work_days'];
+    $allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-        return $policy['work_time']['work_days'];
-    }
+    $offDays = array_diff($allDays, $workDays);
+
+    return $offDays;
+}
 }

@@ -63,12 +63,12 @@ class FingerprintService
             $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
             $day = Carbon::parse($date);
-            $dayName = $day->format('l');
             $offDays = app(BranchService::class)->offDays($request->branch_id);
-            $availableDays = array_diff(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],  $offDays);
-        if (!in_array($dayName, $availableDays)) {
-            Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
-        }
+            $dayName = $day->format('l');
+
+            if (!in_array($dayName, $offDays)) {
+                Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
+            }
             $checkInDate = substr($log['DateTime'], 0, 10);
             if (!in_array($checkInDate, $uniqueDates)) {
                 $uniqueDates[] = $checkInDate;
