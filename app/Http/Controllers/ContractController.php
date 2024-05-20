@@ -97,7 +97,7 @@ class ContractController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateContractRequest $request, $contract)
+    public function update(Request $request, $contract)
     {
         $contract = Contract::findOrFail($contract);
         if ($contract) {
@@ -110,7 +110,7 @@ class ContractController extends Controller
             $contract->update([
                 'startTime' => $request->startTime ?: $contract->startTime,
                 'endTime' => $request->endTime ?: $contract->path,
-                'path' => $path
+                'path' => $contract->path ?: $path,
             ]);
             return ResponseHelper::success($contract, null, 'contract updated successfully', 200);
         }
