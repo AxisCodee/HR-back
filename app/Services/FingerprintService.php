@@ -273,7 +273,7 @@ class FingerprintService
                         $userStartDate = UserInfo::query()->where('user_id', $user->id)->first();
                         $startDate = Carbon::parse($userStartDate->start_date);
                         $uDate = Carbon::parse($date);
-                        $days=Date::query()->whereDate('date',$date)->exist();
+                        $days=Date::query()->whereDate('date',$date)->exists();
                         if(!$days){
                             if ($startDate->lt($uDate)) {
 
