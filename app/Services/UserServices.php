@@ -405,7 +405,7 @@ class UserServices
     public function getBaseSalary($user, $date)
     {
         if ($date) {
-            $baseSalary = UserSalary::where('user_id', $user->id)->latest();
+            $baseSalary = UserSalary::where('user_id', $user->id);
             $baseSalary = $this->userTimeService
                 ->filterDate($baseSalary, $date, 'date')->sum('salary');
             return $baseSalary;
