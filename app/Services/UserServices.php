@@ -234,7 +234,7 @@ class UserServices
                         ->update($specUser->userInfo['image'] ?? $userInfo->image, $request->file('image'), 'image')
                 ]);
             }
-        } 
+        }
 
         $specUser->first_name = $request->first_name;
         $specUser->last_name = $request->last_name;
@@ -405,9 +405,9 @@ class UserServices
     public function getBaseSalary($user, $date)
     {
         if ($date) {
-            $baseSalary = UserSalary::where('user_id', $user->id);
+            $baseSalary = UserSalary::where('user_id', $user->id)->latest();
             $baseSalary = $this->userTimeService
-                ->filterDate($baseSalary, $date, 'date')->sum('salary');;
+                ->filterDate($baseSalary, $date, 'date')->sum('salary');
             return $baseSalary;
         }
         return 0;
