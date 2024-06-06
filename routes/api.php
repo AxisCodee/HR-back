@@ -30,6 +30,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
+    Route::get('me', 'me');
+
+
 });
 
 //All the encapsulated APIs for the admin

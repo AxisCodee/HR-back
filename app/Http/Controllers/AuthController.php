@@ -124,5 +124,14 @@ class AuthController extends Controller
         ]);
     }
 
+    public function me()
+    {
+        $user = Auth::user();
+        if ($user) {
+            return ResponseHelper::success([$user]);
+        }
+        return ResponseHelper::error('You are not authorized.', 401);
+    }
+
 }
 
