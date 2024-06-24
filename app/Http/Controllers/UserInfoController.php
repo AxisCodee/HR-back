@@ -82,24 +82,25 @@ class UserInfoController extends Controller
         $salary = $request->salary;
         $result = UserInfo::findOrFail($id)->first();
         return DB::transaction(function () use ($result, $salary, $id) {
+            if(! $result)
+                return ResponseHelper::error('not updated');
+
             $result->update([
                 'salary' => $salary
             ]);
-            if ($result) {
-                UserSalary::query()
+
+            UserSalary::query()
                     ->where('user_id', $id)
                     ->whereDate('date', '=', Carbon::now()->format('Y-m'))
                     ->first()
                     ?->delete();
 
-                UserSalary::query()->create([
-                    'user_id' => $id,
-                    'date' => Carbon::now()->format('Y-m'),
-                    'salary' => $salary
-                ]);
-                return ResponseHelper::updated('Salary updated', null);
-            }
-            return ResponseHelper::error('not updated');
+            UserSalary::query()->create([
+                'user_id' => $id,
+                'date' => Carbon::now()->format('Y-m'),
+                'salary' => $salary
+            ]);
+            return ResponseHelper::updated('Salary updated', null);
         });
 
     }
