@@ -93,13 +93,13 @@ class UserInfoController extends Controller
 
             UserSalary::query()
                     ->where('user_id', $id)
-                    ->whereDate('date', '=', Carbon::now()->format('Y-m'))
+                    ->where('date', '=', Carbon::now()->format('Y-m').'-00')
                     ->first()
                     ?->delete();
 
             UserSalary::query()->create([
                 'user_id' => $id,
-                'date' => Carbon::now()->format('Y-m'),
+                'date' => Carbon::now()->format('Y-m').'-00',
                 'salary' => $salary
             ]);
             return ResponseHelper::updated('Salary updated', null);
