@@ -86,6 +86,12 @@ class UserInfoController extends Controller
                 'salary' => $salary
             ]);
             if ($result) {
+                UserSalary::query()
+                    ->where('user_id', $id)
+                    ->whereDate('date', '=', Carbon::now()->format('Y-m'))
+                    ->first()
+                    ?->delete();
+
                 UserSalary::query()->create([
                     'user_id' => $id,
                     'date' => Carbon::now()->format('Y-m'),
