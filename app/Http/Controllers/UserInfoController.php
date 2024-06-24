@@ -80,11 +80,13 @@ class UserInfoController extends Controller
     public function updateSalary(Request $request, $id)
     {
         $salary = $request->salary;
-        $result = UserInfo::findOrFail($id)->first();
+        $result = UserInfo::findOrFail($id);
         return DB::transaction(function () use ($result, $salary, $id) {
+
             if(! $result)
                 return ResponseHelper::error('not updated');
 
+            $id = $result['user_id'];
             $result->update([
                 'salary' => $salary
             ]);
