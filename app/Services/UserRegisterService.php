@@ -268,7 +268,7 @@ class UserRegisterService
 
     public function updateUserSalary($user, $userInfo, $request)
     {
-        if ($request->salary && $userInfo->salary != $request->salary) {
+        if ($request->salary) {
             $lastSalaryUpdate = $user->salary()->latest('date')->first();
             $lastSalaryDate = $lastSalaryUpdate ? $lastSalaryUpdate->date : null;
             $monthsToCreate = $lastSalaryDate ? Carbon::parse($lastSalaryDate)
@@ -280,11 +280,21 @@ class UserRegisterService
                     'salary' => $lastSalaryUpdate ? $lastSalaryUpdate->salary : 0,
                 ]);
             }
-            $user->salary()->create([
-                'user_id' => $user->id,
-                'date' => Carbon::now()->startOfMonth()->format('Y-m') . '-00',
-                'salary' => $request->salary,
-            ]);
+            $salary = UserSalary::query()
+                ->where('date', Carbon::now()->startOfMonth()->format('Y-m') . '-00')
+                ->where('user_id', '=', $user['id'])
+                ->first();
+            if($salary) {
+                $salary->update([
+                    'salary' => $request->salary
+                ]);
+            }else{
+                $user->salary()->create([
+                    'user_id' => $user->id,
+                    'date' => Carbon::now()->startOfMonth()->format('Y-m') . '-00',
+                    'salary' => $request->salary,
+                ]);
+            }
         }
         return true;
     }
