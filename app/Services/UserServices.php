@@ -409,12 +409,6 @@ class UserServices
             $baseSalary = $this->userTimeService
                 ->filterDate($baseSalary, $date, 'date')->sum('salary');
 
-                if($baseSalary == 0)
-                {
-                   $salary = UserSalary::where('user_id', $user->id)->latest()->sum('salary');
-                   return  $salary;
-                }
-
             return $baseSalary;
         }
         return 0;
