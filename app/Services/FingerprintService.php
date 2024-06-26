@@ -155,7 +155,7 @@ class FingerprintService
                             ->where('user_id', $thisUser->id)
                             ->whereNotNull('check_out')
                             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
-                            ->exists();
+                            ->first();
                         if (!$lateExistence) {
                             $attendanceDatetime = $attendance->datetime;
                             $checkOutHour = substr($attendanceDatetime, 11, 5);
