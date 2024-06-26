@@ -204,7 +204,7 @@ class UserServices
     public function getOverTime($user, $date)
     {
         if ($date) {
-            $overTimes = Late::whereNotNull('check_out')
+            $overTimes = Late::whereNotNull(['check_out', 'check_in'])
                 ->where('type', 'justified')
                 ->where('user_id', $user->id);
             $usertimeService = app(UserTimeService::class);
