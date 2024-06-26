@@ -426,6 +426,6 @@ class UserServices
         $userSalay = $user->userInfo()->first()->salary;
         $branchWorkTime = $this->branchWorkHours($user->branch_id);
         //$hourPrice = $userSalay / ($workDays * $branchWorkTime);
-        return $workDays;
+        return $branchWorkTime;
     }
 }
