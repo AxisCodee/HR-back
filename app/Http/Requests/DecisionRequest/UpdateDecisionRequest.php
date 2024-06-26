@@ -15,7 +15,7 @@ class UpdateDecisionRequest extends FormRequest
     {
         return [
             'user_id' => ['integer', 'exists:users,id'],
-            'type' => ['string','in:reward,warning,deduction,alert,penalty'],
+            'type' => ['string','in:warning,absence,reward,deduction,advanced,alert,penalty'],
             'content' => ['string'],
             'amount' =>['nullable','integer'],
         ];
