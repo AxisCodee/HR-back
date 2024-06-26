@@ -146,10 +146,9 @@ class FingerprintService
                     }
                     if ($status == '1') {
                         $companyEndTime = $userPolicy->work_time['end_time'];
-                        $this->checkUserOverTimes($thisUser->id, $attendance->datetime, $companyEndTime, $checkDate);
                         $lateExistence = Late::query()
                             ->where('user_id', $thisUser->id)
-                            ->where('check_out', '!=', null)
+                            ->whereNotNull('check_out')
                             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
                             ->exists();
                         if (!$lateExistence) {
@@ -159,8 +158,8 @@ class FingerprintService
                             if (!($companyEndTime instanceof Carbon)) {
                                 $companyEndTime = Carbon::parse($companyEndTime);
                             }
-                            $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime, false);
-                            if ($diffInMinutes >= 15) {
+                            if ($parsedHour->lt($companyEndTime)) {
+                                $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
                                 $diffLate = $parsedHour->diff($companyEndTime);
                                 $hoursLate = $diffLate->format('%H.%I');
                                 $this->storeUserLate(
@@ -172,9 +171,12 @@ class FingerprintService
                                     $attendance->datetime,
                                     $status
                                 );
+                            } else {
+                                $this->checkUserOverTimes($thisUser->id, $attendance->datetime, $companyEndTime, $checkDate);
                             }
                         }
-                    }
+                    } //
+
                 }
             }
         }
