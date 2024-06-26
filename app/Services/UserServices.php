@@ -317,7 +317,7 @@ class UserServices
     public function overTimes($user, $date)
     {
         if ($date) {
-            $overTimes = Late::whereNotNull('check_out')
+            $overTimes = Late::whereNotNull('end')
                 ->where('type', 'justified')
                 ->where('user_id', $user->id);
             $overTimes = $this->userTimeService->filterDate($overTimes, $date, 'lateDate');
