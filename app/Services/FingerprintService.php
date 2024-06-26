@@ -239,8 +239,9 @@ class FingerprintService
         if (!Carbon::parse($today)->equalTo(Carbon::parse($date))) {
             $usersWithoutAttendance = DB::table('users')
                 ->where('users.branch_id', $branch_id)
-                ->leftJoin('attendances', function ($join) use ($date) {
+                ->leftJoin('attendances', function ($join) use ($date, $branch_id) {
                     $join->on('users.pin', '=', 'attendances.pin')
+                        ->where('attendances.branch_id', '=', $branch_id)
                         ->whereRaw('DATE(attendances.datetime) = ?', $date);
                 })
                 ->whereNull('attendances.pin')
