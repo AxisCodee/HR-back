@@ -425,7 +425,7 @@ class UserServices
         $workDays = app(ReportServices::class)->workDays('Y-m', $date, $user->branch_id);
         $userSalay = $user->userInfo()->first()->salary;
         $branchWorkTime = $this->branchWorkHours($user->branch_id);
-        $hourPrice = $userSalay ;
-        return $hourPrice;
+        $hourPrice = $userSalay / ($workDays * $branchWorkTime);
+        return $workDays;
     }
 }
