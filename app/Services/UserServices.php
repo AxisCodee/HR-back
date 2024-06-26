@@ -210,7 +210,7 @@ class UserServices
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
             $totalOverTimeHours = $overTimes->sum('hours_num');
-            return round($totalOverTimeHours);
+            return round($totalOverTimeHours, 1);
         }
         return 0;
     }
