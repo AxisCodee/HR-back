@@ -431,9 +431,8 @@ class UserServices
     public function workDays($date, $branch_id)
     {
         return Date::query()
-        ->where('branch_id', $branch_id)
-        ->whereMonth('date', '=', '2024-06')
-        ->count();
-
+            ->where('branch_id', $branch_id)
+            ->whereRaw('DATE_FORMAT(date, ?) = ?', ['Y-m', $date])
+            ->count();
     }
 }
