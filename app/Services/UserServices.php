@@ -423,10 +423,13 @@ class UserServices
     public function calculateEmpHour($user, $date) //
     {
         $workDays = $this->workDays($date, $user->branch_id);
-        $userSalay = $user->userInfo()->first()->salary;
         $branchWorkTime = $this->branchWorkHours($user->branch_id);
-        $hourPrice = $userSalay / ($workDays * $branchWorkTime);
-        return $hourPrice;
+        if ($workDays > 0 && $branchWorkTime > 0) {
+            $userSalay = $user->userInfo()->first()->salary;
+            $hourPrice = $userSalay / ($workDays * $branchWorkTime);
+            return $hourPrice;
+        }
+        return 0;
     }
     public function workDays($date, $branch_id)
     {
@@ -436,5 +439,4 @@ class UserServices
             ->whereMonth('date', '=', substr($date, 5, 2)) // Extract month from $date
             ->count();
     }
-
 }

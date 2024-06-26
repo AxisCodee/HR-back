@@ -114,7 +114,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         $overTime = $this->userServices->getOverTime($this, $date);
         $hourPrice = $this->userServices->calculateEmpHour($this, $date);
-        return round($overTime * $hourPrice, 1);
+        return round($overTime * $hourPrice);
     }
 
 
@@ -123,7 +123,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         $delays = $this->userServices->getLate($this, $date);
         $hourPrice = $this->userServices->calculateEmpHour($this, $date);
-        return round($delays * $hourPrice, 1);
+        return round($delays * $hourPrice);
     }
 
 
