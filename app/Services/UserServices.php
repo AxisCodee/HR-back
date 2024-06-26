@@ -190,7 +190,7 @@ class UserServices
     {
         if ($date) {
             $lates = Late::whereNotNull('check_in')
-                ->where('type', 'Unjustified')
+                //->where('type', 'Unjustified')
                 ->where('user_id', $user->id);
             $lates = $this->userTimeService->filterDate($lates, $date, 'lateDate');
             $totalLateHours = $lates->sum('hours_num');
