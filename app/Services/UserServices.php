@@ -194,7 +194,7 @@ class UserServices
                 ->where('user_id', $user->id);
             $lates = $this->userTimeService->filterDate($lates, $date, 'lateDate');
             $totalLateHours = $lates->sum('hours_num');
-            return $totalLateHours;
+            return round($totalLateHours, 1);
         }
         return 0;
     }
