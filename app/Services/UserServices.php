@@ -431,8 +431,9 @@ class UserServices
     public function workDays($date, $branch_id)
     {
         return Date::query()
-            ->where('branch_id', $branch_id)
-            ->whereDate('date', '=', $date)
-            ->count();
+        ->where('branch_id', $branch_id)
+        ->whereDate('date', '=', '2024-06')
+        ->count();
+
     }
 }
