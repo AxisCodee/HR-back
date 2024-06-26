@@ -378,7 +378,7 @@ class FingerprintService
             }
             //    Check if the parsed check-out hour is after the company end time
             if ($parsedHour->gt($companyEndTime)) {
-                $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
+                //$diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
                 //if ($diffInMinutes >= 15) {
                     $diffLate = $parsedHour->diff($companyEndTime);
                     $hoursOverTime = $diffLate->format('%H.%I');
