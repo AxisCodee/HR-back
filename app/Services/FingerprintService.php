@@ -360,31 +360,34 @@ class FingerprintService
 
     public function checkUserOverTimes($user_id, $attendanceDatetime, $companyEndTime, $checkDate)
     {
-        $lateExistence = Late::query()
-            ->where('user_id', $user_id)
-            ->where('check_in', '==', null)
-            ->where('check_out', '==', null)
-            ->where('end', '!=', null)
-            ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
-            ->exists();
-        if (!$lateExistence) {
-            $checkOutHour = substr($attendanceDatetime, 11, 5);
-            $parsedHour = Carbon::createFromFormat('H:i', $checkOutHour);
-            if (!($companyEndTime instanceof Carbon)) {
-                $companyEndTime = Carbon::parse($companyEndTime);
+            $lateExistence = Late::query()
+                ->where('user_id', $user_id)
+                ->whereNull('check_in')
+                ->whereNull('check_out')
+                ->whereNotNull('end')
+                ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
+                ->exists();
+            if (!$lateExistence) {
+                $checkOutHour = substr($attendanceDatetime, 11, 5);
+                $parsedHour = Carbon::createFromFormat('H:i', $checkOutHour);
+                if (!($companyEndTime instanceof Carbon)) {
+                    $companyEndTime = Carbon::parse($companyEndTime);
+                }
+                // Check if the parsed check-out hour is after the company end time
+                if ($parsedHour->gt($companyEndTime)) {
+                    $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
+                    if ($diffInMinutes >= 15) {
+                        $diffLate = $parsedHour->diff($companyEndTime);
+                        $hoursOverTime = $diffLate->format('%H.%I');
+                        $this->storeUserOverTime(
+                            $user_id,
+                            $checkDate,
+                            $hoursOverTime,
+                            $checkOutHour
+                        );
+                    }
+                }
             }
-            $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime, false);
-            if ($diffInMinutes >= 15) {
-                $diffLate = $parsedHour->diff($companyEndTime);
-                $hoursOverTime = $diffLate->format('%H.%I');
-                $this->storeUserOverTime(
-                    $user_id,
-                    $checkDate,
-                    $hoursOverTime,
-                    $checkOutHour
-                );
-            }
-        }
     }
 
     public function storeUserOverTime($user_id, $checkDate, $hoursOverTime, $checkOutHour)
