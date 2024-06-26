@@ -67,7 +67,6 @@ class UserServices
                     $dates->whereYear('date', $year);
                 }
                 $count = $dates->count('id');
-
                 if ($count == 0) {
                     $percentage = 0;
                 } else {
@@ -190,7 +189,6 @@ class UserServices
     {
         if ($date) {
             $lates = Late::whereNotNull('check_in')
-                //->where('type', 'Unjustified')
                 ->where('user_id', $user->id);
             $lates = $this->userTimeService->filterDate($lates, $date, 'lateDate');
             $totalLateHours = $lates->sum('hours_num');
@@ -203,7 +201,6 @@ class UserServices
     {
         if ($date) {
             $overTimes = Late::whereNotNull('end')
-                ->where('type', 'justified')
                 ->where('user_id', $user->id);
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
@@ -233,7 +230,6 @@ class UserServices
                 ]);
             }
         }
-
         $specUser->first_name = $request->first_name;
         $specUser->last_name = $request->last_name;
         $specUser->save();
@@ -269,7 +265,7 @@ class UserServices
         return $all_users;
     }
 
-    public function UpdateSalary($request, $user)
+    public function UpdateSalary($request, $user) //not used
     {
         $user->update(['salary' => $request->salary]);
         $newsalary = UserSalary::create([
@@ -318,7 +314,7 @@ class UserServices
     {
         if ($date) {
             $overTimes = Late::whereNotNull('end')
-                ->where('type', 'justified')
+                //->where('type', 'justified')
                 ->where('user_id', $user->id);
             $overTimes = $this->userTimeService->filterDate($overTimes, $date, 'lateDate');
             return $overTimes->get();
@@ -422,5 +418,14 @@ class UserServices
         }
 
         return ResponseHelper::success($users, null, 'selected users removed successfully', 200);
+    }
+
+    public function calculateEmpHour($user, $date) //
+    {
+        $workDays = app(ReportServices::class)->workDays('Y-m-d', $date, $user->branch_id);
+        $userSalay = $user->userInfo()->first()->salary;
+        $branchWorkTime = $this->branchWorkHours($user->branch_id);
+        $hourPrice = $userSalay / ($workDays * $branchWorkTime);
+        return $hourPrice;
     }
 }

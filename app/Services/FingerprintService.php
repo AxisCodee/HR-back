@@ -128,12 +128,10 @@ class FingerprintService
                             $checkInHour = substr($attendance->datetime, 11, 15);
                             $parsedHour = Carbon::parse($checkInHour);
                             $companyStartTime = $userPolicy->work_time['start_time'];
-                            //$diffInMinutes = $parsedHour->diffInMinutes($companyStartTime, false);
                             if (!($companyStartTime instanceof Carbon)) {
                                 $companyEndTime = Carbon::parse($companyStartTime);
                             }
                             if ($parsedHour->gt($companyEndTime)) {
-                                //if ($diffInMinutes >= 15) {
                                 $diffLate = $parsedHour->diff($companyStartTime);
                                 $hoursLate = $diffLate->format('%H.%I');
                                 $this->storeUserLate(
@@ -145,7 +143,6 @@ class FingerprintService
                                     $attendance->datetime,
                                     $status
                                 );
-                                //}
                             }
                         }
                     }
@@ -164,7 +161,6 @@ class FingerprintService
                                 $companyEndTime = Carbon::parse($companyEndTime);
                             }
                             if ($parsedHour->lt($companyEndTime)) {
-                                // $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
                                 $diffLate = $parsedHour->diff($companyEndTime);
                                 $hoursLate = $diffLate->format('%H.%I');
                                 $this->storeUserLate(
@@ -181,7 +177,6 @@ class FingerprintService
                             }
                         }
                     } //
-
                 }
             }
         }
@@ -334,7 +329,6 @@ class FingerprintService
 
     public function userAbsencesDaysCount($user_id, $checkDate)
     {
-        //$startDate = Carbon::parse('2023-12-14');
         $startDate = Carbon::parse(Date::first()->date); //start fingerprint date
         $checkDate = Carbon::parse($checkDate);
         if ($checkDate->isAfter($startDate)) {
@@ -376,19 +370,16 @@ class FingerprintService
             if (!($companyEndTime instanceof Carbon)) {
                 $companyEndTime = Carbon::parse($companyEndTime);
             }
-            //    Check if the parsed check-out hour is after the company end time
+            //Check if the parsed check-out hour is after the company end time
             if ($parsedHour->gt($companyEndTime)) {
-                //$diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
-                //if ($diffInMinutes >= 15) {
-                    $diffLate = $parsedHour->diff($companyEndTime);
-                    $hoursOverTime = $diffLate->format('%H.%I');
-                    $this->storeUserOverTime(
-                        $user_id,
-                        $checkDate,
-                        $hoursOverTime,
-                        $checkOutHour
-                    );
-               // }
+                $diffLate = $parsedHour->diff($companyEndTime);
+                $hoursOverTime = $diffLate->format('%H.%I');
+                $this->storeUserOverTime(
+                    $user_id,
+                    $checkDate,
+                    $hoursOverTime,
+                    $checkOutHour
+                );
             }
         }
     }

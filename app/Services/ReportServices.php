@@ -222,7 +222,7 @@ class ReportServices
         return round((($checks * 100) / $workDays));
     }
 
-    public function monthlyCheckOut($user_id, $dateTime)//out-late
+    public function monthlyCheckOut($user_id, $dateTime) //out-late
     {
         $allMonths = array_fill_keys(range(1, 12), 0);
         $dateFormat = "%Y-%m";
@@ -243,11 +243,11 @@ class ReportServices
         }
         $month = date('n', strtotime($dateTime));
         $result = round((($checks * 100) / $workDays));
-        $allMonths  [$month] = $result;
+        $allMonths[$month] = $result;
         return $allMonths;
     }
 
-    public function monthlyCheckIn($user_id, $dateTime)//in-late
+    public function monthlyCheckIn($user_id, $dateTime) //in-late
     {
         $user = User::query()->findOrFail($user_id);
         $allMonths = array_fill_keys(range(1, 12), 0);
@@ -262,7 +262,7 @@ class ReportServices
             return $allMonths;
         }
         $result = round((($delays * 100) / $workDays));
-        $allMonths  [$month] = $result;
+        $allMonths[$month] = $result;
         return $allMonths;
     }
 
@@ -273,5 +273,6 @@ class ReportServices
             ->whereRaw('DATE_FORMAT(date, ?) = ?', [$dateFormat, $date])
             ->count();
     }
-}
 
+    
+}
