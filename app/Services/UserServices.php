@@ -432,7 +432,9 @@ class UserServices
     {
         return Date::query()
             ->where('branch_id', $branch_id)
-            ->whereRaw('DATE_FORMAT(date, ?) = ?', ['Y-m', $date])
+            ->whereYear('date', '=', substr($date, 0, 4)) // Extract year from $date
+            ->whereMonth('date', '=', substr($date, 5, 2)) // Extract month from $date
             ->count();
     }
+
 }
