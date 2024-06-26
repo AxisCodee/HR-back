@@ -35,19 +35,19 @@ class AbsenceService
         return 'updated successfully';
     }
 
-//    public function getDailyAbsence(Request $request, $branch)
-//    {
-//        $today = Carbon::now();
-//        if ($today->eq($request->date)) {
-//        } else {
-//            $dateInput = request()->input('date');
-//            $day = substr($dateInput, 8, 2);
-//            $user = User::query()->where('branch_id', $branch)->get();
-//            $result = $user->with('absences')
-//                ->whereDay('startDate', $day)->get();
-//            return $result;
-//        }
-//    }
+    //    public function getDailyAbsence(Request $request, $branch)
+    //    {
+    //        $today = Carbon::now();
+    //        if ($today->eq($request->date)) {
+    //        } else {
+    //            $dateInput = request()->input('date');
+    //            $day = substr($dateInput, 8, 2);
+    //            $user = User::query()->where('branch_id', $branch)->get();
+    //            $result = $user->with('absences')
+    //                ->whereDay('startDate', $day)->get();
+    //            return $result;
+    //        }
+    //    }
 
     public function storeAbsence(Request $request)
     {
@@ -75,9 +75,9 @@ class AbsenceService
                 'type' => $request->type,
                 'duration' => 'hourly',
                 'isPaid' => $request->type == 'sick' ? true : $request->isPaid
-            ]);
+            ]
+        );
         return $result;
-
     }
 
 
@@ -99,7 +99,7 @@ class AbsenceService
         if (!$result) {
             return $result = 'Absence not found';
         }
-        $result->update([//???
+        $result->update([ //???
             'type' => 'null'
         ]);
         return $result = 'Absence deleted successfully';
@@ -170,9 +170,11 @@ class AbsenceService
         $unpaidabsences = $user->UnPaidAbsences;
         $sickabsences = $user->sickAbsences;
 
-        return ['Paid' => $paidabsences,
+        return [
+            'Paid' => $paidabsences,
             'UnPaid' => $unpaidabsences,
-            'Sick' => $sickabsences];
+            'Sick' => $sickabsences
+        ];
     }
 
 
@@ -181,16 +183,19 @@ class AbsenceService
         $result = User::query()
             ->where('role', '!=', 'admin')
             ->where('branch_id', $request->branch_id)
-            ->with('userInfo:id,image'
-                , 'department',
-                'allAbsences'
-                , 'UnPaidAbsences',
+            ->with(
+                'userInfo:id,image',
+                'department',
+                'allAbsences',
+                'UnPaidAbsences',
                 'PaidAbsences',
                 'sickAbsences',
-            )->withCount('justifiedPaidAbsencesCount as justifiedPaid'
-                , 'justifiedUnPaidAbsencesCount as justifiedUnPaid'
-                , 'UnjustifiedPaidAbsencesCount as UnjustifiedPaid'
-                , 'UnjustifiedUnPaidAbsencesCount as UnjustifiedUnPaid')
+            )->withCount(
+                'justifiedPaidAbsencesCount as justifiedPaid',
+                'justifiedUnPaidAbsencesCount as justifiedUnPaid',
+                'UnjustifiedPaidAbsencesCount as UnjustifiedPaid',
+                'UnjustifiedUnPaidAbsencesCount as UnjustifiedUnPaid'
+            )
             ->get()
             ->toArray();
 
@@ -238,9 +243,6 @@ class AbsenceService
             $absencehours = $absences * ($worktime / 60);
             $totalhours = $absencehours + $late;
         }
-        return $totalhours;
+        return round($totalhours, 1);
     }
-
 }
-
-

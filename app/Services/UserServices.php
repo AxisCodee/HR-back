@@ -3,12 +3,10 @@
 namespace App\Services;
 
 
-use App\Http\Traits\Files;
 use App\Models\Date;
 use App\Models\Late;
 use App\Models\Policy;
 use App\Models\User;
-use App\Models\Career;
 use App\Models\Absences;
 use App\Models\Decision;
 use App\Models\Attendance;
