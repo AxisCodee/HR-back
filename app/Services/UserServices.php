@@ -422,7 +422,7 @@ class UserServices
 
     public function calculateEmpHour($user, $date) //
     {
-        $workDays = app(ReportServices::class)->workDays('Y-m-d', $date, $user->branch_id);
+        $workDays = app(ReportServices::class)->workDays('Y-m', $date, $user->branch_id);
         $userSalay = $user->userInfo()->first()->salary;
         $branchWorkTime = $this->branchWorkHours($user->branch_id);
         $hourPrice = $userSalay / ($workDays * $branchWorkTime);
