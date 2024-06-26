@@ -112,17 +112,18 @@ class User extends Authenticatable implements JWTSubject
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
-        $overTime =    $this->userServices->getOverTime($this, $date);
+        $overTime = $this->userServices->getOverTime($this, $date);
         $hourPrice = $this->userServices->calculateEmpHour($this, $date);
-        return round($overTime * $hourPrice,1);
-        //return $hourPrice ;
+        return round($overTime * $hourPrice, 1);
     }
 
 
     public function getLateAttribute()
     {
         $date = request()->query('date');
-        return $this->userServices->getLate($this, $date);
+        $delays = $this->userServices->getLate($this, $date);
+        $hourPrice = $this->userServices->calculateEmpHour($this, $date);
+        return round($delays * $hourPrice, 1);
     }
 
 
