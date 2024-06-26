@@ -114,7 +114,7 @@ class User extends Authenticatable implements JWTSubject
         $date = request()->query('date');
         $overTime =    $this->userServices->getOverTime($this, $date);
         $hourPrice = $this->userServices->calculateEmpHour($this, $date);
-        return $overTime * $hourPrice;
+        return round($overTime * $hourPrice,1);
         //return $hourPrice ;
     }
 
