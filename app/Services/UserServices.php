@@ -210,7 +210,7 @@ class UserServices
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
             $totalOverTimeHours = $overTimes->sum('hours_num');
-            return $totalOverTimeHours;
+            return round($totalOverTimeHours);
         }
         return 0;
     }
@@ -240,7 +240,6 @@ class UserServices
         $specUser->last_name = $request->last_name;
         $specUser->save();
         return $specUser->with('userInfo')->find($specUser->id);
-
     }
 
     public function editUser(UpdateUserRequest $request, $id)
