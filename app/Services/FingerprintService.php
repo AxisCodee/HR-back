@@ -366,11 +366,10 @@ class FingerprintService
     {
         $lateExistence = Late::query()
             ->where('user_id', $user_id)
-            ->whereNotNull('check_out')
             ->whereNull(['check_in', 'check_out'])
             ->whereNotNull('end')
             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
-            ->exists();
+            ->first();
         if (!$lateExistence) {
             $checkOutHour = substr($attendanceDatetime, 11, 5);
             $parsedHour = Carbon::createFromFormat('H:i', $checkOutHour);
