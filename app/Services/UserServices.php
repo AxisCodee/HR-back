@@ -192,7 +192,9 @@ class UserServices
                 ->where('user_id', $user->id);
             $lates = $this->userTimeService->filterDate($lates, $date, 'lateDate');
             $totalLateHours = $lates->sum('hours_num');
-            return round($totalLateHours, 1);
+            $totalMinutes = $totalLateHours * 60;
+            $formattedTime = sprintf('%02d:%02d', round($totalMinutes / 60), $totalMinutes % 60);
+            return $formattedTime;
         }
         return 0;
     }
@@ -206,7 +208,7 @@ class UserServices
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
             $totalOverTimeHours = $overTimes->sum('hours_num');
             $totalMinutes = $totalOverTimeHours * 60;
-            $formattedTime = sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
+            $formattedTime = sprintf('%02d:%02d', round($totalMinutes / 60), $totalMinutes % 60);
             return $formattedTime;
         }
 
