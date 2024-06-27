@@ -60,12 +60,13 @@ class FingerprintService
         
         $logsData = $array['Row'];
         $uniqueDates = [];
-        dd(array_key_exists('Row', $array));
+        //dd(array_key_exists('Row', $array));
         foreach ($logsData as $log) {
             $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
             $day = Carbon::parse($date);
             $offDays = app(BranchService::class)->offDays($request->branch_id);
+            dd($offDays);
             $dayName = $day->format('l');
             if (!in_array($dayName, $offDays)) {
                 Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
