@@ -78,7 +78,7 @@ class FingerprintService
                 $uniqueDates[] = $checkInDate;
             }
         }
-        dd($uniqueDates);
+        //dd($uniqueDates);
         // Example:
          // Dump and die to inspect $array
         // dd(array_key_exists('Row', $array)); // Check if 'Row' key exists
