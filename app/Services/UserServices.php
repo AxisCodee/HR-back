@@ -205,7 +205,14 @@ class UserServices
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
             $totalOverTimeHours = $overTimes->sum('hours_num');
-            return $totalOverTimeHours;
+
+
+            $time = Carbon::createFromFormat('H.i', '00.' . $totalOverTimeHours);
+
+            // Format it as "00:27"
+            $formattedTime = $time->format('H:i');
+
+            return $formattedTime;
         }
         return 0;
     }
