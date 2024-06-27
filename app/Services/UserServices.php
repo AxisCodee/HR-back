@@ -205,14 +205,9 @@ class UserServices
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
             $totalOverTimeHours = $overTimes->sum('hours_num');
-
-            // Convert decimal hours to minutes
             $totalMinutes = $totalOverTimeHours * 60;
-
-            // Format minutes as "HH:mm"
             $formattedTime = sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
-
-            return $totalMinutes;
+            return $formattedTime;
         }
 
         return 0;
