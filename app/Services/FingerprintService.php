@@ -57,32 +57,22 @@ class FingerprintService
     public function convertAndStoreAttendance($xml, $branchId, $request)
     {
         $array = json_decode(json_encode($xml), true);
-        
         $logsData = $array['Row'];
         $uniqueDates = [];
-        //dd(array_key_exists('Row', $array));
         foreach ($logsData as $log) {
             $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
             $day = Carbon::parse($date);
             $offDays = app(BranchService::class)->offDays($request->branch_id);
-            
             $dayName = $day->format('l');
             if (!in_array($dayName, $offDays)) {
                 Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
             }
-            
             $checkInDate = substr($log['DateTime'], 0, 10);
-            
             if (!in_array($checkInDate, $uniqueDates)) {
                 $uniqueDates[] = $checkInDate;
             }
         }
-        //dd($uniqueDates);
-        // Example:
-         // Dump and die to inspect $array
-        // dd(array_key_exists('Row', $array)); // Check if 'Row' key exists
-        // dd($log['DateTime']); // Verify the value of $log['DateTime']
         return $uniqueDates;
     }
 

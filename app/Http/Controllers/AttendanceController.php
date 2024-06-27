@@ -78,7 +78,6 @@ class AttendanceController extends Controller
             // $all_user_info = $tad->get_all_user_info();
             // $dt = $tad->get_date();
             $logs = $tad->get_att_log();
-            
             //check date table and store attendance
             $uniqueDates = [];
             //dd(Date::query()->where('branch_id', $branchId)->get()->count() > 0);
@@ -88,16 +87,12 @@ class AttendanceController extends Controller
                 $filtered_att_logs = $logs->filter_by_date(
                     ['start' => $start, 'end' => $end]
                 );
-                
                 $xml = simplexml_load_string($filtered_att_logs);
-                
                 $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId,$request);
-               
                 $allAttendances = Attendance::query()
                     ->where('branch_id', $branchId)
                     ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
                     ->get();
-                //dd($allAttendances);
             }
             if (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
                 $xml = simplexml_load_string($logs);
