@@ -48,7 +48,7 @@ class UserRegisterService
             'branch_id' => $branch_id,
             'permission' => $request->permission
         ]);
-//        $user->update(['pin' => $user->id]);
+        //        $user->update(['pin' => $user->id]);
         return $user;
     }
 
@@ -182,7 +182,7 @@ class UserRegisterService
             Contact::create([
                 'user_id' => $user_id,
                 'type' => 'normal',
-                'phone_num' => $contact['phone_num'],
+                'phone_num' => $contact['phone_num'] ?? null,
             ]);
         }
         return true;
@@ -284,11 +284,11 @@ class UserRegisterService
                 ->where('date', Carbon::now()->startOfMonth()->format('Y-m') . '-00')
                 ->where('user_id', '=', $user['id'])
                 ->first();
-            if($salary) {
+            if ($salary) {
                 $salary->update([
                     'salary' => $request->salary
                 ]);
-            }else{
+            } else {
                 $user->salary()->create([
                     'user_id' => $user->id,
                     'date' => Carbon::now()->startOfMonth()->format('Y-m') . '-00',
@@ -356,7 +356,6 @@ class UserRegisterService
             }
         }
         return true;
-
     }
 
     public function updateUserFiles($user_id, $request)
