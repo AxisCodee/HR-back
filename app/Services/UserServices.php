@@ -207,7 +207,7 @@ class UserServices
             $totalOverTimeHours = $overTimes->sum('hours_num');
 
 
-            $time = Carbon::createFromFormat('H.i', $totalOverTimeHours);
+            $time = Carbon::createFromFormat('HH.ii', $totalOverTimeHours);
 
             $formattedTime = $time->format('H:i');
 
