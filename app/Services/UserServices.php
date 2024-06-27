@@ -204,7 +204,8 @@ class UserServices
                 ->where('user_id', $user->id);
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
-            $totalOverTimeHours = $overTimes->sum('hours_num');
+            $totalOverTimeHours =  Carbon::parse($overTimes->sum('hours_num'))->format('H:i');
+
             return round($totalOverTimeHours, 1);
         }
         return 0;
