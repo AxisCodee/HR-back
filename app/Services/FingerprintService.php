@@ -57,9 +57,10 @@ class FingerprintService
     public function convertAndStoreAttendance($xml, $branchId, $request)
     {
         $array = json_decode(json_encode($xml), true);
-        dd($array);
+        
         $logsData = $array['Row'];
         $uniqueDates = [];
+        dd(array_key_exists('Row', $array));
         foreach ($logsData as $log) {
             $this->storeAttendance($log, $branchId);
             $date = date('Y-m-d', strtotime($log['DateTime']));
