@@ -88,8 +88,9 @@ class AttendanceController extends Controller
                 $filtered_att_logs = $logs->filter_by_date(
                     ['start' => $start, 'end' => $end]
                 );
-                dd($filtered_att_logs);
+                
                 $xml = simplexml_load_string($filtered_att_logs);
+                dd($xml);
                 $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId,$request);
                 $allAttendances = Attendance::query()
                     ->where('branch_id', $branchId)
