@@ -105,6 +105,7 @@ class AttendanceController extends Controller
             foreach ($allAttendances as $attendance) {
                 $attendanceDate = Carbon::parse($attendance->datetime)->format('Y-m-d');
                 $dateExists = Date::query()->whereDate('date', $attendanceDate)
+                    ->where('branch_id', $branchId)
                     ->exists();
                 if ($dateExists) {
                     $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '0');
