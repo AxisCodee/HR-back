@@ -206,13 +206,15 @@ class UserServices
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
             $totalOverTimeHours = $overTimes->sum('hours_num');
 
+            // Convert decimal hours to minutes
+            $totalMinutes = $totalOverTimeHours * 60;
 
-            $time = Carbon::createFromFormat('HH.ii', $totalOverTimeHours);
-
-            $formattedTime = $time->format('H:i');
+            // Format minutes as "HH:mm"
+            $formattedTime = sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
 
             return $formattedTime;
         }
+
         return 0;
     }
 
