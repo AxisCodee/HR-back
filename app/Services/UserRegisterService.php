@@ -40,7 +40,7 @@ class UserRegisterService
             'last_name' => $request->last_name,
             'email' => $request->email,
             'role' => $request->role,
-            'specialization' => $request->specialization,
+            'specialization' => $request->specialization ?? 'empty',
             'department_id' => $department_id,
             'password' => Hash::make($request->password),
             'pin' => $request->pin,
