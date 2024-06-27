@@ -66,7 +66,7 @@ class FingerprintService
             $date = date('Y-m-d', strtotime($log['DateTime']));
             $day = Carbon::parse($date);
             $offDays = app(BranchService::class)->offDays($request->branch_id);
-            dd($offDays);
+            dd($day);
             $dayName = $day->format('l');
             if (!in_array($dayName, $offDays)) {
                 Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
