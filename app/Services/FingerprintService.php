@@ -71,8 +71,9 @@ class FingerprintService
             if (!in_array($dayName, $offDays)) {
                 Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
             }
-            dd($dayName);
+            
             $checkInDate = substr($log['DateTime'], 0, 10);
+            dd($checkInDate);
             if (!in_array($checkInDate, $uniqueDates)) {
                 $uniqueDates[] = $checkInDate;
             }
