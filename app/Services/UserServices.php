@@ -209,7 +209,7 @@ class UserServices
             $totalOverTimeHours = $overTimes->sum('hours_num');
             $totalMinutes = $totalOverTimeHours * 60;
             $formattedTime = sprintf('%02d:%02d', round($totalMinutes / 60), $totalMinutes % 60);
-            return $totalOverTimeHours;
+            return $formattedTime;
         }
 
         return 0;
