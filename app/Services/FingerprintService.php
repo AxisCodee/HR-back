@@ -57,6 +57,7 @@ class FingerprintService
     public function convertAndStoreAttendance($xml, $branchId, $request)
     {
         $array = json_decode(json_encode($xml), true);
+        dd($array);
         $logsData = $array['Row'];
         $uniqueDates = [];
         foreach ($logsData as $log) {
@@ -74,7 +75,7 @@ class FingerprintService
             }
         }
         // Example:
-        dd($array); // Dump and die to inspect $array
+         // Dump and die to inspect $array
         // dd(array_key_exists('Row', $array)); // Check if 'Row' key exists
         // dd($log['DateTime']); // Verify the value of $log['DateTime']
         return $uniqueDates;
