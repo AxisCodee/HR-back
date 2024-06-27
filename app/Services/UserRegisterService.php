@@ -460,7 +460,7 @@ class UserRegisterService
             Contract::create(
                 [
                     'path' => $path,
-                    'startTime' => $contract['startTime'],
+                    'startTime' => Carbon::parse($contract['startTime'])->format('Y-m-d H:i:s'),
                     'endTime' => $contract['endTime'],
                     'user_id' => $id
                 ]
