@@ -78,6 +78,7 @@ class AttendanceController extends Controller
             // $all_user_info = $tad->get_all_user_info();
             // $dt = $tad->get_date();
             $logs = $tad->get_att_log();
+            dd($logs);
             //check date table and store attendance
             $uniqueDates = [];
             //dd(Date::query()->where('branch_id', $branchId)->get()->count() > 0);
