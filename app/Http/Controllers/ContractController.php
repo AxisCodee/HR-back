@@ -64,7 +64,7 @@ class ContractController extends Controller
             $contract = Contract::create(
                 [
                     'path' => $path,
-                    'startTime' => $request->startTime,
+                    'startTime' => Carbon::parse($request->startTime)->format('Y-m-d H:i:s'),
                     'endTime' => $request->endTime,
                     'user_id' => $request->user_id
                 ]
@@ -104,13 +104,18 @@ class ContractController extends Controller
             if (Carbon::parse($contract->endTime) <= Carbon::now()) {
                 return ResponseHelper::error('The Contract must be Valid');
             }
+            $path = $contract->path;
             if ($request->has('path')) {
                 $path = $this->fileService->update($contract->path, $request->file('path'), 'file');
             }
+            $startTime = $contract->startTime;
+            if ($request->startTime) {
+                $startTime = Carbon::parse($request->startTime)->format('Y-m-d H:i:s');
+            }
             $contract->update([
-                'startTime' => $request->startTime ?: $contract->startTime,
-                'endTime' => $request->endTime ?: $contract->path,
-                'path' => $contract->path ?: $path,
+                'startTime' => $startTime,
+                'endTime' => $request->endTime ?: $contract->endTime,
+                'path' => $path,
             ]);
             return ResponseHelper::success($contract, null, 'contract updated successfully', 200);
         }
@@ -168,7 +173,5 @@ class ContractController extends Controller
             $oneRequest->delete();
         }
         return ResponseHelper::deleted();
-
-
     }
 }

@@ -14,7 +14,6 @@ use App\Models\Language;
 use App\Models\UserInfo;
 use App\Models\UserSalary;
 use App\Models\Certificate;
-use App\Helper\ResponseHelper;
 use App\Models\AdditionalFile;
 use App\Models\StudySituation;
 use Illuminate\Support\Facades\Hash;
@@ -48,7 +47,6 @@ class UserRegisterService
             'branch_id' => $branch_id,
             'permission' => $request->permission
         ]);
-        //        $user->update(['pin' => $user->id]);
         return $user;
     }
 
@@ -167,11 +165,13 @@ class UserRegisterService
     public function createUserContacts($user, $contacts)
     {
         foreach ($contacts['emails'] as $contact) {
-            Contact::create([
-                'user_id' => $user->id,
-                'type' => 'normal',
-                'email' => $contact['email'],
-            ]);
+            if (isset($contact['email'])) {
+                Contact::create([
+                    'user_id' => $user->id,
+                    'type' => 'normal',
+                    'email' => $contact['email'],
+                ]);
+            }
         }
         return true;
     }
@@ -179,11 +179,13 @@ class UserRegisterService
     public function createUserPhoneNumbers($user_id, $contacts)
     {
         foreach ($contacts['phonenumbers'] as $contact) {
-            Contact::create([
-                'user_id' => $user_id,
-                'type' => 'normal',
-                'phone_num' => $contact['phone_num'] ?? null,
-            ]);
+            if (isset($contact['phone_num'])) {
+                Contact::create([
+                    'user_id' => $user_id,
+                    'type' => 'normal',
+                    'phone_num' => $contact['phone_num'],
+                ]);
+            }
         }
         return true;
     }
@@ -376,7 +378,6 @@ class UserRegisterService
 
     public function updateUserExperiences($user_id, $experiences)
     {
-
         Career::where('user_id', $user_id)->delete();
         foreach ($experiences as $experience) {
             if (isset($experience['content'])) {
@@ -393,11 +394,13 @@ class UserRegisterService
     {
         Contact::where('user_id', $user_id)->delete();
         foreach ($contacts['emails'] as $contact) {
-            Contact::create([
-                'user_id' => $user_id,
-                'type' => 'normal',
-                'email' => $contact['email'],
-            ]);
+            if (isset($contact['email'])) {
+                Contact::create([
+                    'user_id' => $user_id,
+                    'type' => 'normal',
+                    'email' => $contact['email'],
+                ]);
+            }
         }
         return true;
     }
@@ -405,11 +408,13 @@ class UserRegisterService
     public function updateUserPhoneNumbers($user_id, $contacts)
     {
         foreach ($contacts['phonenumbers'] as $contact) {
-            Contact::create([
-                'user_id' => $user_id,
-                'type' => 'normal',
-                'phone_num' => $contact['phone_num'],
-            ]);
+            if (isset($contact['phone_num'])) {
+                Contact::create([
+                    'user_id' => $user_id,
+                    'type' => 'normal',
+                    'phone_num' => $contact['phone_num'],
+                ]);
+            }
         }
         return true;
     }
@@ -457,14 +462,12 @@ class UserRegisterService
             $path = 'no contract';
         }
         if (isset($contract['startTime'], $contract['endTime'])) {
-            Contract::create(
-                [
-                    'path' => $path,
-                    'startTime' => Carbon::parse($contract['startTime'])->format('Y-m-d H:i:s'),
-                    'endTime' => $contract['endTime'],
-                    'user_id' => $id
-                ]
-            );
+            Contract::create([
+                'path' => $path,
+                'startTime' => Carbon::parse($contract['startTime'])->format('Y-m-d H:i:s'),
+                'endTime' => $contract['endTime'],
+                'user_id' => $id
+            ]);
         }
         return true;
     }
