@@ -66,11 +66,12 @@ class FingerprintService
             $date = date('Y-m-d', strtotime($log['DateTime']));
             $day = Carbon::parse($date);
             $offDays = app(BranchService::class)->offDays($request->branch_id);
-            dd($day);
+            
             $dayName = $day->format('l');
             if (!in_array($dayName, $offDays)) {
                 Date::updateOrCreate(['date' => $date, 'branch_id' => $branchId]);
             }
+            dd($dayName);
             $checkInDate = substr($log['DateTime'], 0, 10);
             if (!in_array($checkInDate, $uniqueDates)) {
                 $uniqueDates[] = $checkInDate;
