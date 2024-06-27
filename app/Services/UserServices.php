@@ -212,7 +212,7 @@ class UserServices
             // Format minutes as "HH:mm"
             $formattedTime = sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
 
-            return $formattedTime;
+            return $totalMinutes;
         }
 
         return 0;
