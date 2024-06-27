@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->string('path');
-            $table->dateTime('startTime')->default(Carbon::now());
+            $table->dateTime('startTime')->default(Carbon::now()->format('Y-m-d H:i:s'));
             $table->date('endTime');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
