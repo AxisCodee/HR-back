@@ -73,11 +73,12 @@ class FingerprintService
             }
             
             $checkInDate = substr($log['DateTime'], 0, 10);
-            dd($checkInDate);
+            
             if (!in_array($checkInDate, $uniqueDates)) {
                 $uniqueDates[] = $checkInDate;
             }
         }
+        dd($uniqueDates);
         // Example:
          // Dump and die to inspect $array
         // dd(array_key_exists('Row', $array)); // Check if 'Row' key exists
