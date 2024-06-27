@@ -97,7 +97,7 @@ class AttendanceController extends Controller
                     ->where('branch_id', $branchId)
                     ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
                     ->get();
-                dd($allAttendances);
+                //dd($allAttendances);
             }
             if (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
                 $xml = simplexml_load_string($logs);
