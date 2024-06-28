@@ -17,6 +17,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Collection;
+use DateTime;
 
 class UserServices
 {
@@ -188,13 +190,10 @@ class UserServices
     public function getLate($user, $date)
     {
         if ($date) {
-            $lates = Late::whereNotNull('check_in')
+            $delays = Late::whereNotNull('check_in')
                 ->where('user_id', $user->id);
-            $lates = $this->userTimeService->filterDate($lates, $date, 'lateDate');
-            $totalLateHours = $lates->sum('hours_num');
-            $totalMinutes = $totalLateHours * 60;
-            $formattedTime = sprintf('%02d:%02d', round($totalMinutes / 60), $totalMinutes % 60);
-            return $formattedTime;
+            $delays = $this->userTimeService->filterDate($delays, $date, 'lateDate');
+            return $this->formatAndSumOvertimes($delays);
         }
         return 0;
     }
@@ -206,30 +205,29 @@ class UserServices
                 ->where('user_id', $user->id);
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
-            // $totalOverTimeHours = $overTimes->sum('hours_num');
-            // $totalMinutes = $totalOverTimeHours * 60;
-            // $formattedTime = sprintf('%02d:%02d', round($totalMinutes / 60), $totalMinutes % 60);
-            // return $formattedTime;
             $overTimes = $overTimes->pluck('hours_num');
-
-            // Convert each time from %H.%I to HH:MM format and sum the total minutes
-            $totalMinutes = $overTimes->reduce(function ($carry, $hoursNum) {
-                $timeParts = explode('.', $hoursNum);
-                $hours = (int)$timeParts[0];
-                $minutes = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
-
-                return $carry + ($hours * 60) + $minutes;
-            }, 0);
-
-            // Convert the total minutes back to HH:MM format
-            $totalHours = intdiv($totalMinutes, 60);
-            $totalRemainingMinutes = $totalMinutes % 60;
-
-            $totalTimeFormatted = sprintf('%02d:%02d', $totalHours, $totalRemainingMinutes);
-
-            return $totalTimeFormatted;
+            return $this->formatAndSumOvertimes($overTimes);
         }
         return 0;
+    }
+
+
+    function formatAndSumOvertimes(Collection $times)
+    {
+        // Pluck the 'hours_num' column from the collection
+        $hoursNums = $times->pluck('hours_num');
+        // Convert each time from %H.%I to HH:MM format and sum the total minutes
+        $totalMinutes = $hoursNums->reduce(function ($carry, $hoursNum) {
+            $timeParts = explode('.', $hoursNum);
+            $hours = (int)$timeParts[0];
+            $minutes = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
+            return $carry + ($hours * 60) + $minutes;
+        }, 0);
+        // Convert the total minutes back to HH:MM format
+        $totalHours = intdiv($totalMinutes, 60);
+        $totalRemainingMinutes = $totalMinutes % 60;
+        $totalTimeFormatted = sprintf('%02d:%02d', $totalHours, $totalRemainingMinutes);
+        return $totalTimeFormatted;
     }
 
     public function updateAdmin($specUser, $request)
