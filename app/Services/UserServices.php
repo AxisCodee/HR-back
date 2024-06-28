@@ -206,10 +206,28 @@ class UserServices
                 ->where('user_id', $user->id);
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
-            $totalOverTimeHours = $overTimes->sum('hours_num');
-            $totalMinutes = $totalOverTimeHours * 60;
-            $formattedTime = sprintf('%02d:%02d', round($totalMinutes / 60), $totalMinutes % 60);
-            return $formattedTime;
+            // $totalOverTimeHours = $overTimes->sum('hours_num');
+            // $totalMinutes = $totalOverTimeHours * 60;
+            // $formattedTime = sprintf('%02d:%02d', round($totalMinutes / 60), $totalMinutes % 60);
+            // return $formattedTime;
+            $overTimes = $overTimes->pluck('hours_num');
+
+            // Convert each time from %H.%I to HH:MM format and sum the total minutes
+            $totalMinutes = $overTimes->reduce(function ($carry, $hoursNum) {
+                $timeParts = explode('.', $hoursNum);
+                $hours = (int)$timeParts[0];
+                $minutes = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
+
+                return $carry + ($hours * 60) + $minutes;
+            }, 0);
+
+            // Convert the total minutes back to HH:MM format
+            $totalHours = intdiv($totalMinutes, 60);
+            $totalRemainingMinutes = $totalMinutes % 60;
+
+            $totalTimeFormatted = sprintf('%02d:%02d', $totalHours, $totalRemainingMinutes);
+
+            return $totalTimeFormatted;
         }
         return 0;
     }
