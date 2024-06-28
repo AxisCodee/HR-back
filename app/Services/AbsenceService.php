@@ -243,6 +243,12 @@ class AbsenceService
             $absencehours = $absences * ($worktime / 60);
             $totalhours = $absencehours + $late;
         }
-        return Carbon::parse($totalhours)->format('HH:MM');
+        return $this->parseTime($totalhours);
+    }
+
+    function parseTime($time)
+    {
+        list($hours, $minutes) = explode('.', $time);
+        return sprintf('%02d:%02d', $hours, $minutes);
     }
 }
