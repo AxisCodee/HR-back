@@ -243,7 +243,8 @@ class AbsenceService
             $absencehours = $absences * ($worktime / 60);
             $totalhours = $absencehours + $late;
         }
-        return $this->parseTime($totalhours);
+        return $totalhours;
+        // return $this->parseTime($totalhours);
     }
 
     function parseTime($time)
