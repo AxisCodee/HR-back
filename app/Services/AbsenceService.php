@@ -243,6 +243,6 @@ class AbsenceService
             $absencehours = $absences * ($worktime / 60);
             $totalhours = $absencehours + $late;
         }
-        return round($totalhours, 1);
+        return Carbon::parse($totalhours)->format('H:i');
     }
 }
