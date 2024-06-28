@@ -211,7 +211,7 @@ class UserServices
     }
 
 
-    function formatAndSumOvertimes(Collection $times)
+    function formatAndSumOvertimes( $times)
     {
         // Pluck the 'hours_num' column from the collection
         $hoursNums = $times->pluck('hours_num');
