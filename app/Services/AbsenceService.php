@@ -243,13 +243,21 @@ class AbsenceService
             $absencehours = $absences * ($worktime / 60);
             $totalhours = $absencehours + $late;
         }
-        return $totalhours;
-        // return $this->parseTime($totalhours);
+        //return $totalhours;
+         return $this->parseTime($totalhours);
     }
 
     function parseTime($time)
     {
-        list($hours, $minutes) = explode('.', $time);
-        return sprintf('%02d:%02d', $hours, $minutes);
+        // Ensure the time string contains a period and both parts
+        if (strpos($time, '.') !== false) {
+            list($hours, $minutes) = explode('.', $time);
+            // Ensure both hours and minutes are present
+            if (isset($hours) && isset($minutes)) {
+                return sprintf('%02d:%02d', $hours, $minutes);
+            }
+        }
+        // If the format is incorrect, return a default value or handle the error as needed
+        return '00:00';
     }
 }
