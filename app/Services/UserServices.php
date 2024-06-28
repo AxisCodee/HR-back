@@ -205,8 +205,7 @@ class UserServices
                 ->where('user_id', $user->id);
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
-        
-            return $this->formatAndSumOvertimes($overTimes->pluck('hours_num')->get());
+            return $this->formatAndSumOvertimes($overTimes);
         }
         return 0;
     }
