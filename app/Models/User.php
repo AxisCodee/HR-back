@@ -467,8 +467,8 @@ class User extends Authenticatable implements JWTSubject
     public function getTotalAbsenceHoursAttribute()
     {
         $date = request()->query('date');
-        if ($date) { return 0;
-            //return $this->absenceService->totalAbsenceHours($this->id, $date);
+        if ($date) { 
+            return $this->absenceService->totalAbsenceHours($this->id, $date);
         }
     }
 
