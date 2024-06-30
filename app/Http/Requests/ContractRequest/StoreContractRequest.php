@@ -24,10 +24,10 @@ class StoreContractRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'path' => ['required'],
-            'startTime' => ['required','date','min:9'],
-            'endTime' => ['required','date','min:9'],
-            'user_id' => ['required','exists:users,id']
+            'path' => ['required', 'mimes:pdf'],
+            'startTime' => ['required', 'date_format:Y-m-d'],
+            'endTime' => ['required', 'date_format:Y-m-d'],
+            'user_id' => ['required', 'exists:users,id']
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -3,12 +3,10 @@
 namespace App\Services;
 
 
-use App\Http\Traits\Files;
 use App\Models\Date;
 use App\Models\Late;
 use App\Models\Policy;
 use App\Models\User;
-use App\Models\Career;
 use App\Models\Absences;
 use App\Models\Decision;
 use App\Models\Attendance;
@@ -19,6 +17,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Collection;
+use DateTime;
 
 class UserServices
 {
@@ -69,7 +69,6 @@ class UserServices
                     $dates->whereYear('date', $year);
                 }
                 $count = $dates->count('id');
-
                 if ($count == 0) {
                     $percentage = 0;
                 } else {
@@ -191,12 +190,10 @@ class UserServices
     public function getLate($user, $date)
     {
         if ($date) {
-            $lates = Late::whereNotNull('check_in')
-                ->where('type', 'Unjustified')
+            $delays = Late::whereNotNull('check_in')
                 ->where('user_id', $user->id);
-            $lates = $this->userTimeService->filterDate($lates, $date, 'lateDate');
-            $totalLateHours = $lates->sum('hours_num');
-            return $totalLateHours;
+            $delays = $this->userTimeService->filterDate($delays, $date, 'lateDate');
+            return $this->formatAndSumOvertimes($delays);
         }
         return 0;
     }
@@ -204,15 +201,32 @@ class UserServices
     public function getOverTime($user, $date)
     {
         if ($date) {
-            $overTimes = Late::whereNotNull('check_out')
-                ->where('type', 'justified')
+            $overTimes = Late::whereNotNull('end')
                 ->where('user_id', $user->id);
             $usertimeService = app(UserTimeService::class);
             $overTimes = $usertimeService->filterDate($overTimes, $date, 'lateDate');
-            $totalOverTimeHours = $overTimes->sum('hours_num');
-            return $totalOverTimeHours;
+            return $this->formatAndSumOvertimes($overTimes);
         }
         return 0;
+    }
+
+
+    function formatAndSumOvertimes( $times)
+    {
+        // Pluck the 'hours_num' column from the collection
+        $hoursNums = $times->pluck('hours_num');
+        // Convert each time from %H.%I to HH:MM format and sum the total minutes
+        $totalMinutes = $hoursNums->reduce(function ($carry, $hoursNum) {
+            $timeParts = explode('.', $hoursNum);
+            $hours = (int)$timeParts[0];
+            $minutes = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
+            return $carry + ($hours * 60) + $minutes;
+        }, 0);
+        // Convert the total minutes back to HH:MM format
+        $totalHours = intdiv($totalMinutes, 60);
+        $totalRemainingMinutes = $totalMinutes % 60;
+        $totalTimeFormatted = sprintf('%02d:%02d', $totalHours, $totalRemainingMinutes);
+        return $totalTimeFormatted;
     }
 
     public function updateAdmin($specUser, $request)
@@ -235,12 +249,10 @@ class UserServices
                 ]);
             }
         }
-
         $specUser->first_name = $request->first_name;
         $specUser->last_name = $request->last_name;
         $specUser->save();
         return $specUser->with('userInfo')->find($specUser->id);
-
     }
 
     public function editUser(UpdateUserRequest $request, $id)
@@ -272,7 +284,7 @@ class UserServices
         return $all_users;
     }
 
-    public function UpdateSalary($request, $user)
+    public function UpdateSalary($request, $user) //not used
     {
         $user->update(['salary' => $request->salary]);
         $newsalary = UserSalary::create([
@@ -320,8 +332,8 @@ class UserServices
     public function overTimes($user, $date)
     {
         if ($date) {
-            $overTimes = Late::whereNotNull('check_out')
-                ->where('type', 'justified')
+            $overTimes = Late::whereNotNull('end')
+                //->where('type', 'justified')
                 ->where('user_id', $user->id);
             $overTimes = $this->userTimeService->filterDate($overTimes, $date, 'lateDate');
             return $overTimes->get();
@@ -425,5 +437,25 @@ class UserServices
         }
 
         return ResponseHelper::success($users, null, 'selected users removed successfully', 200);
+    }
+
+    public function calculateEmpHour($user, $date) //
+    {
+        $workDays = $this->workDays($date, $user->branch_id);
+        $branchWorkTime = $this->branchWorkHours($user->branch_id);
+        if ($workDays > 0 && $branchWorkTime > 0) {
+            $userSalay = $user->userInfo()->first()->salary;
+            $hourPrice = $userSalay / ($workDays * $branchWorkTime);
+            return $hourPrice;
+        }
+        return 0;
+    }
+    public function workDays($date, $branch_id)
+    {
+        return Date::query()
+            ->where('branch_id', $branch_id)
+            ->whereYear('date', '=', substr($date, 0, 4)) // Extract year from $date
+            ->whereMonth('date', '=', substr($date, 5, 2)) // Extract month from $date
+            ->count();
     }
 }

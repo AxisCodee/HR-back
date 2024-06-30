@@ -138,15 +138,17 @@ class FingerprintService
                     if ($status == '0') {
                         $lateExistence = Late::query()
                             ->where('user_id', $thisUser->id)
-                            ->where('check_in', '!=', null)
+                            ->whereNotNull('check_in')
                             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
                             ->exists();
                         if (!$lateExistence) {
                             $checkInHour = substr($attendance->datetime, 11, 15);
                             $parsedHour = Carbon::parse($checkInHour);
                             $companyStartTime = $userPolicy->work_time['start_time'];
-                            $diffInMinutes = $parsedHour->diffInMinutes($companyStartTime, false);
-                            if ($diffInMinutes >= 15) {
+                            if (!($companyStartTime instanceof Carbon)) {
+                                $companyEndTime = Carbon::parse($companyStartTime);
+                            }
+                            if ($parsedHour->gt($companyEndTime)) {
                                 $diffLate = $parsedHour->diff($companyStartTime);
                                 $hoursLate = $diffLate->format('%H.%I');
                                 $this->storeUserLate(
@@ -167,7 +169,7 @@ class FingerprintService
                             ->where('user_id', $thisUser->id)
                             ->whereNotNull('check_out')
                             ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
-                            ->exists();
+                            ->first();
                         if (!$lateExistence) {
                             $attendanceDatetime = $attendance->datetime;
                             $checkOutHour = substr($attendanceDatetime, 11, 5);
@@ -176,7 +178,6 @@ class FingerprintService
                                 $companyEndTime = Carbon::parse($companyEndTime);
                             }
                             if ($parsedHour->lt($companyEndTime)) {
-                                $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
                                 $diffLate = $parsedHour->diff($companyEndTime);
                                 $hoursLate = $diffLate->format('%H.%I');
                                 $this->storeUserLate(
@@ -188,16 +189,14 @@ class FingerprintService
                                     $attendance->datetime,
                                     $status
                                 );
-                            } else {
+                            } elseif ($parsedHour->gt($companyEndTime)) {
                                 $this->checkUserOverTimes($thisUser->id, $attendance->datetime, $companyEndTime, $checkDate);
                             }
                         }
                     } //
-
                 }
             }
         }
-
     }
 
     public function storeEnd($checkInDate, $pin, $branchId)
@@ -273,7 +272,6 @@ class FingerprintService
 
                     $this->checkUserAbsences($user, $date, $branch_id);
                 }
-
             }
         }
     }
@@ -307,8 +305,6 @@ class FingerprintService
                                 $this->storeAbsence($user, $date, $userPolicy, $branch_id);
                             }
                         }
-
-
                     }
                 }
             }
@@ -350,7 +346,6 @@ class FingerprintService
 
     public function userAbsencesDaysCount($user_id, $checkDate)
     {
-        //$startDate = Carbon::parse('2023-12-14');
         $startDate = Carbon::parse(Date::first()->date); //start fingerprint date
         $checkDate = Carbon::parse($checkDate);
         if ($checkDate->isAfter($startDate)) {
@@ -380,35 +375,30 @@ class FingerprintService
 
     public function checkUserOverTimes($user_id, $attendanceDatetime, $companyEndTime, $checkDate)
     {
-
-            $lateExistence = Late::query()
-                ->where('user_id', $user_id)
-                ->whereNull('check_in')
-                ->whereNull('check_out')
-                ->whereNotNull('end')
-                ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
-                ->exists();
-            if (!$lateExistence) {
-                $checkOutHour = substr($attendanceDatetime, 11, 5);
-                $parsedHour = Carbon::createFromFormat('H:i', $checkOutHour);
-                if (!($companyEndTime instanceof Carbon)) {
-                    $companyEndTime = Carbon::parse($companyEndTime);
-                }
-                // Check if the parsed check-out hour is after the company end time
-                if ($parsedHour->gt($companyEndTime)) {
-                    $diffInMinutes = $parsedHour->diffInMinutes($companyEndTime);
-                    if ($diffInMinutes >= 15) {
-                        $diffLate = $parsedHour->diff($companyEndTime);
-                        $hoursOverTime = $diffLate->format('%H.%I');
-                        $this->storeUserOverTime(
-                            $user_id,
-                            $checkDate,
-                            $hoursOverTime,
-                            $checkOutHour
-                        );
-                    }
-                }
+        $lateExistence = Late::query()
+            ->where('user_id', $user_id)
+            ->whereNull(['check_in', 'check_out'])
+            ->whereNotNull('end')
+            ->whereRaw('DATE(lateDate) = ? ', [$checkDate])
+            ->first();
+        if (!$lateExistence) {
+            $checkOutHour = substr($attendanceDatetime, 11, 5);
+            $parsedHour = Carbon::createFromFormat('H:i', $checkOutHour);
+            if (!($companyEndTime instanceof Carbon)) {
+                $companyEndTime = Carbon::parse($companyEndTime);
             }
+            //Check if the parsed check-out hour is after the company end time
+            if ($parsedHour->gt($companyEndTime)) {
+                $diffLate = $parsedHour->diff($companyEndTime);
+                $hoursOverTime = $diffLate->format('%H.%I');
+                $this->storeUserOverTime(
+                    $user_id,
+                    $checkDate,
+                    $hoursOverTime,
+                    $checkOutHour
+                );
+            }
+        }
     }
 
     public function storeUserOverTime($user_id, $checkDate, $hoursOverTime, $checkOutHour)

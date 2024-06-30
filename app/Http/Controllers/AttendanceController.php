@@ -27,7 +27,7 @@ class AttendanceController extends Controller
         $this->fingerprintService = $fingerprintService;
     }
 
-    public function getAttendanceLogs(Request $request)//TODO
+    public function getAttendanceLogs(Request $request) //TODO
     {
         $fingerprintIP = Branch::query()->findOrFail($request->branch_id)->fingerprint_scanner_ip;
         $tad_factory = new TADFactory(['ip' => $fingerprintIP]);
@@ -82,13 +82,13 @@ class AttendanceController extends Controller
             $uniqueDates = [];
             //dd(Date::query()->where('branch_id', $branchId)->get()->count() > 0);
             if (Date::query()->where('branch_id', $branchId)->get()->count() > 0) {
-                $start = Date::latest('date')->value('date');
+                $start = Date::latest('date')->where('branch_id', $branchId)->value('date');
                 $end = Carbon::now()->format('Y-m-d');
                 $filtered_att_logs = $logs->filter_by_date(
                     ['start' => $start, 'end' => $end]
                 );
                 $xml = simplexml_load_string($filtered_att_logs);
-                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId,$request);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId, $request);
                 $allAttendances = Attendance::query()
                     ->where('branch_id', $branchId)
                     ->whereRaw('DATE(datetime) BETWEEN ? AND ?', [$start, $end])
@@ -96,7 +96,7 @@ class AttendanceController extends Controller
             }
             if (Date::query()->where('branch_id', $branchId)->get()->count() == 0) {
                 $xml = simplexml_load_string($logs);
-                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId,$request);
+                $uniqueDates = $this->fingerprintService->convertAndStoreAttendance($xml, $branchId, $request);
                 $allAttendances = Attendance::query()
                     ->where('branch_id', $branchId)
                     ->get();
@@ -105,6 +105,7 @@ class AttendanceController extends Controller
             foreach ($allAttendances as $attendance) {
                 $attendanceDate = Carbon::parse($attendance->datetime)->format('Y-m-d');
                 $dateExists = Date::query()->whereDate('date', $attendanceDate)
+                    ->where('branch_id', $branchId)
                     ->exists();
                 if ($dateExists) {
                     $this->fingerprintService->storeUserDelays($attendance->pin, $branchId, $attendance->datetime, '0');
@@ -117,7 +118,7 @@ class AttendanceController extends Controller
                 $this->fingerprintService->storeUserAbsences($date, $branchId); //store absence
             }
             return ResponseHelper::success([], null, 'Attendances logs stored successfully');
-       });
+        });
     }
 
     public function importFromFingerprint(Request $request)
