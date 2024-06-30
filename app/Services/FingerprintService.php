@@ -99,6 +99,23 @@ class FingerprintService
                 $attendanceObj->branch_id = $userLog->branch->id;
                 $attendanceObj->save();
             }
+        }elseif($branchId == 2 || $branchId == 3){
+            Attendance::query()
+                ->where('pin', $log['PIN'])
+                ->where('branch_id', $branchId)
+                ->whereRaw('DATE(datetime) = ? ', [$formattedDateTime])
+                ->where('status', 1)
+                ->first()?->delete();
+            $attendanceObj = new Attendance();
+            $attendanceObj->pin = intval($log['PIN']);
+            $attendanceObj->datetime = $log['DateTime'];
+            $attendanceObj->verified = $log['Verified'];
+            $attendanceObj->status = 1;
+            $attendanceObj->work_code = $log['WorkCode'];
+            if ($userLog) {
+                $attendanceObj->branch_id = $userLog->branch->id;
+                $attendanceObj->save();
+            }
         }
     }
 
