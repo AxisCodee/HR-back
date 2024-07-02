@@ -416,6 +416,23 @@ class UserServices
 
     public function getBaseSalary($user, $date)
     {
+        $lastSalary = UserSalary::query()
+            ->where('user_id', $user->id)
+            ->latest('date')
+            ->first();
+        logger($lastSalary);
+        $thisMonth = Carbon::now();
+
+        if($lastSalary)
+            while ($lastSalary['date'] < ($thisMonth->format('Y-m') . '-00') ) {
+                UserSalary::query()
+                    ->create([
+                        'user_id' => $user->id,
+                        'date' => $thisMonth->format('Y-m') . '-00',
+                        'salary' => $lastSalary['salary'],
+                    ]);
+                $thisMonth = $thisMonth->subMonth();
+            }
         if ($date) {
             $baseSalary = UserSalary::where('user_id', $user->id);
             $baseSalary = $this->userTimeService
