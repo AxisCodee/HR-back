@@ -19,7 +19,7 @@ class BranchService
 {
     public function index()
     {
-        $branches = Branch::withCount('users')->get()->toArray();
+        $branches = auth()->user()->branches()->withCount('users')->get()->toArray();
         return $branches;
     }
 

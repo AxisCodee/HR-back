@@ -467,7 +467,7 @@ class User extends Authenticatable implements JWTSubject
     public function getTotalAbsenceHoursAttribute()
     {
         $date = request()->query('date');
-        if ($date) { 
+        if ($date) {
             return $this->absenceService->totalAbsenceHours($this->id, $date);
         }
     }
@@ -711,5 +711,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(RateType::class, 'rate_users', 'evalutor_id', 'rateType_id')
             ->withPivot('rate_id', 'user_id', 'rate');
+    }
+
+    public function branches(): BelongsToMany
+    {
+        return $this->belongsToMany(Branch::class);
     }
 }
