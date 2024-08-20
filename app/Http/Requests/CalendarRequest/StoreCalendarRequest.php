@@ -25,7 +25,7 @@ class StoreCalendarRequest extends FormRequest
     {
         return [
             'title' => ['required','string','between:10,100'],
-            'description' =>['nullable','string','between:10,255'],
+            'description' =>['nullable','string','between:0,255'],
             'start'=>['required', 'date','after_or_equal:today'],
             'end'=>['required', 'date','after_or_equal:start'],
         ];
