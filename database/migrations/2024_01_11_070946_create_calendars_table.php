@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('description');
             $table->dateTime('start')->nullable(false);
             $table->dateTime('end')->nullable(false);
+            $table->foreignId('id')
+                ->constrained('branches')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }
