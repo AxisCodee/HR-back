@@ -13,7 +13,8 @@ class Calendar extends Model
         'title',
         'description',
         'start',
-        'end'
+        'end',
+        'branch_id'
     ];
 
 }

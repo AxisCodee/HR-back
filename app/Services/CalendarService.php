@@ -13,7 +13,7 @@ class CalendarService
 {
     public function All()
     {
-        $all_events = Calendar::query()->get()->toArray();
+        $all_events = Calendar::query()->where('branch_id', \request('branch_id'))->get()->toArray();
         if (empty($all_events)) {
             return ResponseHelper::success('events not found');
         } else {
@@ -24,6 +24,7 @@ class CalendarService
     public function store($request)
     {
         $validate = $request->validated();
+        $validate['branch_id'] = $request->branch_id;
         $new = Calendar::create($validate);
         return ResponseHelper::success($new,'Event created successfuly');
     }
