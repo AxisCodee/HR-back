@@ -8,7 +8,6 @@ use App\Models\Calendar;
 use App\Helper\ResponseHelper;
 use App\Http\Requests\CalendarRequest;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class CalendarService
 {
@@ -25,7 +24,7 @@ class CalendarService
     public function store($request)
     {
         $validate = $request->validated();
-        $validate['branch_id'] = Auth::user()->branch_id;
+        $validate['branch_id'] = $request->branch_id;
         $new = Calendar::create($validate);
         return ResponseHelper::success($new,'Event created successfuly');
     }
