@@ -64,6 +64,7 @@ class LateService
                     $query->select(DB::raw("SUM(hours_num)"));
                 },
             ])
+            ->whereNot('role', 'admin')
             ->get()
             ->toArray();
 
