@@ -49,7 +49,7 @@ class LateService
     public static function userLates(Request $request)
     {
         $result = User::query()->where('branch_id', $request->branch_id)
-            ->with('userInfo:id,image', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
+            ->with('userInfo:id,image,user_id', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
             ->withCount([
                 'justifiedPaidLatesCount as justifiedPaid' => function ($query) {
                     $query->select(DB::raw("SUM(hours_num)"));
