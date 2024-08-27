@@ -25,7 +25,7 @@ class UpdateLateRequest extends FormRequest
     {
         return [
             'id' => ['required', 'exists:lates,id'],
-            'type' => ['in:normal,justified,Unjustified'],
+            'type' => ['in:normal,justified,Unjustified,sick'],
             'isPaid' => ['boolean'],
         ];
     }
