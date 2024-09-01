@@ -13,7 +13,7 @@ class CalendarService
 {
     public function All()
     {
-        $all_events = Calendar::query()->where('branch_id', \request('branch_id'))->get()->toArray();
+        $all_events = Calendar::query()->where('branch_id', request('branch_id'))->get()->toArray();
         if (empty($all_events)) {
             return ResponseHelper::success('events not found');
         } else {
@@ -46,6 +46,7 @@ class CalendarService
     public function today()
     {
         $today = Calendar::whereDate('start', now()
+            ->where('branch_id', \request('branch_id'))
             ->format('Y-m-d'))
             ->get()
             ->toArray();
@@ -58,7 +59,7 @@ class CalendarService
 
     public function specific_date($date)
     {
-        $data = Calendar::whereDate('start', $date)->get()->toArray();
+        $data = Calendar::whereDate('start', $date)->where('branch_id', \request('branch_id'))->get()->toArray();
         if (empty($data)) {
             return ResponseHelper::success('events not found');
         } else {
@@ -74,6 +75,7 @@ class CalendarService
     {
         $after_week = now()->addDays(7);
         $this_week = Calendar::whereBetween('start', [now()->format('Y-m-d'), $after_week])
+            ->where('branch_id', \request('branch_id'))
             ->get()->toArray();
         if (empty($this_week)) {
             return ResponseHelper::success('events not found');
@@ -87,6 +89,7 @@ class CalendarService
         $monthStart = now()->startOfMonth()->format('Y-m-d');
         $monthEnd = now()->endOfMonth()->format('Y-m-d');
         $this_month = Calendar::whereBetween('start', [$monthStart, $monthEnd])
+            ->where('branch_id', \request('branch_id'))
             ->get()
             ->toArray();
         if (empty($this_month)) {
