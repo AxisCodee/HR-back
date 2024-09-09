@@ -195,9 +195,9 @@ class LateController extends Controller
             'user_id' => ['required', 'exists:users,id', 'integer'],
         ]);
 
-        if(! isset($request->date)){
-            $request->merge(['date' => Carbon::now()->format('Y-m')]);
-        }
+//        if(! isset($request->date)){
+//            $request->merge(['date' => Carbon::now()->format('Y-m')]);
+//        }
         $late = $this->lateService->allUserLates($request);
 
         return ResponseHelper::success(
