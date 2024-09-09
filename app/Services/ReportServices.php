@@ -66,7 +66,9 @@ class ReportServices
             'attendance' => function ($query) use ($date) {
                 $query->whereDate('datetime', $date);
             }
-        ])->get()->toArray();
+        ])
+            ->whereNot('role', 'admin')
+            ->get()->toArray();
         return ResponseHelper::success($result);
     }
 
@@ -274,5 +276,5 @@ class ReportServices
             ->count();
     }
 
-    
+
 }
