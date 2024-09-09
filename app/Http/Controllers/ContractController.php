@@ -33,9 +33,9 @@ class ContractController extends Controller
                 if ($endTime->gte(Carbon::now())) {
                     $status = 'active';
                     $result = [
-                        'startDate' => Carbon::make($contract['startTime'])->toDateTimeString(),
+                        'startDate' => Carbon::make($contract['startTime'])->toDateString(),
                         'path' => $contract['path'],
-                        'endDate' => Carbon::make($contract['endTime'])->toDateTimeString(),
+                        'endDate' => Carbon::make($contract['endTime'])->toDateString(),
                         'user_id' => $contract['user_id'],
                         'contract_id' => $contract->id,
                         'user' => $contract['user'],
