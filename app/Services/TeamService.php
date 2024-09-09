@@ -147,12 +147,9 @@ class TeamService
                         ]
                     );
             }
-//            User::where('department_id', $department->id)
+///            User::where('department_id', $department->id)
 //                ->update(['department_id' => null]);
             //set department_id null for all user
-            User::where('department_id', $department->id)
-                ->where('role', 'team_leader')
-                ->update(['role' => 'employee']);
             // set role employee for team leader to reset roles for all department
             if ($request->users_array) { //store many users in team as array
                 foreach ($request->users_array as $userId) {
@@ -167,6 +164,9 @@ class TeamService
                 }
             }
             if ($request->team_leader && $request->team_leader !== "undefined") {
+                User::where('department_id', $department->id)
+                    ->where('role', 'team_leader')
+                    ->update(['role' => 'employee']);
                 $leader = $request->team_leader;
                 $teamLeader = User::where('id', $leader)->where('role', '!=', 'admin')
                     ->first(); // team leader
