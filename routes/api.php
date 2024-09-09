@@ -369,7 +369,7 @@ Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendance
 Route::post('importFromFingerprint', [AttendanceController::class, 'importFromFingerprint']);
 
 Route::get('/test', function (){
-     return User::with(['PaidLates' => function (Builder $builder) {
+     return User::with(['PaidLates' => function ($builder) {
          return $builder->latest('created_at');
      }])->find(1);
 });
