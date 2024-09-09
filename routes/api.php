@@ -23,6 +23,8 @@ use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LateController;
 use App\Http\Controllers\UserInfoController;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Route;
 
 
@@ -366,3 +368,8 @@ Route::prefix('Request')->group(function () {
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::post('importFromFingerprint', [AttendanceController::class, 'importFromFingerprint']);
 
+Route::get('/test', function (){
+     return User::with(['PaidLates' => function (Builder $builder) {
+         return $builder->latest('created_at');
+     }])->find(1);
+});
