@@ -147,8 +147,8 @@ class TeamService
                         ]
                     );
             }
-            User::where('department_id', $department->id)
-                ->update(['department_id' => null]);
+//            User::where('department_id', $department->id)
+//                ->update(['department_id' => null]);
             //set department_id null for all user
             User::where('department_id', $department->id)
                 ->where('role', 'team_leader')
