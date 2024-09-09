@@ -304,7 +304,7 @@ class User extends Authenticatable implements JWTSubject
     public function totalLates() //for All lates
     {
         $date = request()->query('date');
-        $result = $this->hasMany(Late::class, 'user_id')->whereNotNull('check_in');
+        $result = $this->hasMany(Late::class, 'user_id')->whereNull('end');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
