@@ -167,6 +167,7 @@ class TeamService
                 }
             }
             if ($request->team_leader && $request->team_leader !== "undefined") {
+                return $request->team_leader;
                 $leader = $request->team_leader;
                 $teamLeader = User::where('id', $leader)->where('role', '!=', 'admin')
                     ->first(); // team leader
