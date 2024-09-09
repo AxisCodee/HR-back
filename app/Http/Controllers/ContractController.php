@@ -28,17 +28,14 @@ class ContractController extends Controller
                 $query->where('branch_id', $branchId);
             })->get();
             $results = [];
-        if ($contracts->isEmpty()) {
-            return ResponseHelper::success($results);
-        } else {
             foreach ($contracts as $contract) {
                 $endTime = Carbon::parse($contract['endTime']);
                 if ($endTime->gte(Carbon::now())) {
                     $status = 'active';
                     $result = [
-                        'startDate' => $contract['startTime'],
+                        'startDate' => Carbon::make($contract['startTime'])->toDateTimeString(),
                         'path' => $contract['path'],
-                        'endDate' => $contract['endTime'],
+                        'endDate' => Carbon::make($contract['endTime'])->toDateTimeString(),
                         'user_id' => $contract['user_id'],
                         'contract_id' => $contract->id,
                         'user' => $contract['user'],
@@ -48,7 +45,6 @@ class ContractController extends Controller
                 }
             }
             return ResponseHelper::success($results);
-        }
     }
 
 
