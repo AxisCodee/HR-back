@@ -196,7 +196,7 @@ class LateController extends Controller
         ]);
 
         if(! isset($request->date)){
-            $request->merge(['date' => Carbon::now()->toDateString()]);
+            $request->merge(['date' => Carbon::now()->format('Y-m')]);
         }
         $late = $this->lateService->allUserLates($request);
 
