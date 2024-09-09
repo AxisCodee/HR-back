@@ -33,9 +33,6 @@ class LateService
     {
         $user = User::with(['PaidLates' => function ($builder) {
                 return $builder->latest('created_at');
-            },
-            'UnPaidLates' => function ($builder) {
-                return $builder->latest('created_at');
             }]
         )->findOrFail($request->user_id);
         return $user;
