@@ -17,6 +17,10 @@ class UserTimeService
             $day = substr($date, 8, 2);
 
             if ($day) {
+                if(strlen($day) === 1) {
+                    $day = '0'.$day;
+                    $date = "$year-$month-$day";
+                }
                 $result->whereDate($fieldName, $date);
             } elseif ($month) {
                 $result->whereYear($fieldName, $year)
