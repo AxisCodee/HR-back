@@ -371,7 +371,7 @@ Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendance
 Route::post('importFromFingerprint', [AttendanceController::class, 'importFromFingerprint']);
 
 Route::get('/test', function (Request $request){
-    $request->merge(['date' => Carbon::now()->toDateString()]);
+    $request->merge(['date' => Carbon::yesterday()->toDateString()]);
      return User::with(['PaidLates' => function ($builder) {
          return $builder->latest('created_at');
      }])->find(1);
