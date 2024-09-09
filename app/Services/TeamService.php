@@ -86,7 +86,7 @@ class TeamService
                 'branch_id' => $request->branch_id,
             ]);
             if ($request->parent_id) {
-                Department::query()->where('id',$department->id)->update(
+                Department::query()->where('id', $department->id)->update(
                     [
                         'parent_id' => $request->parent_id,
                     ]
@@ -166,18 +166,20 @@ class TeamService
                     }
                 }
             }
-            $leader = $request->team_leader;
-            $teamLeader = User::where('id', $leader)->where('role','!=','admin')
-                ->first(); // team leader
+            if ($request->team_leader && $request->team_leader !== "undefined") {
+                $leader = $request->team_leader;
+                $teamLeader = User::where('id', $leader)->where('role', '!=', 'admin')
+                    ->first(); // team leader
 
-            if (!$teamLeader) { //exception if the team leader is exist in another team
-                throw new Exception('You cannot add a team leader to another team');
+                if (!$teamLeader) { //exception if the team leader is exist in another team
+                    throw new Exception('You cannot add a team leader to another team');
+                }
+                //      set team leader
+                $teamLeader->update([
+                    'role' => 'team_leader',
+                    'department_id' => $department->id
+                ]);
             }
-      //      set team leader
-            $teamLeader->update([
-                'role' => 'team_leader',
-                'department_id' => $department->id
-            ]);
 
             DB::commit();//commit
             return 'Team added successfully';
@@ -235,7 +237,6 @@ class TeamService
 // }
 
 
-
 // public function getTree($parentId = null)
 // {
 //     $tree = $this->buildTree($parentId);
@@ -264,36 +265,36 @@ class TeamService
 //     return $tree;
 // }
 
-public function getTree($request)
-{
-    $rootDepartments = Department::where('branch_id',$request->branch_id)
-    ->whereNull('parent_id')->with('user')->get();
-    $tree = [];
+    public function getTree($request)
+    {
+        $rootDepartments = Department::where('branch_id', $request->branch_id)
+            ->whereNull('parent_id')->with('user')->get();
+        $tree = [];
 
-    foreach ($rootDepartments as $department) {
-        $tree[] = $this->buildTree($department);
-    }
-
-    return $tree;
-}
-
-public function buildTree($department)
-{
-    //$department->user;
-    $tree = $department->toArray();
-    $childDepartments = $department->child;
-
-    if ($childDepartments) {
-        $tree['child'] = [];
-        foreach ($childDepartments as $childDepartment) {
-            $tree['child'][] = $this->buildTree($childDepartment);
-
+        foreach ($rootDepartments as $department) {
+            $tree[] = $this->buildTree($department);
         }
-        $tree['user']=$department->user()->get()->toArray();
+
+        return $tree;
     }
 
-    return $tree;
-}
+    public function buildTree($department)
+    {
+        //$department->user;
+        $tree = $department->toArray();
+        $childDepartments = $department->child;
+
+        if ($childDepartments) {
+            $tree['child'] = [];
+            foreach ($childDepartments as $childDepartment) {
+                $tree['child'][] = $this->buildTree($childDepartment);
+
+            }
+            $tree['user'] = $department->user()->get()->toArray();
+        }
+
+        return $tree;
+    }
 
 
 }
