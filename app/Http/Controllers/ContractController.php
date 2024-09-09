@@ -27,8 +27,8 @@ class ContractController extends Controller
             ->whereHas('user', function ($query) use ($branchId) {
                 $query->where('branch_id', $branchId);
             })->get();
-        if ($contracts->isEmpty()) {
             $results = [];
+        if ($contracts->isEmpty()) {
             return ResponseHelper::success($results);
         } else {
             foreach ($contracts as $contract) {
