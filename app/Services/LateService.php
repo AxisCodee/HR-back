@@ -52,16 +52,20 @@ class LateService
             ->with('userInfo:id,image,user_id', 'department', 'UnPaidLates', 'PaidLates', 'sickLates')
             ->withCount([
                 'justifiedPaidLatesCount as justifiedPaid' => function ($query) {
-                    $query->select(DB::raw("SUM(hours_num)"));
+                    $query->select(DB::raw("FLOOR(SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) / 60) +
+            (SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) % 60) / 100"));
                 },
                 'justifiedUnPaidLatesCount as justifiedUnpaid' => function ($query) {
-                    $query->select(DB::raw("SUM(hours_num)"));
+                    $query->select(DB::raw("FLOOR(SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) / 60) +
+            (SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) % 60) / 100"));
                 },
                 'UnjustifiedPaidLatesCount as UnjustifiedPaid' => function ($query) {
-                    $query->select(DB::raw("SUM(hours_num)"));
+                    $query->select(DB::raw("FLOOR(SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) / 60) +
+            (SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) % 60) / 100"));
                 },
                 'UnjustifiedUnPaidLatesCount as UnjustifiedUnpaid' => function ($query) {
-                    $query->select(DB::raw("SUM(hours_num)"));
+                    $query->select(DB::raw("FLOOR(SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) / 60) +
+            (SUM(FLOOR(hours_num) * 60 + (hours_num - FLOOR(hours_num)) * 100) % 60) / 100"));
                 },
             ])
             ->whereNot('role', 'admin')
