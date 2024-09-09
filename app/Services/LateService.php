@@ -31,7 +31,7 @@ class LateService
 
     public function allUserLates(Request $request)
     {
-        $user = User::with('allLates')->with('UnPaidLates')->with('PaidLates')->findOrFail($request->user_id);
+        $user = User::with('UnPaidLates')->with('PaidLates')->findOrFail($request->user_id);
         return $user;
     }
 
