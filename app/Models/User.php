@@ -8,6 +8,7 @@ use App\Services\FileService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -296,14 +297,18 @@ class User extends Authenticatable implements JWTSubject
     public function UnPaidLates() //Un paid
     {
         $date = request()->query('date');
-        $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 0);
+        $result = $this->hasMany(Late::class, 'user_id')
+            ->where('isPaid', 0)
+            ->whereNull('end');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
     public function PaidLates() //Paid
     {
         $date = request()->query('date');
-        $result = $this->hasMany(Late::class, 'user_id')->where('isPaid', 1);
+        $result = $this->hasMany(Late::class, 'user_id')
+            ->where('isPaid', 1)
+            ->whereNull('end');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
@@ -318,7 +323,7 @@ class User extends Authenticatable implements JWTSubject
     public function totalLates() //for All lates
     {
         $date = request()->query('date');
-        $result = $this->hasMany(Late::class, 'user_id')->whereNotNull('check_in');
+        $result = $this->hasMany(Late::class, 'user_id')->whereNull('end');
         return $this->usertimeService->filterDate($result, $date, 'lateDate');
     }
 
@@ -657,7 +662,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function userInfo()
+    public function userInfo(): HasOne
     {
         return $this->hasOne(UserInfo::class, 'user_id');
     }

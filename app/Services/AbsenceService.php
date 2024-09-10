@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helper\ResponseHelper;
 use App\Models\Late;
 use App\Models\Policy;
 use App\Models\User;
@@ -31,7 +32,10 @@ class AbsenceService
     {
         Absences::query()
             ->findOrFail($request['id'])
-            ->update($request);
+            ->update([
+                'type' => $request['type'],
+                'isPaid' => $request['type'] == 'sick' ? true : ($request['isPaid'] ?? false),
+            ]);
         return 'updated successfully';
     }
 
@@ -184,7 +188,7 @@ class AbsenceService
             ->where('role', '!=', 'admin')
             ->where('branch_id', $request->branch_id)
             ->with(
-                'userInfo:id,image',
+                'userInfo',
                 'department',
                 'allAbsences',
                 'UnPaidAbsences',
@@ -259,5 +263,31 @@ class AbsenceService
         }
         // If the format is incorrect, return a default value or handle the error as needed
         return '00:00';
+    }
+
+    public function createAbsence(array $data)
+    {
+        $date = Carbon::today()->toDateString();
+        if (
+            Absences::query()
+                ->where('user_id', $data['id'])
+                ->whereDate('startDate', $date)
+                ->exists()
+        )
+            return response()->json([
+                'success' => false,
+                'message' => 'الغياب موجود بالفعل'
+            ], 400);
+        Absences::query()
+            ->create([
+                'user_id' => $data['id'],
+                'startDate' => $date,
+                'type' => $data['type'],
+                'isPaid' => $data['type'] == 'sick' ? true : ($data['isPaid'] ?? false)
+            ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'ok'
+        ]);
     }
 }

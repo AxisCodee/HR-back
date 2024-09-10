@@ -39,10 +39,9 @@ class DepositController extends Controller
     public function update(UpdateDepositRequest $request, $id)
     {
         $validate = $request->validated();
-        return DB::transaction(function () use ($validate, $id) {
-            $result = $this->DepositServices->update($validate, $id);
-            return ResponseHelper::success($result, null);
-        });
+        $result = $this->DepositServices->update($validate, $id);
+        return ResponseHelper::success($result, null);
+
     }
 
     public function show() //all deposits

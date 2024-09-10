@@ -23,6 +23,10 @@ use App\Http\Controllers\StudySituationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LateController;
 use App\Http\Controllers\UserInfoController;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -221,7 +225,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('Uabsences', 'unjustifiedAbsence');
             Route::post('DynamicDecision/{absences}', 'DynamicDecision');//not exist !!
 
-            Route::post('AddAbsence', 'store_absence');
+            Route::post('AddAbsence', 'createAbsence');
             Route::get('getAbsences/{user}', 'getAbsences');
             Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
             Route::post('store_one_absence', 'storeAbsence'); //store one absence
@@ -366,3 +370,9 @@ Route::prefix('Request')->group(function () {
 Route::get('storeAttendanceLogs', [AttendanceController::class, 'storeAttendanceLogs']);
 Route::post('importFromFingerprint', [AttendanceController::class, 'importFromFingerprint']);
 
+Route::get('/test', function (Request $request){
+    $request->merge(['date' => Carbon::yesterday()->toDateString()]);
+     return User::with(['PaidLates' => function ($builder) {
+         return $builder->latest('created_at');
+     }])->find(1);
+});

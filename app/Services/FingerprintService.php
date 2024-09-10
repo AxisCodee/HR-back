@@ -416,7 +416,7 @@ class FingerprintService
             'lateDate' => $checkDate,
             'end' => $checkOutHour,
             'hours_num' => $hoursOverTime,
-            'type' => 'justified'
+            'type' => 'Unjustified'
         ]);
         return (bool)$overTime;
     }
