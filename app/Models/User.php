@@ -143,7 +143,8 @@ class User extends Authenticatable implements JWTSubject
             $startDate = $this->userInfo->start_date;
             $diff = isset($startDate) ? Carbon::make($startDate)->diffInYears(Carbon::today()) : 0;
             return
-                $diff;
+                $diff
+                * self::$oldSalaryByPolicy;
         });
     }
 

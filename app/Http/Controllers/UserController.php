@@ -56,7 +56,7 @@ class UserController extends Controller
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
             ->whereNot('role', 'admin')
-            ->with('department', 'userInfo:id,user_id,image')
+            ->with('department', 'userInfo')
             ->whereNull('deleted_at')
             ->get()
             ->toArray();
