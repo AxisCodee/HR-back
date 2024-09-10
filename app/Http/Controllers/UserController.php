@@ -7,6 +7,7 @@ use App\Http\Requests\ContactRequest\StoreContactRequest;
 use App\Http\Requests\ContactRequest\UpdateContactRequest;
 use App\Http\Requests\TeamRequest\StoreTeamRequest;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
+use App\Models\Policy;
 use App\Models\UserInfo;
 use App\Services\FileService;
 use App\Services\UserRegisterService;
@@ -20,6 +21,7 @@ use App\Services\UserServices;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use function PHPUnit\Framework\once;
 
 class UserController extends Controller
 {
@@ -47,6 +49,9 @@ class UserController extends Controller
     //get all users info
     public function all_users(Request $request)
     {
+        $policy = Policy::where('branch_id', $request->branch_id)->first();
+        $totalWorkingHours = $policy?->getTotalWorkingHours($request->date) ?? 0;
+        User::setTotalWorkingHours($totalWorkingHours);
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
             ->whereNot('role', 'admin')
