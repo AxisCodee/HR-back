@@ -435,12 +435,14 @@ class UserServices
             }
         if ($date) {
             $baseSalary = UserSalary::where('user_id', $user->id);
-            $baseSalary = $this->userTimeService
+            return $this->userTimeService
                 ->filterDate($baseSalary, $date, 'date')->sum('salary');
-
-            return $baseSalary;
+        }else{
+            return UserSalary::query()
+                ->where('user_id', $user->id)
+                ->latest('date')
+                ->first()->salary;
         }
-        return 0;
     }
 
     public function usersarray($users)
