@@ -52,6 +52,7 @@ class UserController extends Controller
         $policy = Policy::where('branch_id', $request->branch_id)->first();
         $totalWorkingHours = $policy?->getTotalWorkingHours($request->date) ?? 0;
         User::setTotalWorkingHours($totalWorkingHours);
+        User::setOldSalary($policy);
         $all_users = User::query()
             ->where('branch_id', $request->branch_id)
             ->whereNot('role', 'admin')
