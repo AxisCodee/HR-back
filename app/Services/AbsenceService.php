@@ -268,10 +268,13 @@ class AbsenceService
         if (
             Absences::query()
                 ->where('user_id', $data['id'])
-                ->where('startDate', $date)
+                ->whereDate('startDate', $date)
                 ->exists()
         )
-            return ResponseHelper::error(null, null,'الغياب موجود بالفعل');
+            return response()->json([
+                'success' => false,
+                'message' => 'الغياب موجود بالفعل'
+            ], 400);
         Absences::query()
             ->create([
                 'user_id' => $data['id'],
@@ -279,6 +282,9 @@ class AbsenceService
                 'type' => $data['type'],
                 'isPaid' => $data['type'] == 'sick' ? true : ($data['isPaid'] ?? false)
             ]);
-        return ResponseHelper::success();
+        return response()->json([
+            'success' => true,
+            'message' => 'ok'
+        ]);
     }
 }
