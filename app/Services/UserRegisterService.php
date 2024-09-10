@@ -261,6 +261,7 @@ class UserRegisterService
             'military_situation' => $request->military_situation ?: $userInfo->military_situation,
             'health_status' => $request->health_status ?: $userInfo->health_status,
             'image' => $path ?: $userInfo->image ?: $userInfo->image,
+            'start_date' => $request->start_date ?: $userInfo->start_date
         ]);
         if ($request->role) {
             $user->assignRole($request->role);
