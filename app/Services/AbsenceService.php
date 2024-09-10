@@ -32,7 +32,10 @@ class AbsenceService
     {
         Absences::query()
             ->findOrFail($request['id'])
-            ->update($request);
+            ->update([
+                'type' => $request['type'],
+                'isPaid' => $request['type'] == 'sick' ? true : ($request['isPaid'] ?? false),
+            ]);
         return 'updated successfully';
     }
 
