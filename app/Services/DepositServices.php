@@ -6,6 +6,7 @@ use Exception;
 use App\Models\User;
 use App\Models\Deposit;
 use App\Http\Traits\Files;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,7 @@ class DepositServices
     {
         $this->fileService = $fileService;
     }
+
     public function index($request) //all users with department and deposits
     {
         $branchId = $request->branch_id;
@@ -65,7 +67,11 @@ class DepositServices
 
     public function show()
     {
-        return Deposit::query()->with('user', 'user.userInfo:id,user_id,image')
+        return Deposit::query()
+            ->whereHas('user', function (Builder $query) {
+                $query->where('branch_id', request('branch_id'));
+            })
+            ->with('user', 'user.userInfo:id,user_id,image')
             ->get()
             ->toArray();
     }
