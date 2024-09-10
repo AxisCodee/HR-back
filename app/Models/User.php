@@ -140,8 +140,10 @@ class User extends Authenticatable implements JWTSubject
     public function oldSalary(): Attribute
     {
         return Attribute::get(function () {
+            $startDate = $this->userInfo->start_date;
+            $diff = isset($startDate) ? Carbon::make($startDate)->diffInYears(Carbon::today()) : 0;
             return
-                Carbon::make($this->userInfo->start_date)->diffInYears(Carbon::today())
+                $diff
                 * self::$oldSalaryByPolicy;
         });
     }
