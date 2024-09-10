@@ -32,9 +32,16 @@ class User extends Authenticatable implements JWTSubject
     protected $absenceService;
     private static $totalWorkingHours;
 
+    private static $oldSalaryByPolicy;
+
     public static function setTotalWorkingHours($totalWorkingHours): void
     {
         self::$totalWorkingHours = $totalWorkingHours;
+    }
+
+    public static function setOldSalary($policy): void
+    {
+        self::$oldSalaryByPolicy = $policy->old_salary;
     }
 
     public function __construct(array $attributes = [])
@@ -89,7 +96,8 @@ class User extends Authenticatable implements JWTSubject
         'TotalAbsenceHours',
         'totalCompensationHours',
         'isabsent',
-        'over_time_salary'
+        'over_time_salary',
+        'old_salary',
     ];
     protected $hidden = [
         'password',
@@ -126,6 +134,16 @@ class User extends Authenticatable implements JWTSubject
                 return 0;
             $overTime = Carbon::parse($this->over_time)->diffInMinutes(Carbon::today()) / 60;
             return ceil(($this->BaseSalary / self::$totalWorkingHours) * $overTime);
+        });
+    }
+
+    public function oldSalary(): Attribute
+    {
+        return Attribute::get(function () {
+            $startDate = $this->userInfo->start_date;
+            $diff = isset($startDate) ? Carbon::make($startDate)->diffInYears(Carbon::today()) : 0;
+            return
+                $diff;
         });
     }
 
