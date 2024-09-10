@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helper\ResponseHelper;
 use App\Models\Late;
 use App\Models\Policy;
 use App\Models\User;
@@ -259,5 +260,25 @@ class AbsenceService
         }
         // If the format is incorrect, return a default value or handle the error as needed
         return '00:00';
+    }
+
+    public function createAbsence(array $data)
+    {
+        $date = Carbon::today()->toDateString();
+        if (
+            Absences::query()
+                ->where('user_id', $data['id'])
+                ->where('startDate', $date)
+                ->exists()
+        )
+            return ResponseHelper::error(null, null,'الغياب موجود بالفعل');
+        Absences::query()
+            ->create([
+                'user_id' => $data['id'],
+                'startDate' => $date,
+                'type' => $data['type'],
+                'isPaid' => $data['type'] == 'sick' ? true : ($data['isPaid'] ?? false)
+            ]);
+        return ResponseHelper::success();
     }
 }

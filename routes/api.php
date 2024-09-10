@@ -225,7 +225,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             Route::get('Uabsences', 'unjustifiedAbsence');
             Route::post('DynamicDecision/{absences}', 'DynamicDecision');//not exist !!
 
-            Route::post('AddAbsence', 'store_absence');
+            Route::post('AddAbsence', 'createAbsence');
             Route::get('getAbsences/{user}', 'getAbsences');
             Route::delete('deleteAbsence/{absence}', 'deleteAbsence');
             Route::post('store_one_absence', 'storeAbsence'); //store one absence

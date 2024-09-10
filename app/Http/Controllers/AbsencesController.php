@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateAbsenceRequest;
 use App\Models\User;
 use App\Models\Absences;
 use Illuminate\Http\Request;
@@ -74,6 +75,13 @@ class AbsencesController extends Controller
         $request->validated();
         $results = $this->absenceService->store_absence($request);
         return ResponseHelper::success($results, null, 'Absence added successfully');
+    }
+
+
+    public function createAbsence(CreateAbsenceRequest $request)
+    {
+        $data = $request->validated();
+
     }
 
     public function storeAbsence(Request $request) //store one
