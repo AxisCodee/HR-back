@@ -81,7 +81,7 @@ class AbsencesController extends Controller
     public function createAbsence(CreateAbsenceRequest $request)
     {
         $data = $request->validated();
-
+        return $this->absenceService->createAbsence($data);
     }
 
     public function storeAbsence(Request $request) //store one
