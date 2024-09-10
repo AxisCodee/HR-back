@@ -188,7 +188,7 @@ class AbsenceService
             ->where('role', '!=', 'admin')
             ->where('branch_id', $request->branch_id)
             ->with(
-                'userInfo:id,image',
+                'userInfo',
                 'department',
                 'allAbsences',
                 'UnPaidAbsences',
