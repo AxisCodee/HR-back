@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Services\AbsenceService;
 use App\Services\FileService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
@@ -28,6 +29,12 @@ class User extends Authenticatable implements JWTSubject
     protected $userServices;
     protected $usertimeService;
     protected $absenceService;
+    private static $totalWorkingHours;
+
+    public static function setTotalWorkingHours($totalWorkingHours): void
+    {
+        self::$totalWorkingHours = $totalWorkingHours;
+    }
 
     public function __construct(array $attributes = [])
     {
@@ -81,6 +88,7 @@ class User extends Authenticatable implements JWTSubject
         'TotalAbsenceHours',
         'totalCompensationHours',
         'isabsent',
+        'over_time_salary'
     ];
     protected $hidden = [
         'password',
@@ -109,6 +117,17 @@ class User extends Authenticatable implements JWTSubject
        ]
     *
     */
+
+    public function overTimeSalary(): Attribute
+    {
+        return Attribute::get(function () {
+            if (!self::$totalWorkingHours)
+                return 0;
+            $overTime = Carbon::parse($this->over_time)->diffInMinutes(Carbon::today()) / 60;
+            return ceil(($this->BaseSalary / self::$totalWorkingHours) * $overTime);
+        });
+    }
+
     public function getOverTimeAttribute()
     {
         $date = request()->query('date');
