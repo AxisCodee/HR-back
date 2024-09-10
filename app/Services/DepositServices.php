@@ -58,7 +58,7 @@ class DepositServices
         return DB::transaction(function () use ($request, $id) {
             Deposit::query()
                 ->where('id', $id)
-                ->update($request);
+                ->update($request->validated());
             return 'Deposit has been updated';
         });
     }
