@@ -72,6 +72,6 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
-//        throw new Exception($exception->getMessage());
+        throw new Exception($exception->getMessage());
     }
 }
