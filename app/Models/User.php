@@ -130,6 +130,7 @@ class User extends Authenticatable implements JWTSubject
     public function overTimeSalary(): Attribute
     {
         return Attribute::get(function () {
+            if($this->role == 'admin') return 0;
             if (!self::$totalWorkingHours)
                 return 0;
             $overTime = Carbon::parse($this->over_time)->diffInMinutes(Carbon::today()) / 60;
@@ -140,7 +141,7 @@ class User extends Authenticatable implements JWTSubject
     public function oldSalary(): Attribute
     {
         return Attribute::get(function () {
-            $startDate = $this->userInfo->start_date;
+            $startDate = $this->userInfo?->start_date;
             $diff = isset($startDate) ? Carbon::make($startDate)->diffInYears(Carbon::today()) : 0;
             return
                 $diff
