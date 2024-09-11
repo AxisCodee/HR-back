@@ -97,7 +97,7 @@ class User extends Authenticatable implements JWTSubject
         'totalCompensationHours',
         'isabsent',
         //'over_time_salary',
-        'old_salary',
+        //'old_salary',
     ];
     protected $hidden = [
         'password',

@@ -44,34 +44,34 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        parent::report($exception);
-
-        switch(get_class($exception))
-        {
-            case QueryException::class:
-                throw new Exception($exception->getMessage());
-            case AuthenticationException::class:
-                throw new Exception($exception->getMessage());
-            case ModelNotFoundException::class:
-                throw new Exception($exception->getMessage());
-            case TokenMismatchException::class:
-                throw new Exception($exception->getMessage());
-            case ValidationException::class:
-                throw new Exception($exception->getMessage());
-            case AuthorizationException::class:
-                throw new Exception($exception->getMessage());
-            case HttpException::class:
-                throw new Exception($exception->getMessage());
-            case NotFoundHttpException::class:
-                throw new Exception($exception->getMessage());
-            case MethodNotAllowedHttpException::class:
-                throw new Exception($exception->getMessage());
-
-        }
+//        parent::report($exception);
+//
+//        switch(get_class($exception))
+//        {
+//            case QueryException::class:
+//                throw new Exception($exception->getMessage());
+//            case AuthenticationException::class:
+//                throw new Exception($exception->getMessage());
+//            case ModelNotFoundException::class:
+//                throw new Exception($exception->getMessage());
+//            case TokenMismatchException::class:
+//                throw new Exception($exception->getMessage());
+//            case ValidationException::class:
+//                throw new Exception($exception->getMessage());
+//            case AuthorizationException::class:
+//                throw new Exception($exception->getMessage());
+//            case HttpException::class:
+//                throw new Exception($exception->getMessage());
+//            case NotFoundHttpException::class:
+//                throw new Exception($exception->getMessage());
+//            case MethodNotAllowedHttpException::class:
+//                throw new Exception($exception->getMessage());
+//
+//        }
     }
 
     public function render($request, Throwable $exception)
     {
-        throw new Exception($exception->getMessage());
+//        throw new Exception($exception->getMessage());
     }
 }
