@@ -41,25 +41,36 @@ class EmpOfMonthController extends Controller
     {
         $validate = $request->validated();
 
-        return DB::transaction(function () use ($validate) {
-            $existingEmpOfMonth = EmpOfMonth::where('date', now()->format('Y-m'))
-                ->first();
-
-            if ($existingEmpOfMonth) {
-                $result = EmpOfMonth::query()->update([
-                    'user_id' => $validate['user_id'],
-                ]);
-                return ResponseHelper::updated('updated');
-            }
+        return DB::transaction(function () use ($request, $validate) {
+            $result = EmpOfMonth::query()
+                ->updateOrCreate(
+                    [
+                        'date' => now()->format('Y-m'),
+                        'branch_id' => $request['branch_id'],
+                    ],
+                    [
+                        'user_id' => $validate['user_id'],
+                    ]
+                );
+//            $existingEmpOfMonth = EmpOfMonth::where('date', now()->format('Y-m'))
+//                ->where('branch_id', $request['branch_id'])
+//                ->first();
+//
+//            if ($existingEmpOfMonth) {
+//                $result = EmpOfMonth::query()->update([
+//                    'user_id' => $validate['user_id'],
+//                ]);
+//                return ResponseHelper::updated('updated');
+//            }
             // return DB::transaction(function () use ($validate) {
-            $result = EmpOfMonth::query()->create([
-                'user_id' => $validate['user_id'],
-                'date' => now()->format('Y-m'),
-            ]);
+//            $result = EmpOfMonth::query()->create([
+//                'user_id' => $validate['user_id'],
+//                'date' => now()->format('Y-m'),
+//            ]);
             return ResponseHelper::success($result, null);
         });
 
-        return ResponseHelper::error('error', null);
+//        return ResponseHelper::error('error', null);
         // $result = EmpOfMonth::create([
         //     'user_id' => $validate['user_id'],
         //     'date' => now()->format('Y-m'),
@@ -103,7 +114,8 @@ class EmpOfMonthController extends Controller
     public function destroy(Request $request)
     {
         return DB::transaction(function () use ($request) {
-            $empOfMonth = EmpOfMonth::query()->where('user_id', request('user_id'))->first();
+            $empOfMonth = EmpOfMonth::query()
+                ->where('date', now()->format('Y-m'))->first();
             if (!$empOfMonth) {
                 return ResponseHelper::error('Invalid user ID');
             }
