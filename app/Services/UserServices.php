@@ -420,7 +420,6 @@ class UserServices
             ->where('user_id', $user->id)
             ->latest('date')
             ->first();
-        logger($lastSalary);
         $thisMonth = Carbon::now();
 
         if($lastSalary)
@@ -441,7 +440,7 @@ class UserServices
             return UserSalary::query()
                 ->where('user_id', $user->id)
                 ->latest('date')
-                ->first()->salary;
+                ->first()?->salary;
         }
     }
 

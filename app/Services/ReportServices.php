@@ -139,7 +139,8 @@ class ReportServices
             // 'Deductions',
             // 'Rewards',
             'attendance' => function ($query) use ($user, $date) {
-                $query->whereDate('datetime', $date)
+                $query->whereMonth('datetime', $date)
+                    ->whereYear('datetime', $date)
                     ->where('branch_id', $user->branch_id);
             }
         ])->findOrFail($request->user_id);
